@@ -130,15 +130,15 @@
 <br> ◆ 扩展分区不能存储数据和格式化，必须再划分成逻辑分区才能使用
 <br> ◆ 逻辑分区：逻辑分区是在扩展分区中划分的，如果是IDE硬盘，Linux最多支持59个逻辑分区，如果是SCSI硬盘，Linux最多支持11个逻辑分区。
 <br>(2) 分区表示方法
-<br><img src="https://wx2.sinaimg.cn/mw1024/007Diza3ly1g5zhk3yyizj30n206j0um.jpg" width="800" height="350" />
-<br><img src="https://wx1.sinaimg.cn/mw1024/007Diza3ly1g5zhk3xrybj30gq09wq4c.jpg" width="800" height="650" />
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L7_FileSystem0.jpg?raw=true" width="800" height="350" />
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L7_FileSystem1.jpg?raw=true" width="800" height="650" />
 <br>sdax(x是数字)详解：
 <br> ▪ sd代表scsi硬盘接口，hd代表id硬盘接口；
 <br> ▪ a、b、c、d 代表第几块硬盘(sda代表第一块硬盘)；
 <br> ▪ 1、2、3、4代表是第几个主分区(sda1代表是第一个主分区)；
 <br> ▪ 5、6、7、8代表逻辑分区(sda5代表逻辑分区1)；
-<br><img src="https://wx1.sinaimg.cn/mw1024/007Diza3ly1g5zhk3y8y3j30ne0783zz.jpg" width="800" height="300" />
-<br><img src="https://wx1.sinaimg.cn/mw1024/007Diza3ly1g5zhk3ykbzj30mg0b6wgq.jpg" width="800" height="650" />
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L7_FileSystem2.jpg?raw=true" width="800" height="300" />
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L7_FileSystem3.jpg?raw=true" width="800" height="650" />
 <br><font color=black size = 4>2、文件系统</font>
 <br>有了分区，Linux还不能使用，必须进行格式化，格式化就是把前面划分好的分区写入文件系统。
 <br>现在Linux文件系统大多都使用ext
@@ -182,7 +182,7 @@
 <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -t  文件系统  加入文件系统类型来指定挂载的类型，可以ext3、ext4(硬盘)、iso9660(光驱)等文件系统
 <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -L  卷标名  挂载指定卷标的分区，而不是安装设备文件名挂载
 <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -o  特殊选项  可以指定挂载的额外选项，见下表
-<br><img src="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g5zhk41kz6j30mq0enqcc.jpg" width="800" height="650" />
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L7_FileSystem4.jpg?raw=true" width="800" height="650" />
 <br>实例：使其不支持可执行文件
 <br>&nbsp;&nbsp;&nbsp;&nbsp; mount -o remount,noexec /home  重新挂载/boot分区，并使用noexec权限
 <br>&nbsp;&nbsp;&nbsp;&nbsp; cd /home
@@ -219,13 +219,13 @@
 <br><br><font color=black size = 5>fdisk分区</font>
 <br><font color=black size = 4>1、fdisk命令分区过程</font>
 <br>(1) 添加新硬盘
-<br><img src="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g5zhk3vvjej30es0c9tau.jpg" width="800" height="650" />
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L7_FileSystem5.jpg?raw=true" width="800" height="650" />
 <br>(2) 查看新硬盘
 <br>&nbsp;&nbsp;&nbsp;&nbsp; fdisk -l
 <br>(3) 使用fdisk命令分区
 <br>&nbsp;&nbsp;&nbsp;&nbsp; fdisk /dev/sdb
 <br>备注：输入错误需要按Ctrl+退格键才能进行删除
-<br><img src="https://wx4.sinaimg.cn/mw1024/007Diza3ly1g5zhk3yfirj30ni0eb0wr.jpg" width="800" height="650" />
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L7_FileSystem6.jpg?raw=true" width="800" height="650" />
 <br>(4) 重新读取分区表信息
 <br>&nbsp;&nbsp;&nbsp;&nbsp; 键入命令 partprobe
 <br>(5) 格式化分区
@@ -248,14 +248,14 @@
 <br>&nbsp;&nbsp;&nbsp;&nbsp; 第六字段：指定分区是否被fsck检测，0代表不检测，其它数字代表检测的优先级，当然1的优先级比2高
 <br>备注：备份是指备份到分区文件 lost+found文件
 <br>查看UUID：
-<br><img src="https://wx4.sinaimg.cn/mw1024/007Diza3ly1g5zhk3ruxzj30c60783yo.jpg" width="400" height="250" />
-<br><img src="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g5zhk3u761j30oh07njx8.jpg" width="800" height="450" />
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L7_FileSystem7.jpg?raw=true" width="400" height="250" />
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L7_FileSystem8.jpg?raw=true" width="800" height="450" />
 <br>(2) 分区自动挂载
 <br>&nbsp;&nbsp;&nbsp;&nbsp; vi /etc/fstab
 <br>&nbsp;&nbsp;&nbsp;&nbsp; ...省略部分输出...
 <br>&nbsp;&nbsp;&nbsp;&nbsp; /dev/sdb1 &nbsp;&nbsp;&nbsp;&nbsp; disk1 &nbsp;&nbsp;&nbsp;&nbsp; ext4 &nbsp;&nbsp;&nbsp;&nbsp; defaults &nbsp;&nbsp;&nbsp;&nbsp; 1 2
 <br>配置文件内容截图
-<br><img src="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g5zhnlomyqj30o70doai2.jpg" width="800" height="650" />
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L7_FileSystem9.jpg?raw=true" width="800" height="650" />
 <br>(3) 依据配置文件内容，自动挂载
 <br>&nbsp;&nbsp;&nbsp;&nbsp; mount -a
 <br>备注：此命令也可以检测挂载是否成功，fstab写错会导致系统崩溃，fstab内容不小心写错此命令会报错
@@ -273,12 +273,12 @@
 <br>(2) 新建swap分区
 <br>&nbsp;&nbsp;&nbsp;&nbsp; fdisk /dev/sdb
 <br>备注：别忘记把分区ID改为82，见下图
-<br><img src="https://wx4.sinaimg.cn/mw1024/007Diza3ly1g5zhnllmo5j30ng0acq7w.jpg" width="800" height="650" />
-<br><img src="https://wx2.sinaimg.cn/mw1024/007Diza3ly1g5zhnlp9alj30nr0cithp.jpg" width="800" height="650" />
-<br><img src="https://wx4.sinaimg.cn/mw1024/007Diza3ly1g5zhnll965j30o20bc497.jpg" width="800" height="650" />
-<br><img src="https://wx1.sinaimg.cn/mw1024/007Diza3ly1g5zhnllq3sj30np0e9tgx.jpg" width="800" height="650" />
-<br><img src="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g5zhnlhpe6j30o40cvn58.jpg" width="800" height="650" />
-<br><img src="https://wx4.sinaimg.cn/mw1024/007Diza3ly1g5zhnljtdcj30ok08btfo.jpg" width="800" height="350" />
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L7_FileSystem10.jpg?raw=true" width="800" height="650" />
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L7_FileSystem11.jpg?raw=true" width="800" height="650" />
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L7_FileSystem12.jpg?raw=true" width="800" height="650" />
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L7_FileSystem13.jpg?raw=true" width="800" height="650" />
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L7_FileSystem14.jpg?raw=true" width="800" height="650" />
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L7_FileSystem15.jpg?raw=true" width="800" height="350" />
 <br>(3) 格式化
 <br>&nbsp;&nbsp;&nbsp;&nbsp; mkswap /dev/sdb6
 <br>(4) 加入swap分区
@@ -287,7 +287,7 @@
 <br>(5) swap分区开机自动挂载
 <br>&nbsp;&nbsp;&nbsp;&nbsp; vi /etc/fstab
 <br>&nbsp;&nbsp;&nbsp;&nbsp; /dev/sdb6 &nbsp;&nbsp;&nbsp;&nbsp; swap &nbsp;&nbsp;&nbsp;&nbsp; eswap &nbsp;&nbsp;&nbsp;&nbsp; defaults &nbsp;&nbsp;&nbsp;&nbsp; 0 0
-<br><img src="https://wx1.sinaimg.cn/mw1024/007Diza3ly1g5zhnll07lj30o40e0qbj.jpg" width="800" height="650" />
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L7_FileSystem16.jpg?raw=true" width="800" height="650" />
 <br><br><br>
 <font color = gray size = 3>如有错误，欢迎指正！</font></p></div>
         <div class="post_footer">

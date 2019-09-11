@@ -245,12 +245,12 @@
 <br>&nbsp;&nbsp;&nbsp;&nbsp; vi /etc/sysconfig/network-scripts/ifcfg-eth0
 <br>&nbsp;&nbsp;&nbsp;&nbsp; 添加IP地址和子网掩码和修改自启动和修改静态IP地址，然后wq保存退出
 <br>&nbsp;&nbsp;&nbsp;&nbsp; 修改后文件为这样：
-<br><img src="https://wx1.sinaimg.cn/mw1024/007Diza3ly1g5tn03adeqj30jc0dk3zw.jpg" width="800" height="650" />
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L4_SoftPackageManage0.jpg?raw=true" width="800" height="650" />
 <br><font color=black size = 3>(4) 设置主机IP映射</font>
 <br>由于局域网中一般很少架设DNS服务器，访问这些服务要输入难记的IP地址，对不少人来说相当麻烦。现在可以分别给这些服务器取个容易记住的名字，然后在Hosts中建立IP映射，这样以后访问的时候我们输入这个服务器的名字就行了。
 <br>&nbsp;&nbsp;&nbsp;&nbsp; 设置完ip地址后，还可以修改一下主机名和Ip地址的映射，比如我有五台虚拟机。
 <br>&nbsp;&nbsp;&nbsp;&nbsp; vi /etc/hosts
-<br><img src="https://wx2.sinaimg.cn/mw1024/007Diza3ly1g5tn03aqjaj30o80bmabp.jpg" width="800" height="650" />
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L4_SoftPackageManage1.jpg?raw=true" width="800" height="650" />
 <br><font color=black size = 3>(5) 重启网络服务</font>
 <br>&nbsp;&nbsp;&nbsp;&nbsp; 命令：service network restart
 <br><font color=black size = 4>2、网络yum源和本地yum源</font>
@@ -282,7 +282,7 @@
 <br><font color=black size = 4>本地yum源</font>
 <br>在无法联网的情况下，yum 可以考虑用本地光盘（或安装映像文件）作为 yum 源。
 <br>Linux 系统安装映像文件中就含有常用的 RPM 包，我们可以使用压缩文件打开映像文件（iso文件），进入其 Packages 子目录，如图所示：
-<br><img src="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g5tn037qvng30dw07gt8y.gif" width="800" height="650" />
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L4_SoftPackageManage2.gif?raw=true" width="800" height="650" />
 <br>可以看到，该子目录下含有几乎所有常用的 RPM 包，因此使用系统安装映像作为本地 yum 源没有任何问题。
 <br>在 /etc/yum.repos.d/ 目录下有一个 CentOS-Media.repo 文件，此文件就是以本地光盘作为 yum 源的模板文件，只需进行简单的修改即可，步骤如下：
 <br>1.放入 CentOS 安装光盘，并挂载光盘到指定位置。命令如下：

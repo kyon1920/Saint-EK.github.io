@@ -127,7 +127,7 @@
 <br>&nbsp;&nbsp;&nbsp;&nbsp; 单独指定用户并单独分配权限：在普通权限中，用户对文件只有三种身份，就是属主、属组和其他人；每种用户身份拥有读（read）、写（write）和执行（execute）三种权限。但是在实际工作中，常常会碰到用户身份不够用的情况，例如：我有一个目录文件，它的权限为770（rwxrwx—）,那好，现在我需要添加一个新用户对这个文件的权限为r-x,这个时候你就会发现原有的用户身份不够用了，不管把这个新用户加到哪里去都不能满足r-x的权限要求。
 <br>&nbsp;&nbsp;&nbsp;&nbsp; ACL权限管理就是用来解决以上权限身份不够的情况，也就是说ACL权限管理抛开了通过用户身份来进行文件权限管理的局限，使得权限管理更加自由。
 <br>注：ACL权限管理需要文件所在分区支持ACL权限管理，但是现在大部分的Linux系统分区都已经默认支持了ACL权限管理
-<br><img src="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g5xybcszzrj30mj0btdkg.jpg" width="800" height="650" />
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L6_AuthorityManagement0.jpg?raw=true" width="800" height="650" />
 <br>(2) 查看分区ACL权限是否开启
 <br> • 使用mount命令找到系统中已经挂载的分区
 <br> • 使用dumpe2fs查询指定分区文件系统详细信息
@@ -194,7 +194,7 @@
 <br>mask 的默认权限是 rwx，如给wangwu 用户赋予了 r-x 的 ACL 权限，则需要和 mask 的 rwx 权限&quot;相与&quot;才能得到 wangwu 的真正权限，也就是 r-x &quot;相与&quot;rwx 出的值是 r-x，所以 wangwu 用户拥有 r-x 权限。
 <br>如果把 mask 的权限改为 r--，和 wangwu 用户的权限相与，也就是 r--&quot;相与&quot;r-x 得出的值是 r--，wangwu 用户的权限就会变为只读。大家可以这么理解：用户和用户组所设定的权限必须在 mask 权限设定的范围之内才能生效，mask权限就是最大有效权限。
 <br>我们一般不更改 mask 权限，只要给予 mask 最大权限 rwx，那么任何权限和 mask 权限相与，得出的值都是权限本身。也就是说，我们通过给用户和用户组直接赋予权限，就可以生效，这样做更直观。
-<br><img src="https://wx1.sinaimg.cn/mw1024/007Diza3ly1g5xybcmxqpj30lg0dddgn.jpg" width="800" height="650" />
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L6_AuthorityManagement1.jpg?raw=true" width="800" height="650" />
 <br>(2) 修改最大有效权限
 <br>设定mask权限为r-x，使用“m:权限”格式
 <br>&nbsp;&nbsp;&nbsp;&nbsp; setfacl -m m:rx 文件名
@@ -299,7 +299,7 @@
 <br>sudo的操作对象是系统命令
 <br><font color=black size = 4>2、sudo使用</font>
 <br>&nbsp;&nbsp;&nbsp;&nbsp; visudo  实际修改的是/etc/sudoers文件
-<br><img src="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g5xybcpl3lj30mj07f768.jpg" width="800" height="300" />
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L6_AuthorityManagement2.jpg?raw=true" width="800" height="300" />
 <br><font color=black size = 4>3、授权st用户可以重启服务器</font>
 <br>&nbsp;&nbsp;&nbsp;&nbsp; visudo
 <br>&nbsp;&nbsp;&nbsp;&nbsp; st  ALL= /sbin/shutdown -r now

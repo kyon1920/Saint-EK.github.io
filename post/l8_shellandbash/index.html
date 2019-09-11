@@ -128,7 +128,7 @@
 <br>Shell是一个功能相当强大的编程语言，灵活性较强、易编写和调试。
 <br>Shell是解释执行的脚本语言
 <br>在Shell中可以直接调用Linux系统命令
-<br><img src="https://wx1.sinaimg.cn/mw1024/007Diza3ly1g6puo8jlf1j30jj0at79a.jpg" width="800" height="650" />
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L8_ShellandBash0.jpg?raw=true" width="800" height="650" />
 <br><font color=black size = 4>2、Shell的分类</font>
 <br>Bourne Shell：从1979年开始Unix就开始使用Bourne Shell，它的主文件名为sh
 <br>C Shell：C Shell主要在BSD版的Unix系统中使用，其语法和C语言相类似，故为C Shell
@@ -140,13 +140,13 @@
 <br><font color=black size = 4>4、Linux支持的Shell</font>
 <br>使用命令：
 <br>&nbsp;&nbsp;&nbsp;&nbsp;cat /etc/shells
-<br><img src="https://wx2.sinaimg.cn/mw1024/007Diza3ly1g6puo7c7bdj30j608uwep.jpg" width="800" height="650" />
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L8_ShellandBash1.jpg?raw=true" width="800" height="650" />
 <br><br><font color=black size = 5>Shell脚本的执行方式</font>
 <br><font color=black size = 4>1、echo输出命令</font>
 <br>&nbsp;&nbsp;&nbsp;&nbsp; echo [选项][输出内容]
 <br>选项：
 <br>&nbsp;&nbsp;&nbsp;&nbsp; -e  支持反斜线控制的字符转换
-<br><img src="https://wx1.sinaimg.cn/mw1024/007Diza3ly1g6puo8ipzzj30ja0c5mzw.jpg" width="800" height="650" />
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L8_ShellandBash2.jpg?raw=true" width="800" height="650" />
 <br>实例：
 <br>\b删除左侧字符
 <br>&nbsp;&nbsp;&nbsp;&nbsp; echo -e &quot;ab\bc&quot;
@@ -216,7 +216,7 @@
 <br>&nbsp;&nbsp; 4.第四顺位执行按照$PATH环境变量定义的目录查找顺序找到的第一个命令
 <br>补充：Linux中所有命令都是使用绝对路径执行，系统命令是因为加入了PATH环境变量，所以不需要加绝对路径或者相对路径，而Shell、Bash内部命令没有路径，可以直接执行，例如：cd 命令。
 <br>(2)Bash常用快捷键
-<br><img src="https://wx1.sinaimg.cn/mw1024/007Diza3ly1g6puo9i8eej30mz0cbn3i.jpg" width="800" height="650" />
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L8_ShellandBash3.jpg?raw=true" width="800" height="650" />
 <br>注：ctrl+Z需要慎用，它会使得系统越来越慢
 <br><font color=black size = 4>3、输入输出重定向</font>
 <br>(1)标准输入输出
@@ -342,7 +342,7 @@
 <br>&nbsp;&nbsp;&nbsp;&nbsp; ls [0-9]*
 <br>&nbsp;&nbsp;&nbsp;&nbsp; ls [`0-9]*
 <br>(2)Bash中其他特殊符号
-<br><img src="https://wx4.sinaimg.cn/mw1024/007Diza3ly1g6puo9va28j30nn0c60z1.jpg" width="800" height="650" />
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L8_ShellandBash4.jpg?raw=true" width="800" height="650" />
 <br><br>反引号与$()
 <br>&nbsp;&nbsp;&nbsp;&nbsp; echo `ls`
 <br>&nbsp;&nbsp;&nbsp;&nbsp; echo \$(date)
@@ -417,8 +417,8 @@
 <br>&nbsp;&nbsp;&nbsp;&nbsp; \$*  代表命令行中所有参数并把所有参数看成一个整数
 <br>&nbsp;&nbsp;&nbsp;&nbsp; \$@  代表命令行所有的参数，不过是把每个参数区分对待
 <br>&nbsp;&nbsp;&nbsp;&nbsp; \$#  代表命令行中所有参数的个数
-<br><img src="https://wx2.sinaimg.cn/mw1024/007Diza3ly1g6puo927xfj30jv09ewer.jpg" width="800" height="650" />
-<br><img src="https://wx1.sinaimg.cn/mw1024/007Diza3ly1g6puo7ihw7j30ih097mxb.jpg" width="800" height="650" />
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L8_ShellandBash5.jpg?raw=true" width="800" height="650" />
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L8_ShellandBash6.jpg?raw=true" width="800" height="650" />
 <br><font color=black size = 4>4、预定义变量</font>
 <br>同上面预定义变量
 <br>预定义变量其实就是位置参数变量的一种
@@ -427,7 +427,7 @@
 <br>&nbsp;&nbsp;&nbsp;&nbsp; \$?  最后一次执行命令的返回状态，如果这个变量的值为0，证明上一次正确执行，否则不正确，值由命令决定
 <br>&nbsp;&nbsp;&nbsp;&nbsp; \$\$  当前进程的进程号 (PID)
 <br>&nbsp;&nbsp;&nbsp;&nbsp; \$!  后台运行的最后一个进程的进程号 (PID)
-<br><img src="https://wx2.sinaimg.cn/mw1024/007Diza3ly1g6puo9hdjdj30pk0dut9t.jpg" width="800" height="650" />
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L8_ShellandBash7.jpg?raw=true" width="800" height="650" />
 <br>(2)接受键盘输入
 <br>&nbsp;&nbsp;&nbsp;&nbsp; read [选项][变量名]
 <br>选项：
@@ -435,8 +435,8 @@
 <br>&nbsp;&nbsp;&nbsp;&nbsp; -t 秒数  read命令会一直等待用户输入，使用此选项可以指定等待时间
 <br>&nbsp;&nbsp;&nbsp;&nbsp; -n 字符数  read命令只接受指定的字符数
 <br>&nbsp;&nbsp;&nbsp;&nbsp; -s  隐藏输入的数据，适用于机密信息的输入
-<br><img src="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g6puws7m3cj30m207pjsi.jpg" width="800" height="650" />
-<br><img src="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g6puws1h7wj30ma0evtaj.jpg" width="800" height="650" />
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L8_ShellandBash8.jpg?raw=true" width="800" height="650" />
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L8_ShellandBash9.jpg?raw=true" width="800" height="650" />
 <br><br><font color=black size = 5>Bash运算符</font>
 <br><font color=black size = 4>1、数值运算与运算符</font>
 <br>(1)declare声明变量类型
@@ -466,13 +466,13 @@
 <br>&nbsp;&nbsp;&nbsp;&nbsp; ff=\$((\$aa+\$bb))
 <br>&nbsp;&nbsp;&nbsp;&nbsp; gg=\$[\$aa+\$bb]
 <br>(3)运算符
-<br><img src="https://wx1.sinaimg.cn/mw1024/007Diza3ly1g6puwsy3b3j30m90csgp2.jpg" width="800" height="650" />
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L8_ShellandBash10.jpg?raw=true" width="800" height="650" />
 <br>数值越大，优先级越高
-<br><img src="https://wx2.sinaimg.cn/mw1024/007Diza3ly1g6puwr5e4rj30ji076ta3.jpg" width="800" height="650" />
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L8_ShellandBash11.jpg?raw=true" width="800" height="650" />
 <br><font color=black size = 4>2、变量测试与内容替换</font>
-<br><img src="https://wx1.sinaimg.cn/mw1024/007Diza3ly1g6puwsag8wj30mn0e8wjr.jpg" width="800" height="650" />
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L8_ShellandBash12.jpg?raw=true" width="800" height="650" />
 <br>测试 x=\${y-新值}
-<br><img src="https://wx2.sinaimg.cn/mw1024/007Diza3ly1g6puwraxauj30m403q0te.jpg" width="800" height="250" />
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L8_ShellandBash13.jpg?raw=true" width="800" height="250" />
 <br><br><font color=black size = 5>环境变量配置文件</font>
 <br><font color=black size = 4>1、环境变量配置文件简介</font>
 <br>(1)source命令
@@ -485,7 +485,7 @@
 <br>&nbsp;&nbsp;&nbsp;&nbsp; /etc/bashrc
 <br><font color=black size = 4>2、环境变量配置文件作用</font>
 <br>(1)环境变量文件优先级
-<br><img src="https://wx2.sinaimg.cn/mw1024/007Diza3ly1g6puwrdhr2j30o60dm0uc.jpg" width="800" height="650" />
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L8_ShellandBash14.jpg?raw=true" width="800" height="650" />
 <br>(2)/etc/profile的作用：
 <br>&nbsp;&nbsp;&nbsp;&nbsp; USER变量
 <br>&nbsp;&nbsp;&nbsp;&nbsp; LOGNAME变量
