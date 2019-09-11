@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Bruce Cheung"/>
+
+  
+  <meta name="description" content="经典小游戏：俄罗斯方块
+"/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, simple, dream"/>
+  
+
+  
+  <link rel="canonical" href="https://oubc.github.io/post/tetris/"/>
+
+  
+
+  <title>俄罗斯方块 &middot; Love, or death</title>
+
+  <link rel="shortcut icon" href="https://oubc.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/post/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://oubc.github.io/">
+          <span>Love, or death</span>
+          <img src="https://oubc.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">For you, a thousand times over.</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/oubc" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=uYGOjo6OiIuLivnIyJfa1tQ" title="mail" target="_blank"><i class="remixicon-mail-fill"></i></a>
+        
+        
+        
+        <a href="http://sighttp.qq.com/msgrd?v=1&amp;uin=877771223" title="qq" target="_blank"><i class="remixicon-qq-fill"></i></a>
+        
+        
+        
+        <a href="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g4klnqf0tmj30ia0widks.jpg" title="wechat" target="_blank"><i class="remixicon-wechat-fill"></i></a>
+        
+        
+        
+        <a href="https://weibo.com/u/6993631995?topnav=1&amp;wvr=6&amp;topsug=1" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://oubc.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/post/tetris/'>俄罗斯方块</a></h2>
+          <span class="date">2019.06.22</span>
+        </div>
+        <div class="post_content markdown"><p>经典小游戏：俄罗斯方块</p>
+
+<p><br><br>项目名称：俄罗斯方块
+<br>开发工具：VS2019
+<br>开发语言：C/C++、windowsAPI
+<br>项目介绍：运行程序时，将听到一首背景音乐，按下回车键开始游戏，并播放开始提示音，然后进入游戏，播放背景音乐，游戏种存在不同形态的6种随机方块，按下左右方向键改变方向，上键改变方块形态，下键加速下落，游戏规则同经典游戏的俄罗斯方块。
+<br><br>具体实现：
+<br>1、游戏图形：整个为500╳659的窗体，游戏区域由300╳600窗体区域构成，为什么游戏区域高度与窗体高度不符，因为窗体存在非客户区，非客户区占有一定的高度。
+<br><br>2、实现逻辑：整个游戏中，分为设备坐标和逻辑坐标两类，逻辑坐标决定方块形状和位置，而设备坐标决定方块显示的位置，逻辑坐标决定图形-由产生随机数函数产生1-6的随机数，将1-6的数字分别绑定方块的6种不同形态，再将方块映射到对应的设备坐标上显示出来，并将前面的实现都放入定时器中，没过设定的时间，方块便下落一个正方形方块宽带的距离，然后进行消息处理，接收键盘消息，如果键盘点击了左方向键，方块左移一个单元，键盘点击了右方向键，方块右移一个单元，键盘点击了上方向键，方块变形-变形通过改变逻辑坐标的值来实现，键盘点击了下方向键，改变定时器的值，使方块加速下落。最后进行边界判断和满行判断，边界判断通过设备坐标来实现，通过方块值是否到达最左边或者最右边来实现是否可以继续移动，满行判断-正在移动的方块被设定的值为1、下落完成的方块的值被设定为2，当判断设备坐标中出现整行值为2的话便实现了满行，并进行消除，将分数+1，最后将消除行以上并且处于值为2的方块全部向下落下一格，实现消行操作。
+<br><br>3、完整代码：
+<br>framework.h
+<div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#008000;">//&nbsp;header.h:&nbsp;标准系统包含文件的包含文件，<BR>
+//&nbsp;或特定于项目的包含文件<BR>
+//<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">#pragma</span><span style="color:#000000;">&nbsp;once<BR>
+<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;</span><span style="color:#800000;">&quot;targetver.h&quot;</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;WIN32_LEAN_AND_MEAN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;从&nbsp;Windows&nbsp;头文件中排除极少使用的内容<BR>
+//&nbsp;Windows&nbsp;头文件<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;windows.h&gt;<BR>
+</span><span style="color:#008000;">//&nbsp;C&nbsp;运行时头文件<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;stdlib.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;malloc.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;memory.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;tchar.h&gt;<BR>
+</span></div></td></tr></table></div>
+<br>Resource.h
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#008000;">//{{NO_DEPENDENCIES}}<BR>
+//&nbsp;Microsoft&nbsp;Visual&nbsp;C++&nbsp;生成的包含文件。<BR>
+//&nbsp;使用者&nbsp;俄罗斯方块.rc<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;IDS_APP_TITLE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">103</span><span style="color:#000000;"><BR>
+<BR>
+</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;IDR_MAINFRAME&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">128</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;IDD_MY_DIALOG&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">102</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;IDD_ABOUTBOX&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">103</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;IDM_ABOUT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">104</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;IDM_EXIT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">105</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;IDI_MY&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">107</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;IDI_SMALL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">108</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;IDC_MY&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">109</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;IDC_MYICON&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">#ifndef</span><span style="color:#000000;">&nbsp;IDC_STATIC<BR>
+</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;IDC_STATIC&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-</span><span style="color:#ff0000;">1</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">#endif</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">//&nbsp;新对象的下一组默认值<BR>
+//<BR>
+</span><span style="color:#0000ff;">#ifdef</span><span style="color:#000000;">&nbsp;APSTUDIO_INVOKED<BR>
+</span><span style="color:#0000ff;">#ifndef</span><span style="color:#000000;">&nbsp;APSTUDIO_READONLY_SYMBOLS<BR>
+<BR>
+</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;_APS_NO_MFC&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">130</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;_APS_NEXT_RESOURCE_VALUE&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">129</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;_APS_NEXT_COMMAND_VALUE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">32771</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;_APS_NEXT_CONTROL_VALUE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">1000</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;_APS_NEXT_SYMED_VALUE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">110</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">#endif</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">#endif</span><span style="color:#000000;"><BR>
+</span></div></td></tr></table></div>
+<br>targetver.h
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#pragma</span><span style="color:#000000;">&nbsp;once<BR>
+<BR>
+</span><span style="color:#008000;">//&nbsp;//&nbsp;包含&nbsp;SDKDDKVer.h&nbsp;可定义可用的最高版本的&nbsp;Windows&nbsp;平台。<BR>
+//&nbsp;如果希望为之前的&nbsp;Windows&nbsp;平台构建应用程序，在包含&nbsp;SDKDDKVer.h&nbsp;之前请先包含&nbsp;WinSDKVer.h&nbsp;并<BR>
+//&nbsp;将&nbsp;_WIN32_WINNT&nbsp;宏设置为想要支持的平台。<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;SDKDDKVer.h&gt;<BR>
+</span></div></td></tr></table></div>
+<br>elsHead.h
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47<br>48<br>49<br>50<br>51<br>52<br>53<br>54<br>55<br>56<br>57<br>58<br>59<br>60<br>61<br>62<br>63<br>64<br>65<br>66<br>67<br>68<br>69<br>70<br>71<br>72<br>73<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#pragma</span><span style="color:#000000;">&nbsp;once<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;windows.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;time.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;cstdlib&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;MMSystem.h&gt;<BR>
+</span><span style="color:#0000ff;">#pragma</span><span style="color:#000000;">&nbsp;comment&nbsp;(lib,&nbsp;</span><span style="color:#800000;">&quot;winmm.lib&quot;</span><span style="color:#000000;">)<BR>
+<BR>
+</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;DEF_TIME1&nbsp;</span><span style="color:#ff0000;">1234</span><span style="color:#000000;"><BR>
+<BR>
+</span><span style="color:#008000;">//OnCreate()函数<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;OnCreate();<BR>
+<BR>
+</span><span style="color:#008000;">//设置游戏区域边框<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;OnPaint(HDC&nbsp;hDc);<BR>
+<BR>
+</span><span style="color:#008000;">//显示方块<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;PaintSqare(HDC&nbsp;hDc);<BR>
+<BR>
+</span><span style="color:#008000;">//产生随机块<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;CreateRandenSqare();<BR>
+<BR>
+</span><span style="color:#008000;">//随机块贴进背景<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;CopySqareToBack();<BR>
+<BR>
+</span><span style="color:#008000;">//定时器响应函数<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;OnReturn(HWND&nbsp;hWnd);&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//击键消息-回车<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;OnTimer(HWND&nbsp;hWnd);<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;OnLeft(HWND&nbsp;hWnd);<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;OnRight(HWND&nbsp;hWnd);<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;OnDown(HWND&nbsp;hWnd);<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;OnChangeSqare(HWND&nbsp;hWnd);&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//变形<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">//方块下落<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;SqareDown();<BR>
+</span><span style="color:#008000;">//方块左移<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;SqareLeft();<BR>
+</span><span style="color:#008000;">//方块右移<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;SqareRight();<BR>
+<BR>
+</span><span style="color:#008000;">//让方块移动&nbsp;返回0不可以移动&nbsp;返回1还可以移动<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;CanSqareDown();<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;CanSqareDown2();<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;CanSqareLeft();<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;CanSqareLeft2();<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;CanSqareRight();<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;CanSqareRight2();<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;CanSqareChangeShape();&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//判断能不能变形<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;CanLineSqareChange();&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//判断长条能不能变形<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">//让1变成2<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;Change1To2();<BR>
+</span><span style="color:#008000;">//变形<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;ChangeSqare();<BR>
+</span><span style="color:#008000;">//长条变形<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;ChangeLineSqare();<BR>
+<BR>
+</span><span style="color:#008000;">//当1变成2后显示出来<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;ShowSqare2(HDC&nbsp;hdc);<BR>
+<BR>
+</span><span style="color:#008000;">//消除<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;DestroyOneLineSqare();<BR>
+<BR>
+</span><span style="color:#008000;">//显示分数<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;ShowScore(HDC&nbsp;hDc);<BR>
+<BR>
+</span><span style="color:#008000;">//游戏结束<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;GameOver();<BR>
+<BR>
+</span><span style="color:#008000;">//播放背景音乐<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;PlayMusic();<BR>
+<BR>
+</span><span style="color:#008000;">//停止播放背景音乐<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;StopMusic();</span></div></td></tr></table></div>
+<br>elsHead.cpp
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47<br>48<br>49<br>50<br>51<br>52<br>53<br>54<br>55<br>56<br>57<br>58<br>59<br>60<br>61<br>62<br>63<br>64<br>65<br>66<br>67<br>68<br>69<br>70<br>71<br>72<br>73<br>74<br>75<br>76<br>77<br>78<br>79<br>80<br>81<br>82<br>83<br>84<br>85<br>86<br>87<br>88<br>89<br>90<br>91<br>92<br>93<br>94<br>95<br>96<br>97<br>98<br>99<br>100<br>101<br>102<br>103<br>104<br>105<br>106<br>107<br>108<br>109<br>110<br>111<br>112<br>113<br>114<br>115<br>116<br>117<br>118<br>119<br>120<br>121<br>122<br>123<br>124<br>125<br>126<br>127<br>128<br>129<br>130<br>131<br>132<br>133<br>134<br>135<br>136<br>137<br>138<br>139<br>140<br>141<br>142<br>143<br>144<br>145<br>146<br>147<br>148<br>149<br>150<br>151<br>152<br>153<br>154<br>155<br>156<br>157<br>158<br>159<br>160<br>161<br>162<br>163<br>164<br>165<br>166<br>167<br>168<br>169<br>170<br>171<br>172<br>173<br>174<br>175<br>176<br>177<br>178<br>179<br>180<br>181<br>182<br>183<br>184<br>185<br>186<br>187<br>188<br>189<br>190<br>191<br>192<br>193<br>194<br>195<br>196<br>197<br>198<br>199<br>200<br>201<br>202<br>203<br>204<br>205<br>206<br>207<br>208<br>209<br>210<br>211<br>212<br>213<br>214<br>215<br>216<br>217<br>218<br>219<br>220<br>221<br>222<br>223<br>224<br>225<br>226<br>227<br>228<br>229<br>230<br>231<br>232<br>233<br>234<br>235<br>236<br>237<br>238<br>239<br>240<br>241<br>242<br>243<br>244<br>245<br>246<br>247<br>248<br>249<br>250<br>251<br>252<br>253<br>254<br>255<br>256<br>257<br>258<br>259<br>260<br>261<br>262<br>263<br>264<br>265<br>266<br>267<br>268<br>269<br>270<br>271<br>272<br>273<br>274<br>275<br>276<br>277<br>278<br>279<br>280<br>281<br>282<br>283<br>284<br>285<br>286<br>287<br>288<br>289<br>290<br>291<br>292<br>293<br>294<br>295<br>296<br>297<br>298<br>299<br>300<br>301<br>302<br>303<br>304<br>305<br>306<br>307<br>308<br>309<br>310<br>311<br>312<br>313<br>314<br>315<br>316<br>317<br>318<br>319<br>320<br>321<br>322<br>323<br>324<br>325<br>326<br>327<br>328<br>329<br>330<br>331<br>332<br>333<br>334<br>335<br>336<br>337<br>338<br>339<br>340<br>341<br>342<br>343<br>344<br>345<br>346<br>347<br>348<br>349<br>350<br>351<br>352<br>353<br>354<br>355<br>356<br>357<br>358<br>359<br>360<br>361<br>362<br>363<br>364<br>365<br>366<br>367<br>368<br>369<br>370<br>371<br>372<br>373<br>374<br>375<br>376<br>377<br>378<br>379<br>380<br>381<br>382<br>383<br>384<br>385<br>386<br>387<br>388<br>389<br>390<br>391<br>392<br>393<br>394<br>395<br>396<br>397<br>398<br>399<br>400<br>401<br>402<br>403<br>404<br>405<br>406<br>407<br>408<br>409<br>410<br>411<br>412<br>413<br>414<br>415<br>416<br>417<br>418<br>419<br>420<br>421<br>422<br>423<br>424<br>425<br>426<br>427<br>428<br>429<br>430<br>431<br>432<br>433<br>434<br>435<br>436<br>437<br>438<br>439<br>440<br>441<br>442<br>443<br>444<br>445<br>446<br>447<br>448<br>449<br>450<br>451<br>452<br>453<br>454<br>455<br>456<br>457<br>458<br>459<br>460<br>461<br>462<br>463<br>464<br>465<br>466<br>467<br>468<br>469<br>470<br>471<br>472<br>473<br>474<br>475<br>476<br>477<br>478<br>479<br>480<br>481<br>482<br>483<br>484<br>485<br>486<br>487<br>488<br>489<br>490<br>491<br>492<br>493<br>494<br>495<br>496<br>497<br>498<br>499<br>500<br>501<br>502<br>503<br>504<br>505<br>506<br>507<br>508<br>509<br>510<br>511<br>512<br>513<br>514<br>515<br>516<br>517<br>518<br>519<br>520<br>521<br>522<br>523<br>524<br>525<br>526<br>527<br>528<br>529<br>530<br>531<br>532<br>533<br>534<br>535<br>536<br>537<br>538<br>539<br>540<br>541<br>542<br>543<br>544<br>545<br>546<br>547<br>548<br>549<br>550<br>551<br>552<br>553<br>554<br>555<br>556<br>557<br>558<br>559<br>560<br>561<br>562<br>563<br>564<br>565<br>566<br>567<br>568<br>569<br>570<br>571<br>572<br>573<br>574<br>575<br>576<br>577<br>578<br>579<br>580<br>581<br>582<br>583<br>584<br>585<br>586<br>587<br>588<br>589<br>590<br>591<br>592<br>593<br>594<br>595<br>596<br>597<br>598<br>599<br>600<br>601<br>602<br>603<br>604<br>605<br>606<br>607<br>608<br>609<br>610<br>611<br>612<br>613<br>614<br>615<br>616<br>617<br>618<br>619<br>620<br>621<br>622<br>623<br>624<br>625<br>626<br>627<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;</span><span style="color:#800000;">&quot;elsHead.h&quot;</span><span style="color:#000000;"><BR>
+<BR>
+</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;g_arrBackGround[</span><span style="color:#ff0000;">20</span><span style="color:#000000;">][</span><span style="color:#ff0000;">10</span><span style="color:#000000;">]&nbsp;=&nbsp;{&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">&nbsp;};<BR>
+</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;g_arrSqare[</span><span style="color:#ff0000;">2</span><span style="color:#000000;">][</span><span style="color:#ff0000;">4</span><span style="color:#000000;">]&nbsp;=&nbsp;{&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">&nbsp;};<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;g_nSqareID&nbsp;=&nbsp;-</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;g_nLine&nbsp;=&nbsp;-</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;g_nList&nbsp;=&nbsp;-</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;g_nScore&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+<BR>
+</span><span style="color:#008000;">//void&nbsp;OnCreate()函数<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;OnCreate()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;srand((</span><span style="color:#8000ff;">unsigned</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">)time(</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;CreateRandenSqare();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;CopySqareToBack();<BR>
+}<BR>
+<BR>
+</span><span style="color:#008000;">//设置游戏兼容性DC<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;OnPaint(HDC&nbsp;hDc)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;HDC&nbsp;hMemDC&nbsp;=&nbsp;CreateCompatibleDC(hDc);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;HBITMAP&nbsp;hBitmap&nbsp;=&nbsp;CreateCompatibleBitmap(hDc,&nbsp;</span><span style="color:#ff0000;">500</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">600</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;SelectObject(hMemDC,&nbsp;hBitmap);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;PaintSqare(hMemDC);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;ShowSqare2(hMemDC);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//传递<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;ShowScore(hDc);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;BitBlt(hDc,&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">300</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">600</span><span style="color:#000000;">,&nbsp;hMemDC,&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;SRCCOPY);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;DeleteObject(hBitmap);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;DeleteDC(hMemDC);<BR>
+}<BR>
+<BR>
+</span><span style="color:#008000;">//显示方块<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;PaintSqare(HDC&nbsp;hDc)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//画游戏方框<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;Rectangle(hDc,&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">300</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">600</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;HPEN&nbsp;hPen,&nbsp;hOldPen;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;HBRUSH&nbsp;hBrush,&nbsp;hOldBrush;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//画方块<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;hPen&nbsp;=&nbsp;CreatePen(BS_SOLID,&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,&nbsp;RGB(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">255</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;hOldPen&nbsp;=&nbsp;(HPEN)SelectObject(hDc,&nbsp;hPen);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;hBrush&nbsp;=&nbsp;CreateSolidBrush(RGB(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">255</span><span style="color:#000000;">));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;hOldBrush&nbsp;=&nbsp;(HBRUSH)SelectObject(hDc,&nbsp;hBrush);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">20</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;j&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;j&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">;&nbsp;++j)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;==&nbsp;g_arrBackGround[i][j])<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Rectangle(hDc,&nbsp;j&nbsp;*&nbsp;</span><span style="color:#ff0000;">30</span><span style="color:#000000;">,&nbsp;i&nbsp;*&nbsp;</span><span style="color:#ff0000;">30</span><span style="color:#000000;">,&nbsp;j&nbsp;*&nbsp;</span><span style="color:#ff0000;">30</span><span style="color:#000000;">&nbsp;+&nbsp;</span><span style="color:#ff0000;">30</span><span style="color:#000000;">,&nbsp;i&nbsp;*&nbsp;</span><span style="color:#ff0000;">30</span><span style="color:#000000;">&nbsp;+&nbsp;</span><span style="color:#ff0000;">30</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;SelectObject(hDc,&nbsp;hOldPen);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;SelectObject(hDc,&nbsp;hOldBrush);<BR>
+}<BR>
+<BR>
+</span><span style="color:#008000;">//产生随机块<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;CreateRandenSqare()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;nIndex&nbsp;=&nbsp;rand()&nbsp;%&nbsp;</span><span style="color:#ff0000;">7</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">switch</span><span style="color:#000000;">&nbsp;(nIndex)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_arrSqare[</span><span style="color:#ff0000;">0</span><span style="color:#000000;">][</span><span style="color:#ff0000;">0</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,&nbsp;g_arrSqare[</span><span style="color:#ff0000;">0</span><span style="color:#000000;">][</span><span style="color:#ff0000;">1</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,&nbsp;g_arrSqare[</span><span style="color:#ff0000;">0</span><span style="color:#000000;">][</span><span style="color:#ff0000;">2</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;g_arrSqare[</span><span style="color:#ff0000;">0</span><span style="color:#000000;">][</span><span style="color:#ff0000;">3</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_arrSqare[</span><span style="color:#ff0000;">1</span><span style="color:#000000;">][</span><span style="color:#ff0000;">0</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;g_arrSqare[</span><span style="color:#ff0000;">1</span><span style="color:#000000;">][</span><span style="color:#ff0000;">1</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,&nbsp;g_arrSqare[</span><span style="color:#ff0000;">1</span><span style="color:#000000;">][</span><span style="color:#ff0000;">2</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,&nbsp;g_arrSqare[</span><span style="color:#ff0000;">1</span><span style="color:#000000;">][</span><span style="color:#ff0000;">3</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_nLine&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_nList&nbsp;=&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_arrSqare[</span><span style="color:#ff0000;">0</span><span style="color:#000000;">][</span><span style="color:#ff0000;">0</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;g_arrSqare[</span><span style="color:#ff0000;">0</span><span style="color:#000000;">][</span><span style="color:#ff0000;">1</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,&nbsp;g_arrSqare[</span><span style="color:#ff0000;">0</span><span style="color:#000000;">][</span><span style="color:#ff0000;">2</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,&nbsp;g_arrSqare[</span><span style="color:#ff0000;">0</span><span style="color:#000000;">][</span><span style="color:#ff0000;">3</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_arrSqare[</span><span style="color:#ff0000;">1</span><span style="color:#000000;">][</span><span style="color:#ff0000;">0</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,&nbsp;g_arrSqare[</span><span style="color:#ff0000;">1</span><span style="color:#000000;">][</span><span style="color:#ff0000;">1</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,&nbsp;g_arrSqare[</span><span style="color:#ff0000;">1</span><span style="color:#000000;">][</span><span style="color:#ff0000;">2</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;g_arrSqare[</span><span style="color:#ff0000;">1</span><span style="color:#000000;">][</span><span style="color:#ff0000;">3</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_nLine&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_nList&nbsp;=&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_arrSqare[</span><span style="color:#ff0000;">0</span><span style="color:#000000;">][</span><span style="color:#ff0000;">0</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,&nbsp;g_arrSqare[</span><span style="color:#ff0000;">0</span><span style="color:#000000;">][</span><span style="color:#ff0000;">1</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;g_arrSqare[</span><span style="color:#ff0000;">0</span><span style="color:#000000;">][</span><span style="color:#ff0000;">2</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;g_arrSqare[</span><span style="color:#ff0000;">0</span><span style="color:#000000;">][</span><span style="color:#ff0000;">3</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_arrSqare[</span><span style="color:#ff0000;">1</span><span style="color:#000000;">][</span><span style="color:#ff0000;">0</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,&nbsp;g_arrSqare[</span><span style="color:#ff0000;">1</span><span style="color:#000000;">][</span><span style="color:#ff0000;">1</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,&nbsp;g_arrSqare[</span><span style="color:#ff0000;">1</span><span style="color:#000000;">][</span><span style="color:#ff0000;">2</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,&nbsp;g_arrSqare[</span><span style="color:#ff0000;">1</span><span style="color:#000000;">][</span><span style="color:#ff0000;">3</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_nLine&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_nList&nbsp;=&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_arrSqare[</span><span style="color:#ff0000;">0</span><span style="color:#000000;">][</span><span style="color:#ff0000;">0</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;g_arrSqare[</span><span style="color:#ff0000;">0</span><span style="color:#000000;">][</span><span style="color:#ff0000;">1</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;g_arrSqare[</span><span style="color:#ff0000;">0</span><span style="color:#000000;">][</span><span style="color:#ff0000;">2</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,&nbsp;g_arrSqare[</span><span style="color:#ff0000;">0</span><span style="color:#000000;">][</span><span style="color:#ff0000;">3</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_arrSqare[</span><span style="color:#ff0000;">1</span><span style="color:#000000;">][</span><span style="color:#ff0000;">0</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,&nbsp;g_arrSqare[</span><span style="color:#ff0000;">1</span><span style="color:#000000;">][</span><span style="color:#ff0000;">1</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,&nbsp;g_arrSqare[</span><span style="color:#ff0000;">1</span><span style="color:#000000;">][</span><span style="color:#ff0000;">2</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,&nbsp;g_arrSqare[</span><span style="color:#ff0000;">1</span><span style="color:#000000;">][</span><span style="color:#ff0000;">3</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_nLine&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_nList&nbsp;=&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">4</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_arrSqare[</span><span style="color:#ff0000;">0</span><span style="color:#000000;">][</span><span style="color:#ff0000;">0</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;g_arrSqare[</span><span style="color:#ff0000;">0</span><span style="color:#000000;">][</span><span style="color:#ff0000;">1</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,&nbsp;g_arrSqare[</span><span style="color:#ff0000;">0</span><span style="color:#000000;">][</span><span style="color:#ff0000;">2</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;g_arrSqare[</span><span style="color:#ff0000;">0</span><span style="color:#000000;">][</span><span style="color:#ff0000;">3</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_arrSqare[</span><span style="color:#ff0000;">1</span><span style="color:#000000;">][</span><span style="color:#ff0000;">0</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,&nbsp;g_arrSqare[</span><span style="color:#ff0000;">1</span><span style="color:#000000;">][</span><span style="color:#ff0000;">1</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,&nbsp;g_arrSqare[</span><span style="color:#ff0000;">1</span><span style="color:#000000;">][</span><span style="color:#ff0000;">2</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,&nbsp;g_arrSqare[</span><span style="color:#ff0000;">1</span><span style="color:#000000;">][</span><span style="color:#ff0000;">3</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_nLine&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_nList&nbsp;=&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">5</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_arrSqare[</span><span style="color:#ff0000;">0</span><span style="color:#000000;">][</span><span style="color:#ff0000;">0</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;g_arrSqare[</span><span style="color:#ff0000;">0</span><span style="color:#000000;">][</span><span style="color:#ff0000;">1</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,&nbsp;g_arrSqare[</span><span style="color:#ff0000;">0</span><span style="color:#000000;">][</span><span style="color:#ff0000;">2</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,&nbsp;g_arrSqare[</span><span style="color:#ff0000;">0</span><span style="color:#000000;">][</span><span style="color:#ff0000;">3</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_arrSqare[</span><span style="color:#ff0000;">1</span><span style="color:#000000;">][</span><span style="color:#ff0000;">0</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;g_arrSqare[</span><span style="color:#ff0000;">1</span><span style="color:#000000;">][</span><span style="color:#ff0000;">1</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,&nbsp;g_arrSqare[</span><span style="color:#ff0000;">1</span><span style="color:#000000;">][</span><span style="color:#ff0000;">2</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,&nbsp;g_arrSqare[</span><span style="color:#ff0000;">1</span><span style="color:#000000;">][</span><span style="color:#ff0000;">3</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_nLine&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_nList&nbsp;=&nbsp;</span><span style="color:#ff0000;">4</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">6</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_arrSqare[</span><span style="color:#ff0000;">0</span><span style="color:#000000;">][</span><span style="color:#ff0000;">0</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,&nbsp;g_arrSqare[</span><span style="color:#ff0000;">0</span><span style="color:#000000;">][</span><span style="color:#ff0000;">1</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,&nbsp;g_arrSqare[</span><span style="color:#ff0000;">0</span><span style="color:#000000;">][</span><span style="color:#ff0000;">2</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,&nbsp;g_arrSqare[</span><span style="color:#ff0000;">0</span><span style="color:#000000;">][</span><span style="color:#ff0000;">3</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_arrSqare[</span><span style="color:#ff0000;">1</span><span style="color:#000000;">][</span><span style="color:#ff0000;">0</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;g_arrSqare[</span><span style="color:#ff0000;">1</span><span style="color:#000000;">][</span><span style="color:#ff0000;">1</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;g_arrSqare[</span><span style="color:#ff0000;">1</span><span style="color:#000000;">][</span><span style="color:#ff0000;">2</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;g_arrSqare[</span><span style="color:#ff0000;">1</span><span style="color:#000000;">][</span><span style="color:#ff0000;">3</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_nLine&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_nList&nbsp;=&nbsp;</span><span style="color:#ff0000;">4</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;g_nSqareID&nbsp;=&nbsp;nIndex;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;nIndex;<BR>
+}<BR>
+<BR>
+</span><span style="color:#008000;">//随机块贴进背景<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;CopySqareToBack()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;j&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;j&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">4</span><span style="color:#000000;">;&nbsp;++j)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_arrBackGround[i][</span><span style="color:#ff0000;">3</span><span style="color:#000000;">&nbsp;+&nbsp;j]&nbsp;=&nbsp;g_arrSqare[i][j];<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+}<BR>
+<BR>
+</span><span style="color:#008000;">//击键消息-回车<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;OnReturn(HWND&nbsp;hWnd)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//打开定时器<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;SetTimer(hWnd,&nbsp;DEF_TIME1,&nbsp;</span><span style="color:#ff0000;">500</span><span style="color:#000000;">,&nbsp;</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">);<BR>
+}<BR>
+<BR>
+</span><span style="color:#008000;">//定时器响应函数<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;OnTimer(HWND&nbsp;hWnd)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;HDC&nbsp;hdc&nbsp;=&nbsp;GetDC(hWnd);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;==&nbsp;CanSqareDown()&nbsp;&amp;&amp;&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;==&nbsp;CanSqareDown2())<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SqareDown();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_nLine++;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//1&nbsp;to&nbsp;2<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Change1To2();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//消除<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DestroyOneLineSqare();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//产生随机块<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//游戏结束<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">&nbsp;==&nbsp;GameOver())<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//结束应用程序<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;KillTimer(hWnd,&nbsp;DEF_TIME1);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CreateRandenSqare();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CopySqareToBack();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//显示方块<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//PaintSqare(hdc);<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;OnPaint(hdc);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;ReleaseDC(hWnd,&nbsp;hdc);<BR>
+}<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;OnLeft(HWND&nbsp;hWnd)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;==&nbsp;CanSqareLeft()&nbsp;&amp;&amp;&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;==&nbsp;CanSqareLeft2())<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HDC&nbsp;hdc&nbsp;=&nbsp;GetDC(hWnd);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//方块左移<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SqareLeft();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_nList--;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//显示方块<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OnPaint(hdc);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ReleaseDC(hWnd,&nbsp;hdc);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+}<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;OnRight(HWND&nbsp;hWnd)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;==&nbsp;CanSqareRight()&nbsp;&amp;&amp;&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;==&nbsp;CanSqareRight2())<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HDC&nbsp;hdc&nbsp;=&nbsp;GetDC(hWnd);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//方块右移<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SqareRight();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_nList++;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//显示方块<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OnPaint(hdc);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ReleaseDC(hWnd,&nbsp;hdc);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+}<BR>
+<BR>
+</span><span style="color:#008000;">//方块下落<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;SqareDown()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">19</span><span style="color:#000000;">;&nbsp;i&nbsp;&gt;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i--)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;j&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;j&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">;&nbsp;++j)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;==&nbsp;g_arrBackGround[i][j])<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_arrBackGround[i&nbsp;+&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">][j]&nbsp;=&nbsp;g_arrBackGround[i][j];<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_arrBackGround[i][j]&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+}<BR>
+<BR>
+</span><span style="color:#008000;">//按下键加速移动<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;OnDown(HWND&nbsp;hWnd)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;OnTimer(hWnd);<BR>
+}<BR>
+<BR>
+</span><span style="color:#008000;">//方块左移<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;SqareLeft()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">20</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;j&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;j&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">;&nbsp;++j)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;==&nbsp;g_arrBackGround[i][j])<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_arrBackGround[i][j&nbsp;-&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">]&nbsp;=&nbsp;g_arrBackGround[i][j];<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_arrBackGround[i][j]&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+}<BR>
+<BR>
+</span><span style="color:#008000;">//方块右移<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;SqareRight()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">20</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;j&nbsp;=&nbsp;</span><span style="color:#ff0000;">9</span><span style="color:#000000;">;&nbsp;j&nbsp;&gt;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;j--)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;==&nbsp;g_arrBackGround[i][j])<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_arrBackGround[i][j&nbsp;+&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">]&nbsp;=&nbsp;g_arrBackGround[i][j];<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_arrBackGround[i][j]&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+}<BR>
+<BR>
+</span><span style="color:#008000;">//让方块停在底部<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;CanSqareDown()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">;&nbsp;i++)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;==&nbsp;g_arrBackGround[</span><span style="color:#ff0000;">19</span><span style="color:#000000;">][i])<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;<BR>
+}<BR>
+<BR>
+</span><span style="color:#008000;">//判断停靠位置<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;CanSqareDown2()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">19</span><span style="color:#000000;">;&nbsp;i&nbsp;&gt;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i--)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;j&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;j&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">;&nbsp;j++)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;==&nbsp;g_arrBackGround[i][j])<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;==&nbsp;g_arrBackGround[i&nbsp;+&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">][j])<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;<BR>
+}<BR>
+<BR>
+</span><span style="color:#008000;">//让1变成2<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;Change1To2()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">20</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;j&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;j&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">;&nbsp;++j)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;==&nbsp;g_arrBackGround[i][j])<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_arrBackGround[i][j]&nbsp;=&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+}<BR>
+<BR>
+</span><span style="color:#008000;">//当1变成2后显示出来<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;ShowSqare2(HDC&nbsp;hdc)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;HPEN&nbsp;hPen,&nbsp;hOldPen;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;HBRUSH&nbsp;hBrush,&nbsp;hOldBrush;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;hPen&nbsp;=&nbsp;CreatePen(BS_SOLID,&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,&nbsp;RGB(</span><span style="color:#ff0000;">255</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;hOldPen&nbsp;=&nbsp;(HPEN)SelectObject(hdc,&nbsp;hPen);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;hBrush&nbsp;=&nbsp;CreateSolidBrush(RGB(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">255</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;hOldBrush&nbsp;=&nbsp;(HBRUSH)SelectObject(hdc,&nbsp;hBrush);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">20</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;j&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;j&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">;&nbsp;++j)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;==&nbsp;g_arrBackGround[i][j])<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Rectangle(hdc,&nbsp;j&nbsp;*&nbsp;</span><span style="color:#ff0000;">30</span><span style="color:#000000;">,&nbsp;i&nbsp;*&nbsp;</span><span style="color:#ff0000;">30</span><span style="color:#000000;">,&nbsp;j&nbsp;*&nbsp;</span><span style="color:#ff0000;">30</span><span style="color:#000000;">&nbsp;+&nbsp;</span><span style="color:#ff0000;">30</span><span style="color:#000000;">,&nbsp;i&nbsp;*&nbsp;</span><span style="color:#ff0000;">30</span><span style="color:#000000;">&nbsp;+&nbsp;</span><span style="color:#ff0000;">30</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;SelectObject(hdc,&nbsp;hOldPen);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;SelectObject(hdc,&nbsp;hOldBrush);<BR>
+}<BR>
+<BR>
+</span><span style="color:#008000;">//判断方块是否可以左移<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;CanSqareLeft()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">20</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;==&nbsp;g_arrBackGround[i][</span><span style="color:#ff0000;">0</span><span style="color:#000000;">])<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;<BR>
+}<BR>
+<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;CanSqareLeft2()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">20</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;j&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;j&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">;&nbsp;++j)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;==&nbsp;g_arrBackGround[i][j])<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;==&nbsp;g_arrBackGround[i][j&nbsp;-&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">])<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;<BR>
+}<BR>
+<BR>
+</span><span style="color:#008000;">//判断方块是否可以右移<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;CanSqareRight()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">20</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;==&nbsp;g_arrBackGround[i][</span><span style="color:#ff0000;">19</span><span style="color:#000000;">])<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;<BR>
+}<BR>
+<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;CanSqareRight2()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">20</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;j&nbsp;=&nbsp;</span><span style="color:#ff0000;">9</span><span style="color:#000000;">;&nbsp;j&nbsp;&gt;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;j--)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;==&nbsp;g_arrBackGround[i][j])<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;==&nbsp;g_arrBackGround[i][j&nbsp;+&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">])<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;<BR>
+}<BR>
+<BR>
+</span><span style="color:#008000;">//变形<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;OnChangeSqare(HWND&nbsp;hWnd)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;HDC&nbsp;hdc&nbsp;=&nbsp;GetDC(hWnd);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">switch</span><span style="color:#000000;">(g_nSqareID)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//普通变形<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">4</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;==&nbsp;CanSqareChangeShape())<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ChangeSqare();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">5</span><span style="color:#000000;">:&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//正方形<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">6</span><span style="color:#000000;">:&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//长条变形<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;==&nbsp;CanLineSqareChange())<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ChangeLineSqare();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;OnPaint(hdc);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;ReleaseDC(hWnd,&nbsp;hdc);<BR>
+}<BR>
+<BR>
+</span><span style="color:#008000;">//变形&nbsp;除长条外<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;ChangeSqare()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;temp&nbsp;=&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;arrSqare[</span><span style="color:#ff0000;">3</span><span style="color:#000000;">][</span><span style="color:#ff0000;">3</span><span style="color:#000000;">]&nbsp;=&nbsp;{&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">&nbsp;};<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//背景块复制出来<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;j&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;j&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">;&nbsp;++j)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;arrSqare[i][j]&nbsp;=&nbsp;g_arrBackGround[g_nLine&nbsp;+&nbsp;i][g_nList&nbsp;+&nbsp;j];<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//变形后复制回去<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;j&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;j&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">;&nbsp;++j)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_arrBackGround[g_nLine&nbsp;+&nbsp;i][g_nList&nbsp;+&nbsp;j]&nbsp;=&nbsp;arrSqare[temp][i];<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;temp--;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;temp&nbsp;=&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+}<BR>
+<BR>
+</span><span style="color:#008000;">//判断能不能变形&nbsp;除长条外<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;CanSqareChangeShape()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;j&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;j&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">;&nbsp;++j)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;==&nbsp;g_arrBackGround[g_nLine&nbsp;+&nbsp;i][g_nList&nbsp;+&nbsp;j])<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(g_nList&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_nList&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(g_nList&nbsp;+&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;&gt;&nbsp;</span><span style="color:#ff0000;">9</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_nList&nbsp;=&nbsp;</span><span style="color:#ff0000;">7</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(g_nLine&nbsp;&gt;=&nbsp;</span><span style="color:#ff0000;">17</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;<BR>
+}<BR>
+<BR>
+</span><span style="color:#008000;">//长条变形<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;ChangeLineSqare()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;==&nbsp;g_arrBackGround[g_nLine][g_nList&nbsp;-&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">])<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//清零<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_arrBackGround[g_nLine][g_nList&nbsp;-&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_arrBackGround[g_nLine][g_nList&nbsp;+&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_arrBackGround[g_nLine][g_nList&nbsp;+&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;==&nbsp;g_arrBackGround[g_nLine&nbsp;+&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">][g_nList])<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//元素赋值<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_arrBackGround[g_nLine&nbsp;-&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">][g_nList]&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_arrBackGround[g_nLine&nbsp;-&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">][g_nList]&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_arrBackGround[g_nLine&nbsp;-&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">][g_nList]&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">(</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;==&nbsp;g_arrBackGround[g_nLine&nbsp;+&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">][g_nList])<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//元素赋值<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_arrBackGround[g_nLine&nbsp;+&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">][g_nList]&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_arrBackGround[g_nLine&nbsp;-&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">][g_nList]&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_arrBackGround[g_nLine&nbsp;-&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">][g_nList]&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//元素赋值<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_arrBackGround[g_nLine&nbsp;-&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">][g_nList]&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_arrBackGround[g_nLine&nbsp;+&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">][g_nList]&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_arrBackGround[g_nLine&nbsp;+&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">][g_nList]&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//同上<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_arrBackGround[g_nLine&nbsp;-&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">][g_nList]&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_arrBackGround[g_nLine&nbsp;+&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">][g_nList]&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_arrBackGround[g_nLine&nbsp;+&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">][g_nList]&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(g_nList&nbsp;==&nbsp;</span><span style="color:#ff0000;">9</span><span style="color:#000000;">&nbsp;||&nbsp;g_nList&nbsp;-&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">&nbsp;&gt;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;==&nbsp;g_arrBackGround[g_nLine][g_nList&nbsp;+&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">])<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_arrBackGround[g_nLine][g_nList&nbsp;-&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_arrBackGround[g_nLine][g_nList&nbsp;-&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_arrBackGround[g_nLine][g_nList&nbsp;-&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_nList&nbsp;-=&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(g_nList&nbsp;==&nbsp;</span><span style="color:#ff0000;">8</span><span style="color:#000000;">&nbsp;||&nbsp;g_nList&nbsp;-&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;&gt;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;==&nbsp;g_arrBackGround[g_nLine][g_nList&nbsp;+&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">])<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_arrBackGround[g_nLine][g_nList&nbsp;-&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_arrBackGround[g_nLine][g_nList&nbsp;-&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_arrBackGround[g_nLine][g_nList&nbsp;+&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_nList&nbsp;-=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">&nbsp;==&nbsp;g_nList&nbsp;||&nbsp;g_nList&nbsp;+&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">&nbsp;&lt;=&nbsp;</span><span style="color:#ff0000;">19</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;==&nbsp;g_arrBackGround[g_nLine][g_nList&nbsp;-&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">])<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_arrBackGround[g_nLine][g_nList&nbsp;+&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_arrBackGround[g_nLine][g_nList&nbsp;+&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_arrBackGround[g_nLine][g_nList&nbsp;+&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_nList&nbsp;+=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_arrBackGround[g_nLine][g_nList&nbsp;-&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_arrBackGround[g_nLine][g_nList&nbsp;+&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_arrBackGround[g_nLine][g_nList&nbsp;+&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+}<BR>
+<BR>
+</span><span style="color:#008000;">//判断长条能否变形<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;CanLineSqareChange()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,&nbsp;j&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(i&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">4</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;==&nbsp;g_arrBackGround[g_nLine][g_nList&nbsp;+&nbsp;i]&nbsp;||&nbsp;g_nList&nbsp;+&nbsp;i&nbsp;&gt;&nbsp;</span><span style="color:#ff0000;">9</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(j&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;&nbsp;j&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">4</span><span style="color:#000000;">;&nbsp;++j)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;==&nbsp;g_arrBackGround[g_nLine][g_nList&nbsp;-&nbsp;j]&nbsp;||&nbsp;g_nList&nbsp;-&nbsp;j&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;((i&nbsp;-&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;+&nbsp;j&nbsp;-&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;<BR>
+}<BR>
+<BR>
+</span><span style="color:#008000;">//消除<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;DestroyOneLineSqare()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;sum;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">19</span><span style="color:#000000;">;&nbsp;i&nbsp;&gt;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i--)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sum&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;j&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;j&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">;&nbsp;++j)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sum&nbsp;+=&nbsp;g_arrBackGround[i][j];<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(</span><span style="color:#ff0000;">20</span><span style="color:#000000;">&nbsp;==&nbsp;sum)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//消除一行<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;m&nbsp;=&nbsp;i&nbsp;-&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;&nbsp;m&nbsp;&gt;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;m--)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;n&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;n&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">;&nbsp;++n)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_arrBackGround[m&nbsp;+&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">][n]&nbsp;=&nbsp;g_arrBackGround[m][n];<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_nScore++;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">20</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+}<BR>
+<BR>
+</span><span style="color:#008000;">//显示分数<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;ShowScore(HDC&nbsp;hDc)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;strScore[</span><span style="color:#ff0000;">10</span><span style="color:#000000;">];<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//显示分数<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;itoa(g_nScore,&nbsp;strScore,&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;TextOut(hDc,&nbsp;</span><span style="color:#ff0000;">310</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">80</span><span style="color:#000000;">,&nbsp;(LPCWSTR)strScore,&nbsp;strlen(strScore));<BR>
+}<BR>
+<BR>
+</span><span style="color:#008000;">//游戏结束<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;GameOver()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;==&nbsp;g_arrBackGround[</span><span style="color:#ff0000;">0</span><span style="color:#000000;">][i])<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PlaySound(TEXT(</span><span style="color:#800000;">&quot;嘣.wav&quot;</span><span style="color:#000000;">),&nbsp;</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">,&nbsp;SND_FILENAME&nbsp;|&nbsp;SND_ASYNC);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MessageBox(</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">,&nbsp;TEXT(</span><span style="color:#800000;">&quot;GameOver，一起来欣赏歌曲吧!&quot;</span><span style="color:#000000;">),&nbsp;TEXT(</span><span style="color:#800000;">&quot;终局&quot;</span><span style="color:#000000;">),&nbsp;MB_OK);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PlaySound(TEXT(</span><span style="color:#800000;">&quot;斑马斑马.wav&quot;</span><span style="color:#000000;">),&nbsp;</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">,&nbsp;SND_FILENAME&nbsp;|&nbsp;SND_ASYNC);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;<BR>
+}<BR>
+<BR>
+</span><span style="color:#008000;">//播放背景音乐-连衣裙<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;PlayMusic()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;PlaySound(TEXT(</span><span style="color:#800000;">&quot;连衣裙.wav&quot;</span><span style="color:#000000;">),&nbsp;</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">,&nbsp;SND_FILENAME&nbsp;|&nbsp;SND_ASYNC);<BR>
+}<BR>
+<BR>
+</span><span style="color:#008000;">//停止播放背景音乐<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;StopMusic()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;PlaySound(</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">);<BR>
+}</span></div></td></tr></table></div>
+<br>俄罗斯方块.cpp
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47<br>48<br>49<br>50<br>51<br>52<br>53<br>54<br>55<br>56<br>57<br>58<br>59<br>60<br>61<br>62<br>63<br>64<br>65<br>66<br>67<br>68<br>69<br>70<br>71<br>72<br>73<br>74<br>75<br>76<br>77<br>78<br>79<br>80<br>81<br>82<br>83<br>84<br>85<br>86<br>87<br>88<br>89<br>90<br>91<br>92<br>93<br>94<br>95<br>96<br>97<br>98<br>99<br>100<br>101<br>102<br>103<br>104<br>105<br>106<br>107<br>108<br>109<br>110<br>111<br>112<br>113<br>114<br>115<br>116<br>117<br>118<br>119<br>120<br>121<br>122<br>123<br>124<br>125<br>126<br>127<br>128<br>129<br>130<br>131<br>132<br>133<br>134<br>135<br>136<br>137<br>138<br>139<br>140<br>141<br>142<br>143<br>144<br>145<br>146<br>147<br>148<br>149<br>150<br>151<br>152<br>153<br>154<br>155<br>156<br>157<br>158<br>159<br>160<br>161<br>162<br>163<br>164<br>165<br>166<br>167<br>168<br>169<br>170<br>171<br>172<br>173<br>174<br>175<br>176<br>177<br>178<br>179<br>180<br>181<br>182<br>183<br>184<br>185<br>186<br>187<br>188<br>189<br>190<br>191<br>192<br>193<br>194<br>195<br>196<br>197<br>198<br>199<br>200<br>201<br>202<br>203<br>204<br>205<br>206<br>207<br>208<br>209<br>210<br>211<br>212<br>213<br>214<br>215<br>216<br>217<br>218<br>219<br>220<br>221<br>222<br>223<br>224<br>225<br>226<br>227<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#pragma</span><span style="color:#000000;">&nbsp;once<BR>
+<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;</span><span style="color:#800000;">&quot;resource.h&quot;</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">//&nbsp;俄罗斯方块.cpp&nbsp;:&nbsp;定义应用程序的入口点。<BR>
+//<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;</span><span style="color:#800000;">&quot;framework.h&quot;</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;</span><span style="color:#800000;">&quot;俄罗斯方块.h&quot;</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;</span><span style="color:#800000;">&quot;elsHead.h&quot;</span><span style="color:#000000;"><BR>
+<BR>
+</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;MAX_LOADSTRING&nbsp;</span><span style="color:#ff0000;">100</span><span style="color:#000000;"><BR>
+<BR>
+</span><span style="color:#008000;">//&nbsp;全局变量:<BR>
+</span><span style="color:#000000;">HINSTANCE&nbsp;hInst;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;当前实例<BR>
+</span><span style="color:#000000;">WCHAR&nbsp;szTitle[MAX_LOADSTRING];&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;标题栏文本<BR>
+</span><span style="color:#000000;">WCHAR&nbsp;szWindowClass[MAX_LOADSTRING];&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;主窗口类名<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">//&nbsp;此代码模块中包含的函数的前向声明:<BR>
+</span><span style="color:#000000;">ATOM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MyRegisterClass(HINSTANCE&nbsp;hInstance);<BR>
+BOOL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InitInstance(HINSTANCE,&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">);<BR>
+LRESULT&nbsp;CALLBACK&nbsp;&nbsp;&nbsp;&nbsp;WndProc(HWND,&nbsp;UINT,&nbsp;WPARAM,&nbsp;LPARAM);<BR>
+INT_PTR&nbsp;CALLBACK&nbsp;&nbsp;&nbsp;&nbsp;About(HWND,&nbsp;UINT,&nbsp;WPARAM,&nbsp;LPARAM);<BR>
+<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;APIENTRY&nbsp;wWinMain(<em>In</em>&nbsp;HINSTANCE&nbsp;hInstance,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_In<em>opt</em>&nbsp;HINSTANCE&nbsp;hPrevInstance,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em>In</em>&nbsp;LPWSTR&nbsp;&nbsp;&nbsp;&nbsp;lpCmdLine,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em>In</em>&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;nCmdShow)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;UNREFERENCED_PARAMETER(hPrevInstance);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;UNREFERENCED_PARAMETER(lpCmdLine);<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;TODO:&nbsp;在此处放置代码。<BR>
+</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;初始化全局字符串<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;LoadStringW(hInstance,&nbsp;IDS_APP_TITLE,&nbsp;szTitle,&nbsp;MAX_LOADSTRING);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;LoadStringW(hInstance,&nbsp;IDC_MY,&nbsp;szWindowClass,&nbsp;MAX_LOADSTRING);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;MyRegisterClass(hInstance);<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;执行应用程序初始化:<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(!InitInstance&nbsp;(hInstance,&nbsp;nCmdShow))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;FALSE;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;HACCEL&nbsp;hAccelTable&nbsp;=&nbsp;LoadAccelerators(hInstance,&nbsp;MAKEINTRESOURCE(IDC_MY));<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;MSG&nbsp;msg;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;主消息循环:<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">while</span><span style="color:#000000;">&nbsp;(GetMessage(&amp;msg,&nbsp;nullptr,&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(!TranslateAccelerator(msg.hwnd,&nbsp;hAccelTable,&nbsp;&amp;msg))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TranslateMessage(&amp;msg);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DispatchMessage(&amp;msg);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">)&nbsp;msg.wParam;<BR>
+}<BR>
+<BR>
+<BR>
+<BR>
+</span><span style="color:#008000;">//<BR>
+//&nbsp;&nbsp;函数:&nbsp;MyRegisterClass()<BR>
+//<BR>
+//&nbsp;&nbsp;目标:&nbsp;注册窗口类。<BR>
+//<BR>
+</span><span style="color:#000000;">ATOM&nbsp;MyRegisterClass(HINSTANCE&nbsp;hInstance)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;WNDCLASSEXW&nbsp;wcex;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;wcex.cbSize&nbsp;=&nbsp;</span><span style="color:#0000ff;">sizeof</span><span style="color:#000000;">(WNDCLASSEX);<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;wcex.style&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;CS_HREDRAW&nbsp;|&nbsp;CS_VREDRAW;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;wcex.lpfnWndProc&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;WndProc;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;wcex.cbClsExtra&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;wcex.cbWndExtra&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;wcex.hInstance&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;hInstance;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;wcex.hIcon&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;LoadIcon(hInstance,&nbsp;MAKEINTRESOURCE(IDI_MY));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;wcex.hCursor&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;LoadCursor(nullptr,&nbsp;IDC_ARROW);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;wcex.hbrBackground&nbsp;&nbsp;=&nbsp;(HBRUSH)COLOR_APPWORKSPACE;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;wcex.lpszMenuName&nbsp;&nbsp;&nbsp;=&nbsp;MAKEINTRESOURCEW(IDC_MY);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;wcex.lpszClassName&nbsp;&nbsp;=&nbsp;szWindowClass;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;wcex.hIconSm&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;LoadIcon(wcex.hInstance,&nbsp;MAKEINTRESOURCE(IDI_SMALL));<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;RegisterClassExW(&amp;wcex);<BR>
+}<BR>
+<BR>
+</span><span style="color:#008000;">//<BR>
+//&nbsp;&nbsp;&nbsp;函数:&nbsp;InitInstance(HINSTANCE,&nbsp;int)<BR>
+//<BR>
+//&nbsp;&nbsp;&nbsp;目标:&nbsp;保存实例句柄并创建主窗口<BR>
+//<BR>
+//&nbsp;&nbsp;&nbsp;注释:<BR>
+//<BR>
+//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;在此函数中，我们在全局变量中保存实例句柄并<BR>
+//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;创建和显示主程序窗口。<BR>
+//<BR>
+</span><span style="color:#000000;">BOOL&nbsp;InitInstance(HINSTANCE&nbsp;hInstance,&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;nCmdShow)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;hInst&nbsp;=&nbsp;hInstance;&nbsp;</span><span style="color:#008000;">//&nbsp;将实例句柄存储在全局变量中<BR>
+</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;HWND&nbsp;hWnd&nbsp;=&nbsp;CreateWindowW(szWindowClass,&nbsp;szTitle,&nbsp;WS_OVERLAPPEDWINDOW,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">100</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">100</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">500</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">659</span><span style="color:#000000;">,&nbsp;nullptr,&nbsp;nullptr,&nbsp;hInstance,&nbsp;nullptr);<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(!hWnd)<BR>
+&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;FALSE;<BR>
+&nbsp;&nbsp;&nbsp;}<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;ShowWindow(hWnd,&nbsp;nCmdShow);<BR>
+&nbsp;&nbsp;&nbsp;UpdateWindow(hWnd);<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;TRUE;<BR>
+}<BR>
+<BR>
+</span><span style="color:#008000;">//<BR>
+//&nbsp;&nbsp;函数:&nbsp;WndProc(HWND,&nbsp;UINT,&nbsp;WPARAM,&nbsp;LPARAM)<BR>
+//<BR>
+//&nbsp;&nbsp;目标:&nbsp;处理主窗口的消息。<BR>
+//<BR>
+//&nbsp;&nbsp;WM_COMMAND&nbsp;&nbsp;-&nbsp;处理应用程序菜单<BR>
+//&nbsp;&nbsp;WM_PAINT&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;绘制主窗口<BR>
+//&nbsp;&nbsp;WM_DESTROY&nbsp;&nbsp;-&nbsp;发送退出消息并返回<BR>
+//<BR>
+//<BR>
+</span><span style="color:#000000;">LRESULT&nbsp;CALLBACK&nbsp;WndProc(HWND&nbsp;hWnd,&nbsp;UINT&nbsp;message,&nbsp;WPARAM&nbsp;wParam,&nbsp;LPARAM&nbsp;lParam)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;HDC&nbsp;hDc;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">switch</span><span style="color:#000000;">&nbsp;(message)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;WM_CREATE:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PlayMusic();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OnCreate();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;WM_COMMAND:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;wmId&nbsp;=&nbsp;LOWORD(wParam);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;分析菜单选择:<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">switch</span><span style="color:#000000;">&nbsp;(wmId)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;IDM_ABOUT:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DialogBox(hInst,&nbsp;MAKEINTRESOURCE(IDD_ABOUTBOX),&nbsp;hWnd,&nbsp;About);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;IDM_EXIT:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DestroyWindow(hWnd);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">default</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;DefWindowProc(hWnd,&nbsp;message,&nbsp;wParam,&nbsp;lParam);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;WM_TIMER:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OnTimer(hWnd);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;WM_KEYDOWN:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">switch</span><span style="color:#000000;">&nbsp;(wParam)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;VK_RETURN:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OnReturn(hWnd);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PlaySound(TEXT(</span><span style="color:#800000;">&quot;开场白.wav&quot;</span><span style="color:#000000;">),&nbsp;</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">,&nbsp;SND_FILENAME&nbsp;|&nbsp;SND_ASYNC);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sleep(</span><span style="color:#ff0000;">2000</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PlaySound(TEXT(</span><span style="color:#800000;">&quot;安和桥.wav&quot;</span><span style="color:#000000;">),&nbsp;</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">,&nbsp;SND_FILENAME&nbsp;|&nbsp;SND_ASYNC);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;VK_LEFT:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OnLeft(hWnd);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;VK_RIGHT:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OnRight(hWnd);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;VK_UP:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OnChangeSqare(hWnd);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;VK_DOWN:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OnDown(hWnd);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;WM_PAINT:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PAINTSTRUCT&nbsp;ps;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hDc&nbsp;=&nbsp;BeginPaint(hWnd,&nbsp;&amp;ps);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;TODO:&nbsp;在此处添加使用&nbsp;hdc&nbsp;的任何绘图代码...<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TextOut(hDc,&nbsp;</span><span style="color:#ff0000;">310</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">50</span><span style="color:#000000;">,&nbsp;TEXT(</span><span style="color:#800000;">&quot;当前游戏得分:&quot;</span><span style="color:#000000;">),&nbsp;</span><span style="color:#ff0000;">7</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TextOut(hDc,&nbsp;</span><span style="color:#ff0000;">310</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">260</span><span style="color:#000000;">,&nbsp;TEXT(</span><span style="color:#800000;">&quot;游戏规则:&quot;</span><span style="color:#000000;">),&nbsp;</span><span style="color:#ff0000;">5</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TextOut(hDc,&nbsp;</span><span style="color:#ff0000;">310</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">280</span><span style="color:#000000;">,&nbsp;TEXT(</span><span style="color:#800000;">&quot;按回车键开始游戏&quot;</span><span style="color:#000000;">),&nbsp;</span><span style="color:#ff0000;">8</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TextOut(hDc,&nbsp;</span><span style="color:#ff0000;">310</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">300</span><span style="color:#000000;">,&nbsp;TEXT(</span><span style="color:#800000;">&quot;由方向键控制&quot;</span><span style="color:#000000;">),&nbsp;</span><span style="color:#ff0000;">6</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TextOut(hDc,&nbsp;</span><span style="color:#ff0000;">310</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">320</span><span style="color:#000000;">,&nbsp;TEXT(</span><span style="color:#800000;">&quot;↑&nbsp;变形&quot;</span><span style="color:#000000;">),&nbsp;</span><span style="color:#ff0000;">4</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TextOut(hDc,&nbsp;</span><span style="color:#ff0000;">310</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">340</span><span style="color:#000000;">,&nbsp;TEXT(</span><span style="color:#800000;">&quot;←&nbsp;左移&quot;</span><span style="color:#000000;">),&nbsp;</span><span style="color:#ff0000;">4</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TextOut(hDc,&nbsp;</span><span style="color:#ff0000;">310</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">360</span><span style="color:#000000;">,&nbsp;TEXT(</span><span style="color:#800000;">&quot;→&nbsp;右移&quot;</span><span style="color:#000000;">),&nbsp;</span><span style="color:#ff0000;">4</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TextOut(hDc,&nbsp;</span><span style="color:#ff0000;">310</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">380</span><span style="color:#000000;">,&nbsp;TEXT(</span><span style="color:#800000;">&quot;↓&nbsp;加速下落&quot;</span><span style="color:#000000;">),&nbsp;</span><span style="color:#ff0000;">6</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TextOut(hDc,&nbsp;</span><span style="color:#ff0000;">310</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">400</span><span style="color:#000000;">,&nbsp;TEXT(</span><span style="color:#800000;">&quot;填满一行得1分，递增&quot;</span><span style="color:#000000;">),&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OnPaint(hDc);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EndPaint(hWnd,&nbsp;&amp;ps);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;WM_DESTROY:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;KillTimer(hWnd,&nbsp;DEF_TIME1);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PostQuitMessage(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">default</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;DefWindowProc(hWnd,&nbsp;message,&nbsp;wParam,&nbsp;lParam);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}<BR>
+<BR>
+</span><span style="color:#008000;">//&nbsp;“关于”框的消息处理程序。<BR>
+</span><span style="color:#000000;">INT_PTR&nbsp;CALLBACK&nbsp;About(HWND&nbsp;hDlg,&nbsp;UINT&nbsp;message,&nbsp;WPARAM&nbsp;wParam,&nbsp;LPARAM&nbsp;lParam)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;UNREFERENCED_PARAMETER(lParam);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">switch</span><span style="color:#000000;">&nbsp;(message)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;WM_INITDIALOG:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;(INT_PTR)TRUE;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;WM_COMMAND:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(LOWORD(wParam)&nbsp;==&nbsp;IDOK&nbsp;||&nbsp;LOWORD(wParam)&nbsp;==&nbsp;IDCANCEL)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EndDialog(hDlg,&nbsp;LOWORD(wParam));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;(INT_PTR)TRUE;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;(INT_PTR)FALSE;<BR>
+}</span></div></td></tr></table></div>
+<br><font color=black size = 4>游戏截图</font>
+<img src="https://wx2.sinaimg.cn/mw1024/007Diza3ly1g5ej65fbf9j30xc0qu44y.jpg" width="1200" height="966" />
+<img src="https://wx4.sinaimg.cn/mw1024/007Diza3ly1g5ej65fm02j312w0luguu.jpg" width="1400" height="786" />
+<img src="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g5ej65e7vhj312w0ludp8.jpg" width="1400" height="786" />
+<br><br><br>
+<font color = gray size = 3>如有错误，欢迎指正！</font></p></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://oubc.github.io/tags/windows/">windows</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmg4aog3074074gnf.gif?tags=%5B%5D">I </a>
+	<a href="">love</a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmfm2eg306o06o74u.gif?tags=%5B%5D"> you </a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx4tpcj30fn0bq3zg.jpg?tags=%5B%5D">three </a>
+	<a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx64ctg307s07swfy.gif?tags=%5B%5D">thousand</a>
+    <a href="https://www.kugou.com/song/#hash=96426C78381DE98DC31A5846FC274CBF&album_id=646623"> times.</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>家庭、梦想、内心的平静</span>
+  </div>
+</footer>
+
+
+
+<script src="https://oubc.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://oubc.github.io/js/zozo.js"></script>
+<script src="https://oubc.github.io/js/highlight.pack.js"></script>
+<link  href="https://oubc.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://oubc.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>

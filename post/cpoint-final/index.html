@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Bruce Cheung"/>
+
+  
+  <meta name="description" content="再次从头至尾剖析C&#43;&#43;指针
+"/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, simple, dream"/>
+  
+
+  
+  <link rel="canonical" href="https://oubc.github.io/post/cpoint-final/"/>
+
+  
+
+  <title>C&#43;&#43;指针-再续前缘 &middot; Love, or death</title>
+
+  <link rel="shortcut icon" href="https://oubc.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/post/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://oubc.github.io/">
+          <span>Love, or death</span>
+          <img src="https://oubc.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">For you, a thousand times over.</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/oubc" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=uYGOjo6OiIuLivnIyJfa1tQ" title="mail" target="_blank"><i class="remixicon-mail-fill"></i></a>
+        
+        
+        
+        <a href="http://sighttp.qq.com/msgrd?v=1&amp;uin=877771223" title="qq" target="_blank"><i class="remixicon-qq-fill"></i></a>
+        
+        
+        
+        <a href="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g4klnqf0tmj30ia0widks.jpg" title="wechat" target="_blank"><i class="remixicon-wechat-fill"></i></a>
+        
+        
+        
+        <a href="https://weibo.com/u/6993631995?topnav=1&amp;wvr=6&amp;topsug=1" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://oubc.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/post/cpoint-final/'>C&#43;&#43;指针-再续前缘</a></h2>
+          <span class="date">2019.07.29</span>
+        </div>
+        <div class="post_content markdown"><p>再次从头至尾剖析C++指针</p>
+
+<p><br>
+<br>指针
+<br>主要内容
+<br>1、指针的概念
+<br>2、指针的定义和使用
+<br>3、指针运算
+<br>4、void指针和const指针
+<br>5、指针与数组
+<br>6、动态内存分配
+<br>7、指针与字符串
+<br>8、指针与函数
+<br><br>
+<br><font color=black size = 6>1</font>、指针的概念
+<br>指针变量（简称指针）是一种特殊性质的变量
+<br>每个变量都有一个地址，必要时可以使用取地址运算符&quot;&amp;&quot;来获取变量的地址
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;地址其实就是一种从0开始计数的无符号整型值
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;通过变量名或地址访问一个变量的方式，称为“直接访问”
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;把地址存放在一个变量中，然后通过先找出地址变量中的值（一个地址），再由此地址找到最终要访问的变量的方法，称为“间接访问”
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;这里的地址变量其实就是指针
+<br>用指针根本的目的：便于内存管理
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/cpoint-final0.jpg?raw=true" width="800" height="650" />
+<br>指针除了可以指向变量以外，还可以指向内存中其它任何数据结构，如数组、结构体和联合体等，它还可以指向函数，后面将陆续介绍。
+<br>应该注意，在程序中参加数据处理的量不是指针本身的量，因为指针本身是个地址量，而指针所指向的变量，即指针所指向的内存区域的数据(称为指针的目标)才是需要处理的数据。
+<br>这就是C++语言中利用指针处理数据的特点</p>
+
+<p><br><font color=black size = 6>2</font>、指针的定义和使用
+<br>指针的定义指出了指针的存储类型和数据类型
+<br>定义的形式如下：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;数据类型  *指针变量名
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;例如：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int *p1;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;static int *p2;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;char *da;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;上面定义了名为p1、p2和da的三个不同类型的指针
+<br>
+<br>通常把指针指向的变量的数据类型称为指针的数据类型，而任何一个指针变量本身数据值的类型都是unsigned long int/unsigned long long
+<br>在指针变量名前的符号“*”表示指向运算，指针变量的类型确定后只能指向这种既定的数据类型，不可指向其它类型的数据
+<br>注意：定义一个指针变量必须用符号“*”，它表明其后的变量是指针变量，但千万不要认为“*p”是指针变量，指针变量是p而不是*p
+<br>
+<br>具有相同类型和数据类型的指针可以放在一行中说明，它们也可以和同类型的普通变量放在一起说明
+<br>例如：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int *p1,*p2,*p3;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;char m,*da;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;在上例中，第一行声明了三个int型指针p1、p2、p3
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;第二行声明了一个char型变量m和一个指针da
+<br>注意：当在一行中定义多个同一类型的指针时，用逗号隔开各指针变量标识符，并且每个变量前都要加上&quot;*&quot;
+<br>
+<br>定义一个指针后，在使用指针前，必须首先给他赋一个合法的值，否则，程序中对指针的使用就有可能导致系统崩溃，可以在定义指针的同时，通过初始化来给指针赋值，也可以在使用之前给指针赋值。
+<br>由于指针是保持地址的变量，所以初始化时赋予它的初始值必须是地址值。
+<br>指针初始化的一般形式：
+<br>数据类型 *指针名 = 初始地址值
+<br>例如：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int a, *pa &a;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;将变量a的内存地址作为初始值赋予int型指针pa
+<br>等价于：（建议用下面这种方法定义）
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int a;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int *pa = &a;
+<br>当把一个变量的内存地址作为初始值赋给指针时，该变量必须在指针初始化之前已经说明过，道理很简单，变量只有在说明之后才被分配一定的内存地址。此外，该变量的数据类型必须与指针的数据类型一致
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;例子：把一个指针初始化为空指针
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int *px = 0/NULL;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;这个语句将指针px的值初始化为0，值为0的指针叫做空指针
+<br>注意：为了使用安全起见，一般来说，在定义指针时，最好初始化，哪怕是初始化为空指针
+<br>
+<br>如果在定义指针时指针被初始化为0或者根本没有初始化，那么在使用此指针前，就必须给它赋有意义的值
+<br>也可以向一个指针赋初值为另一个指针变量，即把另一个已经初始化的指针赋予一个指针，这时，这两个指针指向同一变量的内存地址
+<br>也可以定义一个指向数组的指针，由于数组名表示该数组的首地址，所以如果定义一个指针指向数组，则可如下例声明：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int a[10], *pa = a;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;这个语句定义了一个指针pa，并把pa初始化为指向数组a[10]的指针，即指向数组的第一个元素，不需要使用取地址运算符&quot;&amp;&quot;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;上述声明方式与下面的语句等价：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int a[10], *pa = &amp;a[0];
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;&amp;a[0]&quot;表示数组a中第一个元素所在的内存地址值
+<br>
+<br>利用指针来访问变量值需要使用间接访问运算符&quot;*&quot;
+<br>例如：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int a = 1, *pa = &a;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout &lt;&lt; *pa;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;用cout语句输出的是变量a的值1，即&quot;*pa&quot;就是代表变量a，上面的语句同cout &lt;&lt; a;语句
+<br>同样，在利用指针访问变量的值时，也可以通过指针给变量间接赋值
+<br>例如：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int a = 1, *pa = &a;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*pa = 2;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout &lt;&lt; a;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;用cout语句输出的是变量a的值2，而不是1
+<br>
+<br>总结：在C++语言中有两个有关指针的特别运算符
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&amp;运算符：为取地址运算符，&amp;x的值为x的地址
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*运算符：指针运算符，或指向运算符，也称间接运算符，*p代表p所指向的变量
+<br>在指针变量的定义和指针变量的引用中都有*p，但引用指针时的*p与定义指针变量时的*p是有区别的，它们形式上相似，含义却不同
+<br>由于引进指针的概念，读者在程序中要注意区别下面三种表示方法所具有的不同意义，例如，有一个指针px
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/cpoint-final1.jpg?raw=true" width="800" height="650" />
+<br>多个指针可以指向同一变量，由这种思想可以得知：利用指针的灵活性，既可以交换指向，也可以交换指针所指向的变量的值
+<br>交换地址（即交换指向）和交换所指向的变量的值是有本质的区别的
+<br>
+<br>二级指针
+<br>由于指针是一个变量，在内存中也占据一定的空间，具有一个地址，这个地址也可以利用指针来保存。因此，可以声明一个指针指向它，这个指针称为指向指针的指针，即二级指针
+<br>声明二级指针形式如下：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;数据类型  **指针变量名
+<br>其中的两个星号&quot;**&quot;表示二级指针，数据类型是指通过两次间接寻址后所访问的变量的类型
+<br>例如：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int i, *p = &i;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int **pp = &p;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;上述语句声明了一个二级指针pp，它指向指针p
+<br>代码示例：
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;iostream&gt;<BR>
+</span><span style="color:#0000ff;">using</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">namespace</span><span style="color:#000000;">&nbsp;std;<BR>
+<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;main()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;a;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">*&nbsp;p&nbsp;=&nbsp;&amp;a,&nbsp;**&nbsp;pp&nbsp;=&nbsp;&p;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//**p&nbsp;=&nbsp;1<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;a&nbsp;=&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;a&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;*p&nbsp;=&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;*p&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;p&nbsp;=&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;p&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;*pp&nbsp;=&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;*pp&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;**pp&nbsp;=&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;**pp&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}</span></div></td></tr></table></div>
+<br>
+<br><font color=black size = 6>3</font>、指针运算
+<br>指针运算是以指针变量所持有的地址值为运算量进行的运算，因此，指针运算的实质是地址的计算
+<br>由于指针是持有地址量的变量这一特性，指针的运算与普通变量的运算在种类上和意义上都是不同的，指针运算的种类是有限的，它只是进行算术运算、关系运算和赋值运算
+<br>指针的算术运算是按C++语言地址计算规则进行的，这种运算与指针指向的数据类型有密切的关系，也就是C++语言的地址计算与地址中存放的数据长度有关
+<br>设px和py是指向具有相同数据类型的一组若干数据的指针，n是整数，则指针可以进行的算术运算有如下几种：
+<br>px+n、px-n、px++、++px、px--、--px、px-py
+<br>
+<br>指针与整数的加减运算：（px+n、px-n）
+<br>指针作为地址量加上或减去一个整数n，其意义是指针当前指向位置的前方或后方第n个数据的位置，由于指针可以指向不同数据类型，即数据长度不同的数据，所以这种运算的结果值取决于指针指向的数据类型
+<br>例如：
+<br>假设有一个指向单字节字符类型变量的指针和另一个指向双字节整数类型的指针，当字符指针加1时，实际结果是指针中的地址+1，而整数指针加1时，实际结果是指针中的地址值+2
+<br>p+/-n的实际操作是：(p) + n*sizeof(数据类型)、p - n*sizeof(数据类型)
+<br>其中，(p)表示指针p中的地址值，而不是&amp;p，sizeof(数据类型)的长度单位为字节
+<br>在C++语言中，指针加减运算一般用在对数组元素进行操作的场合，通过对指向数组的指针进行加减运算，可以使指针指向数组中不同的元素，此时也必须注意越界问题
+<br>
+<br>指针++、--运算即是+n、-n的特例
+<br>但是需要注意的两种表达式表示
+<br>y = *px++
+<br>该表达式中有三种运算：=、*和++，*和++优先于=，*和++属于同级运算，其结合规则是从右至左，所以++运算是对px进行的，而且这里是后置++，所以它相当于：y = (*px);  px++
+<br>这里px++是后置运算，因此该表达式运算顺序是访问px当前值指向的目标，把目标变量的值赋予y，然后px加1指向下一个目标
+<br>y = *++px
+<br>该表达式相当于y = *(++px)
+<br>
+<br>字符串复制函数
+<br<div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#008000;">//字符串复制函数<BR>
+</span><span style="color:#000000;">strcpy(s,t)<BR>
+</span><span style="color:#8000ff;">char</span><span style="color:#000000;">*&nbsp;s,&nbsp;*&nbsp;t;<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">while</span><span style="color:#000000;">&nbsp;(*s++&nbsp;=&nbsp;*t++&nbsp;!=&nbsp;</span><span style="color:#800000;">'\0'</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+}</span></div></td></tr></table></div>&gt;
+<br>这是标准库中的一个函数，函数体中使用了指针后置运算：*s++ = *t++ != '\0'
+<br>它的运算过程是把t的目标变量的值赋予s的目标变量，然后判断赋值表达式的结果值，即赋值是否不等于'\0'，s和t的值使用后置加1运算，分别指向下一个目标，函数体中循环体是空语句
+<br>
+<br>指针相减运算：(px - py)
+<br>如果两个指针px和py所指向的变量类型相同，则可以对它们进行相减运算，px-py运算的结果值是两指针指向的地址位置之间的数据个数，由此看出，两指针相减实质上也是地址计算
+<br>它执行的运算不是两指针持有的地址值相减，而是按下列公式得出结果
+<br>((px) - (py)) / 数据长度
+<br>上式中px和py分别表示指针px和py的指针值，所以，两指针相减的结果值不是地址量，而是一个整数
+<br>指针的相减运算一般也用在对数组进行的操作中
+<br>例如：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int x[5], a;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int *px = &amp;x[1], *py = &amp;x[4];
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a = py - px;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;这里的变量a就表示数组元素x[1]和x[4]之间相隔的元素个数
+<br>
+<br>在两个指向相同类型变量的指针之间可以进行各种关系运算，两指针之间的关系运算表示它们指向的地址位置之间的关系。
+<br>比如：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int a;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int *p = &amp;a, *q = p;
+<br>若上面声明的两个指针p==q运算，其结果为1(true)，也就是p、q指向同一个变量，两指针相等的概念是两指针指向同一位置
+<br>
+<br>假设数据在内存中的存储逻辑是由前向后，那么指向后方的指针大于指向前方的指针，对于两指针p和q之间的关系表达式：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p &lt; q
+<br>若p指向的位置在q指向位置的前方，则该表达式的结果为1，反之为0
+<br>指向不同数据类型的指针的关系运算是没有意义的，指针与非0整数之间进行等于或不等于的关系运算，即：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p == 0 或 p != 0
+<br>它们用于判断指针p是否为一空指针
+<br>
+<br>指针的赋值运算：
+<br>当向指针变量赋值时，赋的值必须是地址常量或变量，不能是普通整数，指针赋值运算常见有以下几种形式：
+<br>把一个变量的地址赋予一个指向相同数据类型的指针，例如：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;char a, *p;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p = &a;
+<br>把一个指针的值赋予相同数据类型的另外一个指针，例如：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int *p, *q;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p = q;
+<br>把数组的地址赋予指向相同数据类型的指针，例如：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;char a[10], *pa;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pa = a;
+<br>此外，还经常使用下列赋值运算：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int *p, *q, n;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p = q + n;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p = q - n;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p += n;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p -= n;
+<br>
+<br><font color=black size = 6>4</font>、void指针和const指针
+<br>在C++中，可以声明指向void类型的指针，指向void类型的指针称为void指针，此外，在声明指针时，还可以用关键字const进行修饰，用关键字const修饰的指针称为const指针
+<br>
+<br>一般来说，只能用指向相同类型的指针给另一个指针赋值，而在不同类型的指针之间进行赋值是错误的
+<br>例如：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int a;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int *p1 = &a;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;double *p2 = p1;    //错误
+<br>上述语句中的两个指针p1、p2指向的类型不同，因此，除非进行强制类型转换，否则它们之间不能相互赋值，但是void指针是一个特例
+<br>
+<br>C++语言允许使用空类型(void)的指针，即不指定指针指向一个固定的类型，它的定义格式为：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;void *p
+<br>表示指针变量p不指向一个确定的类型数据，它的作用仅仅是用来存放一个地址
+<br>void指针它可以指向任何类型的C++数据，也就是说，可以用任何类型的指针直接给void指针赋值，不过，如果需要将void指针的值赋值给其它类型的指针，则需要进行强制类型转换
+<br>比如：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int a;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int *p1 = &a;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;void *p2 = p1;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int *p3 = (int *)p2;
+<br>
+<br>关键字const放在不同的位置表示的意义也不相同：
+<br>关键字const放在指针类型前，就是声明一个指向常量的指针，此时，在程序中不能通过指针来改变它所指向的值，但是指针本身的值可以改变，即指针可以指向其它数据
+<br>关键字const放在&quot;*&quot;号和指针名之间，就是声明一个指针常量(也称常指针)，因此，指针本身的值不可改变，也即它不能再指向其它数据，但它所指向的数据的值可以改变
+<br>关键字const放在上述两个地方都加，则是声明一个指向常量的指针常量，指针本身的值不可改变，它所指向的数据的值也不能通过指针改变
+<br>
+<br><font color=black size = 6>5</font>、指针与数组
+<br>要访问或使用一个数组元素，可以用三种不同的方法：下标法、地址法、指针法
+<br>下标法：即指出数组名和下标值，系统就会找到该元素，数组用其下标变化实行对内存中的数组元素进行处理
+<br>地址法：一个数组名代表它的起始地址，地址法即通过地址访问某一数组元素，即通过 *(a + r) 来取得a[r]的值
+<br>指针法：定义一个指针变量，指向一数组元素，然后通过 *(p + i) 来获取 a[i] 的值
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/cpoint-final2.jpg?raw=true" width="700" height="280" />
+<br>
+<br>对于二维数组呢，又是如何用指针访问其中的每个元素的呢？
+<br>例如：定义了一个二维数组
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int a[3][5];
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a是一个3*5的二维数组，他有三行，每一行都有其起始地址
+<br>C++语言规定以a[0]、a[1]、a[2]分别表示第0行、第1行、第2行的起始地址，即该行第0列元素的地址，注意a[0]、a[1]、a[2]并不是一个元素，而是一行首地址，正如同一维数组名是数组起始地址一样，a[0]的值等于&amp;a[0][0]、a[1]的值等于&amp;a[1][0]......
+<br>所以：a[0]+1 的值就等于&amp;a[0][1]、a[1]+2的值就等于&amp;a[1][2]、......
+<br>因此，对于二维数组中的元素a[i][j]有多种访问方法，以下是其中的一部分：
+<br>假设定义了一个二维数组：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int a[2][3];
+<br>则对它们的访问方法有：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*(*(a + i) + j)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*(a[i] + j)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*(a + i)[j]
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*a(a + 3 * i + j)
+<br>
+<br>如果用指针法访问二维数组中的元素，处理的方法也有很多种
+<br>假设定义了一个指向上述二维数组a首元素的指针p，以下列出一部分通过这个指针访问数组元素a[i][j]的方法：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*(*(p + i) + j)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*(p[i] + j)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*(p + i)[j]
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*(p + 3 * i + j)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p[i][j]
+<br>以上访问方式都必须声明为 **p
+<br>
+<br>对于三维以上的多维数组，访问数组元素的方法在原理上都是一样的，只是在使用时一定要注意C++中多维数组中各元素在内存单元中的存储顺序。并且，在利用指针访问数组元素时，同样要注意越界问题
+<br>
+<br>数组指针和指针数组
+<br>在C++语言中，数组指针就是一个指向数组的指针，指针数组就是其元素为指针的数组，在学习C++语言时，要注意对它们进行区分，不能等同起来
+<br>数组指针是一个指向一位数组的指针变量，定义数组指针的格式为：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;数据类型 (* 指针名) [常量表达式]
+<br>例如：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int (*p)[5];
+<br>上面这个语句定义了一个数组指针p，它指向一个包含5个元素的一维数组，数组元素为整型，注意，*p两侧的圆括号不能省去，它表示p先与星号&quot;*&quot;结合，是指针变量，如果省去了圆括号，即写成*p[5]的形式，由于方括号的优先级比星号高，则p先于方括号[]结合是数组类型，那么语句int *p[5]; 是定义了一个指针数组
+<br>
+<br>指针数组就是其元素为指针的数组，它是指针的集合，它的每一个元素都是指针变量，并且它们具有相同的存储类型和指向相同的数据类型
+<br>说明指针数组的语法格式为：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;数据类型 *指针数组名[常量表达式]
+<br>其中，数据类型式指数数组中各元素指针所指向的类型，同一指针数组中各指针元素指向的类型相同，指针数组名也即数组的首地址，是一个标识符，常量表达式指出这个数组的元素个数
+<br>例如：下面定义了几个指针数组
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int *p1[6];
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;float *p2[3][1];
+<br>
+<br>具有相同类型的指针数组可以在一起说明，它们也可以与变量、指针等一起说明
+<br>例如：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int a, *p[2];
+<br>指针数组在使用前也必须首先赋值，也可以利用初始化赋值
+<br>指针数组主要用于字符串的操作
+<br>例如：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;static char *name[5] = {&quot;Tom&quot;, &quot;John&quot;, &quot;Marry&quot;, &quot;Smith Black&quot;, &quot;Rose&quot;};
+<br>其中name是一维数组，梅一个元素都是指向字符数据的指针类型数据，其中name[0]指向第一个字符串&quot;Tom&quot;，name[1]指向第二个字符串&quot;John&quot;，......
+<br>用指针数组处理字符串不仅可以节省内存，而且提高运算效率，例如：相对5个姓名排序，若将字符串交换位置速度慢，而交换地址则速度快得多
+<br>
+<br><font color=black size = 6>6</font>、动态内存分配
+<br>所谓动态内存分配是指在程序运行期间根据实际需要随时申请内存，并在不需要时释放
+<br>应用程序数据所占得内存可以分为三类：静态存储器、堆、栈。
+<br>在程序运行开始前就分配得存储区都在静态存储区中，局部变量分配得存储空间在栈中，动态内存分配得存储空间在堆中，堆也称为自由存储单元。
+<br>new和delete运算符一起使用，就可以直接进行动态内存得申请和释放（也称为创建和删除）
+<br>
+<br>new运算符用于申请所需要得内存单元，返回指定类型得一个指针，它的语法格式：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;指针 = new 数据类型
+<br>其中，指针应预先声明，指针指向得数据类型与new后得数据类型相同，若申请成功，则返回分配单元的首地址给指针，否则（比如说没有足够的内存空间），则返回0（一个空指针）
+<br>例如：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int *p;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p = new int;
+<br>系统自带根据int类型的空间大小开辟一个内存单元，用来保存int型数据，并将地址保存在指针p中
+<br>
+<br>对于动态内存分配，应在分配操作结束以后，首先检查返回的地址值是否为0，以确定内存申请是否成功，在分配成功以后，就可以使用这个指针
+<br>在申请分配内存单元时，也可以指定分配的内存大小
+<br>例如：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int *p;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p = new int(30);
+<br>则系统为指针p分配了30*sizeof(int)字节的内存单元存放int型数据
+<br>
+<br>也可以用new运算符申请一块保存数组的内存单元，即创建一个数组，创建一维数组的语法格式为：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;指针 = new 数据类型[常量表达式];
+<br>其中，常量表达式给出数组元素的个数，指针指向分配的内存首地址，指针的类型与new后的数据类型相同
+<br>例如：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int *p;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p = new int[10];
+<br>则系统为指针p分配了整型数组的内存，数组中有10个元素
+<br>
+<br>对于动态创建多维数组，情况要复杂一些，以二维数组为例，语法格式为：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;指针 = new 数据类型[常量表达式1][常量表达式2];
+<br>若申请成功，指针指向分配的内存首地址，但此时的类型不是new后的数据类型，而是一个该类型的数组，即指针是一个数组指针
+<br>例如：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int (*p)[3];
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p = new int[2][3];
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;则系统为指针p分配了一个二维数组
+<br>
+<br>delete运算符是释放new申请到的内存，也即，当程序中不再需要使用运算符new创建的某个内存单元时，就必须用运算符delete来删除它
+<br>它的语法格式为：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;delete 指针;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;delete [常量] 指针;
+<br>其中，指针是指向需要释放的内存单元的指针的名字，并且delete只是删除动态内存单元，不会将指针本身删除
+<br>对于释放对象的不同，delete的语法格式也不同，对于数组内存单元的释放，一定要带“[常量]”部分，常量告诉delete数组有多少个元素，如果没有这部分，则只释放数组的第一个元素占据的内存单元
+<br>例如：对int型内存单元的申请和释放
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int *p;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p = new int;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;delete p;
+<br>例如：对数组内存单元的申请和释放
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int *p;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p = new int[10];
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;delete [] p; / delete [10] p;
+<br>注意：在程序中对应于使用运算符new，都应该相应地使用运算符delete来释放申请的内存，并且对应于每个运算符new，只能调用一次delete来释放内存，否则可能导致系统崩溃
+<br>运算符delete必须用于先前new分配的有效指针，而不能用于未定义的其它任何类型的指针
+<br>对空指针调用delete是安全的
+<br>C++语言保留了C语言中的两个库函数：malloc()和free()，这两个函数也是实现动态内存分配作用的，其功能分别与new和delete相似，但是最好不要将库函数和运算符混合使用，否则可能导致系统崩溃
+<br>
+<br><font color=black size = 6>7</font>、指针与字符串
+<br>在C++语言中，可以定义一个字符数组，将字符串存放在该数组中，通过数组下标来访问所需的字符，也可以定义一个字符指针，通过指针指向来访问所需的字符
+<br>如果通过指针访问一个字符串，可以将这个指针指向此字符串，并利用指针的+1、-1操作实现对各个字符的访问
+<br>利用字符指针访问字符串：
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;iostream&gt;<BR>
+</span><span style="color:#0000ff;">using</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">namespace</span><span style="color:#000000;">&nbsp;std;<BR>
+<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;main()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;*str&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;hello&nbsp;world&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;str&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}</span></div></td></tr></table></div>
+<br>
+<br>C++提供了许多字符串处理的库函数，常用的有：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;strcat()
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;char * strcat(char* s1, char* s2)
+<br>字符串连接函数，将字符串s2连接到字符串s1的后面，并返回s1的地址值
+<br>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;strcmp()
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int strcmp(const char* s1, const char* s2, [int n])
+<br>字符串比较函数，比较两个字符串s1和s2的大小（如果有参数n，比较前n个字符的大小），当字符串s1大于、等于、小于字符串s2时，函数的返回值分别为正数、零和负数
+<br>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;strcpy()
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;char* strcpy(char* s1, char* s2)
+<br>将s2所指向的字符串复制到s1所指向的字符串中，然后返回s1的地址值
+<br>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;strlen()
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int strlen(const char* s)
+<br>返回字符串的长度
+<br>当程序中使用这些字符串处理函数时，需要在程序开始加上头文件string.h
+<br>
+<br><font color=black size = 6>8</font>、指针与函数
+<br>在调用函数的实参与形参之间具有三种传递方式：传值方式、地址传递和引用传递，利用指针作函数参数，可以方便地实现地址传递，函数可以返回指针，指针也可以指向函数
+<br>
+<br>指针作为函数参数就是地址传递，可以使用实参
+<br>当以数据的地址作为实参调用一个函数时，被调用函数的形参也必须是可接收地址的变量，并且数据类型必须与被传送的数据类型相同
+<br>由于数组名是一个指针，因此，数组名也可以用作函数的参数，也属于传址调用
+<br>注意：在函数的传址调用中，传递的参数的值并不改变，也即指针本身的值并不改变，改变的是它指向的值
+<br>
+<br>指针型函数
+<br>除了void类型的函数以外，函数在调用结束后都会有返回值，当一个函数的返回值是指针类型时，这个函数就是指针型函数
+<br>通常非指针型函数调用结束后，可以返回一个变量，有时需要通过指针来返回一批数据到主调函数中
+<br>定义指针型函数的函数头的一般语法格式为：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;数据类型 * 函数名(参数表)
+<br>其中，数据类型是函数返回的指针所指向数据的类型，*函数名 声明了一个指针型的函数，参数表 是函数的形参列表
+<br>例如：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int *fun(int a, int b)
+<br>它表示函数返回一个指针值，这个指针指向一个整型数据，a、b是形参
+<br>
+<br>函数指针
+<br>函数指针就是指向函数的指针，定义函数指针的语法格式为：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;数据类型 (*函数指针名) (参数表);
+<br>其中，数据类型是指函数指针所指向函数的返回值的类型，参数表中指明该函数指针所指向函数的形参类型和个数
+<br>例如：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int (*p)(int, int)
+<br>就定义了一个函数指针p，它指向一个返回整型值、有两个整型参数的函数
+<br>
+<br>在定义了指向函数的指针变量后，在使用此函数指针之前，必须先给它赋值，使它指向一个函数的入口地址，由于函数名是函数在内存中的首地址，因此可以赋给函数指针变量
+<br>赋值的一般语法格式为：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;函数指针名 = 函数名
+<br>例如：对上面刚定义的函数指针p，可以给它赋值如下
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p = func1
+<br>其中，函数名所代表的函数必须使一个已经定义过的，和函数指针具有相同返回类型的函数，并且等号后面只需写函数名而不要写参数
+<br>例如不要写成下列形式：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p = func1(a, b)
+<br>当函数指针指向某函数以后，可以用下列形式调用函数：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(*指针变量) (实参列表)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;例如：(*p) (a, b)，它相当于fun1 (a, b)
+<br>必须指出的是：指针的运算在这里是毫无意义的
+<br>
+<br>与定义一般变量指针数组一样，C++语言中也可以定义具有特定返回类型和特定参数类型的函数指针数组，函数指针数组也可以是多维的，不过在实际编程中多用到一维函数指针数组
+<br>定义它的语法格式如下：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;数据类型 (*函数指针名[常量表达式]) (参数表);
+<br>例如：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int (*p[5])(int, int);
+<br>就定义了一个含有5个元素的函数指针数组，其中的每个元素都是一个指向函数的指针，且指向的函数都是返回值类型为整型，带两个整型参数的函数
+<br><br><br>
+<font color = gray size = 3>如有错误，欢迎指正！</font></p></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://oubc.github.io/tags/c/c&#43;&#43;/">C/C&#43;&#43;</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmg4aog3074074gnf.gif?tags=%5B%5D">I </a>
+	<a href="">love</a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmfm2eg306o06o74u.gif?tags=%5B%5D"> you </a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx4tpcj30fn0bq3zg.jpg?tags=%5B%5D">three </a>
+	<a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx64ctg307s07swfy.gif?tags=%5B%5D">thousand</a>
+    <a href="https://www.kugou.com/song/#hash=96426C78381DE98DC31A5846FC274CBF&album_id=646623"> times.</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>家庭、梦想、内心的平静</span>
+  </div>
+</footer>
+
+
+
+<script src="https://oubc.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://oubc.github.io/js/zozo.js"></script>
+<script src="https://oubc.github.io/js/highlight.pack.js"></script>
+<link  href="https://oubc.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://oubc.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>

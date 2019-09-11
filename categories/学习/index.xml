@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>学习 on Love, or death</title>
+    <link>https://oubc.github.io/categories/%E5%AD%A6%E4%B9%A0/</link>
+    <description>Recent content in 学习 on Love, or death</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Thu, 05 Sep 2019 12:08:40 +0800</lastBuildDate>
+    
+	<atom:link href="https://oubc.github.io/categories/%E5%AD%A6%E4%B9%A0/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Linux中的Shell-Bash</title>
+      <link>https://oubc.github.io/post/l8_shellandbash/</link>
+      <pubDate>Thu, 05 Sep 2019 12:08:40 +0800</pubDate>
+      
+      <guid>https://oubc.github.io/post/l8_shellandbash/</guid>
+      <description>&lt;p&gt;Shell是一个命令行解释器，它为用户提供了一个向Linux内核发送请求以便运行程序的界面系统级程序，用户可以用Shell来启动、挂起、停止甚至是编写一些程序。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Linux文件系统</title>
+      <link>https://oubc.github.io/post/l7_filesystem/</link>
+      <pubDate>Wed, 14 Aug 2019 12:50:41 +0800</pubDate>
+      
+      <guid>https://oubc.github.io/post/l7_filesystem/</guid>
+      <description>&lt;p&gt;你可能听说对于Linux “一切皆文件”，那么本篇博客就带你探索Linux中文件系统的奥秘&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Linux权限管理</title>
+      <link>https://oubc.github.io/post/l6_authoritymanagement/</link>
+      <pubDate>Mon, 12 Aug 2019 18:06:44 +0800</pubDate>
+      
+      <guid>https://oubc.github.io/post/l6_authoritymanagement/</guid>
+      <description>&lt;p&gt;对于Linux服务器有着严格的权限等级，如果权限过高容易导致误操作会增加风险。所以对于了解Linux系统中的各种权限及要给用户、服务等分配合理的权限是十分重要的。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>用户及用户组管理</title>
+      <link>https://oubc.github.io/post/l5_uusermanage/</link>
+      <pubDate>Sat, 10 Aug 2019 10:34:21 +0800</pubDate>
+      
+      <guid>https://oubc.github.io/post/l5_uusermanage/</guid>
+      <description>&lt;p&gt;让我们一起去了解Linux的用户配置文件以及用户管理文件和相关的命令吧&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>C&#43;&#43;指针-再续前缘</title>
+      <link>https://oubc.github.io/post/cpoint-final/</link>
+      <pubDate>Mon, 29 Jul 2019 12:08:59 +0800</pubDate>
+      
+      <guid>https://oubc.github.io/post/cpoint-final/</guid>
+      <description>&lt;p&gt;再次从头至尾剖析C++指针&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Python&#43;Web编程基础</title>
+      <link>https://oubc.github.io/post/p15_basicwebcode/</link>
+      <pubDate>Sat, 27 Jul 2019 16:42:23 +0800</pubDate>
+      
+      <guid>https://oubc.github.io/post/p15_basicwebcode/</guid>
+      <description>&lt;p&gt;Python真是包罗万象啊，Web居然也有它的份&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>网络编程基础</title>
+      <link>https://oubc.github.io/post/p14_basicnetcode/</link>
+      <pubDate>Fri, 26 Jul 2019 10:42:48 +0800</pubDate>
+      
+      <guid>https://oubc.github.io/post/p14_basicnetcode/</guid>
+      <description>&lt;p&gt;你知道曾经一起开黑却不需要联外网的CS是怎么实现的吗？一起走进网络的大门吧&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>利用Python进行系统编程</title>
+      <link>https://oubc.github.io/post/p13_basicospython/</link>
+      <pubDate>Thu, 25 Jul 2019 15:28:28 +0800</pubDate>
+      
+      <guid>https://oubc.github.io/post/p13_basicospython/</guid>
+      <description>&lt;p&gt;一起去探索操作系统的密秘啊&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Python网络爬虫基础</title>
+      <link>https://oubc.github.io/post/p12_basicreptile/</link>
+      <pubDate>Wed, 24 Jul 2019 17:12:32 +0800</pubDate>
+      
+      <guid>https://oubc.github.io/post/p12_basicreptile/</guid>
+      <description>&lt;p&gt;一种网络机器人，它可以将你需要的数据从网页上爬取下来呈现给你&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>游戏编程入门-PyGame</title>
+      <link>https://oubc.github.io/post/p11_basicpygame/</link>
+      <pubDate>Tue, 23 Jul 2019 11:02:03 +0800</pubDate>
+      
+      <guid>https://oubc.github.io/post/p11_basicpygame/</guid>
+      <description>&lt;p&gt;有很多做程序员的初心都来自于编写游戏，今天就来一起体验一下Python2D游戏pygame编程吧&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>GUI基础-wxPython</title>
+      <link>https://oubc.github.io/post/p10_basicpygui/</link>
+      <pubDate>Sun, 21 Jul 2019 20:47:27 +0800</pubDate>
+      
+      <guid>https://oubc.github.io/post/p10_basicpygui/</guid>
+      <description>&lt;p&gt;入门Python中的GUI编程，实现从命令行到图形界面的转换&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>利用Python操纵数据库</title>
+      <link>https://oubc.github.io/post/p9_pymysql/</link>
+      <pubDate>Sat, 20 Jul 2019 15:40:55 +0800</pubDate>
+      
+      <guid>https://oubc.github.io/post/p9_pymysql/</guid>
+      <description>&lt;p&gt;学习用Python操纵数据库&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Python基础-文件操作</title>
+      <link>https://oubc.github.io/post/p8_basicpython/</link>
+      <pubDate>Fri, 19 Jul 2019 15:41:37 +0800</pubDate>
+      
+      <guid>https://oubc.github.io/post/p8_basicpython/</guid>
+      <description>&lt;p&gt;Python中的文件操作&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Python基础-异常处理</title>
+      <link>https://oubc.github.io/post/p7_basicpython/</link>
+      <pubDate>Thu, 18 Jul 2019 19:50:34 +0800</pubDate>
+      
+      <guid>https://oubc.github.io/post/p7_basicpython/</guid>
+      <description>&lt;p&gt;Python也和其它编程语言一样，有异常处理的功能，异常处理可以使得程序不会因为一些小问题而出现崩溃&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Python基础-模块和包</title>
+      <link>https://oubc.github.io/post/p6_basicpython/</link>
+      <pubDate>Thu, 18 Jul 2019 14:35:03 +0800</pubDate>
+      
+      <guid>https://oubc.github.io/post/p6_basicpython/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Python基础-面向对象</title>
+      <link>https://oubc.github.io/post/p5_basicpython/</link>
+      <pubDate>Wed, 17 Jul 2019 19:39:45 +0800</pubDate>
+      
+      <guid>https://oubc.github.io/post/p5_basicpython/</guid>
+      <description>&lt;p&gt;一起去探究Python中的面向对象编程设计和类吧&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Python语法基础-函数</title>
+      <link>https://oubc.github.io/post/p4_basicpython/</link>
+      <pubDate>Wed, 17 Jul 2019 16:18:02 +0800</pubDate>
+      
+      <guid>https://oubc.github.io/post/p4_basicpython/</guid>
+      <description>&lt;p&gt;带名字的代码块，可以进行多次调用&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Python中的正则表达式</title>
+      <link>https://oubc.github.io/post/p3_regularexpression/</link>
+      <pubDate>Tue, 16 Jul 2019 18:04:28 +0800</pubDate>
+      
+      <guid>https://oubc.github.io/post/p3_regularexpression/</guid>
+      <description>&lt;p&gt;Python中的正则表达式虽然比较难，但是掌握它是十分有必要的&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Python语法基础-序列</title>
+      <link>https://oubc.github.io/post/p2_basicpython/</link>
+      <pubDate>Mon, 15 Jul 2019 19:36:21 +0800</pubDate>
+      
+      <guid>https://oubc.github.io/post/p2_basicpython/</guid>
+      <description>&lt;p&gt;本篇包含了Python语法序列的定义以及相关操作&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Python语法基础-基础</title>
+      <link>https://oubc.github.io/post/p1_basicpython/</link>
+      <pubDate>Sun, 14 Jul 2019 15:46:25 +0800</pubDate>
+      
+      <guid>https://oubc.github.io/post/p1_basicpython/</guid>
+      <description>&lt;p&gt;本篇包括了Python语法中的基本输入输出、PEP8规范、代码缩进、数据类型、运算符和流程控制&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>为什么要学习Python</title>
+      <link>https://oubc.github.io/post/p0_whylearnpy/</link>
+      <pubDate>Sat, 13 Jul 2019 10:26:25 +0800</pubDate>
+      
+      <guid>https://oubc.github.io/post/p0_whylearnpy/</guid>
+      <description>&lt;p&gt;我为什么要学习Python，学来干什么，有什么用？&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Linux软件包管理</title>
+      <link>https://oubc.github.io/post/l4_softpackagemanage/</link>
+      <pubDate>Fri, 05 Jul 2019 11:06:12 +0800</pubDate>
+      
+      <guid>https://oubc.github.io/post/l4_softpackagemanage/</guid>
+      <description>&lt;p&gt;本文将告诉我们在Linux系统中如何对软件包进行管理以及安装、卸载、更新软件的常用命令&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>俄罗斯方块</title>
+      <link>https://oubc.github.io/post/tetris/</link>
+      <pubDate>Sat, 22 Jun 2019 16:45:53 +0800</pubDate>
+      
+      <guid>https://oubc.github.io/post/tetris/</guid>
+      <description>&lt;p&gt;经典小游戏：俄罗斯方块&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Vim使用技巧</title>
+      <link>https://oubc.github.io/post/l3_useofvim/</link>
+      <pubDate>Mon, 10 Jun 2019 16:36:22 +0800</pubDate>
+      
+      <guid>https://oubc.github.io/post/l3_useofvim/</guid>
+      <description>&lt;p&gt;Vim的使用技巧总结&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>文件及Linux常用命令</title>
+      <link>https://oubc.github.io/post/l2_command_common/</link>
+      <pubDate>Thu, 30 May 2019 16:36:22 +0800</pubDate>
+      
+      <guid>https://oubc.github.io/post/l2_command_common/</guid>
+      <description>&lt;p&gt;这是最基础的Linux命令，也是最常用的Linux命令&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Linux目录及目录处理命令</title>
+      <link>https://oubc.github.io/post/l1_command_catalog/</link>
+      <pubDate>Sat, 18 May 2019 11:09:16 +0800</pubDate>
+      
+      <guid>https://oubc.github.io/post/l1_command_catalog/</guid>
+      <description>&lt;p&gt;探索Linux目录的作用及其相关命令&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>初识Linux</title>
+      <link>https://oubc.github.io/post/l0_whatislinux/</link>
+      <pubDate>Fri, 26 Apr 2019 20:12:11 +0800</pubDate>
+      
+      <guid>https://oubc.github.io/post/l0_whatislinux/</guid>
+      <description>&lt;p&gt;那只可爱的小企鹅令我痴迷&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>联机对战版-红蓝五子棋</title>
+      <link>https://oubc.github.io/post/gobangnetworked/</link>
+      <pubDate>Sat, 02 Mar 2019 21:50:35 +0800</pubDate>
+      
+      <guid>https://oubc.github.io/post/gobangnetworked/</guid>
+      <description>&lt;p&gt;经典小游戏：童年的五子棋-联网对战版&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>windows网络编程(TCP/IP)</title>
+      <link>https://oubc.github.io/post/networkprogramming/</link>
+      <pubDate>Mon, 25 Feb 2019 17:06:37 +0800</pubDate>
+      
+      <guid>https://oubc.github.io/post/networkprogramming/</guid>
+      <description>&lt;p&gt;windows下的Socket(套接字)编程：基础篇&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>红蓝五子棋</title>
+      <link>https://oubc.github.io/post/gobang/</link>
+      <pubDate>Thu, 24 Jan 2019 21:50:35 +0800</pubDate>
+      
+      <guid>https://oubc.github.io/post/gobang/</guid>
+      <description>&lt;p&gt;经典小游戏：童年的五子棋&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>模拟E-Mail登录程序</title>
+      <link>https://oubc.github.io/post/simulatede-maillogin/</link>
+      <pubDate>Sun, 16 Dec 2018 17:12:01 +0800</pubDate>
+      
+      <guid>https://oubc.github.io/post/simulatede-maillogin/</guid>
+      <description>&lt;p&gt;利用C/C++语言模拟E-Mail的登录&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>指针：C语言的灵魂</title>
+      <link>https://oubc.github.io/post/cpoint/</link>
+      <pubDate>Sun, 25 Nov 2018 11:00:45 +0800</pubDate>
+      
+      <guid>https://oubc.github.io/post/cpoint/</guid>
+      <description>&lt;p&gt;带你探索指针的秘密 领略指针的强大&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

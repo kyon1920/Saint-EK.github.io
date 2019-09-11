@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Bruce Cheung"/>
+
+  
+  <meta name="description" content="带名字的代码块，可以进行多次调用
+"/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, simple, dream"/>
+  
+
+  
+  <link rel="canonical" href="https://oubc.github.io/post/p4_basicpython/"/>
+
+  
+
+  <title>Python语法基础-函数 &middot; Love, or death</title>
+
+  <link rel="shortcut icon" href="https://oubc.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/post/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://oubc.github.io/">
+          <span>Love, or death</span>
+          <img src="https://oubc.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">For you, a thousand times over.</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/oubc" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=uYGOjo6OiIuLivnIyJfa1tQ" title="mail" target="_blank"><i class="remixicon-mail-fill"></i></a>
+        
+        
+        
+        <a href="http://sighttp.qq.com/msgrd?v=1&amp;uin=877771223" title="qq" target="_blank"><i class="remixicon-qq-fill"></i></a>
+        
+        
+        
+        <a href="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g4klnqf0tmj30ia0widks.jpg" title="wechat" target="_blank"><i class="remixicon-wechat-fill"></i></a>
+        
+        
+        
+        <a href="https://weibo.com/u/6993631995?topnav=1&amp;wvr=6&amp;topsug=1" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://oubc.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/post/p4_basicpython/'>Python语法基础-函数</a></h2>
+          <span class="date">2019.07.17</span>
+        </div>
+        <div class="post_content markdown"><p>带名字的代码块，可以进行多次调用</p>
+
+<p><br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;Python Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47<br>48<br>49<br>50<br>51<br>52<br>53<br>54<br>55<br>56<br>57<br>58<br>59<br>60<br>61<br>62<br>63<br>64<br>65<br>66<br>67<br>68<br>69<br>70<br>71<br>72<br>73<br>74<br>75<br>76<br>77<br>78<br>79<br>80<br>81<br>82<br>83<br>84<br>85<br>86<br>87<br>88<br>89<br>90<br>91<br>92<br>93<br>94<br>95<br>96<br>97<br>98<br>99<br>100<br>101<br>102<br>103<br>104<br>105<br>106<br>107<br>108<br>109<br>110<br>111<br>112<br>113<br>114<br>115<br>116<br>117<br>118<br>119<br>120<br>121<br>122<br>123<br>124<br>125<br>126<br>127<br>128<br>129<br>130<br>131<br>132<br>133<br>134<br>135<br>136<br>137<br>138<br>139<br>140<br>141<br>142<br>143<br>144<br>145<br>146<br>147<br>148<br>149<br>150<br>151<br>152<br>153<br>154<br>155<br>156<br>157<br>158<br>159<br>160<br>161<br>162<br>163<br>164<br>165<br>166<br>167<br>168<br>169<br>170<br>171<br>172<br>173<br>174<br>175<br>176<br>177<br>178<br>179<br>180<br>181<br>182<br>183<br>184<br>185<br>186<br>187<br>188<br>189<br>190<br>191<br>192<br>193<br>194<br>195<br>196<br>197<br>198<br>199<br>200<br>201<br>202<br>203<br>204<br>205<br>206<br>207<br>208<br>209<br>210<br>211<br>212<br>213<br>214<br>215<br>216<br>217<br>218<br>219<br>220<br>221<br>222<br>223<br>224<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#008000;">#&nbsp;函数：可以完成某项工作的代码块<BR>
+#&nbsp;内置函数：print()、<BR>
+#&nbsp;自定义函数：函数的创建和调用、参数传递、返回值、变量的作用域、匿名函数<BR>
+#&nbsp;创建/定义&nbsp;函数<BR>
+#&nbsp;语法：def&nbsp;functionname([parameterlist]):<BR>
+#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;['''comments''']&nbsp;&nbsp;&nbsp;&nbsp;为函数设定帮组信息，在调用时显示<BR>
+#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[functionbody]&nbsp;&nbsp;&nbsp;&nbsp;函数体<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;filterchar(string):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'''功能：过滤危险字符(如黑客)，并且将过滤后的结果输出<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string：要过滤的字符串<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;没有返回值<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'''<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;re<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;pattern&nbsp;=&nbsp;r</span><span style="color:#800000;">'(黑客)|(抓包)|(Trojan)'</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;模式字符串<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;sub&nbsp;=&nbsp;re.sub(pattern,&nbsp;</span><span style="color:#800000;">&quot;@_@&quot;</span><span style="color:#000000;">,&nbsp;string)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;进行模式匹配<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(sub)<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;empth():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">pass</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;调用函数<BR>
+#&nbsp;语法：functionname([parametersvalue])<BR>
+</span><span style="color:#000000;">about&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;我是一名程序员，喜欢看一下黑客方面的书，想研究一下Trojan&quot;</span><span style="color:#000000;"><BR>
+filterchar(about)<BR>
+about1&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;我是一名黑客，擅长研究Trojan&quot;</span><span style="color:#000000;"><BR>
+filterchar(about1)<BR>
+</span><span style="color:#008000;">#&nbsp;实例：输出每日一贴<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;function_tips():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'''每天输出一条励志文字'''</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;datetime&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;导入日期时间类<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;&nbsp;&nbsp;&nbsp;定义一个列表<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;mot&nbsp;=&nbsp;[</span><span style="color:#800000;">&quot;今天星期一：\n坚持成功属于那些从不说“不可能”的人&quot;</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">&quot;今天星期二：\n求知若饥，谦逊若愚&quot;</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">&quot;今天星期三：\n不要等到明日，明天太遥远，今天就行动&quot;</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">&quot;今天星期四：\n命运给予我们的不是失望之酒，而是希望之杯&quot;</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">&quot;今天星期五：\n做对的事情比把事情做对重要&quot;</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">&quot;今天星期六：\n含泪播种的人一定能笑着收获&quot;</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">&quot;今天星期日：\n坚持下去不是因为我很坚强，而是因为我别无选择&quot;</span><span style="color:#000000;">]<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;day&nbsp;=&nbsp;datetime.datetime.now().weekday()&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;获取当前星期<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(mot[day])&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;输出每日一贴<BR>
+</span><span style="color:#000000;">function_tips()&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;调用函数<BR>
+#&nbsp;参数传递：了解形式参数和实际参数、位置参数、关键字参数、为参数设置默认值、可变参数<BR>
+#&nbsp;了解形式参数和实际参数：在函数名称后面小括号里面的是形式参数、调用时用的参数就是实际参数<BR>
+#&nbsp;值传递：当实际参数为不可变(immutable)参数的时候：int、str、float、(数值型number)、元组(tuple)<BR>
+#&nbsp;引用传递：当实际参数为可变(mutable)参数的时候：字典(dictionary)、列表型(list)<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;demo(obj):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'''进行参数相加'''</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;原值：&quot;</span><span style="color:#000000;">,obj)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;obj&nbsp;+=&nbsp;obj<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;=&quot;</span><span style="color:#000000;">*</span><span style="color:#ff0000;">10</span><span style="color:#000000;">,</span><span style="color:#800000;">&quot;值传递&quot;</span><span style="color:#000000;">,</span><span style="color:#800000;">&quot;=&quot;</span><span style="color:#000000;">*</span><span style="color:#ff0000;">10</span><span style="color:#000000;">)<BR>
+list1&nbsp;=&nbsp;[</span><span style="color:#800000;">&quot;qi&nbsp;meng&quot;</span><span style="color:#000000;">,&nbsp;</span><span style="color:#800000;">&quot;len&nbsp;yi&nbsp;yi&quot;</span><span style="color:#000000;">,&nbsp;</span><span style="color:#800000;">&quot;xiang&nbsp;ling&quot;</span><span style="color:#000000;">,&nbsp;</span><span style="color:#800000;">&quot;dai&nbsp;lan&quot;</span><span style="color:#000000;">]&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;可变对象<BR>
+</span><span style="color:#000000;">mot&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;唯有在被追赶的时候，你才能真正的奔跑&quot;</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;不可变对象<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;函数调用前：&quot;</span><span style="color:#000000;">,mot)<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;函数调用前：&quot;</span><span style="color:#000000;">,list1)<BR>
+demo(mot)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;调用函数<BR>
+</span><span style="color:#000000;">demo(list1)<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;函数调用后：&quot;</span><span style="color:#000000;">,mot)<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;函数调用后：&quot;</span><span style="color:#000000;">,list1)<BR>
+</span><span style="color:#008000;">#&nbsp;实例：BMI<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;fun_bmi(person,height,weight):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'''功能：根据身高和体重计算BMI指数<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;person:姓名<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;height:身高&nbsp;&nbsp;单位：米<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;weight:体重&nbsp;&nbsp;单位：千克<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'''<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(person&nbsp;+&nbsp;</span><span style="color:#800000;">&quot;的身高：&quot;</span><span style="color:#000000;">&nbsp;+&nbsp;</span><span style="color:#8000ff;">str</span><span style="color:#000000;">(height)&nbsp;+&nbsp;</span><span style="color:#800000;">&quot;米\t体重：&quot;</span><span style="color:#000000;">&nbsp;+&nbsp;</span><span style="color:#8000ff;">str</span><span style="color:#000000;">(weight)&nbsp;+&nbsp;</span><span style="color:#800000;">&quot;千克&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;bmi&nbsp;=&nbsp;weight/(height*height)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;您的BMI指数为：&quot;</span><span style="color:#000000;">+</span><span style="color:#8000ff;">str</span><span style="color:#000000;">(bmi))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;bmi&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">18</span><span style="color:#000000;">.</span><span style="color:#ff0000;">5</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;您的体重过轻~@_@~&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">elif</span><span style="color:#000000;">&nbsp;bmi&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">24</span><span style="color:#000000;">.</span><span style="color:#ff0000;">9</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;正常范围，注意保持&nbsp;(-_-)&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">elif</span><span style="color:#000000;">&nbsp;bmi&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">29</span><span style="color:#000000;">.</span><span style="color:#ff0000;">9</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;您的体重过重&nbsp;~@_@~&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;肥胖&nbsp;~@_@~&quot;</span><span style="color:#000000;">)<BR>
+</span><span style="color:#008000;">#&nbsp;调用函数<BR>
+</span><span style="color:#000000;">fun_bmi(</span><span style="color:#800000;">&quot;路人甲&quot;</span><span style="color:#000000;">,</span><span style="color:#ff0000;">1</span><span style="color:#000000;">.</span><span style="color:#ff0000;">83</span><span style="color:#000000;">,</span><span style="color:#ff0000;">60</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;计算路人甲的BMI指数<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">()<BR>
+fun_bmi(</span><span style="color:#800000;">&quot;路人乙&quot;</span><span style="color:#000000;">,</span><span style="color:#ff0000;">1</span><span style="color:#000000;">.</span><span style="color:#ff0000;">60</span><span style="color:#000000;">,</span><span style="color:#ff0000;">50</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;计算路人乙的BMI指数<BR>
+#&nbsp;位置参数：必须按照定义时的个数和顺序进行参数传递，也称必备参数(例如上面的fun_bmi()函数)<BR>
+#&nbsp;关键字参数：使用形式参数的名字来确定输入的参数值<BR>
+#&nbsp;语法形式：<BR>
+#&nbsp;def&nbsp;functionname(p1,p2,p3)<BR>
+#&nbsp;以下调用结果是一样的<BR>
+#&nbsp;functionname(p1=value1,p2=value2,p3=value3)<BR>
+#&nbsp;functionname(p3=value3,p2=value2,p1=value1)<BR>
+#&nbsp;演示：以上面的BMI函数为例：<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">()<BR>
+fun_bmi(height=</span><span style="color:#ff0000;">1</span><span style="color:#000000;">.</span><span style="color:#ff0000;">69</span><span style="color:#000000;">,&nbsp;weight=</span><span style="color:#ff0000;">56</span><span style="color:#000000;">,&nbsp;person=</span><span style="color:#800000;">&quot;路人丙&quot;</span><span style="color:#000000;">)<BR>
+</span><span style="color:#008000;">#&nbsp;为参数设置默认值&nbsp;&nbsp;&nbsp;&nbsp;这个形式参数必须指向一个不可变对象<BR>
+#&nbsp;def&nbsp;functionname(...,[parameter1=defaultvalue1]):<BR>
+#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;functionbody<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;fun_bmi1(person,height,weight&nbsp;=&nbsp;</span><span style="color:#ff0000;">55</span><span style="color:#000000;">):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'''功能：根据身高和体重计算BMI指数<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;person:姓名<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;height:身高&nbsp;&nbsp;单位：米<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;weight:体重&nbsp;&nbsp;单位：千克<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'''<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(person&nbsp;+&nbsp;</span><span style="color:#800000;">&quot;的身高：&quot;</span><span style="color:#000000;">&nbsp;+&nbsp;</span><span style="color:#8000ff;">str</span><span style="color:#000000;">(height)&nbsp;+&nbsp;</span><span style="color:#800000;">&quot;米\t体重：&quot;</span><span style="color:#000000;">&nbsp;+&nbsp;</span><span style="color:#8000ff;">str</span><span style="color:#000000;">(weight)&nbsp;+&nbsp;</span><span style="color:#800000;">&quot;千克&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;bmi&nbsp;=&nbsp;weight/(height*height)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;您的BMI指数为：&quot;</span><span style="color:#000000;">+</span><span style="color:#8000ff;">str</span><span style="color:#000000;">(bmi))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;bmi&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">18</span><span style="color:#000000;">.</span><span style="color:#ff0000;">5</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;您的体重过轻~@_@~&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">elif</span><span style="color:#000000;">&nbsp;bmi&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">24</span><span style="color:#000000;">.</span><span style="color:#ff0000;">9</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;正常范围，注意保持&nbsp;(-_-)&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">elif</span><span style="color:#000000;">&nbsp;bmi&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">29</span><span style="color:#000000;">.</span><span style="color:#ff0000;">9</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;您的体重过重&nbsp;~@_@~&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;肥胖&nbsp;~@_@~&quot;</span><span style="color:#000000;">)<BR>
+</span><span style="color:#008000;">#&nbsp;调用函数<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">()<BR>
+fun_bmi1(</span><span style="color:#800000;">&quot;路人甲&quot;</span><span style="color:#000000;">,</span><span style="color:#ff0000;">1</span><span style="color:#000000;">.</span><span style="color:#ff0000;">72</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;计算路人甲的BMI指数<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(fun_bmi1.__defaults__)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;显示函数的默认值<BR>
+#&nbsp;体现必须指向一个不可变对象<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;demo(obj=</span><span style="color:#8000ff;">None</span><span style="color:#000000;">):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;obj&nbsp;==&nbsp;</span><span style="color:#8000ff;">None</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;obj=[]<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;obj的值：&quot;</span><span style="color:#000000;">,obj)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;obj.</span><span style="color:#0000ff;">append</span><span style="color:#000000;">(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)<BR>
+demo()<BR>
+demo()<BR>
+</span><span style="color:#008000;">#&nbsp;可变参数：个数不固定的参数&nbsp;0-n个参数<BR>
+#&nbsp;形式&nbsp;*parameter&nbsp;接收任意多个不同形式的参数，并且把它们放到一个元组当中<BR>
+#&nbsp;形式&nbsp;**parameter&nbsp;接收任意多个类似关键字参数一样显式赋值的实际参数，并将其放到一个字典中<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;coffee(*coffeename):&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;输出咖啡名称的函数<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;\n我喜欢的咖啡有&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;item&nbsp;</span><span style="color:#0000ff;">in</span><span style="color:#000000;">&nbsp;coffeename:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(item)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;输出咖啡名称<BR>
+</span><span style="color:#000000;">coffee(</span><span style="color:#800000;">&quot;蓝山&quot;</span><span style="color:#000000;">)<BR>
+coffee(</span><span style="color:#800000;">&quot;蓝山&quot;</span><span style="color:#000000;">,</span><span style="color:#800000;">&quot;卡布奇洛&quot;</span><span style="color:#000000;">,</span><span style="color:#800000;">&quot;阿根廷&quot;</span><span style="color:#000000;">)<BR>
+list1&nbsp;=&nbsp;[</span><span style="color:#800000;">&quot;蓝山&quot;</span><span style="color:#000000;">,</span><span style="color:#800000;">&quot;卡布奇洛&quot;</span><span style="color:#000000;">,</span><span style="color:#800000;">&quot;阿根廷&quot;</span><span style="color:#000000;">]<BR>
+coffee(*list1)<BR>
+</span><span style="color:#008000;">#&nbsp;实例：BMI计算<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;fun_bmi1(*person):&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;可变参数<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'''功能：根据可变参数获取姓名、身高和体重并计算BMI指数<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'''<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;list_person&nbsp;</span><span style="color:#0000ff;">in</span><span style="color:#000000;">&nbsp;person:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;item&nbsp;</span><span style="color:#0000ff;">in</span><span style="color:#000000;">&nbsp;list_person:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;person&nbsp;=&nbsp;item[</span><span style="color:#ff0000;">0</span><span style="color:#000000;">]<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;height&nbsp;=&nbsp;item[</span><span style="color:#ff0000;">1</span><span style="color:#000000;">]<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;weight&nbsp;=&nbsp;item[</span><span style="color:#ff0000;">2</span><span style="color:#000000;">]<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(person&nbsp;+&nbsp;</span><span style="color:#800000;">&quot;的身高：&quot;</span><span style="color:#000000;">&nbsp;+&nbsp;</span><span style="color:#8000ff;">str</span><span style="color:#000000;">(height)&nbsp;+&nbsp;</span><span style="color:#800000;">&quot;米\t体重：&quot;</span><span style="color:#000000;">&nbsp;+&nbsp;</span><span style="color:#8000ff;">str</span><span style="color:#000000;">(weight)&nbsp;+&nbsp;</span><span style="color:#800000;">&quot;千克&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bmi&nbsp;=&nbsp;weight/(height*height)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;您的BMI指数为：&quot;</span><span style="color:#000000;">+</span><span style="color:#8000ff;">str</span><span style="color:#000000;">(bmi))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;bmi&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">18</span><span style="color:#000000;">.</span><span style="color:#ff0000;">5</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;您的体重过轻~@_@~&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">elif</span><span style="color:#000000;">&nbsp;bmi&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">24</span><span style="color:#000000;">.</span><span style="color:#ff0000;">9</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;正常范围，注意保持&nbsp;(-_-)&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">elif</span><span style="color:#000000;">&nbsp;bmi&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">29</span><span style="color:#000000;">.</span><span style="color:#ff0000;">9</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;您的体重过重&nbsp;~@_@~&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;肥胖&nbsp;~@_@~&quot;</span><span style="color:#000000;">)<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">()<BR>
+list_w&nbsp;=&nbsp;[[</span><span style="color:#800000;">&quot;绮梦&quot;</span><span style="color:#000000;">,</span><span style="color:#ff0000;">1</span><span style="color:#000000;">.</span><span style="color:#ff0000;">70</span><span style="color:#000000;">,</span><span style="color:#ff0000;">65</span><span style="color:#000000;">],[</span><span style="color:#800000;">&quot;冷伊一&quot;</span><span style="color:#000000;">,</span><span style="color:#ff0000;">1</span><span style="color:#000000;">.</span><span style="color:#ff0000;">78</span><span style="color:#000000;">,</span><span style="color:#ff0000;">50</span><span style="color:#000000;">],[</span><span style="color:#800000;">&quot;梓轩&quot;</span><span style="color:#000000;">,</span><span style="color:#ff0000;">1</span><span style="color:#000000;">.</span><span style="color:#ff0000;">72</span><span style="color:#000000;">,</span><span style="color:#ff0000;">66</span><span style="color:#000000;">]]<BR>
+list_m&nbsp;=&nbsp;[[</span><span style="color:#800000;">&quot;零语&quot;</span><span style="color:#000000;">,</span><span style="color:#ff0000;">1</span><span style="color:#000000;">.</span><span style="color:#ff0000;">80</span><span style="color:#000000;">,</span><span style="color:#ff0000;">75</span><span style="color:#000000;">],[</span><span style="color:#800000;">&quot;黛兰&quot;</span><span style="color:#000000;">,</span><span style="color:#ff0000;">1</span><span style="color:#000000;">.</span><span style="color:#ff0000;">75</span><span style="color:#000000;">,</span><span style="color:#ff0000;">70</span><span style="color:#000000;">]]<BR>
+fun_bmi1(list_w,list_m)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;计算BMI指数<BR>
+#&nbsp;**parameter<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;sign(**sign):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;key,value&nbsp;</span><span style="color:#0000ff;">in</span><span style="color:#000000;">&nbsp;sign.</span><span style="color:#0000ff;">items</span><span style="color:#000000;">():&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;遍历字典<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(key,</span><span style="color:#800000;">&quot;的星座：&quot;</span><span style="color:#000000;">,value)<BR>
+sign(绮梦=</span><span style="color:#800000;">&quot;水瓶座&quot;</span><span style="color:#000000;">,冷伊一=</span><span style="color:#800000;">&quot;射手座&quot;</span><span style="color:#000000;">)<BR>
+sign(香菱=</span><span style="color:#800000;">&quot;双鱼座&quot;</span><span style="color:#000000;">,黛兰=</span><span style="color:#800000;">&quot;双子座&quot;</span><span style="color:#000000;">,琦琦=</span><span style="color:#800000;">&quot;巨蟹座&quot;</span><span style="color:#000000;">)<BR>
+dict1&nbsp;=&nbsp;{</span><span style="color:#800000;">&quot;香菱&quot;</span><span style="color:#000000;">:</span><span style="color:#800000;">&quot;双鱼座&quot;</span><span style="color:#000000;">,</span><span style="color:#800000;">&quot;黛兰&quot;</span><span style="color:#000000;">:</span><span style="color:#800000;">&quot;双子座&quot;</span><span style="color:#000000;">,</span><span style="color:#800000;">&quot;琦琦&quot;</span><span style="color:#000000;">:</span><span style="color:#800000;">&quot;巨蟹座&quot;</span><span style="color:#000000;">}<BR>
+sign(**dict1)<BR>
+</span><span style="color:#008000;">#&nbsp;返回值：调用函数后得到的一个结果<BR>
+#&nbsp;return&nbsp;[value]<BR>
+#&nbsp;实例：实现顾客折扣结账<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;fun_checkout(money):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'''功能：计算商品合计金额并进行折扣处理<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;money：保存商品金额的列表<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;返回值：商品的合计金额和折扣后的金额<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'''<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;money_old&nbsp;=&nbsp;</span><span style="color:#8000ff;">sum</span><span style="color:#000000;">(money)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;计算合计金额<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;money_new&nbsp;=&nbsp;money_old<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">500</span><span style="color:#000000;">&nbsp;&lt;=&nbsp;money_old&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">1000</span><span style="color:#000000;">:&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;享受9折优惠<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;money_new&nbsp;=&nbsp;</span><span style="color:#800000;">'{:.2f}'</span><span style="color:#000000;">.</span><span style="color:#8000ff;">format</span><span style="color:#000000;">(money_old&nbsp;*&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">.</span><span style="color:#ff0000;">9</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">elif</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">1000</span><span style="color:#000000;">&nbsp;&lt;=&nbsp;money_old&nbsp;&lt;=&nbsp;</span><span style="color:#ff0000;">2000</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;money_new&nbsp;=&nbsp;</span><span style="color:#800000;">'{:.2f}'</span><span style="color:#000000;">.</span><span style="color:#8000ff;">format</span><span style="color:#000000;">(money_old&nbsp;*&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">.</span><span style="color:#ff0000;">8</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">elif</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">2000</span><span style="color:#000000;">&nbsp;&lt;=&nbsp;money_old&nbsp;&lt;=&nbsp;</span><span style="color:#ff0000;">3000</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;money_new&nbsp;=&nbsp;</span><span style="color:#800000;">'{:.2f}'</span><span style="color:#000000;">.</span><span style="color:#8000ff;">format</span><span style="color:#000000;">(money_old&nbsp;*&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">.</span><span style="color:#ff0000;">7</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">elif</span><span style="color:#000000;">&nbsp;money_old&nbsp;&gt;=&nbsp;</span><span style="color:#ff0000;">3000</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;money_new&nbsp;=&nbsp;</span><span style="color:#800000;">'{:.2f}'</span><span style="color:#000000;">.</span><span style="color:#8000ff;">format</span><span style="color:#000000;">(money_old&nbsp;*&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">.</span><span style="color:#ff0000;">6</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;money_old,&nbsp;money_new&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;返回总金额和折扣后的金额<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;\n开始结算......&quot;</span><span style="color:#000000;">)<BR>
+list_money&nbsp;=&nbsp;[]<BR>
+</span><span style="color:#0000ff;">while</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">True</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;inmoney&nbsp;=&nbsp;(</span><span style="color:#8000ff;">float</span><span style="color:#000000;">)(</span><span style="color:#8000ff;">input</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;请输入商品金额(输入0表示输入完毕：)&quot;</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">(inmoney)&nbsp;==&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;退出循环<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;list_money.</span><span style="color:#0000ff;">append</span><span style="color:#000000;">(inmoney)<BR>
+money&nbsp;=&nbsp;fun_checkout(list_money)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;调用函数<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;合计金额：&quot;</span><span style="color:#000000;">,money[</span><span style="color:#ff0000;">0</span><span style="color:#000000;">],&nbsp;</span><span style="color:#800000;">&quot;应付金额：&quot;</span><span style="color:#000000;">,&nbsp;money[</span><span style="color:#ff0000;">1</span><span style="color:#000000;">])<BR>
+</span><span style="color:#008000;">#&nbsp;变量的作用域：它是指程序代码能够访问该变量的区域，如果超出该区域，再访问时就会出现错误<BR>
+#&nbsp;局部变量：只在某一作用域里面有效、全局变量：在所有作用域里都有效，不能在函数体内改变全局变量的值<BR>
+#&nbsp;global&nbsp;关键字&nbsp;&nbsp;在函数体内修改全局变量的值或者是说在函数体内定义一个全局变量<BR>
+#&nbsp;实例：<BR>
+</span><span style="color:#000000;">pinetree&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;我是一棵松树&quot;</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;全局变量<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;fun_chirstmastree():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'''功能：松树的一个梦<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;无返回值<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'''<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;pinetree&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;挂上彩灯，礼物......我变成一棵圣诞树&nbsp;&nbsp;@^.^@&nbsp;\n&quot;</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;定义一个局部变量<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(pinetree)&nbsp;<BR>
+</span><span style="color:#008000;">#&nbsp;函数体外<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;\n下雪了......\n&quot;</span><span style="color:#000000;">)<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;=&quot;</span><span style="color:#000000;">*</span><span style="color:#ff0000;">15</span><span style="color:#000000;">,</span><span style="color:#800000;">&quot;开始做梦……&quot;</span><span style="color:#000000;">,</span><span style="color:#800000;">&quot;=&quot;</span><span style="color:#000000;">*</span><span style="color:#ff0000;">15</span><span style="color:#000000;">)<BR>
+fun_chirstmastree()&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;调用函数<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;=&quot;</span><span style="color:#000000;">*</span><span style="color:#ff0000;">15</span><span style="color:#000000;">,</span><span style="color:#800000;">&quot;梦醒了……&quot;</span><span style="color:#000000;">,</span><span style="color:#800000;">&quot;=&quot;</span><span style="color:#000000;">*</span><span style="color:#ff0000;">15</span><span style="color:#000000;">)<BR>
+pinetree&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;我身上落满雪花，&quot;</span><span style="color:#000000;">+pinetree+</span><span style="color:#800000;">&quot;-_-&quot;</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;为全局变量赋值<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(pinetree)<BR>
+</span><span style="color:#008000;">#&nbsp;匿名函数：相当于群众演员，用一次就不用了，也不用起名&nbsp;&nbsp;lambda表达式<BR>
+#&nbsp;基本语法：result&nbsp;=&nbsp;lambda&nbsp;[arg1&nbsp;[,arg2,……,argn]]:expression(不能出现for、while语句)<BR>
+#&nbsp;实例：计算圆的面积<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;math<BR>
+r&nbsp;=&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;半径<BR>
+</span><span style="color:#000000;">result&nbsp;=&nbsp;</span><span style="color:#0000ff;">lambda</span><span style="color:#000000;">&nbsp;r:math.pi*r*r<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(result(r))<BR>
+</span><span style="color:#008000;">#&nbsp;实例：书籍信息排序<BR>
+</span><span style="color:#000000;">bookinfo&nbsp;=&nbsp;[(</span><span style="color:#800000;">&quot;不一样的卡梅拉&quot;</span><span style="color:#000000;">,</span><span style="color:#ff0000;">22</span><span style="color:#000000;">.</span><span style="color:#ff0000;">50</span><span style="color:#000000;">,</span><span style="color:#ff0000;">120</span><span style="color:#000000;">),(</span><span style="color:#800000;">&quot;零基础学Android&quot;</span><span style="color:#000000;">,</span><span style="color:#ff0000;">65</span><span style="color:#000000;">.</span><span style="color:#ff0000;">10</span><span style="color:#000000;">,</span><span style="color:#ff0000;">89</span><span style="color:#000000;">.</span><span style="color:#ff0000;">80</span><span style="color:#000000;">),(</span><span style="color:#800000;">&quot;摆渡人&quot;</span><span style="color:#000000;">,</span><span style="color:#ff0000;">23</span><span style="color:#000000;">.</span><span style="color:#ff0000;">40</span><span style="color:#000000;">,</span><span style="color:#ff0000;">36</span><span style="color:#000000;">.</span><span style="color:#ff0000;">00</span><span style="color:#000000;">),(</span><span style="color:#800000;">&quot;福尔摩斯探案全集&quot;</span><span style="color:#000000;">,</span><span style="color:#ff0000;">22</span><span style="color:#000000;">.</span><span style="color:#ff0000;">50</span><span style="color:#000000;">,</span><span style="color:#ff0000;">128</span><span style="color:#000000;">)]<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;爬取到的商品信息：\n&quot;</span><span style="color:#000000;">,bookinfo,</span><span style="color:#800000;">&quot;\n&quot;</span><span style="color:#000000;">)<BR>
+bookinfo.</span><span style="color:#0000ff;">sort</span><span style="color:#000000;">(key&nbsp;=&nbsp;</span><span style="color:#0000ff;">lambda</span><span style="color:#000000;">&nbsp;x:(x[</span><span style="color:#ff0000;">1</span><span style="color:#000000;">],&nbsp;x[</span><span style="color:#ff0000;">1</span><span style="color:#000000;">]/x[</span><span style="color:#ff0000;">2</span><span style="color:#000000;">]))&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;指定排序规则<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;排序后的商品信息：\n&quot;</span><span style="color:#000000;">,bookinfo,</span><span style="color:#800000;">&quot;\n&quot;</span><span style="color:#000000;">)<BR>
+</span></div></td></tr></table></div>
+<br><br><br>
+<font color = gray size = 3>如有错误，欢迎指正！</font></p></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://oubc.github.io/tags/python/">Python</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmg4aog3074074gnf.gif?tags=%5B%5D">I </a>
+	<a href="">love</a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmfm2eg306o06o74u.gif?tags=%5B%5D"> you </a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx4tpcj30fn0bq3zg.jpg?tags=%5B%5D">three </a>
+	<a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx64ctg307s07swfy.gif?tags=%5B%5D">thousand</a>
+    <a href="https://www.kugou.com/song/#hash=96426C78381DE98DC31A5846FC274CBF&album_id=646623"> times.</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>家庭、梦想、内心的平静</span>
+  </div>
+</footer>
+
+
+
+<script src="https://oubc.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://oubc.github.io/js/zozo.js"></script>
+<script src="https://oubc.github.io/js/highlight.pack.js"></script>
+<link  href="https://oubc.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://oubc.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <url>
+    <loc>https://oubc.github.io/categories/</loc>
+    <lastmod>2019-09-05T12:10:40+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://oubc.github.io/tags/linux/</loc>
+    <lastmod>2019-09-05T12:10:40+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://oubc.github.io/post/l8_shellandbash/</loc>
+    <lastmod>2019-09-05T12:10:40+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://oubc.github.io/</loc>
+    <lastmod>2019-09-05T12:10:40+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://oubc.github.io/post/</loc>
+    <lastmod>2019-09-05T12:10:40+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://oubc.github.io/tags/</loc>
+    <lastmod>2019-09-05T12:10:40+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://oubc.github.io/categories/%E5%AD%A6%E4%B9%A0/</loc>
+    <lastmod>2019-09-05T12:10:40+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://oubc.github.io/post/l7_filesystem/</loc>
+    <lastmod>2019-08-14T12:55:22+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://oubc.github.io/post/l6_authoritymanagement/</loc>
+    <lastmod>2019-08-12T18:10:22+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://oubc.github.io/post/l5_uusermanage/</loc>
+    <lastmod>2019-08-10T10:38:22+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://oubc.github.io/post/cpoint-final/</loc>
+    <lastmod>2019-07-29T12:10:22+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://oubc.github.io/tags/c/c&#43;&#43;/</loc>
+    <lastmod>2019-07-29T12:10:22+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://oubc.github.io/tags/python/</loc>
+    <lastmod>2019-07-27T16:45:25+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://oubc.github.io/post/p15_basicwebcode/</loc>
+    <lastmod>2019-07-27T16:45:25+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://oubc.github.io/post/p14_basicnetcode/</loc>
+    <lastmod>2019-07-26T10:45:25+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://oubc.github.io/post/p13_basicospython/</loc>
+    <lastmod>2019-07-25T15:30:25+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://oubc.github.io/post/p12_basicreptile/</loc>
+    <lastmod>2019-07-24T17:20:25+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://oubc.github.io/post/p11_basicpygame/</loc>
+    <lastmod>2019-07-23T11:03:25+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://oubc.github.io/post/p10_basicpygui/</loc>
+    <lastmod>2019-07-21T20:48:25+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://oubc.github.io/post/p9_pymysql/</loc>
+    <lastmod>2019-07-20T15:42:50+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://oubc.github.io/post/p8_basicpython/</loc>
+    <lastmod>2019-07-19T15:42:30+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://oubc.github.io/post/p7_basicpython/</loc>
+    <lastmod>2019-07-18T19:52:34+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://oubc.github.io/post/p6_basicpython/</loc>
+    <lastmod>2019-07-18T14:37:03+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://oubc.github.io/post/p5_basicpython/</loc>
+    <lastmod>2019-07-17T19:42:45+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://oubc.github.io/post/p4_basicpython/</loc>
+    <lastmod>2019-07-17T18:03:22+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://oubc.github.io/post/p3_regularexpression/</loc>
+    <lastmod>2019-07-16T18:06:22+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://oubc.github.io/post/p2_basicpython/</loc>
+    <lastmod>2019-07-15T19:36:22+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://oubc.github.io/post/p1_basicpython/</loc>
+    <lastmod>2019-07-14T16:36:22+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://oubc.github.io/post/p0_whylearnpy/</loc>
+    <lastmod>2019-07-13T10:36:22+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://oubc.github.io/post/l4_softpackagemanage/</loc>
+    <lastmod>2019-07-05T11:08:22+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://oubc.github.io/post/july/</loc>
+    <lastmod>2019-07-01T20:25:00+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://oubc.github.io/tags/%E6%9D%82%E8%AE%B0/</loc>
+    <lastmod>2019-07-01T20:25:00+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://oubc.github.io/tags/windows/</loc>
+    <lastmod>2019-06-22T16:45:53+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://oubc.github.io/post/tetris/</loc>
+    <lastmod>2019-06-22T16:45:53+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://oubc.github.io/post/l3_useofvim/</loc>
+    <lastmod>2019-06-10T16:36:22+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://oubc.github.io/post/l2_command_common/</loc>
+    <lastmod>2019-05-30T16:36:22+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://oubc.github.io/post/l1_command_catalog/</loc>
+    <lastmod>2019-05-18T11:09:16+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://oubc.github.io/post/l0_whatislinux/</loc>
+    <lastmod>2019-04-26T20:12:11+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://oubc.github.io/categories/%E7%94%9F%E6%B4%BB/</loc>
+    <lastmod>2019-04-15T11:10:22+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://oubc.github.io/post/rnotes_huozhe/</loc>
+    <lastmod>2019-04-15T11:10:22+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://oubc.github.io/post/plan_sum18-19/</loc>
+    <lastmod>2019-03-05T11:08:22+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://oubc.github.io/post/gobangnetworked/</loc>
+    <lastmod>2019-03-02T21:50:35+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://oubc.github.io/post/networkprogramming/</loc>
+    <lastmod>2019-02-25T17:06:37+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://oubc.github.io/post/gobang/</loc>
+    <lastmod>2019-01-25T21:50:35+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://oubc.github.io/about/</loc>
+    <lastmod>2018-12-29T20:24:28+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://oubc.github.io/post/simulatede-maillogin/</loc>
+    <lastmod>2018-12-16T17:12:01+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://oubc.github.io/post/cpoint/</loc>
+    <lastmod>2018-11-25T11:00:45+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://oubc.github.io/post/firstblog/</loc>
+    <lastmod>2018-11-14T10:00:30+08:00</lastmod>
+  </url>
+  
+</urlset>

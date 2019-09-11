@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Bruce Cheung"/>
+
+  
+  <meta name="description" content="本篇包括了Python语法中的基本输入输出、PEP8规范、代码缩进、数据类型、运算符和流程控制
+"/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, simple, dream"/>
+  
+
+  
+  <link rel="canonical" href="https://oubc.github.io/post/p1_basicpython/"/>
+
+  
+
+  <title>Python语法基础-基础 &middot; Love, or death</title>
+
+  <link rel="shortcut icon" href="https://oubc.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/post/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://oubc.github.io/">
+          <span>Love, or death</span>
+          <img src="https://oubc.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">For you, a thousand times over.</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/oubc" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=uYGOjo6OiIuLivnIyJfa1tQ" title="mail" target="_blank"><i class="remixicon-mail-fill"></i></a>
+        
+        
+        
+        <a href="http://sighttp.qq.com/msgrd?v=1&amp;uin=877771223" title="qq" target="_blank"><i class="remixicon-qq-fill"></i></a>
+        
+        
+        
+        <a href="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g4klnqf0tmj30ia0widks.jpg" title="wechat" target="_blank"><i class="remixicon-wechat-fill"></i></a>
+        
+        
+        
+        <a href="https://weibo.com/u/6993631995?topnav=1&amp;wvr=6&amp;topsug=1" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://oubc.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/post/p1_basicpython/'>Python语法基础-基础</a></h2>
+          <span class="date">2019.07.14</span>
+        </div>
+        <div class="post_content markdown"><p>本篇包括了Python语法中的基本输入输出、PEP8规范、代码缩进、数据类型、运算符和流程控制</p>
+
+<p><br><font color=black size = 4>基本输入输出</font>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;Python Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47<br>48<br>49<br>50<br>51<br>52<br>53<br>54<br>55<br>56<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#008000;">#&nbsp;基本输入和输出<BR>
+#&nbsp;输入：在键盘上输入、输出：在屏幕上输出<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;输入<BR>
+#&nbsp;variable&nbsp;=&nbsp;input(&quot;提示输入提示&quot;)<BR>
+</span><span style="color:#000000;">tip&nbsp;=&nbsp;</span><span style="color:#8000ff;">input</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;请输入文字：&quot;</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;如果需要的其它数据类型，则需要强制数据类型转换<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">&nbsp;(tip)<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">type</span><span style="color:#000000;">(tip))<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;输出<BR>
+#&nbsp;print&nbsp;(输出内容)&nbsp;基本输出函数，输出内容可以是数字、字符串、表达式<BR>
+</span><span style="color:#000000;">a&nbsp;=&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;"><BR>
+b&nbsp;=&nbsp;</span><span style="color:#ff0000;">6</span><span style="color:#000000;"><BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">&nbsp;(</span><span style="color:#800000;">&quot;数字：&quot;</span><span style="color:#000000;">&nbsp;,&nbsp;</span><span style="color:#ff0000;">6</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;“,”将输出放在一行，不过系统会自动加上一个空格<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">&nbsp;(</span><span style="color:#800000;">&quot;表达式a*b:&quot;</span><span style="color:#000000;">,&nbsp;a*b)<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">&nbsp;(</span><span style="color:#800000;">&quot;字符串：&quot;</span><span style="color:#000000;">,&nbsp;</span><span style="color:#800000;">&quot;快乐学习，快乐成长！&quot;</span><span style="color:#000000;">)<BR>
+</span><span style="color:#008000;">#&nbsp;将输出结果写到一个文件中<BR>
+</span><span style="color:#000000;">fp&nbsp;=&nbsp;</span><span style="color:#8000ff;">open</span><span style="color:#000000;">&nbsp;(r</span><span style="color:#800000;">'H:\Python&nbsp;Program\mot.txt'</span><span style="color:#000000;">,&nbsp;</span><span style="color:#800000;">'a+'</span><span style="color:#000000;">)<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;I&nbsp;love&nbsp;you&nbsp;three&nbsp;thousand&nbsp;times.&quot;</span><span style="color:#000000;">,&nbsp;</span><span style="color:#8000ff;">file</span><span style="color:#000000;">&nbsp;=&nbsp;fp)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;输出到文件中<BR>
+</span><span style="color:#000000;">fp.</span><span style="color:#0000ff;">close</span><span style="color:#000000;">()&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#关闭文件<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;A&nbsp;very&nbsp;&nbsp;intelligent&nbsp;turtle,&quot;</span><span style="color:#000000;">)<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;Found&nbsp;programming&nbsp;Linux&nbsp;a&nbsp;hurdle,&quot;</span><span style="color:#000000;">)<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;The&nbsp;system,&nbsp;you&nbsp;see,&quot;</span><span style="color:#000000;">)<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;Ran&nbsp;as&nbsp;slow&nbsp;as&nbsp;did&nbsp;he,&quot;</span><span style="color:#000000;">)<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;And&nbsp;that's&nbsp;not&nbsp;saying&nbsp;much&nbsp;for&nbsp;the&nbsp;turtle.&quot;</span><span style="color:#000000;">)<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;实例：BMI指数<BR>
+#&nbsp;_*_&nbsp;coding:utf-8&nbsp;_*_&nbsp;<BR>
+#coding=utf-8<BR>
+</span><span style="color:#800000;">'''<BR>
+</span><span style="color:#000000;">&nbsp;@&nbsp;版权所有&nbsp;重庆市XX科技有限公司◎版权所有<BR>
+&nbsp;@&nbsp;文件名：BMI.py<BR>
+&nbsp;@&nbsp;创建日期：2019/</span><span style="color:#ff0000;">7</span><span style="color:#000000;">/</span><span style="color:#ff0000;">13</span><span style="color:#000000;"><BR>
+&nbsp;@&nbsp;创建人：zhangshao<BR>
+&nbsp;@&nbsp;修改标识：2019/</span><span style="color:#ff0000;">7</span><span style="color:#000000;">/</span><span style="color:#ff0000;">14</span><span style="color:#000000;"><BR>
+&nbsp;@&nbsp;修改描述：增加根据BMI指数判断身材是否合理功能代码<BR>
+&nbsp;@&nbsp;修改日期：2019/</span><span style="color:#ff0000;">7</span><span style="color:#000000;">/</span><span style="color:#ff0000;">14</span><span style="color:#000000;"><BR>
+</span><span style="color:#800000;">'''<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'''根据身高、体重计算BMI指数'''</span><span style="color:#000000;">)<BR>
+</span><span style="color:#008000;">#&nbsp;输入身高和体重<BR>
+</span><span style="color:#000000;">height=</span><span style="color:#8000ff;">float</span><span style="color:#000000;">(</span><span style="color:#8000ff;">input</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;请输入您的身高:&quot;</span><span style="color:#000000;">))<BR>
+weight=</span><span style="color:#8000ff;">float</span><span style="color:#000000;">(</span><span style="color:#8000ff;">input</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;请输入您的体重:&quot;</span><span style="color:#000000;">))<BR>
+<BR>
+bmi=weight/(height*height)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;BMI指数=体重/身高的平方<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;您的BMI指数为：&quot;</span><span style="color:#000000;">+</span><span style="color:#8000ff;">str</span><span style="color:#000000;">(bmi))<BR>
+<BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;bmi&lt;</span><span style="color:#ff0000;">18</span><span style="color:#000000;">.</span><span style="color:#ff0000;">5</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;您的体重过轻&nbsp;~@_@~&quot;</span><span style="color:#000000;">)<BR>
+</span><span style="color:#0000ff;">elif</span><span style="color:#000000;">&nbsp;bmi&lt;</span><span style="color:#ff0000;">24</span><span style="color:#000000;">.</span><span style="color:#ff0000;">9</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;正常范围，注意保持&nbsp;(-_-)&quot;</span><span style="color:#000000;">)<BR>
+</span><span style="color:#0000ff;">elif</span><span style="color:#000000;">&nbsp;bmi&lt;</span><span style="color:#ff0000;">29</span><span style="color:#000000;">.</span><span style="color:#ff0000;">9</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;您的体重过重&nbsp;~@_@~&quot;</span><span style="color:#000000;">)<BR>
+</span><span style="color:#0000ff;">else</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;肥胖&nbsp;~@_@~&quot;</span><span style="color:#000000;">)</span></div></td></tr></table></div>
+<br><font color=black size = 4>PEP8规范</font>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;Python Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#008000;">#&nbsp;PEP8编码规范&nbsp;(Python增强建议书)<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;每个import语句只导入一个模块，尽量避免一次导入多个模块<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;os,sys&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;不规范<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;os<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;sys&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;规范<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;不要在行尾添加分号“;”，也不要用分号将两条命令放在同一行<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;要么出众&quot;</span><span style="color:#000000;">);&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;要么出局&quot;</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;不规范<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;要么出众&quot;</span><span style="color:#000000;">)<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;要么出局&quot;</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;规范<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;建议每行不超过80个字符<BR>
+#&nbsp;字符串超过<BR>
+#&nbsp;通过小括号进行换行<BR>
+</span><span style="color:#000000;">s=(</span><span style="color:#800000;">&quot;人生有多少个十年，可以陪伴一个人的所有高峰和低谷，可是，&quot;</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">&quot;当我战立在人群中，却再也看不到你的身影！&quot;</span><span style="color:#000000;">)<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(s)<BR>
+</span><span style="color:#008000;">#&nbsp;正常语句超过<BR>
+#&nbsp;通过小括号进行换行<BR>
+</span><span style="color:#000000;">bmi&nbsp;=&nbsp;</span><span style="color:#ff0000;">20</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;bmi&nbsp;&gt;=&nbsp;</span><span style="color:#ff0000;">18</span><span style="color:#000000;">.</span><span style="color:#ff0000;">5</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">and</span><span style="color:#000000;">&nbsp;(<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;bmi&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">24</span><span style="color:#000000;">.</span><span style="color:#ff0000;">9</span><span style="color:#000000;">):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;正常范围，注意保持&quot;</span><span style="color:#000000;">)<BR>
+</span><span style="color:#008000;">#&nbsp;导入模块语句过长、注释里面的url过长&nbsp;不可以换行<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;使用必要的空行可以增加代码的可读性<BR>
+#&nbsp;顶级定义直接空两行-函数、类的定义<BR>
+#&nbsp;方法定义直接空一行<BR>
+#&nbsp;空行分隔某些功能的位置<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;运算符两侧、函数参数之间、逗号“,”两侧&nbsp;都建议使用空格进行分隔<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;避免在循环控制块之中用+或+=运算符累加字符串<BR>
+#&nbsp;把每个子字符串加入到列表当中，然后载循环结束之后使用栈方法来连接列表<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;适当使用异常处理结构提高程序容错性<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;Python当中的命名规则<BR>
+#&nbsp;1.模块名尽量短小，并且使用全部小写字母，可以使用下划线分隔多个字母<BR>
+#&nbsp;2.包名尽量短小，而且使用全部小写子母<BR>
+#&nbsp;3.类名采用首字母大写形式(即Pascal风格)<BR>
+#&nbsp;4.函数、类的属性和方法名全部采用小写字母，多个字母间用“_”分隔<BR>
+#&nbsp;5.常量命名时采用全部大写字母，可以使用下划线<BR>
+#&nbsp;6.使用单下划线“_”开头的模块变量或者函数是受保护的<BR>
+#&nbsp;7.使用双下划线“__”开头的实例变量或方法是类私有的<BR>
+</span></div></td></tr></table></div>
+<br><font color=black size = 4>代码缩进</font>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;Python Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#008000;">#&nbsp;代码缩进(推荐使用4个空格或者一个TAB键)<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;Python采用代码缩进和冒号“:”来区分代码层次<BR>
+#&nbsp;它主要应用在类的定义、函数的定义、流程控制语句、异常处理语句......<BR>
+#&nbsp;如前面的BMI.py文件代码<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;同一个级别的缩进必须相同<BR>
+</span><span style="color:#800000;">'''print(&quot;人生苦短，&quot;)<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;我选Pyhon!&quot;</span><span style="color:#000000;">)</span><span style="color:#800000;">'''&nbsp;&nbsp;&nbsp;#&nbsp;错误<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;人生苦短，&quot;</span><span style="color:#000000;">)<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;我选Pyhon!&quot;</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;正确<BR>
+</span></div></td></tr></table></div>
+<br><font color=black size = 4>数据类型</font>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;Python Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47<br>48<br>49<br>50<br>51<br>52<br>53<br>54<br>55<br>56<br>57<br>58<br>59<br>60<br>61<br>62<br>63<br>64<br>65<br>66<br>67<br>68<br>69<br>70<br>71<br>72<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#008000;">#&nbsp;数据类型<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;数字类型：整型、浮点型、复数<BR>
+#&nbsp;整数&nbsp;-&nbsp;十进制、八进制、二进制、十六进制<BR>
+</span><span style="color:#000000;">a&nbsp;=&nbsp;</span><span style="color:#ff0000;">11111111111111111111111111111111111111111111111</span><span style="color:#000000;"><BR>
+b&nbsp;=&nbsp;</span><span style="color:#ff0000;">22222222222222222222222222222222222222222222222</span><span style="color:#000000;"><BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(a&nbsp;+&nbsp;b)<BR>
+</span><span style="color:#008000;">#&nbsp;浮点数应用-前面的计算BMI程序<BR>
+</span><span style="color:#000000;">height&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">.</span><span style="color:#ff0000;">70</span><span style="color:#000000;"><BR>
+weight&nbsp;=&nbsp;</span><span style="color:#ff0000;">55</span><span style="color:#000000;"><BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;您的身高&quot;</span><span style="color:#000000;">&nbsp;+&nbsp;</span><span style="color:#8000ff;">str</span><span style="color:#000000;">(height))&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;输出身高<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;您的体重&quot;</span><span style="color:#000000;">&nbsp;+&nbsp;</span><span style="color:#8000ff;">str</span><span style="color:#000000;">(weight))&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;输出体重<BR>
+</span><span style="color:#000000;">BMI&nbsp;=&nbsp;weight/(height*height)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;输出BMI指数&nbsp;<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;您的BMI指数为&quot;</span><span style="color:#000000;">&nbsp;+&nbsp;</span><span style="color:#8000ff;">str</span><span style="color:#000000;">(</span><span style="color:#8000ff;">round</span><span style="color:#000000;">(BMI,</span><span style="color:#ff0000;">2</span><span style="color:#000000;">)))&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;round()的作用是保留两位小数<BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;BMI&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">18</span><span style="color:#000000;">.</span><span style="color:#ff0000;">5</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;您的体重过轻&nbsp;~@_@~&quot;</span><span style="color:#000000;">)<BR>
+</span><span style="color:#0000ff;">elif</span><span style="color:#000000;">&nbsp;BMI&nbsp;&gt;=&nbsp;</span><span style="color:#ff0000;">18</span><span style="color:#000000;">.</span><span style="color:#ff0000;">5</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">and</span><span style="color:#000000;">&nbsp;BMI&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">24</span><span style="color:#000000;">.</span><span style="color:#ff0000;">9</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;正常范围，注意保持&nbsp;-_-&nbsp;&quot;</span><span style="color:#000000;">)<BR>
+</span><span style="color:#0000ff;">else</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;肥胖&nbsp;~@_@~&quot;</span><span style="color:#000000;">)<BR>
+</span><span style="color:#008000;">#&nbsp;复数<BR>
+</span><span style="color:#000000;">a&nbsp;=&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">.</span><span style="color:#ff0000;">14</span><span style="color:#000000;">&nbsp;+&nbsp;</span><span style="color:#ff0000;">12</span><span style="color:#000000;">.5j<BR>
+b&nbsp;=&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">.</span><span style="color:#ff0000;">14</span><span style="color:#000000;">&nbsp;+&nbsp;</span><span style="color:#ff0000;">12</span><span style="color:#000000;">.5j<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">&nbsp;(a&nbsp;+&nbsp;b)<BR>
+<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;变量=名字=标签<BR>
+#&nbsp;不需要先声明变量命，只需要直接赋值就可以了<BR>
+</span><span style="color:#000000;">python&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;人生苦短，我用Python&quot;</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;定义一个字符类型的变量<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">&nbsp;(python)<BR>
+age&nbsp;=&nbsp;</span><span style="color:#ff0000;">18</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;定义整型变量<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">&nbsp;(age)<BR>
+</span><span style="color:#008000;">#&nbsp;通过type()来获取变量类型<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">type</span><span style="color:#000000;">(python))<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">type</span><span style="color:#000000;">(age))<BR>
+</span><span style="color:#008000;">#&nbsp;允许多个变量同时获取一个值<BR>
+</span><span style="color:#000000;">no&nbsp;=&nbsp;number&nbsp;=&nbsp;</span><span style="color:#ff0000;">1024</span><span style="color:#000000;"><BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(no,number)<BR>
+</span><span style="color:#008000;">#&nbsp;测试内存地址&nbsp;&nbsp;id()函数可以获取内存地址<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">id</span><span style="color:#000000;">(no),&nbsp;</span><span style="color:#8000ff;">id</span><span style="color:#000000;">(number))&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;可以知道两个变量同用了一块地址的值<BR>
+#&nbsp;变量名定义规则：必须是一个有效的标识符、选择有意义的单词、不能使用python中的保留字<BR>
+#&nbsp;续：慎用大写字母O和小写字母l<BR>
+#&nbsp;定义一个常量：不是真正意义上的常量，只是在命名上面为大写字母加下划线组成的标识为常量<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;字符串类型<BR>
+#&nbsp;用'&nbsp;'、&quot;&nbsp;&quot;、'''&nbsp;'''来存放字符串，其中'''&nbsp;'''可以不放在一行上<BR>
+</span><span style="color:#0000ff;">title</span><span style="color:#000000;">&nbsp;=&nbsp;</span><span style="color:#800000;">'我喜欢的名言'</span><span style="color:#000000;"><BR>
+mont1&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;花开花落，又是一季&quot;</span><span style="color:#000000;"><BR>
+mont2&nbsp;=&nbsp;</span><span style="color:#800000;">'''生活或许并不是你想象中的那么好，单也不会是你想象中的那么差，人的坚强和脆弱都超乎了自己的想象，有时候因为一句话就泪流满面，有时候你回头，发现以及走过了最艰难的时刻。'''</span><span style="color:#000000;"><BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">&nbsp;(</span><span style="color:#0000ff;">title</span><span style="color:#000000;">)<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">&nbsp;(mont1)<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">&nbsp;(mont2)<BR>
+</span><span style="color:#008000;">#&nbsp;在单引号里面需要输出单引号，需要加上\，“\”在这里为转义字符<BR>
+#&nbsp;在输出的字符串前面加上r可以原样输出，包括转义字符<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">&nbsp;(r</span><span style="color:#800000;">'123\'</span><span style="color:#ff0000;">456</span><span style="color:#800000;">')<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;数据类型转换：变量由赋给的值决定的<BR>
+#&nbsp;转换函数&nbsp;int()&nbsp;float()&nbsp;str()&nbsp;hex()&nbsp;oct()&nbsp;bin()<BR>
+</span><span style="color:#000000;">money&nbsp;=&nbsp;</span><span style="color:#ff0000;">56</span><span style="color:#000000;">.</span><span style="color:#ff0000;">75</span><span style="color:#000000;">&nbsp;+&nbsp;</span><span style="color:#ff0000;">72</span><span style="color:#000000;">.</span><span style="color:#ff0000;">91</span><span style="color:#000000;">&nbsp;+&nbsp;</span><span style="color:#ff0000;">88</span><span style="color:#000000;">.</span><span style="color:#ff0000;">50</span><span style="color:#000000;">&nbsp;+&nbsp;</span><span style="color:#ff0000;">68</span><span style="color:#000000;">.</span><span style="color:#ff0000;">51</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;累加总计金额<BR>
+</span><span style="color:#000000;">money_str&nbsp;=&nbsp;</span><span style="color:#8000ff;">str</span><span style="color:#000000;">(money)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;转换为字符串<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">&nbsp;(</span><span style="color:#800000;">&quot;商品总金额：&quot;</span><span style="color:#000000;">&nbsp;+&nbsp;money_str)<BR>
+money_int&nbsp;=&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">(money)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;转换为整型<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;商品总金额(去掉小数点后的金额)：&quot;</span><span style="color:#000000;">&nbsp;+&nbsp;</span><span style="color:#8000ff;">str</span><span style="color:#000000;">(money_int))<BR>
+money_bin&nbsp;=&nbsp;</span><span style="color:#8000ff;">bin</span><span style="color:#000000;">(money_int)<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;转换为二进制后的金额为：&quot;</span><span style="color:#000000;">&nbsp;+&nbsp;</span><span style="color:#8000ff;">str</span><span style="color:#000000;">(money_bin))<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;布尔类型&nbsp;-&nbsp;表示&nbsp;真&nbsp;或者&nbsp;假&nbsp;值<BR>
+#&nbsp;注意：&nbsp;True&nbsp;!=&nbsp;true&nbsp;&nbsp;False&nbsp;!=&nbsp;false&nbsp;&nbsp;True、False为Python中的布尔值<BR>
+#&nbsp;布尔值可以转换为数字1&nbsp;、&nbsp;0<BR>
+#&nbsp;False、None、0、0.0、虚数0、空序列(空字符串、空元组、空列表、空字典)<BR>
+#&nbsp;续：对象中的__bool__方法或者__len__方法返回0，其它对象返回的为真值<BR>
+</span></div></td></tr></table></div>
+<br><font color=black size = 4>运算符</font>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;Python Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47<br>48<br>49<br>50<br>51<br>52<br>53<br>54<br>55<br>56<br>57<br>58<br>59<br>60<br>61<br>62<br>63<br>64<br>65<br>66<br>67<br>68<br>69<br>70<br>71<br>72<br>73<br>74<br>75<br>76<br>77<br>78<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#008000;">#&nbsp;运算符/操作符<BR>
+#&nbsp;主要有&nbsp;算术运算符、赋值运算符、比较运算符/关系运算符、逻辑运算符、位运算符<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;算术运算符：用来进行四则运算&nbsp;+&nbsp;-&nbsp;*&nbsp;/&nbsp;%(求余)<BR>
+#&nbsp;%(求余)&nbsp;它的符号是和除数的符号一致的<BR>
+</span><span style="color:#000000;">a&nbsp;=&nbsp;</span><span style="color:#ff0000;">36</span><span style="color:#000000;"><BR>
+b&nbsp;=&nbsp;</span><span style="color:#ff0000;">5</span><span style="color:#000000;"><BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;36/5&nbsp;=&nbsp;&quot;</span><span style="color:#000000;">,</span><span style="color:#ff0000;">36</span><span style="color:#000000;">/</span><span style="color:#ff0000;">5</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;除法<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;36*5&nbsp;=&nbsp;&quot;</span><span style="color:#000000;">,</span><span style="color:#ff0000;">36</span><span style="color:#000000;">*</span><span style="color:#ff0000;">5</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;乘法<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;36%5&nbsp;=&nbsp;&quot;</span><span style="color:#000000;">,</span><span style="color:#ff0000;">36</span><span style="color:#000000;">%</span><span style="color:#ff0000;">5</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;求余<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;36%-5&nbsp;=&nbsp;&quot;</span><span style="color:#000000;">,</span><span style="color:#ff0000;">36</span><span style="color:#000000;">%(-</span><span style="color:#ff0000;">5</span><span style="color:#000000;">))<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;-36%-5&nbsp;=&nbsp;&quot;</span><span style="color:#000000;">,(-</span><span style="color:#ff0000;">36</span><span style="color:#000000;">)%(-</span><span style="color:#ff0000;">5</span><span style="color:#000000;">))<BR>
+</span><span style="color:#008000;">#&nbsp;运用/来进行除法运算得到浮点数、运用//来进行除法运算得到整数<BR>
+#&nbsp;示例：求平均成绩<BR>
+</span><span style="color:#000000;">python&nbsp;=&nbsp;</span><span style="color:#ff0000;">95</span><span style="color:#000000;"><BR>
+english&nbsp;=&nbsp;</span><span style="color:#ff0000;">92</span><span style="color:#000000;"><BR>
+c&nbsp;=&nbsp;</span><span style="color:#ff0000;">89</span><span style="color:#000000;"><BR>
+sub&nbsp;=&nbsp;python&nbsp;-&nbsp;english<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;python与english的分差：&quot;</span><span style="color:#000000;">,sub)<BR>
+avg&nbsp;=&nbsp;(python+english+c)/</span><span style="color:#ff0000;">3</span><span style="color:#000000;"><BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;三门课程的平均成绩：&quot;</span><span style="color:#000000;">,avg)<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;赋值运算符&nbsp;=&nbsp;+=&nbsp;-=&nbsp;*=&nbsp;/=&nbsp;%=&nbsp;(后面5个运算符的意思是先将表达式进行相应计算后执行赋值操作)<BR>
+#&nbsp;age&nbsp;+=&nbsp;1&nbsp;等价于&nbsp;age&nbsp;+&nbsp;1&nbsp;=&nbsp;age<BR>
+</span><span style="color:#000000;">age&nbsp;=&nbsp;</span><span style="color:#ff0000;">18</span><span style="color:#000000;"><BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;age的值：&quot;</span><span style="color:#000000;">,&nbsp;age)<BR>
+age&nbsp;+=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;"><BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">&nbsp;(</span><span style="color:#800000;">&quot;执行+=1后的结果：&quot;</span><span style="color:#000000;">,&nbsp;age)<BR>
+age&nbsp;*=&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;"><BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">&nbsp;(</span><span style="color:#800000;">&quot;执行+=1后再执行*=2的结果：&quot;</span><span style="color:#000000;">,&nbsp;age)<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;比较运算符：==、!=、&gt;、&lt;、&gt;=、&lt;=&nbsp;&nbsp;结果有真(True)、假(False)<BR>
+#&nbsp;实例：<BR>
+</span><span style="color:#000000;">python&nbsp;=&nbsp;</span><span style="color:#ff0000;">95</span><span style="color:#000000;"><BR>
+english&nbsp;=&nbsp;</span><span style="color:#ff0000;">92</span><span style="color:#000000;"><BR>
+c&nbsp;=&nbsp;</span><span style="color:#ff0000;">89</span><span style="color:#000000;"><BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">&nbsp;(</span><span style="color:#800000;">&quot;python:&quot;</span><span style="color:#000000;">,&nbsp;python&nbsp;,</span><span style="color:#800000;">&quot;&nbsp;english:&quot;</span><span style="color:#000000;">,&nbsp;english&nbsp;,</span><span style="color:#800000;">&quot;&nbsp;c:&quot;</span><span style="color:#000000;">,&nbsp;c)<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">&nbsp;(</span><span style="color:#800000;">&quot;python&nbsp;&gt;&nbsp;english:&quot;</span><span style="color:#000000;">,&nbsp;python&nbsp;&gt;&nbsp;english)<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">&nbsp;(</span><span style="color:#800000;">&quot;python&nbsp;&lt;&nbsp;english:&quot;</span><span style="color:#000000;">,&nbsp;python&nbsp;&lt;&nbsp;english)<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">&nbsp;(</span><span style="color:#800000;">&quot;python&nbsp;&gt;=&nbsp;english:&quot;</span><span style="color:#000000;">,&nbsp;python&nbsp;&gt;=&nbsp;english)<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">&nbsp;(</span><span style="color:#800000;">&quot;python&nbsp;&lt;=&nbsp;english:&quot;</span><span style="color:#000000;">,&nbsp;python&nbsp;&lt;=&nbsp;english)<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">&nbsp;(</span><span style="color:#800000;">&quot;python&nbsp;==&nbsp;c:&quot;</span><span style="color:#000000;">,&nbsp;python&nbsp;==&nbsp;english)<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">&nbsp;(</span><span style="color:#800000;">&quot;python&nbsp;!=&nbsp;c:&quot;</span><span style="color:#000000;">,&nbsp;python&nbsp;!=&nbsp;english)<BR>
+</span><span style="color:#008000;">#&nbsp;当判断一个变量是否介于两个值之间时，可以采用“值1&lt;值2&lt;值3”的形式<BR>
+</span><span style="color:#000000;">n&nbsp;=&nbsp;</span><span style="color:#ff0000;">20</span><span style="color:#000000;"><BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">&nbsp;(</span><span style="color:#800000;">&quot;n:&quot;</span><span style="color:#000000;">,&nbsp;n)<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">&nbsp;(</span><span style="color:#800000;">&quot;10&nbsp;&lt;&nbsp;n&nbsp;&lt;&nbsp;50:&quot;</span><span style="color:#000000;">,</span><span style="color:#ff0000;">10</span><span style="color:#000000;">&nbsp;&lt;&nbsp;n&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">50</span><span style="color:#000000;">)<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;逻辑运算符：与and(一假则假)、或or(一真则真)、非!(假变真、真变假)<BR>
+#&nbsp;实例：手机店打折活动<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">&nbsp;(</span><span style="color:#800000;">&quot;\n******手机店打折活动进行中******&quot;</span><span style="color:#000000;">)<BR>
+strWeek&nbsp;=&nbsp;</span><span style="color:#8000ff;">input</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;请输入星期(如：星期一)：&quot;</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;输入星期<BR>
+</span><span style="color:#000000;">intTime&nbsp;=&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">(</span><span style="color:#8000ff;">input</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;请输入小时(0-23)：&quot;</span><span style="color:#000000;">))&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;输入时间<BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(strWeek&nbsp;==&nbsp;</span><span style="color:#800000;">&quot;星期二&quot;</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">and</span><span style="color:#000000;">&nbsp;(intTime&nbsp;&gt;=&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">and</span><span style="color:#000000;">&nbsp;intTime&nbsp;&lt;=&nbsp;</span><span style="color:#ff0000;">11</span><span style="color:#000000;">)&nbsp;</span><span style="color:#0000ff;">or</span><span style="color:#000000;">&nbsp;strWeek&nbsp;==&nbsp;</span><span style="color:#800000;">&quot;星期五&quot;</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">and</span><span style="color:#000000;">&nbsp;(intTime&nbsp;&gt;=&nbsp;</span><span style="color:#ff0000;">14</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">and</span><span style="color:#000000;">&nbsp;intTime&nbsp;&lt;=&nbsp;</span><span style="color:#ff0000;">15</span><span style="color:#000000;">)):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;恭喜你，获得折扣参与资格，快快选购吧~&quot;</span><span style="color:#000000;">)<BR>
+</span><span style="color:#0000ff;">else</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;对不起，您来晚一步，期待下次活动！&quot;</span><span style="color:#000000;">)<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;位运算符：把数字看作二进制数来进行计算的&nbsp;采用补码有符号位表示<BR>
+#&nbsp;位与&amp;(有0即0)、位或|(有1即1)、位取反~(0变1、1变0)、位异或^(全0或全1才为0)、位左移&lt;&lt;、位右移&gt;&gt;<BR>
+#&nbsp;实例：密码转换问题<BR>
+</span><span style="color:#000000;">pwd&nbsp;=&nbsp;</span><span style="color:#8000ff;">input</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;请输入密码：&quot;</span><span style="color:#000000;">)<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">&nbsp;(</span><span style="color:#800000;">&quot;原密码：&quot;</span><span style="color:#000000;">,&nbsp;pwd)<BR>
+key&nbsp;=&nbsp;</span><span style="color:#8000ff;">input</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;请输入密钥：&quot;</span><span style="color:#000000;">)<BR>
+passwd&nbsp;=&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">(pwd)&nbsp;^&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">(key)<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">&nbsp;(</span><span style="color:#800000;">&quot;加密后：&quot;</span><span style="color:#000000;">,&nbsp;passwd)<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">&nbsp;(</span><span style="color:#800000;">&quot;解密后：&quot;</span><span style="color:#000000;">,&nbsp;passwd&nbsp;^&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">(key))<BR>
+</span><span style="color:#008000;">#&nbsp;左移位运算&lt;&lt;：向左移动指定的位数，左边溢出位被丢弃，右边的空位用0补充，相当于*2的n次幂<BR>
+#&nbsp;右移位运算&gt;&gt;：向右移动指定的位数，右边溢出位被丢弃，最高为1空位添1，为0空位添0，相当于/2的n次幂<BR>
+#&nbsp;步骤：先转换为二进制数，按照上面规则进行移位<BR>
+</span><span style="color:#000000;">number&nbsp;=&nbsp;</span><span style="color:#ff0000;">32</span><span style="color:#000000;"><BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">&nbsp;(</span><span style="color:#800000;">&quot;左移一位：&quot;</span><span style="color:#000000;">,&nbsp;number&gt;&gt;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">&nbsp;(</span><span style="color:#800000;">&quot;右移一位：&quot;</span><span style="color:#000000;">,&nbsp;number&lt;&lt;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;运算符优先级<BR>
+#&nbsp;Python运算规则：优先级高的运算先执行，优先级低的运算后执行，同一优先级的操作按照从左向右顺序执行<BR>
+#&nbsp;可以用()改变优先级次序<BR>
+</span></div></td></tr></table></div>
+<br><font color=black size = 4>流程控制</font>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;Python Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47<br>48<br>49<br>50<br>51<br>52<br>53<br>54<br>55<br>56<br>57<br>58<br>59<br>60<br>61<br>62<br>63<br>64<br>65<br>66<br>67<br>68<br>69<br>70<br>71<br>72<br>73<br>74<br>75<br>76<br>77<br>78<br>79<br>80<br>81<br>82<br>83<br>84<br>85<br>86<br>87<br>88<br>89<br>90<br>91<br>92<br>93<br>94<br>95<br>96<br>97<br>98<br>99<br>100<br>101<br>102<br>103<br>104<br>105<br>106<br>107<br>108<br>109<br>110<br>111<br>112<br>113<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#008000;">#&nbsp;流程控制语句<BR>
+#&nbsp;程序结构、选择语句、条件表达式、虚幻语句、跳转语句、pass空语句<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;程序结构：顺序结构、选择结构、循环结构<BR>
+#&nbsp;顺序结构：按照代码顺序执行<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">&nbsp;(</span><span style="color:#800000;">&quot;第一次执行&quot;</span><span style="color:#000000;">)<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">&nbsp;(</span><span style="color:#800000;">&quot;第二次执行&quot;</span><span style="color:#000000;">)<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">&nbsp;(</span><span style="color:#800000;">&quot;第三次执行&quot;</span><span style="color:#000000;">)<BR>
+</span><span style="color:#008000;">#&nbsp;选择结构：按照条件表达式来执行，为真执行、假跳过<BR>
+#&nbsp;循环结构：在一定条件下循环执行语句块当中的代码<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;选择/条件语句<BR>
+#&nbsp;4种方式：&nbsp;简单的if语句、if...else语句、if...elif...else语句、if语句的嵌套使用<BR>
+#&nbsp;在python种没有switch语句<BR>
+#&nbsp;if&nbsp;表达式:&nbsp;&nbsp;成立条件：True、非空字符串、非0字<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">&nbsp;(</span><span style="color:#800000;">&quot;选择/条件语句应用&quot;</span><span style="color:#000000;">)<BR>
+a&nbsp;=&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;a&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">&nbsp;(</span><span style="color:#800000;">&quot;a&nbsp;&lt;&nbsp;10&quot;</span><span style="color:#000000;">)<BR>
+</span><span style="color:#0000ff;">elif</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">&nbsp;&lt;=&nbsp;a&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">20</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">&nbsp;(</span><span style="color:#800000;">&quot;10&nbsp;&lt;=&nbsp;a&nbsp;&lt;&nbsp;20&quot;</span><span style="color:#000000;">)<BR>
+</span><span style="color:#0000ff;">elif</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">20</span><span style="color:#000000;">&nbsp;&lt;=&nbsp;a&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">50</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">&nbsp;(</span><span style="color:#800000;">&quot;20&nbsp;&lt;=&nbsp;a&nbsp;&lt;&nbsp;50&quot;</span><span style="color:#000000;">)<BR>
+</span><span style="color:#0000ff;">else</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">&nbsp;(</span><span style="color:#800000;">&quot;a&nbsp;&gt;&nbsp;50&quot;</span><span style="color:#000000;">)<BR>
+</span><span style="color:#008000;">#&nbsp;条件表达式<BR>
+#&nbsp;结果1&nbsp;if&nbsp;表达式&nbsp;else&nbsp;结果2&nbsp;&nbsp;在if之前为条件表达式为真的结果，在else之后为条件表达式为假的结果<BR>
+</span><span style="color:#000000;">a&nbsp;=&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;"><BR>
+b&nbsp;=&nbsp;</span><span style="color:#ff0000;">20</span><span style="color:#000000;"><BR>
+r&nbsp;=&nbsp;a&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;a&nbsp;&gt;&nbsp;b&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;">&nbsp;b&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#条件表达式实例<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">&nbsp;(r)<BR>
+</span><span style="color:#008000;">#&nbsp;使用条件表达式实现求绝对值的功能<BR>
+</span><span style="color:#000000;">a&nbsp;=&nbsp;-</span><span style="color:#ff0000;">10</span><span style="color:#000000;"><BR>
+b&nbsp;=&nbsp;a&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;a&nbsp;&gt;&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;">&nbsp;-a<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">&nbsp;(b)<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;循环语句&nbsp;while、for&nbsp;&nbsp;Python中没有do...while循环<BR>
+#&nbsp;while&nbsp;条件表达式:循环体&nbsp;&nbsp;循环判断条件表达式，为真执行、为假退出<BR>
+</span><span style="color:#000000;">none&nbsp;=&nbsp;</span><span style="color:#8000ff;">True</span><span style="color:#000000;"><BR>
+number&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">while</span><span style="color:#000000;">&nbsp;none:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;number&nbsp;+=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;number&nbsp;&gt;=</span><span style="color:#ff0000;">10</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;退出循环条件<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">&nbsp;(number)<BR>
+</span><span style="color:#008000;">#&nbsp;for循环<BR>
+#&nbsp;for&nbsp;迭代变量&nbsp;in&nbsp;对象:循环体<BR>
+#&nbsp;实例：实现计算累加1到100的结果<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">&nbsp;(</span><span style="color:#800000;">&quot;计算1+2+3+...+100的结果&quot;</span><span style="color:#000000;">)<BR>
+result&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;保存结果的值<BR>
+</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;number&nbsp;</span><span style="color:#0000ff;">in</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">range</span><span style="color:#000000;">(</span><span style="color:#ff0000;">101</span><span style="color:#000000;">):&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;range(start,&nbsp;end,&nbsp;step)函数<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;result&nbsp;+=&nbsp;number<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">&nbsp;(</span><span style="color:#800000;">&quot;结果为：&quot;</span><span style="color:#000000;">,&nbsp;result)<BR>
+</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;i&nbsp;</span><span style="color:#0000ff;">in</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">range</span><span style="color:#000000;">(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">):&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;打印1-10之间的奇数<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(i,&nbsp;end=</span><span style="color:#800000;">'&nbsp;'</span><span style="color:#000000;">)<BR>
+</span><span style="color:#008000;">#&nbsp;循环嵌套<BR>
+#&nbsp;实例：寻找位置<BR>
+</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;row&nbsp;</span><span style="color:#0000ff;">in</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">range</span><span style="color:#000000;">(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,</span><span style="color:#ff0000;">5</span><span style="color:#000000;">):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;当前所造排：&quot;</span><span style="color:#000000;">,&nbsp;row)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;row&nbsp;==&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;colunm&nbsp;</span><span style="color:#0000ff;">in</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">range</span><span style="color:#000000;">(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,</span><span style="color:#ff0000;">6</span><span style="color:#000000;">):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;当前所在列：&quot;</span><span style="color:#000000;">,&nbsp;colunm)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;colunm&nbsp;==&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;找到了位置！&quot;</span><span style="color:#000000;">)<BR>
+</span><span style="color:#008000;">#&nbsp;实例：打印九九乘法表<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;打印九九乘法表：&quot;</span><span style="color:#000000;">)<BR>
+</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;i&nbsp;</span><span style="color:#0000ff;">in</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">range</span><span style="color:#000000;">(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,</span><span style="color:#ff0000;">10</span><span style="color:#000000;">):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;j&nbsp;</span><span style="color:#0000ff;">in</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">range</span><span style="color:#000000;">(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,i+</span><span style="color:#ff0000;">1</span><span style="color:#000000;">):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(i,&nbsp;</span><span style="color:#800000;">&quot;*&quot;</span><span style="color:#000000;">,&nbsp;j,&nbsp;</span><span style="color:#800000;">&quot;&nbsp;=&nbsp;&quot;</span><span style="color:#000000;">,&nbsp;i&nbsp;*&nbsp;j,&nbsp;</span><span style="color:#800000;">&quot;\t&quot;</span><span style="color:#000000;">,&nbsp;end&nbsp;=&nbsp;</span><span style="color:#800000;">'&nbsp;'</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'\n'</span><span style="color:#000000;">)<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;跳转语句：break、continue<BR>
+#&nbsp;break:完全跳出循环<BR>
+</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;row&nbsp;</span><span style="color:#0000ff;">in</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">range</span><span style="color:#000000;">(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,</span><span style="color:#ff0000;">5</span><span style="color:#000000;">):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;当前所造排：&quot;</span><span style="color:#000000;">,&nbsp;row)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;row&nbsp;==&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;colunm&nbsp;</span><span style="color:#0000ff;">in</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">range</span><span style="color:#000000;">(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,</span><span style="color:#ff0000;">6</span><span style="color:#000000;">):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;当前所在列：&quot;</span><span style="color:#000000;">,&nbsp;colunm)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;colunm&nbsp;==&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;找到了位置！&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;continue:跳出本次循环，进行下一次循环<BR>
+</span><span style="color:#000000;">total&nbsp;=&nbsp;</span><span style="color:#ff0000;">99</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;记录可拍桌子数<BR>
+</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;number&nbsp;</span><span style="color:#0000ff;">in</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">range</span><span style="color:#000000;">(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">100</span><span style="color:#000000;">):&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;从1循环到99<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;number&nbsp;%&nbsp;</span><span style="color:#ff0000;">7</span><span style="color:#000000;">&nbsp;==&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">:&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;判断是否是7的倍数<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">continue</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;继续下一次循环<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;=&nbsp;</span><span style="color:#8000ff;">str</span><span style="color:#000000;">(number)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;string.</span><span style="color:#0000ff;">endswith</span><span style="color:#000000;">(</span><span style="color:#800000;">'7'</span><span style="color:#000000;">):&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;是否以7结尾<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">continue</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;继续下一次循环<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;total&nbsp;-=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;可拍桌子数1<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">&nbsp;(</span><span style="color:#800000;">&quot;从1数到99共拍桌子&quot;</span><span style="color:#000000;">,&nbsp;total,&nbsp;</span><span style="color:#800000;">&quot;次！&quot;</span><span style="color:#000000;">)<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;pass空语句：表示空语句，它不做任何事情，一般起到占位作用<BR>
+</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;i&nbsp;</span><span style="color:#0000ff;">in</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">range</span><span style="color:#000000;">(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;i%</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;==&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(i,&nbsp;end&nbsp;=&nbsp;</span><span style="color:#800000;">'&nbsp;'</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">pass</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;占位，不做任何操作<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;综合实例：今有物不知其数，三三数之剩二，五五数之剩三、七七数之剩二，问几何？<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;\n今有物不知其数，三三数之剩二，五五数之剩三、七七数之剩二，问几何？\n&quot;</span><span style="color:#000000;">)<BR>
+none&nbsp;=&nbsp;</span><span style="color:#8000ff;">True</span><span style="color:#000000;"><BR>
+number&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">while</span><span style="color:#000000;">(none):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;number&nbsp;%&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">&nbsp;==&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">and</span><span style="color:#000000;">&nbsp;number&nbsp;%&nbsp;</span><span style="color:#ff0000;">5</span><span style="color:#000000;">&nbsp;==&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">and</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;==&nbsp;number&nbsp;%&nbsp;</span><span style="color:#ff0000;">7</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;该数为：&quot;</span><span style="color:#000000;">,&nbsp;number)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;number&nbsp;+=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;"><BR>
+</span></div></td></tr></table></div>
+<br><br><br>
+<font color = gray size = 3>如有错误，欢迎指正！</font></p></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://oubc.github.io/tags/python/">Python</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmg4aog3074074gnf.gif?tags=%5B%5D">I </a>
+	<a href="">love</a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmfm2eg306o06o74u.gif?tags=%5B%5D"> you </a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx4tpcj30fn0bq3zg.jpg?tags=%5B%5D">three </a>
+	<a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx64ctg307s07swfy.gif?tags=%5B%5D">thousand</a>
+    <a href="https://www.kugou.com/song/#hash=96426C78381DE98DC31A5846FC274CBF&album_id=646623"> times.</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>家庭、梦想、内心的平静</span>
+  </div>
+</footer>
+
+
+
+<script src="https://oubc.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://oubc.github.io/js/zozo.js"></script>
+<script src="https://oubc.github.io/js/highlight.pack.js"></script>
+<link  href="https://oubc.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://oubc.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>

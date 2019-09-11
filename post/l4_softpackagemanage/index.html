@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Bruce Cheung"/>
+
+  
+  <meta name="description" content="本文将告诉我们在Linux系统中如何对软件包进行管理以及安装、卸载、更新软件的常用命令
+"/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, simple, dream"/>
+  
+
+  
+  <link rel="canonical" href="https://oubc.github.io/post/l4_softpackagemanage/"/>
+
+  
+
+  <title>Linux软件包管理 &middot; Love, or death</title>
+
+  <link rel="shortcut icon" href="https://oubc.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/post/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://oubc.github.io/">
+          <span>Love, or death</span>
+          <img src="https://oubc.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">For you, a thousand times over.</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/oubc" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=uYGOjo6OiIuLivnIyJfa1tQ" title="mail" target="_blank"><i class="remixicon-mail-fill"></i></a>
+        
+        
+        
+        <a href="http://sighttp.qq.com/msgrd?v=1&amp;uin=877771223" title="qq" target="_blank"><i class="remixicon-qq-fill"></i></a>
+        
+        
+        
+        <a href="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g4klnqf0tmj30ia0widks.jpg" title="wechat" target="_blank"><i class="remixicon-wechat-fill"></i></a>
+        
+        
+        
+        <a href="https://weibo.com/u/6993631995?topnav=1&amp;wvr=6&amp;topsug=1" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://oubc.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/post/l4_softpackagemanage/'>Linux软件包管理</a></h2>
+          <span class="date">2019.07.05</span>
+        </div>
+        <div class="post_content markdown"><p>本文将告诉我们在Linux系统中如何对软件包进行管理以及安装、卸载、更新软件的常用命令</p>
+
+<p><br><font color=black size = 4>索引</font>
+<br><font color=black size = 4>0.软件包管理简介</font>
+<br><font color=black size = 4>1.RPM包管理-rpm命令管理</font>
+<br><font color=black size = 4>2.RPM包管理-yum在线管理</font>
+<br><font color=black size = 4>3.源码包管理</font>
+<br><font color=black size = 4>4.脚本安装包与软件包选择</font>
+<br>
+<br>
+<br><font color=black size = 5>软件包管理简介</font>
+<br>Linux发行版中附带有成千上万的可用包，其中包括了Internet工具、开发工具、办公工具、游戏等，如果你没有选择完整安装，则只会安装这些包的“子集”，如何删除不想要的包，如何安装遗漏的包，学习Linux系统的软件包管理将解决你的这些问题。
+<br><font color=black size = 4>1、软件包分类</font>
+<br>(1) 源码包
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  ☞ 脚本安装包
+<br>源码包的优点：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 开源，如果有足够的能力，可以修改源代码
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 可以自由选择所需要的功能
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 软件是编译安装，所以更加适合自己的系统，更加稳定效率也更高
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 卸载方便
+<br>源码包的缺点：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 安装过程步骤较多，尤其安装较大的软件集合时，容易出现一些难以解决的错误
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 编译过程时间较长，安装比二进制安装时间长
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 因为时编译安装，安装过程中一旦报错新手很难解决
+<br>(2) 二进制包(RPM包、系统默认包)
+<br>二进制包优点：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 包管理系统简单，只通过几个命令就可以实现包的安装、升级、查询和卸载
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 安装速度比源码包安装快的多
+<br>二进制包的缺点：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 经过编译，不再可以看到源代码
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 功能选择不如源码包灵活
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 依赖性，无处不在
+<br><font color=black size = 4>2、RPM(二进制包)相关简介</font>
+<br>(1) RPM(二进制包)包命名原则
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 实例：httpd-2.1.16-16.el6.centos.1.i686.rpm
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; httpd 软件包名
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2.1.16 软件版本
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 16 软件发布的次数
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; el6.centos 适合的Linux平台
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; i686 适合的硬件平台
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; rpm rpm包扩展名
+<br>(2) RPM包依赖性
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 树形依赖：a → b → c
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 环形依赖：a → b → c → a
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 模块依赖：模块依赖查询网址：www.rpmfind.net
+<br>(3) 包名和包全名
+<br>包全名：操作的包是没有安装的软件包时，使用包全名，而且要注意路径
+<br>包名：操作已经安装的软件包时，使用包名，系统通过搜索/var/lib/rpm/中的数据库得到包
+<br><br><font color=black size = 5>RPM包管理-rpm命令管理</font>
+<br><font color=black size = 4>1、RPM包的安装、升级和卸载</font>
+<br>(1) RPM安装
+<br>rpm -ivh 包全名
+<br>选项：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -i (install)  安装
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -v (verbose)  显示详细信息
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -h (hash)  显示进度
+<br>&nbsp;&nbsp;&nbsp;&nbsp; --nodeps  不检查依赖性
+<br>(2) RPM升级
+<br>rpm -Uvh 包全名
+<br>选项：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -U (upgrade)  升级
+<br>(3) RPM卸载
+<br>rpm -e 包名
+<br>选项：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -e (erase)  卸载
+<br>&nbsp;&nbsp;&nbsp;&nbsp; --nodeps  不坚持依赖性
+<br><font color=black size = 4>2、通过rpm相关命令实现的查询功能</font>
+<br>(1) 查询包是否安装
+<br>rpm -q 包名 / rpm -qa(查询所有已经安装的RPM包)
+<br>选项：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -q (query)  查询
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -a (all)  所有
+<br>(2) 查询软件包详细信息
+<br>rpm -qi 包名
+<br>选项：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -i (information)  查询软件信息
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -p (package)  查询未安装包信息
+<br>(3) 查询包中文件安装位置
+<br>rpm -ql 包名
+<br>选项：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -l (list)  列表
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -p (package)  查询未安装包信息
+<br>(4) 查询系统文件属于哪个RPM包
+<br>rpm -qf 系统文件名
+<br>选项：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -f (file)  文件，查询系统文件属于哪个软件包
+<br>(5) 查询软件包的依赖性
+<br>rpm -qR 包名
+<br>选项：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -R (requires)  依赖性
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -p (package)  查询未安装包信息
+<br><font color=black size = 4>3、RPM包校验</font>
+<br>rpm -V 已安装的包名
+<br>选项：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -V (verify)  校验指定RPM包中的文件
+<br>验证内容中的8个信息的具体内容如下：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; S  文件大小是否改变
+<br>&nbsp;&nbsp;&nbsp;&nbsp; M  文件的类型或权限(rwx)是否被改变
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 5  文件MD5校验和是否改变(可以看成文件内容是否改变)
+<br>&nbsp;&nbsp;&nbsp;&nbsp; D  设备中的代码是否改变
+<br>&nbsp;&nbsp;&nbsp;&nbsp; L  文件路径是否改变
+<br>&nbsp;&nbsp;&nbsp;&nbsp; U  文件的属主(所有者)是否改变
+<br>&nbsp;&nbsp;&nbsp;&nbsp; G  文件的属组是否改变
+<br>&nbsp;&nbsp;&nbsp;&nbsp; T  文件的修改时间是否改变
+<br><font color=black size = 4>4、RPM包中文件提取</font>
+<br> rpm2cpio 包全名 |＼
+<br>&nbsp;&nbsp;&nbsp;&nbsp; rpm2cpio  将rpm包转换为cpio格式的命令
+<br> cpio -idv .文件绝对路径
+<br>&nbsp;&nbsp;&nbsp;&nbsp; cpio  是一个标志工具，它用于创建软件档案文件和从档案文件中提取文件
+<br> cpio 选项 &lt;[文件|设备]
+<br>选项：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -i  copy-in模式，还原
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -d  还原时自动新建目录
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -v  显示还原过程
+<br><font color=black size = 4>5、以上命令的几个应用实例</font>
+<br>命令：mv /bin/ls /tmp/
+<br>功能：造成ls命令误删除假象
+<br>命令：rpm -qf /bin/ls
+<br>功能：查询ls命令属于哪个软件包
+<br>命令：rpm2cpio /mnt/cdrom/Packages/coreutils-8.4-19.el6.i686.rpm|cpio -idv ./bin/ls
+<br>功能：提取RPM包中ls命令到当前目录的bin/ls下
+<br>命令：cp /root/bin/ls /bin/ls
+<br>功能：把ls命令复制到/bin/目录，修复文件丢失
+<br><br><font color=black size = 5>RPM包管理-yum在线管理</font>
+<br><font color=black size = 4>1、IP地址配置</font>
+<br><font color=black size = 3>(1) 键入命令setup使用setup工具</font>
+<br><font color=black size = 3>(2) 修改主机名(启动网卡)</font>
+<br>&nbsp;&nbsp;&nbsp;&nbsp; vi /etc/sysconfig/network
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 将文件中 NETWORKING=no 改为 NETWORKING=yes，然后wq保存退出
+<br><font color=black size = 3>(3) 修改IP地址</font>
+<br>&nbsp;&nbsp;&nbsp;&nbsp; vi /etc/sysconfig/network-scripts/ifcfg-eth0
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 添加IP地址和子网掩码和修改自启动和修改静态IP地址，然后wq保存退出
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 修改后文件为这样：
+<br><img src="https://wx1.sinaimg.cn/mw1024/007Diza3ly1g5tn03adeqj30jc0dk3zw.jpg" width="800" height="650" />
+<br><font color=black size = 3>(4) 设置主机IP映射</font>
+<br>由于局域网中一般很少架设DNS服务器，访问这些服务要输入难记的IP地址，对不少人来说相当麻烦。现在可以分别给这些服务器取个容易记住的名字，然后在Hosts中建立IP映射，这样以后访问的时候我们输入这个服务器的名字就行了。
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 设置完ip地址后，还可以修改一下主机名和Ip地址的映射，比如我有五台虚拟机。
+<br>&nbsp;&nbsp;&nbsp;&nbsp; vi /etc/hosts
+<br><img src="https://wx2.sinaimg.cn/mw1024/007Diza3ly1g5tn03aqjaj30o80bmabp.jpg" width="800" height="650" />
+<br><font color=black size = 3>(5) 重启网络服务</font>
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 命令：service network restart
+<br><font color=black size = 4>2、网络yum源和本地yum源</font>
+<br><font color=black size = 4>网络yum源</font>
+<br>一般情况下，只要你的主机网络正常，可以直接使用网络 yum 源，不需要对配置文件做任何修改，这里对 yum 源配置文件做一下简单介绍。
+<br>网络 yum 源配置文件位于 /etc/yum.repos.d/ 目录下，文件扩展名为&quot;*.repo&quot;（只要扩展名为 &quot;*.repo&quot; 的文件都是 yum 源的配置文件）。
+<br>&nbsp;&nbsp;&nbsp;&nbsp; ls /etc/yum.repos.d/
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CentOS-Base.repo
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CentOS-Media.repo
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CentOS-Debuginfo.repo.bak
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CentOS-Vault.repo
+<br>可以看到，该目录下有 4 个 yum 配置文件，通常情况下 CentOS-Base.repo 文件生效。我们可以尝试打开此文件，命令如下：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; vim /etc/yum.repos.d/ CentOS-Base.repo
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [base]
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; name=CentOS-$releasever - Base
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mirrorlist=<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="http://mirrorlist.centos.org/?release=\$releasever&amp;arch=$basearch&amp;repo=os">http://mirrorlist.centos.org/?release=\$releasever&amp;arch=$basearch&amp;repo=os</a>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; baseurl=<a href="http://mirror.centos.org/centos/\$releasever/os/\$basearch/">http://mirror.centos.org/centos/\$releasever/os/\$basearch/</a>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; gpgcheck=1
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; …省略部分输出…
+<br>此文件中含有 5 个 yum 源容器，这里只列出了 base 容器，其他容器和 base 容器类似。base 容器中各参数的含义分别为：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; [base]：容器名称，一定要放在[]中。
+<br>&nbsp;&nbsp;&nbsp;&nbsp; name：容器说明，可以自己随便写。
+<br>&nbsp;&nbsp;&nbsp;&nbsp; mirrorlist：镜像站点，这个可以注释掉。
+<br>&nbsp;&nbsp;&nbsp;&nbsp; baseurl：我们的 yum 源服务器的地址。默认是 CentOS 官方的 yum 源服务器，是可以使用的。如果你觉得慢，则可以改成你喜欢的 yum 源地址。
+<br>&nbsp;&nbsp;&nbsp;&nbsp; enabled：此容器是否生效，如果不写或写成 enabled 则表示此容器生效，写成 enable=0 则表示此容器不生效。
+<br>&nbsp;&nbsp;&nbsp;&nbsp; gpgcheck：如果为 1 则表示 RPM 的数字证书生效；如果为 0 则表示 RPM 的数字证书不生效。
+<br>&nbsp;&nbsp;&nbsp;&nbsp; gpgkey：数字证书的公钥文件保存位置。不用修改。
+<br><font color=black size = 4>本地yum源</font>
+<br>在无法联网的情况下，yum 可以考虑用本地光盘（或安装映像文件）作为 yum 源。
+<br>Linux 系统安装映像文件中就含有常用的 RPM 包，我们可以使用压缩文件打开映像文件（iso文件），进入其 Packages 子目录，如图所示：
+<br><img src="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g5tn037qvng30dw07gt8y.gif" width="800" height="650" />
+<br>可以看到，该子目录下含有几乎所有常用的 RPM 包，因此使用系统安装映像作为本地 yum 源没有任何问题。
+<br>在 /etc/yum.repos.d/ 目录下有一个 CentOS-Media.repo 文件，此文件就是以本地光盘作为 yum 源的模板文件，只需进行简单的修改即可，步骤如下：
+<br>1.放入 CentOS 安装光盘，并挂载光盘到指定位置。命令如下：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; mkdir /mnt/cdrom
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 创建cdrom目录，作为光盘的挂载点
+<br>&nbsp;&nbsp;&nbsp;&nbsp; mount /dev/cdrom /mnt/cdrom/
+<br>&nbsp;&nbsp;&nbsp;&nbsp; mount: block device/dev/srO is write-protected, mounting read-only
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 挂载光盘到/mnt/cdrom目录下
+<br>2.修改其他几个 yum 源配置文件的扩展名，让它们失效，因为只有扩展名是&quot;*.repo&quot;的文件才能作为 yum 源配置文件。当也可以删除其他几个 yum 源配置文件，但是如果删除了，当又想用网络作为 yum 源时，就没有了参考文件，所以最好还是修改扩展名。 命令如下：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; cd /etc/yum.repos.d/
+<br>&nbsp;&nbsp;&nbsp;&nbsp; mv CentOS-Base, repo CentOS-Base.repo.bak
+<br>&nbsp;&nbsp;&nbsp;&nbsp; mv CentOS-Debuginfo.repo CentOS-Debuginfo.repo.bak
+<br>&nbsp;&nbsp;&nbsp;&nbsp; mv CentOS-Vault.repo CentOS-Vault.repo.bak
+<br>3.修改光盘 yum 源配置文件 CentOS-Media.repo，参照以下方修改：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; vim CentOS-Media.repo
+<br>&nbsp;&nbsp;&nbsp;&nbsp; [c6-media]
+<br>&nbsp;&nbsp;&nbsp;&nbsp; name=CentOS-$releasever - Media
+<br>&nbsp;&nbsp;&nbsp;&nbsp; baseurl=file:///mnt/cdrom
+<br>地址为你自己的光盘挂载地址
+<br>&nbsp;&nbsp;&nbsp;&nbsp; file:///media/cdrom/
+<br>&nbsp;&nbsp;&nbsp;&nbsp; file:///media/cdrecorder/
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 注释这两个的不存在地址
+<br>&nbsp;&nbsp;&nbsp;&nbsp; gpgcheck=1
+<br>&nbsp;&nbsp;&nbsp;&nbsp; enabled=1
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 把enabled=0改为enabled=1, 让这个yum源配置文件生效
+<br>&nbsp;&nbsp;&nbsp;&nbsp; gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
+<br>如此，本地 yum 源就配置完成了。
+<br><font color=black size = 4>3、yum命令</font>
+<br>(1) 查询所有可以软件包列表
+<br>yum list
+<br>(2) 搜索服务器上所有和关键字相关的包
+<br>yum search 关键字
+<br>(3) 安装
+<br>yum -y install 包名
+<br>选项：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; install  安装
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -y (yes)  自动回答yes
+<br>(4) 升级
+<br>yum -y update 包名
+<br>选项：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; update  升级
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -y (yes)  自动回答yes
+<br><font color=red size=3>注</font>：升级是一项很<font color=red size=3>危险</font>的操作，记得一定要写包名，不然就会升级Linux中所有包，如果是远程操作且没加包名，会使服务器崩溃，所以一定要谨慎操作。
+<br>(4) 卸载
+<br>yum -y remove 包名
+<br>选项：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; remove  卸载
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -y (yes)  自动回答yes
+<br><font color=red size=3>注</font>：卸载也是一项很<font color=red size=3>危险</font>的操作，记得一定要写包名，否则会卸载Linux中所有的包。
+<br>(5) yum软件组管理命令
+<br>命令：yum grouplist
+<br>功能：列出所有可用的软件组列表
+<br>命令：yum groupinstall
+<br>功能：安装指定软件组，组名可以由grouplist查询出来
+<br>命令：yum groupremove
+<br>功能：卸载指定软件组，组名可以由grouplist查询出来
+<br><br><font color=black size = 5>源码包管理</font>
+<br><font color=black size = 4>1、源码包和RPM包的区别</font>
+<br>(1)安装之前的区别：概念上的区别
+<br>源码包是开源的，安装更自由，安装效率更高，但是它安装更慢，更容易报错；rpm包是经过编译的，安装更快，报错容易解决，只有依赖性的相关问题
+<br>(2)安装之后的区别：安装位置不同
+<br>rpm包不需要知指定安装位置，它会安装在系统的默认位置中；而源码包需要人为指定安装位置。
+<br>(3)RPM包默认安装路径，不建议修改，自动确定安装位置
+<br>&nbsp;&nbsp;&nbsp;&nbsp; /etc/  配置文件安装目录
+<br>&nbsp;&nbsp;&nbsp;&nbsp; /usr/bin/  可执行的命令安装目录
+<br>&nbsp;&nbsp;&nbsp;&nbsp; /usr/lib/  程序所使用的函数库保存位置
+<br>&nbsp;&nbsp;&nbsp;&nbsp; /usr/share/doc/  基本的软件使用手册保存位置
+<br>&nbsp;&nbsp;&nbsp;&nbsp; /usr/share/man/  帮助文件保存位置
+<br>(4)源码包安装位置
+<br>安装在指定位置中，一般是 /usr/local/软件名/ —— 手动选择
+<br>(5)安装位置不同带来的影响
+<br>RPM包安装的服务可以使用系统服务管理命令(service)来管理
+<br>例如RPM包安装的apache的启动方法：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; /ect/rc.d/httpd start
+<br>&nbsp;&nbsp;&nbsp;&nbsp; service httpd start —— 只能启动RPM包安装的服务
+<br>而源码包安装的服务则不能被服务管理命令管理，因为没有安装到默认路径中，所有只能用绝对路径进行服务的管理，如：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; /usr/local/apache/bin/apachectl start
+<br><font color=black size = 4>2、源码包安装过程</font>
+<br>(1) 安装准备
+<br> 安装C语言编译器
+<br> 下载源码包:<a href="http://mirror.bit.edu.cn/apache/httpd/">http://mirror.bit.edu.cn/apache/httpd/</a>
+<br>(2) 安装注意事项
+<br> 源代码保存位置：/usr/local/src/
+<br> 软件安装位置：/usr/loacl/
+<br> 如何确定安装过程报错：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 安装过程停止并出现error、warning或no的提示
+<br>(3) 源码包安装过程
+<br> 下载源码包
+<br> 解压缩下载的源码包：tar -zxvf httpd-2.2.9.tar.gz
+<br> 进入解压缩目录 (可使用目录 du -sh 文件名 来查看文件的大小)
+<br> ./configure 软件配置与检测
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 定义需要的功能选项
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 检测系统环境是否符合安装要求
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 把定义好的功能选项和检测系统环境的信息都写入Makefile文件，用于后续的编辑
+<br>&nbsp;&nbsp;&nbsp;&nbsp; ./configure --prefix=/usr/local/apache/  安装位置为绝对路径
+<br> make  编译
+<br>&nbsp;&nbsp;&nbsp;&nbsp; make clean 报错时用此命令清除临时文件
+<br> make install  编译安装
+<br>(3) 源码包的卸载
+<br> 不需要卸载命令，直接删除安装目录即可，而且不会遗留任何垃圾文件
+<br>&nbsp;&nbsp;&nbsp;&nbsp; rm -rf /usr/loacl/apache2/
+<br><br><font color=black size = 5>脚本安装包与软件包选择</font>
+<br><font color=black size = 4>1、脚本安装包</font>
+<br>脚本安装包并不是独立的软件包类型，常见安装的是源码包
+<br>是人为把安装过程写成自动安装的脚本，只要执行脚本，定义简单的参数，就可以完成安装
+<br>非常类似于Windows下软件的安装方式
+<br><font color=black size = 4>2、Webmin的作用</font>
+<br>Webmin是一个基于Web的Linux系统管理界面，您可以通过图形化的方式设置用户账号、Apache、DNS、文件共享等服务。
+<br><font color=black size = 4>3、Webmin安装过程</font>
+<br>下载软件
+<br>&nbsp;&nbsp;&nbsp;&nbsp; <a href="http://sourceforge.net/projects/webadmin/files/webmin/">http://sourceforge.net/projects/webadmin/files/webmin/</a>
+<br>解压缩，并进入加压缩目录
+<br>执行脚本安装
+<br><br><br>
+<font color = gray size = 3>如有错误，欢迎指正！</font></p></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://oubc.github.io/tags/linux/">Linux</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmg4aog3074074gnf.gif?tags=%5B%5D">I </a>
+	<a href="">love</a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmfm2eg306o06o74u.gif?tags=%5B%5D"> you </a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx4tpcj30fn0bq3zg.jpg?tags=%5B%5D">three </a>
+	<a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx64ctg307s07swfy.gif?tags=%5B%5D">thousand</a>
+    <a href="https://www.kugou.com/song/#hash=96426C78381DE98DC31A5846FC274CBF&album_id=646623"> times.</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>家庭、梦想、内心的平静</span>
+  </div>
+</footer>
+
+
+
+<script src="https://oubc.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://oubc.github.io/js/zozo.js"></script>
+<script src="https://oubc.github.io/js/highlight.pack.js"></script>
+<link  href="https://oubc.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://oubc.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Bruce Cheung"/>
+
+  
+  <meta name="description" content="Python真是包罗万象啊，Web居然也有它的份
+"/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, simple, dream"/>
+  
+
+  
+  <link rel="canonical" href="https://oubc.github.io/post/p15_basicwebcode/"/>
+
+  
+
+  <title>Python&#43;Web编程基础 &middot; Love, or death</title>
+
+  <link rel="shortcut icon" href="https://oubc.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/post/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://oubc.github.io/">
+          <span>Love, or death</span>
+          <img src="https://oubc.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">For you, a thousand times over.</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/oubc" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=uYGOjo6OiIuLivnIyJfa1tQ" title="mail" target="_blank"><i class="remixicon-mail-fill"></i></a>
+        
+        
+        
+        <a href="http://sighttp.qq.com/msgrd?v=1&amp;uin=877771223" title="qq" target="_blank"><i class="remixicon-qq-fill"></i></a>
+        
+        
+        
+        <a href="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g4klnqf0tmj30ia0widks.jpg" title="wechat" target="_blank"><i class="remixicon-wechat-fill"></i></a>
+        
+        
+        
+        <a href="https://weibo.com/u/6993631995?topnav=1&amp;wvr=6&amp;topsug=1" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://oubc.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/post/p15_basicwebcode/'>Python&#43;Web编程基础</a></h2>
+          <span class="date">2019.07.27</span>
+        </div>
+        <div class="post_content markdown"><p>Python真是包罗万象啊，Web居然也有它的份</p>
+
+<p><br><font color=black size = 4>基础语法部分</font>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;Python Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47<br>48<br>49<br>50<br>51<br>52<br>53<br>54<br>55<br>56<br>57<br>58<br>59<br>60<br>61<br>62<br>63<br>64<br>65<br>66<br>67<br>68<br>69<br>70<br>71<br>72<br>73<br>74<br>75<br>76<br>77<br>78<br>79<br>80<br>81<br>82<br>83<br>84<br>85<br>86<br>87<br>88<br>89<br>90<br>91<br>92<br>93<br>94<br>95<br>96<br>97<br>98<br>99<br>100<br>101<br>102<br>103<br>104<br>105<br>106<br>107<br>108<br>109<br>110<br>111<br>112<br>113<br>114<br>115<br>116<br>117<br>118<br>119<br>120<br>121<br>122<br>123<br>124<br>125<br>126<br>127<br>128<br>129<br>130<br>131<br>132<br>133<br>134<br>135<br>136<br>137<br>138<br>139<br>140<br>141<br>142<br>143<br>144<br>145<br>146<br>147<br>148<br>149<br>150<br>151<br>152<br>153<br>154<br>155<br>156<br>157<br>158<br>159<br>160<br>161<br>162<br>163<br>164<br>165<br>166<br>167<br>168<br>169<br>170<br>171<br>172<br>173<br>174<br>175<br>176<br>177<br>178<br>179<br>180<br>181<br>182<br>183<br>184<br>185<br>186<br>187<br>188<br>189<br>190<br>191<br>192<br>193<br>194<br>195<br>196<br>197<br>198<br>199<br>200<br>201<br>202<br>203<br>204<br>205<br>206<br>207<br>208<br>209<br>210<br>211<br>212<br>213<br>214<br>215<br>216<br>217<br>218<br>219<br>220<br>221<br>222<br>223<br>224<br>225<br>226<br>227<br>228<br>229<br>230<br>231<br>232<br>233<br>234<br>235<br>236<br>237<br>238<br>239<br>240<br>241<br>242<br>243<br>244<br>245<br>246<br>247<br>248<br>249<br>250<br>251<br>252<br>253<br>254<br>255<br>256<br>257<br>258<br>259<br>260<br>261<br>262<br>263<br>264<br>265<br>266<br>267<br>268<br>269<br>270<br>271<br>272<br>273<br>274<br>275<br>276<br>277<br>278<br>279<br>280<br>281<br>282<br>283<br>284<br>285<br>286<br>287<br>288<br>289<br>290<br>291<br>292<br>293<br>294<br>295<br>296<br>297<br>298<br>299<br>300<br>301<br>302<br>303<br>304<br>305<br>306<br>307<br>308<br>309<br>310<br>311<br>312<br>313<br>314<br>315<br>316<br>317<br>318<br>319<br>320<br>321<br>322<br>323<br>324<br>325<br>326<br>327<br>328<br>329<br>330<br>331<br>332<br>333<br>334<br>335<br>336<br>337<br>338<br>339<br>340<br>341<br>342<br>343<br>344<br>345<br>346<br>347<br>348<br>349<br>350<br>351<br>352<br>353<br>354<br>355<br>356<br>357<br>358<br>359<br>360<br>361<br>362<br>363<br>364<br>365<br>366<br>367<br>368<br>369<br>370<br>371<br>372<br>373<br>374<br>375<br>376<br>377<br>378<br>379<br>380<br>381<br>382<br>383<br>384<br>385<br>386<br>387<br>388<br>389<br>390<br>391<br>392<br>393<br>394<br>395<br>396<br>397<br>398<br>399<br>400<br>401<br>402<br>403<br>404<br>405<br>406<br>407<br>408<br>409<br>410<br>411<br>412<br>413<br>414<br>415<br>416<br>417<br>418<br>419<br>420<br>421<br>422<br>423<br>424<br>425<br>426<br>427<br>428<br>429<br>430<br>431<br>432<br>433<br>434<br>435<br>436<br>437<br>438<br>439<br>440<br>441<br>442<br>443<br>444<br>445<br>446<br>447<br>448<br>449<br>450<br>451<br>452<br>453<br>454<br>455<br>456<br>457<br>458<br>459<br>460<br>461<br>462<br>463<br>464<br>465<br>466<br>467<br>468<br>469<br>470<br>471<br>472<br>473<br>474<br>475<br>476<br>477<br>478<br>479<br>480<br>481<br>482<br>483<br>484<br>485<br>486<br>487<br>488<br>489<br>490<br>491<br>492<br>493<br>494<br>495<br>496<br>497<br>498<br>499<br>500<br>501<br>502<br>503<br>504<br>505<br>506<br>507<br>508<br>509<br>510<br>511<br>512<br>513<br>514<br>515<br>516<br>517<br>518<br>519<br>520<br>521<br>522<br>523<br>524<br>525<br>526<br>527<br>528<br>529<br>530<br>531<br>532<br>533<br>534<br>535<br>536<br>537<br>538<br>539<br>540<br>541<br>542<br>543<br>544<br>545<br>546<br>547<br>548<br>549<br>550<br>551<br>552<br>553<br>554<br>555<br>556<br>557<br>558<br>559<br>560<br>561<br>562<br>563<br>564<br>565<br>566<br>567<br>568<br>569<br>570<br>571<br>572<br>573<br>574<br>575<br>576<br>577<br>578<br>579<br>580<br>581<br>582<br>583<br>584<br>585<br>586<br>587<br>588<br>589<br>590<br>591<br>592<br>593<br>594<br>595<br>596<br>597<br>598<br>599<br>600<br>601<br>602<br>603<br>604<br>605<br>606<br>607<br>608<br>609<br>610<br>611<br>612<br>613<br>614<br>615<br>616<br>617<br>618<br>619<br>620<br>621<br>622<br>623<br>624<br>625<br>626<br>627<br>628<br>629<br>630<br>631<br>632<br>633<br>634<br>635<br>636<br>637<br>638<br>639<br>640<br>641<br>642<br>643<br>644<br>645<br>646<br>647<br>648<br>649<br>650<br>651<br>652<br>653<br>654<br>655<br>656<br>657<br>658<br>659<br>660<br>661<br>662<br>663<br>664<br>665<br>666<br>667<br>668<br>669<br>670<br>671<br>672<br>673<br>674<br>675<br>676<br>677<br>678<br>679<br>680<br>681<br>682<br>683<br>684<br>685<br>686<br>687<br>688<br>689<br>690<br>691<br>692<br>693<br>694<br>695<br>696<br>697<br>698<br>699<br>700<br>701<br>702<br>703<br>704<br>705<br>706<br>707<br>708<br>709<br>710<br>711<br>712<br>713<br>714<br>715<br>716<br>717<br>718<br>719<br>720<br>721<br>722<br>723<br>724<br>725<br>726<br>727<br>728<br>729<br>730<br>731<br>732<br>733<br>734<br>735<br>736<br>737<br>738<br>739<br>740<br>741<br>742<br>743<br>744<br>745<br>746<br>747<br>748<br>749<br>750<br>751<br>752<br>753<br>754<br>755<br>756<br>757<br>758<br>759<br>760<br>761<br>762<br>763<br>764<br>765<br>766<br>767<br>768<br>769<br>770<br>771<br>772<br>773<br>774<br>775<br>776<br>777<br>778<br>779<br>780<br>781<br>782<br>783<br>784<br>785<br>786<br>787<br>788<br>789<br>790<br>791<br>792<br>793<br>794<br>795<br>796<br>797<br>798<br>799<br>800<br>801<br>802<br>803<br>804<br>805<br>806<br>807<br>808<br>809<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#008000;">#&nbsp;Web编程基础<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;Web基础<BR>
+#&nbsp;客户端通过网址发起请求，服务器收到请求后进行响应<BR>
+#&nbsp;服务器将网页代码发送给客户端，客户端再以网页方式展示给客户<BR>
+#&nbsp;这种结构被称为：B/S结构<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;网络传输中的一种非常重要的协议<BR>
+#&nbsp;HTTP协议：HyperText&nbsp;Transfer&nbsp;Protocol&nbsp;超文本传输协议<BR>
+#&nbsp;HTTP协议也属于TCP/IP协议族中的一元<BR>
+#&nbsp;HTTP协议属于四层结构中的应用层，直接与用户打交道<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;各种协议与HTTP协议的关系<BR>
+#&nbsp;客户端要向服务器发起请求，首先得知道服务器的IP地址，但是IP地址太难记了，<BR>
+#&nbsp;所以通过域名进行访问，DNS服务器则将域名进行转化，客户端拿到IP地址以后，<BR>
+#&nbsp;在应用层生成针对目标Web服务器的HTTP请求报文，由传输层将报文分割并编号，<BR>
+#&nbsp;进入网络层，根据IP协议通过一系列的中转找到最终的服务器地址，在服务器端，<BR>
+#&nbsp;将接收到的一段一段数据再拼接成完整的信息，再交给应用层HTTP协议，处理<BR>
+#&nbsp;Web服务器的请求并且了解客户端请求的页面资源，然后整理，将资源整理再以同<BR>
+#&nbsp;样的方式传回客户端<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;Web服务器<BR>
+#&nbsp;大致分为4个步骤<BR>
+#&nbsp;1、建立请求<BR>
+#&nbsp;2、请求过程<BR>
+#&nbsp;3、应答过程<BR>
+#&nbsp;4、关闭连接<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;HTTP协议的常用方法<BR>
+#&nbsp;请求时常用到的方法<BR>
+#&nbsp;GET方法：请求指定的页面信息，并返回实体主体<BR>
+#&nbsp;POST方法：向指定资源提交数据进行处理请求(例如提交表单或者上传文件)，数据<BR>
+#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;被包含再请求体中，POST请求可能导致新的资源的建立和/或已有资源的修改<BR>
+#&nbsp;HEAD方法：类似于GET请求，只不过返回的响应中没有具体的内容，用于获取报头<BR>
+#&nbsp;PUT方法：从客户端向服务器传送的数据取代指定的文档的内容<BR>
+#&nbsp;DELETE方法：请求服务器删除指定的页面<BR>
+#&nbsp;OPTIONS方法：允许客户端查看服务器的性能<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;服务器给客户端发送响应的时候会传递一个代码串<BR>
+#&nbsp;1**&nbsp;&nbsp;信息，请求收到，继续处理<BR>
+#&nbsp;2**&nbsp;&nbsp;成功，行为被成功地接受、理解和采纳<BR>
+#&nbsp;3**&nbsp;&nbsp;重定向，为了完成请求，必须进一步执行的动作<BR>
+#&nbsp;4**&nbsp;&nbsp;客户端错误，请求包含语法错误或者请求无法实现<BR>
+#&nbsp;5**&nbsp;&nbsp;服务器错误，服务器不能实现一种明显无效的请求<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;前端基础<BR>
+#&nbsp;前端&nbsp;FRONT&nbsp;END：它是与用户直接交互的部分，包括Web页面的结构，<BR>
+#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Web的外观视觉和表现以及Web层的交互实现<BR>
+#&nbsp;后端&nbsp;BACK&nbsp;END：更多的与数据库进行交互，处理相应的业务逻辑，如何实现功能、<BR>
+#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;数据的存取、平台的稳定性和性能等等<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;后端语言主要包括C++、JAVA、Python、PHP、ASP、.NET......<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;前端简介<BR>
+#&nbsp;HTML简介<BR>
+#&nbsp;全称：Hyper&nbsp;Text&nbsp;Markup&nbsp;Language&nbsp;&nbsp;超文本标记语言<BR>
+#&nbsp;超文本的意思为不只是文本，还可以是图片、动画、视频等等<BR>
+#&nbsp;HTML不是一门语言，它是一种标记标签，通常称为HTML标签<BR>
+#&nbsp;实例：创建一个HTML文件<BR>
+</span><span style="color:#000000;">&lt;!DOCTYPE&nbsp;html&gt;<BR>
+&lt;html&gt;<BR>
+&lt;head&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span style="color:#0000ff;">title</span><span style="color:#000000;">&gt;这是一个HTML文件&lt;/</span><span style="color:#0000ff;">title</span><span style="color:#000000;">&gt;<BR>
+&lt;/head&gt;<BR>
+&lt;body&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;h1&gt;蝶恋花&lt;/h1&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;p&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;br&gt;&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;槛菊愁烟兰泣露，罗幕轻寒，燕子双飞去。<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;br&gt;&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;明月不谙离恨苦，斜光到晓穿朱户。<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;br&gt;&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;昨夜西风凋碧树，独上高楼，望尽天涯路。<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;br&gt;&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;欲寄彩笺兼尺素，山长水阔知何处！<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/p&gt;<BR>
+&lt;/body&gt;<BR>
+&lt;/html&gt;<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;通过浏览器打开这个文件，会发现这个网页颜值很低且简单<BR>
+#&nbsp;这时就需要通过CSS来美化这个页面<BR>
+#&nbsp;CSS简介<BR>
+#&nbsp;全称：Cascading&nbsp;Style&nbsp;Sheets&nbsp;&nbsp;层叠样式表<BR>
+#&nbsp;它也是一种标记语言，它用于为HTML文档定义布局，例如CSS涉及的字体、颜色等等<BR>
+#&nbsp;实例：使用CSS来美化前面的页面<BR>
+</span><span style="color:#000000;">&lt;!DOCTYPE&nbsp;html&gt;<BR>
+&lt;html&gt;<BR>
+&lt;head&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span style="color:#0000ff;">title</span><span style="color:#000000;">&gt;这是一个HTML文件&lt;/</span><span style="color:#0000ff;">title</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;style&nbsp;</span><span style="color:#8000ff;">type</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;text/css&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;main{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;height:150px;background:&nbsp;</span><span style="color:#008000;">#309bd1<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">title</span><span style="color:#000000;">{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;color:&nbsp;white;text-align:&nbsp;</span><span style="color:#0000ff;">center</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;content{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;margin:10px;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/style&gt;<BR>
+&lt;/head&gt;<BR>
+&lt;body&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;div&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;main&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;h1&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;title&quot;</span><span style="color:#000000;">&gt;蝶恋花&lt;/h1&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;p&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;content&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;br&gt;&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;槛菊愁烟兰泣露，罗幕轻寒，燕子双飞去。<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;br&gt;&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;明月不谙离恨苦，斜光到晓穿朱户。<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;br&gt;&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;昨夜西风凋碧树，独上高楼，望尽天涯路。<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;br&gt;&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;欲寄彩笺兼尺素，山长水阔知何处！<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/p&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;div&nbsp;style=</span><span style="color:#800000;">&quot;height:150px;background:&nbsp;#309bb1&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;h2&nbsp;style=</span><span style="color:#800000;">&quot;color:white;text-align:&nbsp;center;&quot;</span><span style="color:#000000;">&gt;蝶恋花&lt;/h2&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;p&nbsp;style=</span><span style="color:#800000;">&quot;margin:10px&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;br&gt;&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;槛菊愁烟兰泣露，罗幕轻寒，燕子双飞去。<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;br&gt;&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;明月不谙离恨苦，斜光到晓穿朱户。<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;br&gt;&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;昨夜西风凋碧树，独上高楼，望尽天涯路。<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;br&gt;&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;欲寄彩笺兼尺素，山长水阔知何处！<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/p&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<BR>
+&lt;/body&gt;<BR>
+&lt;/html&gt;<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;引入外部文件方式<BR>
+#&nbsp;style.css文件<BR>
+</span><span style="color:#000000;">main{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;height:150px;background:&nbsp;</span><span style="color:#008000;">#309bd1<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">title</span><span style="color:#000000;">{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;color:&nbsp;white;text-align:&nbsp;</span><span style="color:#0000ff;">center</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;content{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;margin:10px;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+</span><span style="color:#008000;">#&nbsp;index.html文件<BR>
+</span><span style="color:#000000;">&lt;!DOCTYPE&nbsp;html&gt;<BR>
+&lt;html&gt;<BR>
+&lt;head&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span style="color:#0000ff;">title</span><span style="color:#000000;">&gt;这是一个HTML文件&lt;/</span><span style="color:#0000ff;">title</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;link&nbsp;rel=</span><span style="color:#800000;">&quot;stylesheet&quot;</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">type</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;text/css&quot;</span><span style="color:#000000;">&nbsp;href=</span><span style="color:#800000;">&quot;./style.css&quot;</span><span style="color:#000000;">&gt;<BR>
+&lt;/head&gt;<BR>
+&lt;body&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;div&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;main&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;h1&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;title&quot;</span><span style="color:#000000;">&gt;蝶恋花&lt;/h1&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;p&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;content&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;br&gt;&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;槛菊愁烟兰泣露，罗幕轻寒，燕子双飞去。<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;br&gt;&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;明月不谙离恨苦，斜光到晓穿朱户。<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;br&gt;&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;昨夜西风凋碧树，独上高楼，望尽天涯路。<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;br&gt;&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;欲寄彩笺兼尺素，山长水阔知何处！<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/p&gt;<BR>
+&lt;/body&gt;<BR>
+&lt;/html&gt;<BR>
+</span><span style="color:#008000;">#&nbsp;以上以三种形式来引入了css文件<BR>
+#&nbsp;其中,标签内引入优先级最高,在head标签内使用style引入中,Web引入优先级最低<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;对于一个非前端人员来说，设计前端样式是头疼的<BR>
+#&nbsp;Python&nbsp;+&nbsp;Bootstrap框架应该会是一种不错的选择<BR>
+#&nbsp;实例：使用Bootstrap实现一个页面<BR>
+</span><span style="color:#000000;">&lt;!DOCTYPE&nbsp;html&gt;<BR>
+&lt;html&gt;<BR>
+&lt;head&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span style="color:#0000ff;">title</span><span style="color:#000000;">&gt;使用Bootstrap&lt;/</span><span style="color:#0000ff;">title</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;!--&nbsp;最新版本的&nbsp;Bootstrap&nbsp;核心&nbsp;CSS&nbsp;文件&nbsp;--&gt;<BR>
+&lt;link&nbsp;rel=</span><span style="color:#800000;">&quot;stylesheet&quot;</span><span style="color:#000000;"><BR>
+href=<BR>
+</span><span style="color:#800000;">&quot;<a href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css&quot;">https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css&quot;</a></span><span style="color:#000000;"><BR>
+integrity=<BR>
+</span><span style="color:#800000;">&quot;sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u&quot;</span><span style="color:#000000;"><BR>
+crossorigin=</span><span style="color:#800000;">&quot;anonymous&quot;</span><span style="color:#000000;">&gt;<BR>
+&lt;/head&gt;<BR>
+&lt;body&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;div&nbsp;style=</span><span style="color:#800000;">&quot;margin:20px&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;nav&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;navbar&nbsp;navbar-default&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&lt;div&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;container-fluid&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;!--&nbsp;Brand&nbsp;</span><span style="color:#0000ff;">and</span><span style="color:#000000;">&nbsp;toggle&nbsp;</span><span style="color:#0000ff;">get</span><span style="color:#000000;">&nbsp;grouped&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;better&nbsp;mobile&nbsp;display&nbsp;--&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;div&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;navbar-header&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;button&nbsp;</span><span style="color:#8000ff;">type</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;button&quot;</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;navbar-toggle&nbsp;collapsed&quot;</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data-toggle=</span><span style="color:#800000;">&quot;collapse&quot;</span><span style="color:#000000;">&nbsp;data-target=</span><span style="color:#800000;">&quot;#bs-example-navbar-collapse-1&quot;</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;aria-expanded=</span><span style="color:#800000;">&quot;false&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;span&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;sr-only&quot;</span><span style="color:#000000;">&gt;Toggle&nbsp;navigation&lt;/span&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;span&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;icon-bar&quot;</span><span style="color:#000000;">&gt;&lt;/span&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;span&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;icon-bar&quot;</span><span style="color:#000000;">&gt;&lt;/span&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;span&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;icon-bar&quot;</span><span style="color:#000000;">&gt;&lt;/span&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/button&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;a&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;navbar-brand&quot;</span><span style="color:#000000;">&nbsp;href=</span><span style="color:#800000;">&quot;#&quot;</span><span style="color:#000000;">&gt;Brand&lt;/a&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;!--&nbsp;Collect&nbsp;the&nbsp;nav&nbsp;links,&nbsp;forms,&nbsp;</span><span style="color:#0000ff;">and</span><span style="color:#000000;">&nbsp;other&nbsp;content&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;toggling&nbsp;--&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;div&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;collapse&nbsp;navbar-collapse&quot;</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">id</span><span style="color:#000000;">=<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">&quot;bs-example-navbar-collapse-1&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;ul&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;nav&nbsp;navbar-nav&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;li&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;active&quot;</span><span style="color:#000000;">&gt;&lt;a&nbsp;href=</span><span style="color:#800000;">&quot;#&quot;</span><span style="color:#000000;">&gt;Link<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;span&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;sr-only&quot;</span><span style="color:#000000;">&gt;(current)&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;li&gt;&lt;a&nbsp;href=</span><span style="color:#800000;">&quot;#&quot;</span><span style="color:#000000;">&gt;Link&lt;/a&gt;&lt;/li&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;li&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;dropdown&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;a&nbsp;href=</span><span style="color:#800000;">&quot;#&quot;</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;dropdown-toggle&quot;</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data-toggle=</span><span style="color:#800000;">&quot;dropdown&quot;</span><span style="color:#000000;">&nbsp;role=</span><span style="color:#800000;">&quot;button&quot;</span><span style="color:#000000;">&nbsp;aria-haspopup=</span><span style="color:#800000;">&quot;true&quot;</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;aria-expanded=</span><span style="color:#800000;">&quot;false&quot;</span><span style="color:#000000;">&gt;Dropdown&nbsp;&lt;span&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;caret&quot;</span><span style="color:#000000;">&gt;&lt;/span&gt;&lt;/a&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;ul&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;dropdown-menu&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;li&gt;&lt;a&nbsp;href=</span><span style="color:#800000;">&quot;#&quot;</span><span style="color:#000000;">&gt;Action&lt;/a&gt;&lt;/li&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;li&gt;&lt;a&nbsp;href=</span><span style="color:#800000;">&quot;#&quot;</span><span style="color:#000000;">&gt;Another&nbsp;action&lt;/a&gt;&lt;/li&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;li&gt;&lt;a&nbsp;href=</span><span style="color:#800000;">&quot;#&quot;</span><span style="color:#000000;">&gt;Something&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;">&nbsp;here&lt;/a&gt;&lt;/li&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;li&nbsp;role=</span><span style="color:#800000;">&quot;separator&quot;</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;divider&quot;</span><span style="color:#000000;">&gt;&lt;/li&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;li&gt;&lt;a&nbsp;href=</span><span style="color:#800000;">&quot;#&quot;</span><span style="color:#000000;">&gt;Separated&nbsp;link&lt;/a&gt;&lt;/li&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;li&nbsp;role=</span><span style="color:#800000;">&quot;separator&quot;</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;divider&quot;</span><span style="color:#000000;">&gt;&lt;/li&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;li&gt;&lt;a&nbsp;href=</span><span style="color:#800000;">&quot;#&quot;</span><span style="color:#000000;">&gt;One&nbsp;more&nbsp;separated&nbsp;link&lt;/a&gt;&lt;/li&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/ul&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/li&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/ul&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;form&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;navbar-form&nbsp;navbar-left&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;form-group&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span style="color:#8000ff;">input</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">type</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;text&quot;</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;form-control&quot;</span><span style="color:#000000;">&nbsp;placeholder=</span><span style="color:#800000;">&quot;Search&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;button&nbsp;</span><span style="color:#8000ff;">type</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;submit&quot;</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;btn&nbsp;btn-default&quot;</span><span style="color:#000000;">&gt;Submit&lt;/button&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/form&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;ul&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;nav&nbsp;navbar-nav&nbsp;navbar-right&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;li&gt;&lt;a&nbsp;href=</span><span style="color:#800000;">&quot;#&quot;</span><span style="color:#000000;">&gt;Link&lt;/a&gt;&lt;/li&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;li&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;dropdown&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;a&nbsp;href=</span><span style="color:#800000;">&quot;#&quot;</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;dropdown-toggle&quot;</span><span style="color:#000000;">&nbsp;data-toggle=</span><span style="color:#800000;">&quot;dropdown&quot;</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;role=</span><span style="color:#800000;">&quot;button&quot;</span><span style="color:#000000;">&nbsp;aria-haspopup=</span><span style="color:#800000;">&quot;true&quot;</span><span style="color:#000000;">&nbsp;aria-expanded=</span><span style="color:#800000;">&quot;false&quot;</span><span style="color:#000000;">&gt;Dropdown<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;span&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;caret&quot;</span><span style="color:#000000;">&gt;&lt;/span&gt;&lt;/a&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;ul&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;dropdown-menu&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;li&gt;&lt;a&nbsp;href=</span><span style="color:#800000;">&quot;#&quot;</span><span style="color:#000000;">&gt;Action&lt;/a&gt;&lt;/li&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;li&gt;&lt;a&nbsp;href=</span><span style="color:#800000;">&quot;#&quot;</span><span style="color:#000000;">&gt;Another&nbsp;action&lt;/a&gt;&lt;/li&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;li&gt;&lt;a&nbsp;href=</span><span style="color:#800000;">&quot;#&quot;</span><span style="color:#000000;">&gt;Something&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;">&nbsp;here&lt;/a&gt;&lt;/li&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;li&nbsp;role=</span><span style="color:#800000;">&quot;separator&quot;</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;divider&quot;</span><span style="color:#000000;">&gt;&lt;/li&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;li&gt;&lt;a&nbsp;href=</span><span style="color:#800000;">&quot;#&quot;</span><span style="color:#000000;">&gt;Separated&nbsp;link&lt;/a&gt;&lt;/li&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/ul&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/li&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/ul&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;&lt;!--&nbsp;/.navbar-collapse&nbsp;--&gt;<BR>
+&nbsp;&nbsp;&lt;/div&gt;&lt;!--&nbsp;/.container-fluid&nbsp;--&gt;<BR>
+&lt;/nav&gt;<BR>
+&lt;div&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;jumbotron&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&lt;h1&gt;Hello,&nbsp;world!&lt;/h1&gt;<BR>
+&nbsp;&nbsp;&lt;p&gt;...&lt;/p&gt;<BR>
+&nbsp;&nbsp;&lt;p&gt;&lt;a&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;btn&nbsp;btn-primary&nbsp;btn-lg&quot;</span><span style="color:#000000;">&nbsp;href=</span><span style="color:#800000;">&quot;#&quot;</span><span style="color:#000000;">&nbsp;role=</span><span style="color:#800000;">&quot;button&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;Learn&nbsp;more&lt;/a&gt;&lt;/p&gt;<BR>
+&lt;/div&gt;<BR>
+&lt;form&gt;<BR>
+&nbsp;&nbsp;&lt;div&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;form-group&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;label&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;exampleInputEmail1&quot;</span><span style="color:#000000;">&gt;Email&nbsp;address&lt;/label&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span style="color:#8000ff;">input</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">type</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;email&quot;</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;form-control&quot;</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">id</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;exampleInputEmail1&quot;</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;placeholder=</span><span style="color:#800000;">&quot;Email&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&lt;/div&gt;<BR>
+&nbsp;&nbsp;&lt;div&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;form-group&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;label&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;exampleInputPassword1&quot;</span><span style="color:#000000;">&gt;Password&lt;/label&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span style="color:#8000ff;">input</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">type</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;password&quot;</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;form-control&quot;</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">id</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;exampleInputPassword1&quot;</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;placeholder=</span><span style="color:#800000;">&quot;Password&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&lt;/div&gt;<BR>
+&nbsp;&nbsp;&lt;div&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;form-group&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;label&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;exampleInputFile&quot;</span><span style="color:#000000;">&gt;File&nbsp;</span><span style="color:#8000ff;">input</span><span style="color:#000000;">&lt;/label&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span style="color:#8000ff;">input</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">type</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;file&quot;</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">id</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;exampleInputFile&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;p&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;help-block&quot;</span><span style="color:#000000;">&gt;Example&nbsp;block-level&nbsp;</span><span style="color:#8000ff;">help</span><span style="color:#000000;">&nbsp;text&nbsp;here.&lt;/p&gt;<BR>
+&nbsp;&nbsp;&lt;/div&gt;<BR>
+&nbsp;&nbsp;&lt;div&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;checkbox&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;label&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span style="color:#8000ff;">input</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">type</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;checkbox&quot;</span><span style="color:#000000;">&gt;&nbsp;Check&nbsp;me&nbsp;out<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/label&gt;<BR>
+&nbsp;&nbsp;&lt;/div&gt;<BR>
+&nbsp;&nbsp;&lt;button&nbsp;</span><span style="color:#8000ff;">type</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;submit&quot;</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;btn&nbsp;btn-default&quot;</span><span style="color:#000000;">&gt;Submit&lt;/button&gt;<BR>
+&lt;/form&gt;<BR>
+&lt;/div&gt;<BR>
+&lt;/body&gt;<BR>
+&lt;/html&gt;<BR>
+</span><span style="color:#008000;">#&nbsp;以上代码全部来自于Bootstrap官方文档<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;JavaScript简介<BR>
+#&nbsp;JavaScript&nbsp;!=&nbsp;Java&nbsp;无任何关系<BR>
+#&nbsp;它是一种脚本语言，不需要编译就可以在网页中运行<BR>
+#&nbsp;它可以实现网页特性，还可以响应用户请求，实现一些动态交互的功能<BR>
+#&nbsp;编写一段代码来实现动态效果<BR>
+#&nbsp;为按钮实现点击弹出时间<BR>
+#&nbsp;在上面的代码最后加上以下代码试一试<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&lt;button&nbsp;</span><span style="color:#8000ff;">id</span><span style="color:#000000;">&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;button&quot;</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">type</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;button&quot;</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;btn&nbsp;btn-success&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;(成功)Success&lt;/button&gt;<BR>
+&lt;/form&gt;<BR>
+&lt;/div&gt;<BR>
+&lt;script&nbsp;</span><span style="color:#8000ff;">type</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;text/javascript&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;document.getElementById(</span><span style="color:#800000;">&quot;button&quot;</span><span style="color:#000000;">).onclick=function(){<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;alert(</span><span style="color:#800000;">&quot;您点击了提交按钮&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&lt;/script&gt;<BR>
+&lt;/body&gt;<BR>
+&lt;/html&gt;<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;制作一个静态服务器<BR>
+#&nbsp;实现过程看下面截图<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;CGI简介<BR>
+#&nbsp;前面实现了静态页面，而现在都是动态页面，CGI应运而生<BR>
+#&nbsp;全称：Common&nbsp;Gateway&nbsp;Interface&nbsp;&nbsp;通用网关接口<BR>
+#&nbsp;它是一种运行在服务器端的程序<BR>
+#&nbsp;因为CGI在用户多的时候会开启多个进程，很容易使得系统崩溃<BR>
+#&nbsp;所以CGI的升级版FastCGI诞生<BR>
+#&nbsp;全称：Fast&nbsp;Common&nbsp;Gateway&nbsp;Interface<BR>
+#&nbsp;它使用进程线程池来处理一系列的请求<BR>
+#&nbsp;而且这些进程由Fast服务器自己管理，而不是由Web服务器管理，所以可以同时处理更多的请求<BR>
+#&nbsp;FastCGI虽然解决了服务器同时处理多个页面的请求，但它也由缺陷<BR>
+#&nbsp;就是在编写一部程序的时候不方便<BR>
+#&nbsp;所以，WSGI就出现了<BR>
+#&nbsp;Web&nbsp;Server&nbsp;Gateway&nbsp;Interface&nbsp;&nbsp;Web服务器网关接口<BR>
+#&nbsp;它是Web服务器、Web应用程序或者框架之间的简单的通用接口<BR>
+#&nbsp;工作原理见下图<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;定义WSGI接口<BR>
+#&nbsp;语法：def&nbsp;application(environ,start_response):<BR>
+#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;start_response('200&nbsp;OK',[('Content-Type','text/html')])<BR>
+#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return[b'&lt;h1&gt;Hello,World!&lt;/h1&gt;']<BR>
+#&nbsp;参数详解：environ&nbsp;一个包含所有HTTP请求信息的字典对象<BR>
+#&nbsp;start_response&nbsp;一个发送HTTP响应的函数<BR>
+#&nbsp;wsgiref模块是Python内置的WSGI服务器<BR>
+#&nbsp;实例：通过WSGI实现简单的Hello,World<BR>
+</span><span style="color:#0000ff;">from</span><span style="color:#000000;">&nbsp;wsgiref.simple_server&nbsp;</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;make_server<BR>
+<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;sayHi(environ,start_response):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;start_response(</span><span style="color:#800000;">'200&nbsp;ok'</span><span style="color:#000000;">,[(</span><span style="color:#800000;">'Content-Type'</span><span style="color:#000000;">,</span><span style="color:#800000;">'text/html;charset=utf-8'</span><span style="color:#000000;">),<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(</span><span style="color:#800000;">'Date'</span><span style="color:#000000;">,</span><span style="color:#800000;">'Thu,21&nbsp;Jun&nbsp;2019&nbsp;20:05:10&nbsp;GMT'</span><span style="color:#000000;">)])<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;[b</span><span style="color:#800000;">'Hello&nbsp;World'</span><span style="color:#000000;">]<BR>
+<BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;__name__&nbsp;==&nbsp;</span><span style="color:#800000;">'__main__'</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;ser&nbsp;=&nbsp;make_server(</span><span style="color:#800000;">'127.0.0.1'</span><span style="color:#000000;">,</span><span style="color:#ff0000;">8000</span><span style="color:#000000;">,sayHi)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;ser.serve_forever()<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;运行WSGI服务<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;Web框架<BR>
+#&nbsp;为什么要使用Web框架？简化工作<BR>
+#&nbsp;什么是Web框架：实现一些基础功能的一堆代码，它就是通用的半成品<BR>
+#&nbsp;框架提供的常用功能：<BR>
+#&nbsp;管理路由<BR>
+#&nbsp;访问数据库<BR>
+#&nbsp;管理会话和Cookies<BR>
+#&nbsp;创建模板来显示HTML<BR>
+#&nbsp;促进代码的重用<BR>
+#&nbsp;如果Web框架不符合心意，可以自己编写框架，只要符合WSGI接口就OK<BR>
+#&nbsp;Python中常用的Web框架<BR>
+#&nbsp;Python中的Web框架有很多，因为只要符合WSGI接口每个人都可以编写Web框架<BR>
+#&nbsp;这也会带来麻烦，因为会使许多不懂Web框架开发的人员选择麻烦症<BR>
+#&nbsp;下面就是当前的主流的Web框架<BR>
+#&nbsp;1.Flask框架:它是一个轻量级的Web框架,基于Werkzeug实现的WSGI和Jinja2模板引擎<BR>
+#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Flask的设计哲学是只保留核心，其它的通过扩展机制来增强它的功能<BR>
+#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;所以它的扩展机制非常丰富，几乎在Web开发的每一个环节都有其扩展<BR>
+#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;供我们选择，即便没有，开发者也可以轻松的实现一个&nbsp;&nbsp;&nbsp;小而美<BR>
+#&nbsp;2.django框架:它提供了非常齐全的参照文档以及一站式的解决方案，包括缓存、RAM管<BR>
+#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;理后台、验证、表单处理等等，由于它具备这些功能，所以它使数据库<BR>
+#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;驱动的网站变得更加简单，但是也有弊端，代码耦合性更高了，不易替换<BR>
+#&nbsp;3.Bottle框架:它也是一个轻量级的Web框架，它只有一个文件，代码只使用了Python的<BR>
+#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;标准库，自带路由映射、模板、简单的数据库访问等Web框架组件，而不<BR>
+#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;需要额外其它第三方库，所以它才是真正的微框架&nbsp;语法简单&nbsp;部署方便<BR>
+#&nbsp;4.Tronado框架:现在是Facebook开源后的版本，因为它是非阻塞的服务器，所以它的速<BR>
+#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;度非常快，每秒钟可以处理数以千记的连接<BR>
+#&nbsp;在选择框架的时候需要依据自己的项目，如果项目比较小，就可以选择Flask、Bottle<BR>
+#&nbsp;如果项目需要一个通用的后台，可以使用django，因为它提供了一站式的解决方案，就<BR>
+#&nbsp;包括了管理后台<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;Flask框架<BR>
+#&nbsp;Flask依赖于两个库Werkzeug(WSGI&nbsp;toolkit&nbsp;WSGI工作集)和Jinja2(负责渲染模板)<BR>
+#&nbsp;在使用之前需要安装virtualenv、创建虚拟环境、激活虚拟环境<BR>
+#&nbsp;虚拟环境可以为每一个项目提供一个Python安装<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;安装虚拟环境：在命令行键入命令&nbsp;pip&nbsp;install&nbsp;virtualenv<BR>
+#&nbsp;创建虚拟环境：从命令行进入工作目录&nbsp;再创建目录mkdir&nbsp;Flask<BR>
+#&nbsp;使用命令virtualenv&nbsp;venv(虚拟环境名称)&nbsp;<BR>
+#&nbsp;启动虚拟环境：从命令行键入activate&nbsp;即在刚才目录下键入&nbsp;venv\Scripts\activate<BR>
+#&nbsp;激活成功后会在命令行最前面显示&nbsp;(venv)<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;安装Flask<BR>
+#&nbsp;cmd命令行进入刚刚那个虚拟环境，键入命令：pip&nbsp;install&nbsp;Flask即可<BR>
+#&nbsp;安装完成后可利用pip&nbsp;list&nbsp;查看是否安装成功<BR>
+#&nbsp;键入此命令后会在命令行显示已经安装好的包的包名和版本号<BR>
+#&nbsp;第一个Flask程序：输出Hello&nbsp;World<BR>
+</span><span style="color:#0000ff;">from</span><span style="color:#000000;">&nbsp;flask&nbsp;</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;Flask<BR>
+app&nbsp;=&nbsp;Flask(__name__)<BR>
+<BR>
+@app.route(</span><span style="color:#800000;">'/'</span><span style="color:#000000;">)<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;hello():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#800000;">'Hello&nbsp;World!&nbsp;你好'</span><span style="color:#000000;"><BR>
+<BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;__name__&nbsp;==&nbsp;</span><span style="color:#800000;">'__main__'</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;app.run(debug=</span><span style="color:#8000ff;">True</span><span style="color:#000000;">)<BR>
+</span><span style="color:#008000;">#&nbsp;在网页中输入：127.0.0.1:5000/可以看到return&nbsp;语句返回的值<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;开启调试模式<BR>
+#&nbsp;第一种方式，就是上面的run()方法<BR>
+#&nbsp;app.run(debug=True)这里就开启了调试模式，修改代码会自动在网页生成，不用重新运行<BR>
+#&nbsp;第二种方式<BR>
+#&nbsp;在app.run()上面加上一句：app.debug=True<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;路由<BR>
+#&nbsp;什么是路由？先看下面示例<BR>
+</span><span style="color:#0000ff;">from</span><span style="color:#000000;">&nbsp;flask&nbsp;</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;Flask<BR>
+app&nbsp;=&nbsp;Flask(__name__)<BR>
+<BR>
+@app.route(</span><span style="color:#800000;">'/'</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;路由1<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;hello():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#800000;">'Hello&nbsp;World!&nbsp;你好'</span><span style="color:#000000;"><BR>
+@app.route(</span><span style="color:#800000;">'/index'</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;路由2<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">index</span><span style="color:#000000;">():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#800000;">'This&nbsp;is&nbsp;Index!'</span><span style="color:#000000;"><BR>
+<BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;__name__&nbsp;==&nbsp;</span><span style="color:#800000;">'__main__'</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;app.run(debug=</span><span style="color:#8000ff;">True</span><span style="color:#000000;">)<BR>
+</span><span style="color:#008000;">#&nbsp;在运行这段程序后，在网址中输入127.0.0.1:5000/就会进入路由1，网页显示Hello&nbsp;World<BR>
+#&nbsp;在网址中输入127.0.0.1:5000/index就会进入路由2，网页显示This&nbsp;is&nbsp;Index!<BR>
+#&nbsp;大概能理解了，路由就是来标识某一IP和端口号对应的网页<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;变量规则<BR>
+#&nbsp;&lt;converter(变量名称):variable_name(变量名称)&gt;<BR>
+#&nbsp;实例：根据参数输出相应信息<BR>
+</span><span style="color:#0000ff;">from</span><span style="color:#000000;">&nbsp;flask&nbsp;</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;Flask<BR>
+app&nbsp;=&nbsp;Flask(__name__)<BR>
+@app.route(</span><span style="color:#800000;">'/user/&lt;username&gt;'</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;非限定类型<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;show_user_profile(username):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#800000;">&quot;user:%s&quot;</span><span style="color:#000000;">&nbsp;%&nbsp;username<BR>
+@app.route(</span><span style="color:#800000;">'/post/&lt;int:postid&gt;'</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;限定类型<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;show_post(postid):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#800000;">'Post:%d'</span><span style="color:#000000;">&nbsp;%&nbsp;postid<BR>
+<BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;__name__&nbsp;==&nbsp;</span><span style="color:#800000;">'__main__'</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;app.run(debug=</span><span style="color:#8000ff;">True</span><span style="color:#000000;">)<BR>
+</span><span style="color:#008000;">#&nbsp;构造URL<BR>
+#&nbsp;语法：url_for(endpoint(终点),**values(变量))<BR>
+#&nbsp;实例：获取URL信息<BR>
+</span><span style="color:#0000ff;">from</span><span style="color:#000000;">&nbsp;flask&nbsp;</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;Flask,url_for<BR>
+app&nbsp;=&nbsp;Flask(__name__)<BR>
+@app.route(</span><span style="color:#800000;">'/post/&lt;int:postid&gt;'</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;限定类型<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;show_post(postid):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#800000;">'Post:%d'</span><span style="color:#000000;">&nbsp;%&nbsp;postid<BR>
+@app.routr(</span><span style="color:#800000;">'/url/'</span><span style="color:#000000;">)<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;get_url():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;url_for(</span><span style="color:#800000;">'show_post'</span><span style="color:#000000;">,postid=</span><span style="color:#ff0000;">2</span><span style="color:#000000;">)<BR>
+<BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;__name__&nbsp;==&nbsp;</span><span style="color:#800000;">'__main__'</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;app.run(debug=</span><span style="color:#8000ff;">True</span><span style="color:#000000;">)<BR>
+</span><span style="color:#008000;">#&nbsp;结果为在网页上显示/post/postid=2，获取了上面路由的相关信息<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;HTTP方法<BR>
+#&nbsp;GET&nbsp;&nbsp;浏览器告知服务器：只获取页面上的信息并发给我，这是最常用的方法<BR>
+#&nbsp;HEAD&nbsp;&nbsp;浏览器告诉服务器：欲获取信息，但是只关心消息头。应用应像处理GET请求一样来处理<BR>
+#&nbsp;它，但是不分发实际内容。在Falsk中完全不需人工干预，底层Werkzeug库已替我们处理好了<BR>
+#&nbsp;POST&nbsp;&nbsp;浏览器告诉服务器：想在URL上发布新消息，并且服务器必须确保数据已存储且存储一次<BR>
+#&nbsp;这是HTML表单通常发送数据到服务器的方法<BR>
+#&nbsp;PUT&nbsp;&nbsp;类似POST但是服务器可能触发了存储过程多次<BR>
+#&nbsp;DELETE&nbsp;&nbsp;删除给定位置的信息<BR>
+#&nbsp;OPTIONS&nbsp;&nbsp;给客户提供一个敏捷的途径弄清楚这个URL支持哪些HTTP方法<BR>
+#&nbsp;更多详解见下方截图部分<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;请求默认为GET请求<BR>
+</span><span style="color:#0000ff;">from</span><span style="color:#000000;">&nbsp;flask&nbsp;</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;Flask,url_for<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;request<BR>
+app&nbsp;=&nbsp;Flask(__name__)<BR>
+@app.routr(</span><span style="color:#800000;">'/login'</span><span style="color:#000000;">)<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;login():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;request.method&nbsp;==&nbsp;</span><span style="color:#800000;">'GET'</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#800000;">'这是GET方法'</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;__name__&nbsp;==&nbsp;</span><span style="color:#800000;">'__main__'</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;app.run(debug=</span><span style="color:#8000ff;">True</span><span style="color:#000000;">)<BR>
+</span><span style="color:#008000;">#&nbsp;由上面程序运行结果可得默认请求<BR>
+#&nbsp;设置请求方式<BR>
+</span><span style="color:#0000ff;">from</span><span style="color:#000000;">&nbsp;flask&nbsp;</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;Flask,url_for,request<BR>
+app&nbsp;=&nbsp;Flask(__name__)<BR>
+@app.routr(</span><span style="color:#800000;">'/login'</span><span style="color:#000000;">,methods=[</span><span style="color:#800000;">'POST'</span><span style="color:#000000;">,</span><span style="color:#800000;">'GET'</span><span style="color:#000000;">,</span><span style="color:#800000;">'PUT'</span><span style="color:#000000;">])<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;login():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;request.method&nbsp;==&nbsp;</span><span style="color:#800000;">'GET'</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#800000;">'这是GET方法'</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">elif</span><span style="color:#000000;">&nbsp;request.method&nbsp;==&nbsp;</span><span style="color:#800000;">'POST'</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#800000;">'这是POST请求'</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;__name__&nbsp;==&nbsp;</span><span style="color:#800000;">'__main__'</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;app.run(debug=</span><span style="color:#8000ff;">True</span><span style="color:#000000;">)<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;静态文件<BR>
+#&nbsp;例如CSS、JS文件都是静态文件<BR>
+#&nbsp;为了同一管理，我们可以将这些文件放在同一个文件夹下，这就是一个静态文件<BR>
+#&nbsp;创建静态文件并在代码中获取这个文件<BR>
+</span><span style="color:#000000;">@app.routr(</span><span style="color:#800000;">'/login'</span><span style="color:#000000;">,methods=[</span><span style="color:#800000;">'POST'</span><span style="color:#000000;">,</span><span style="color:#800000;">'GET'</span><span style="color:#000000;">,</span><span style="color:#800000;">'PUT'</span><span style="color:#000000;">])<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;login():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;request.method&nbsp;==&nbsp;</span><span style="color:#800000;">'GET'</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#800000;">'这是GET方法'</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">elif</span><span style="color:#000000;">&nbsp;request.method&nbsp;==&nbsp;</span><span style="color:#800000;">'POST'</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#800000;">'这是POST请求'</span><span style="color:#000000;"><BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;蓝图(蓝本)<BR>
+#&nbsp;什么是蓝图？是一种组织一组相关视图及其它代码的方式<BR>
+#&nbsp;为什么要使用蓝图？。蓝图可以重构项目的目录结构，如下图，是为了解决项目代码增加时的冗杂<BR>
+#&nbsp;使用蓝图的目的：分而治之<BR>
+#&nbsp;使用蓝图<BR>
+#&nbsp;创建蓝图&nbsp;bp&nbsp;=&nbsp;Blueprint('admin'(蓝图名称),__name__,url_prefix='/admin')<BR>
+#&nbsp;注册蓝图&nbsp;app.register_blueprint(bp)<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;模板：一个包含响应文本的文件<BR>
+#&nbsp;渲染模板：Jinja2<BR>
+#&nbsp;实例：<BR>
+#&nbsp;Test.py文件<BR>
+</span><span style="color:#0000ff;">from</span><span style="color:#000000;">&nbsp;flask&nbsp;</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;Flask,render_template<BR>
+<BR>
+app&nbsp;=&nbsp;Flask(__name__)<BR>
+<BR>
+@app.route(</span><span style="color:#800000;">'/'</span><span style="color:#000000;">)<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;HTMLtest():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;render_template(</span><span style="color:#800000;">'HTMLtest.html'</span><span style="color:#000000;">)<BR>
+@app.route(</span><span style="color:#800000;">'/user/&lt;username&gt;'</span><span style="color:#000000;">)<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;show_user_profile(username):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;render_template(</span><span style="color:#800000;">'user.html'</span><span style="color:#000000;">,name=username)<BR>
+<BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;__name__&nbsp;==&nbsp;</span><span style="color:#800000;">'__main__'</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;app.run(debug=</span><span style="color:#8000ff;">True</span><span style="color:#000000;">)<BR>
+</span><span style="color:#008000;">#&nbsp;HTMLtest.html文件<BR>
+</span><span style="color:#000000;">&lt;!DOCTYPE&nbsp;html&gt;<BR>
+&lt;html&gt;<BR>
+&lt;head&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span style="color:#0000ff;">title</span><span style="color:#000000;">&gt;使用Bootstrap&lt;/</span><span style="color:#0000ff;">title</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;!--&nbsp;最新版本的&nbsp;Bootstrap&nbsp;核心&nbsp;CSS&nbsp;文件&nbsp;--&gt;<BR>
+&lt;link&nbsp;rel=</span><span style="color:#800000;">&quot;stylesheet&quot;</span><span style="color:#000000;">&nbsp;href=<BR>
+</span><span style="color:#800000;">&quot;<a href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css&quot;">https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css&quot;</a></span><span style="color:#000000;"><BR>
+integrity=</span><span style="color:#800000;">&quot;sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u&quot;</span><span style="color:#000000;"><BR>
+crossorigin=</span><span style="color:#800000;">&quot;anonymous&quot;</span><span style="color:#000000;">&gt;<BR>
+&lt;/head&gt;<BR>
+&lt;body&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;div&nbsp;style=</span><span style="color:#800000;">&quot;margin:20px&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;nav&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;navbar&nbsp;navbar-default&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&lt;div&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;container-fluid&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;!--&nbsp;Brand&nbsp;</span><span style="color:#0000ff;">and</span><span style="color:#000000;">&nbsp;toggle&nbsp;</span><span style="color:#0000ff;">get</span><span style="color:#000000;">&nbsp;grouped&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;better&nbsp;mobile&nbsp;display&nbsp;--&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;div&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;navbar-header&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;button&nbsp;</span><span style="color:#8000ff;">type</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;button&quot;</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;navbar-toggle&nbsp;collapsed&quot;</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data-toggle=</span><span style="color:#800000;">&quot;collapse&quot;</span><span style="color:#000000;">&nbsp;data-target=</span><span style="color:#800000;">&quot;#bs-example-navbar-collapse-1&quot;</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;aria-expanded=</span><span style="color:#800000;">&quot;false&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;span&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;sr-only&quot;</span><span style="color:#000000;">&gt;Toggle&nbsp;navigation&lt;/span&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;span&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;icon-bar&quot;</span><span style="color:#000000;">&gt;&lt;/span&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;span&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;icon-bar&quot;</span><span style="color:#000000;">&gt;&lt;/span&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;span&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;icon-bar&quot;</span><span style="color:#000000;">&gt;&lt;/span&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/button&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;a&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;navbar-brand&quot;</span><span style="color:#000000;">&nbsp;href=</span><span style="color:#800000;">&quot;#&quot;</span><span style="color:#000000;">&gt;Brand&lt;/a&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;!--&nbsp;Collect&nbsp;the&nbsp;nav&nbsp;links,&nbsp;forms,&nbsp;</span><span style="color:#0000ff;">and</span><span style="color:#000000;">&nbsp;other&nbsp;content&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;toggling&nbsp;--&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;div&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;collapse&nbsp;navbar-collapse&quot;</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">id</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;bs-example-navbar-collapse-1&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;ul&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;nav&nbsp;navbar-nav&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;li&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;active&quot;</span><span style="color:#000000;">&gt;&lt;a&nbsp;href=</span><span style="color:#800000;">&quot;#&quot;</span><span style="color:#000000;">&gt;Link&nbsp;&lt;span&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;sr-only&quot;</span><span style="color:#000000;">&gt;(current)&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;li&gt;&lt;a&nbsp;href=</span><span style="color:#800000;">&quot;#&quot;</span><span style="color:#000000;">&gt;Link&lt;/a&gt;&lt;/li&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;li&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;dropdown&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;a&nbsp;href=</span><span style="color:#800000;">&quot;#&quot;</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;dropdown-toggle&quot;</span><span style="color:#000000;">&nbsp;data-toggle=</span><span style="color:#800000;">&quot;dropdown&quot;</span><span style="color:#000000;">&nbsp;role=</span><span style="color:#800000;">&quot;button&quot;</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;aria-haspopup=</span><span style="color:#800000;">&quot;true&quot;</span><span style="color:#000000;">&nbsp;aria-expanded=</span><span style="color:#800000;">&quot;false&quot;</span><span style="color:#000000;">&gt;Dropdown&nbsp;&lt;span&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;caret&quot;</span><span style="color:#000000;">&gt;&lt;/span&gt;&lt;/a&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;ul&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;dropdown-menu&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;li&gt;&lt;a&nbsp;href=</span><span style="color:#800000;">&quot;#&quot;</span><span style="color:#000000;">&gt;Action&lt;/a&gt;&lt;/li&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;li&gt;&lt;a&nbsp;href=</span><span style="color:#800000;">&quot;#&quot;</span><span style="color:#000000;">&gt;Another&nbsp;action&lt;/a&gt;&lt;/li&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;li&gt;&lt;a&nbsp;href=</span><span style="color:#800000;">&quot;#&quot;</span><span style="color:#000000;">&gt;Something&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;">&nbsp;here&lt;/a&gt;&lt;/li&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;li&nbsp;role=</span><span style="color:#800000;">&quot;separator&quot;</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;divider&quot;</span><span style="color:#000000;">&gt;&lt;/li&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;li&gt;&lt;a&nbsp;href=</span><span style="color:#800000;">&quot;#&quot;</span><span style="color:#000000;">&gt;Separated&nbsp;link&lt;/a&gt;&lt;/li&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;li&nbsp;role=</span><span style="color:#800000;">&quot;separator&quot;</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;divider&quot;</span><span style="color:#000000;">&gt;&lt;/li&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;li&gt;&lt;a&nbsp;href=</span><span style="color:#800000;">&quot;#&quot;</span><span style="color:#000000;">&gt;One&nbsp;more&nbsp;separated&nbsp;link&lt;/a&gt;&lt;/li&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/ul&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/li&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/ul&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;form&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;navbar-form&nbsp;navbar-left&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;form-group&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span style="color:#8000ff;">input</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">type</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;text&quot;</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;form-control&quot;</span><span style="color:#000000;">&nbsp;placeholder=</span><span style="color:#800000;">&quot;Search&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;button&nbsp;</span><span style="color:#8000ff;">type</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;submit&quot;</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;btn&nbsp;btn-default&quot;</span><span style="color:#000000;">&gt;Submit&lt;/button&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/form&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;ul&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;nav&nbsp;navbar-nav&nbsp;navbar-right&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;li&gt;&lt;a&nbsp;href=</span><span style="color:#800000;">&quot;#&quot;</span><span style="color:#000000;">&gt;Link&lt;/a&gt;&lt;/li&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;li&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;dropdown&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;a&nbsp;href=</span><span style="color:#800000;">&quot;#&quot;</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;dropdown-toggle&quot;</span><span style="color:#000000;">&nbsp;data-toggle=</span><span style="color:#800000;">&quot;dropdown&quot;</span><span style="color:#000000;">&nbsp;role=</span><span style="color:#800000;">&quot;button&quot;</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;aria-haspopup=</span><span style="color:#800000;">&quot;true&quot;</span><span style="color:#000000;">&nbsp;aria-expanded=</span><span style="color:#800000;">&quot;false&quot;</span><span style="color:#000000;">&gt;Dropdown&nbsp;&lt;span&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;caret&quot;</span><span style="color:#000000;">&gt;&lt;/span&gt;&lt;/a&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;ul&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;dropdown-menu&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;li&gt;&lt;a&nbsp;href=</span><span style="color:#800000;">&quot;#&quot;</span><span style="color:#000000;">&gt;Action&lt;/a&gt;&lt;/li&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;li&gt;&lt;a&nbsp;href=</span><span style="color:#800000;">&quot;#&quot;</span><span style="color:#000000;">&gt;Another&nbsp;action&lt;/a&gt;&lt;/li&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;li&gt;&lt;a&nbsp;href=</span><span style="color:#800000;">&quot;#&quot;</span><span style="color:#000000;">&gt;Something&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;">&nbsp;here&lt;/a&gt;&lt;/li&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;li&nbsp;role=</span><span style="color:#800000;">&quot;separator&quot;</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;divider&quot;</span><span style="color:#000000;">&gt;&lt;/li&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;li&gt;&lt;a&nbsp;href=</span><span style="color:#800000;">&quot;#&quot;</span><span style="color:#000000;">&gt;Separated&nbsp;link&lt;/a&gt;&lt;/li&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/ul&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/li&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/ul&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;&lt;!--&nbsp;/.navbar-collapse&nbsp;--&gt;<BR>
+&nbsp;&nbsp;&lt;/div&gt;&lt;!--&nbsp;/.container-fluid&nbsp;--&gt;<BR>
+&lt;/nav&gt;<BR>
+&lt;div&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;jumbotron&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&lt;h1&gt;Hello,&nbsp;world!&lt;/h1&gt;<BR>
+&nbsp;&nbsp;&lt;p&gt;...&lt;/p&gt;<BR>
+&nbsp;&nbsp;&lt;p&gt;&lt;a&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;btn&nbsp;btn-primary&nbsp;btn-lg&quot;</span><span style="color:#000000;">&nbsp;href=</span><span style="color:#800000;">&quot;#&quot;</span><span style="color:#000000;">&nbsp;role=</span><span style="color:#800000;">&quot;button&quot;</span><span style="color:#000000;">&gt;Learn&nbsp;more&lt;/a&gt;&lt;/p&gt;<BR>
+&lt;/div&gt;<BR>
+&lt;form&gt;<BR>
+&nbsp;&nbsp;&lt;div&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;form-group&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;label&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;exampleInputEmail1&quot;</span><span style="color:#000000;">&gt;Email&nbsp;address&lt;/label&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span style="color:#8000ff;">input</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">type</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;email&quot;</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;form-control&quot;</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">id</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;exampleInputEmail1&quot;</span><span style="color:#000000;">&nbsp;placeholder=</span><span style="color:#800000;">&quot;Email&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&lt;/div&gt;<BR>
+&nbsp;&nbsp;&lt;div&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;form-group&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;label&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;exampleInputPassword1&quot;</span><span style="color:#000000;">&gt;Password&lt;/label&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span style="color:#8000ff;">input</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">type</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;password&quot;</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;form-control&quot;</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">id</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;exampleInputPassword1&quot;</span><span style="color:#000000;">&nbsp;placeholder=</span><span style="color:#800000;">&quot;Password&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&lt;/div&gt;<BR>
+&nbsp;&nbsp;&lt;div&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;form-group&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;label&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;exampleInputFile&quot;</span><span style="color:#000000;">&gt;File&nbsp;</span><span style="color:#8000ff;">input</span><span style="color:#000000;">&lt;/label&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span style="color:#8000ff;">input</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">type</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;file&quot;</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">id</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;exampleInputFile&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;p&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;help-block&quot;</span><span style="color:#000000;">&gt;Example&nbsp;block-level&nbsp;</span><span style="color:#8000ff;">help</span><span style="color:#000000;">&nbsp;text&nbsp;here.&lt;/p&gt;<BR>
+&nbsp;&nbsp;&lt;/div&gt;<BR>
+&nbsp;&nbsp;&lt;div&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;checkbox&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;label&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span style="color:#8000ff;">input</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">type</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;checkbox&quot;</span><span style="color:#000000;">&gt;&nbsp;Check&nbsp;me&nbsp;out<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/label&gt;<BR>
+&nbsp;&nbsp;&lt;/div&gt;<BR>
+&nbsp;&nbsp;&lt;button&nbsp;</span><span style="color:#8000ff;">type</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;submit&quot;</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;btn&nbsp;btn-default&quot;</span><span style="color:#000000;">&gt;Submit&lt;/button&gt;<BR>
+&nbsp;&nbsp;&lt;button&nbsp;</span><span style="color:#8000ff;">id</span><span style="color:#000000;">&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;button&quot;</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">type</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;button&quot;</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;btn&nbsp;btn-success&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;(成功)Success&lt;/button&gt;<BR>
+&lt;/form&gt;<BR>
+&lt;/div&gt;<BR>
+&lt;script&nbsp;</span><span style="color:#8000ff;">type</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;text/javascript&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;document.getElementById(</span><span style="color:#800000;">&quot;button&quot;</span><span style="color:#000000;">).onclick=function(){<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;alert(</span><span style="color:#800000;">&quot;您点击了提交按钮&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&lt;/script&gt;<BR>
+&lt;/body&gt;<BR>
+&lt;/html&gt;<BR>
+</span><span style="color:#008000;">#&nbsp;user.html文件<BR>
+</span><span style="color:#000000;">&lt;!DOCTYPE&nbsp;html&gt;<BR>
+&lt;html&nbsp;lang=</span><span style="color:#800000;">&quot;en&quot;</span><span style="color:#000000;">&gt;<BR>
+&lt;head&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;meta&nbsp;charset=</span><span style="color:#800000;">&quot;utf-8&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;tutle&gt;Title&lt;/</span><span style="color:#0000ff;">title</span><span style="color:#000000;">&gt;<BR>
+&lt;/head&gt;<BR>
+&lt;body&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{{name}}<BR>
+&lt;/body&gt;<BR>
+&lt;/html&gt;<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;在Flask中使用Web表单<BR>
+#&nbsp;表单是允许用户与Web交互的基本元素<BR>
+#&nbsp;CSRF保护和验证<BR>
+#&nbsp;全称：跨站请求伪造：通过第三方伪造表单数据以POST方式提交到应用服务器<BR>
+#&nbsp;Python中Flask-WTF模块可以解决这一问题，使用它会生成令牌，并进行验证<BR>
+#&nbsp;令牌会在30分钟后会失效<BR>
+#&nbsp;安装Flask-WTF：在命令行键入：pip&nbsp;install&nbsp;flask-wtf<BR>
+#&nbsp;注意：需要将它安装到虚拟环境中<BR>
+#&nbsp;安装完成后检查：pip&nbsp;list<BR>
+#&nbsp;Flask-WTF的配置<BR>
+#&nbsp;app=Flask(__name__)<BR>
+#&nbsp;app.config['SECRET_KEY']='Navigator97'<BR>
+#&nbsp;应用：<BR>
+</span><span style="color:#0000ff;">from</span><span style="color:#000000;">&nbsp;flask&nbsp;</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;Flask,url_for<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;request<BR>
+app=Flask(__name__)<BR>
+app.config[</span><span style="color:#800000;">'SECRET_KEY'</span><span style="color:#000000;">]=</span><span style="color:#800000;">'Navigator97'</span><span style="color:#000000;"><BR>
+app&nbsp;=&nbsp;Flask(__name__)<BR>
+@app.routr(</span><span style="color:#800000;">'/login'</span><span style="color:#000000;">)<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;login():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;request.method&nbsp;==&nbsp;</span><span style="color:#800000;">'GET'</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#800000;">'这是GET方法'</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;__name__&nbsp;==&nbsp;</span><span style="color:#800000;">'__main__'</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;app.run(debug=</span><span style="color:#8000ff;">True</span><span style="color:#000000;">)<BR>
+</span><span style="color:#008000;">#&nbsp;由上面程序运行结果可得默认请求<BR>
+#&nbsp;设置请求方式<BR>
+</span><span style="color:#0000ff;">from</span><span style="color:#000000;">&nbsp;flask&nbsp;</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;Flask,url_for,request<BR>
+app&nbsp;=&nbsp;Flask(__name__)<BR>
+@app.routr(</span><span style="color:#800000;">'/login'</span><span style="color:#000000;">,methods=[</span><span style="color:#800000;">'POST'</span><span style="color:#000000;">,</span><span style="color:#800000;">'GET'</span><span style="color:#000000;">,</span><span style="color:#800000;">'PUT'</span><span style="color:#000000;">])<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;login():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;request.method&nbsp;==&nbsp;</span><span style="color:#800000;">'GET'</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#800000;">'这是GET方法'</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">elif</span><span style="color:#000000;">&nbsp;request.method&nbsp;==&nbsp;</span><span style="color:#800000;">'POST'</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#800000;">'这是POST请求'</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;__name__&nbsp;==&nbsp;</span><span style="color:#800000;">'__main__'</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;app.run(debug=</span><span style="color:#8000ff;">True</span><span style="color:#000000;">)<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;表单类<BR>
+#&nbsp;在没有用表单类的时候，我们是这样创建表单的<BR>
+</span><span style="color:#0000ff;">from</span><span style="color:#000000;">&nbsp;flask&nbsp;</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;Flask,url_for,request<BR>
+app&nbsp;=&nbsp;Flask(__name__)<BR>
+@app.routr(</span><span style="color:#800000;">'/login'</span><span style="color:#000000;">,methods=[</span><span style="color:#800000;">'POST'</span><span style="color:#000000;">,</span><span style="color:#800000;">'GET'</span><span style="color:#000000;">,</span><span style="color:#800000;">'PUT'</span><span style="color:#000000;">])<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;login():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;request.method&nbsp;==&nbsp;</span><span style="color:#800000;">'GET'</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#800000;">'这是GET方法'</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">elif</span><span style="color:#000000;">&nbsp;request.method&nbsp;==&nbsp;</span><span style="color:#800000;">'POST'</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#800000;">'这是POST请求'</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;__name__&nbsp;==&nbsp;</span><span style="color:#800000;">'__main__'</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;app.run(debug=</span><span style="color:#8000ff;">True</span><span style="color:#000000;">)<BR>
+</span><span style="color:#008000;">#&nbsp;然后需要创建html文档<BR>
+</span><span style="color:#000000;">&lt;!DOCTYPE&nbsp;html&gt;<BR>
+&lt;html&nbsp;lang=</span><span style="color:#800000;">&quot;en&quot;</span><span style="color:#000000;">&gt;<BR>
+&lt;head&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;meta&nbsp;charset=</span><span style="color:#800000;">&quot;UTF-8&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;tutle&gt;Title&lt;/</span><span style="color:#0000ff;">title</span><span style="color:#000000;">&gt;<BR>
+&lt;/head&gt;<BR>
+&lt;body&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;form&nbsp;action=</span><span style="color:#800000;">&quot;&quot;</span><span style="color:#000000;">&nbsp;method=</span><span style="color:#800000;">&quot;post&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;div&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;label&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;username&quot;</span><span style="color:#000000;">&gt;用户名&lt;/lable&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span style="color:#8000ff;">input</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">type</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;text&quot;</span><span style="color:#000000;">&nbsp;required&gt;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;required表示必须填写<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;div&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;label&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;password&quot;</span><span style="color:#000000;">&gt;密码&lt;/lable&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span style="color:#8000ff;">input</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">type</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;password&quot;</span><span style="color:#000000;">&nbsp;required&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;button&nbsp;</span><span style="color:#8000ff;">type</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;submit&quot;</span><span style="color:#000000;">&gt;提交&lt;/button&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/form&gt;&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&lt;/body&gt;<BR>
+&lt;/html&gt;<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;使用Flask-WTF实现表单验证<BR>
+</span><span style="color:#0000ff;">from</span><span style="color:#000000;">&nbsp;flask&nbsp;</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;Flask,render_template<BR>
+</span><span style="color:#0000ff;">from</span><span style="color:#000000;">&nbsp;flask_wtf&nbsp;</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;FlaskForm<BR>
+</span><span style="color:#0000ff;">from</span><span style="color:#000000;">&nbsp;wtforms&nbsp;</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;StringField,PasswordField,SubmitField<BR>
+</span><span style="color:#0000ff;">from</span><span style="color:#000000;">&nbsp;wtforms.validators&nbsp;</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;DataRequired,Length&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;验证规则<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;LoginForm(FlaskForm):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;name&nbsp;=&nbsp;StringField(label=</span><span style="color:#800000;">'用户名'</span><span style="color:#000000;">,validators=[DataRequired(</span><span style="color:#800000;">'用户名不能为空'</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Length(</span><span style="color:#8000ff;">min</span><span style="color:#000000;">=</span><span style="color:#ff0000;">4</span><span style="color:#000000;">,</span><span style="color:#8000ff;">max</span><span style="color:#000000;">=</span><span style="color:#ff0000;">16</span><span style="color:#000000;">))])<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;password&nbsp;=&nbsp;PasswordField(label=</span><span style="color:#800000;">'密码'</span><span style="color:#000000;">,validators=[DataRequired(</span><span style="color:#800000;">'密码不能为空'</span><span style="color:#000000;">)])<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;submit&nbsp;=&nbsp;SubmitField(label=</span><span style="color:#800000;">'提交'</span><span style="color:#000000;">)<BR>
+<BR>
+app&nbsp;=&nbsp;Flask(__name__)<BR>
+app.config[</span><span style="color:#800000;">'SECRET_KEY'</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#800000;">'Navigator97'</span><span style="color:#000000;"><BR>
+<BR>
+@app.route(</span><span style="color:#800000;">'/'</span><span style="color:#000000;">)<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;HTMLtest():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;form&nbsp;=&nbsp;LoginForm()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;form.validate_on_submit():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">pass</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;render_template(</span><span style="color:#800000;">'HTMLtest.html'</span><span style="color:#000000;">)<BR>
+@app.route(</span><span style="color:#800000;">'/user/&lt;username&gt;'</span><span style="color:#000000;">)<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;show_user_profile(username):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;render_template(</span><span style="color:#800000;">'user.html'</span><span style="color:#000000;">,name=username)<BR>
+<BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;__name__&nbsp;==&nbsp;</span><span style="color:#800000;">'__main__'</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;app.run(debug=</span><span style="color:#8000ff;">True</span><span style="color:#000000;">)<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;实例：实现登录验证功能<BR>
+#&nbsp;manage.py文件<BR>
+</span><span style="color:#0000ff;">from</span><span style="color:#000000;">&nbsp;flask&nbsp;</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;Flask,render_template<BR>
+</span><span style="color:#0000ff;">from</span><span style="color:#000000;">&nbsp;flask_wtf&nbsp;</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;FlaskForm<BR>
+</span><span style="color:#0000ff;">from</span><span style="color:#000000;">&nbsp;wtforms&nbsp;</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;StringField,PasswordField,SubmitField<BR>
+</span><span style="color:#0000ff;">from</span><span style="color:#000000;">&nbsp;wtforms.validators&nbsp;</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;DataRequired&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;验证规则<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;LoginForm(FlaskForm):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;name&nbsp;=&nbsp;StringField(label=</span><span style="color:#800000;">'用户名'</span><span style="color:#000000;">,validators=[DataRequired(</span><span style="color:#800000;">'用户名不能为空'</span><span style="color:#000000;">)])<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;password&nbsp;=&nbsp;PasswordField(label=</span><span style="color:#800000;">'密码'</span><span style="color:#000000;">,validators=[DataRequired(</span><span style="color:#800000;">'密码不能为空'</span><span style="color:#000000;">)])<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;submit&nbsp;=&nbsp;SubmitField(label=</span><span style="color:#800000;">'提交'</span><span style="color:#000000;">)<BR>
+<BR>
+app&nbsp;=&nbsp;Flask(__name__)<BR>
+app.config[</span><span style="color:#800000;">'SECRET_KEY'</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#800000;">'Navigator97'</span><span style="color:#000000;"><BR>
+<BR>
+@app.route(</span><span style="color:#800000;">'/'</span><span style="color:#000000;">)<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;HTMLtest():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;form&nbsp;=&nbsp;LoginForm()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;data={}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;form.validate_on_submit():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data[</span><span style="color:#800000;">'name'</span><span style="color:#000000;">]&nbsp;=&nbsp;form.name.data<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data[</span><span style="color:#800000;">'password'</span><span style="color:#000000;">]&nbsp;=&nbsp;form.password.data<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;render_template(</span><span style="color:#800000;">'index.html'</span><span style="color:#000000;">,form=form,data=data)<BR>
+<BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;__name__&nbsp;==&nbsp;</span><span style="color:#800000;">'__main__'</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;app.run(debug=</span><span style="color:#8000ff;">True</span><span style="color:#000000;">)<BR>
+</span><span style="color:#008000;">#&nbsp;index.html文件<BR>
+</span><span style="color:#000000;">&lt;!DOCTYPE&nbsp;html&gt;<BR>
+&lt;html&nbsp;lang=</span><span style="color:#800000;">&quot;en&quot;</span><span style="color:#000000;">&gt;<BR>
+&lt;head&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;meta&nbsp;charset=</span><span style="color:#800000;">&quot;UTF-8&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;tutle&gt;Title&lt;/</span><span style="color:#0000ff;">title</span><span style="color:#000000;">&gt;<BR>
+&lt;/head&gt;<BR>
+&lt;body&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;form&nbsp;action=</span><span style="color:#800000;">&quot;&quot;</span><span style="color:#000000;">&nbsp;method=</span><span style="color:#800000;">&quot;post&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;div&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{&nbsp;form.name.lable&nbsp;}}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{&nbsp;form.name&nbsp;}}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{%&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;err&nbsp;</span><span style="color:#0000ff;">in</span><span style="color:#000000;">&nbsp;form.name.errors&nbsp;%}&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;找出并显示所有的错误信息<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&lt;p&nbsp;style=</span><span style="color:#800000;">&quot;color:red&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{&nbsp;err&nbsp;}}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{%&nbsp;endfor&nbsp;%}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;div&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{&nbsp;form.password.lable&nbsp;}}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{&nbsp;form.paaword&nbsp;}}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{%&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;err&nbsp;</span><span style="color:#0000ff;">in</span><span style="color:#000000;">&nbsp;form.password.errors&nbsp;%}&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;找出并显示所有的错误信息<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&lt;p&nbsp;style=</span><span style="color:#800000;">&quot;color:red&quot;</span><span style="color:#000000;">&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{&nbsp;err&nbsp;}}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{%&nbsp;endfor&nbsp;%}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{{&nbsp;form.csrf_token&nbsp;}}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{{&nbsp;form.submit&nbsp;}}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/form&gt;<BR>
+{%&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;data&nbsp;%&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;您输入的用户名：&nbsp;{{&nbsp;data[</span><span style="color:#800000;">'name'</span><span style="color:#000000;">]&nbsp;}}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;您输入的密码：&nbsp;{{&nbsp;data[</span><span style="color:#800000;">'password'</span><span style="color:#000000;">]&nbsp;}}<BR>
+{%&nbsp;endif&nbsp;%}<BR>
+&lt;/body&gt;<BR>
+&lt;/html&gt;</span></div></td></tr></table></div>
+<br><font color=black size = 4>相关截图</font>
+<img src="https://wx2.sinaimg.cn/mw1024/007Diza3ly1g5ehx5ezwgj30jf0acjuo.jpg" width="800" height="650" />
+<img src="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g5ehx5eq3qj30h70ab0vb.jpg" width="800" height="650" />
+<img src="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g5ehx5d2hvj30i00abju1.jpg" width="800" height="650" />
+<img src="https://wx2.sinaimg.cn/mw1024/007Diza3ly1g5ehx5brl8j30hf09iwgs.jpg" width="800" height="650" />
+<img src="https://wx2.sinaimg.cn/mw1024/007Diza3ly1g5ehx5hh9ej30mx0an78i.jpg" width="800" height="650" />
+<img src="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g5ehx5be54j30rj0iadid.jpg" width="800" height="650" />
+<img src="https://wx4.sinaimg.cn/mw1024/007Diza3ly1g5ehx5bsn4j30v90i679z.jpg" width="800" height="650" />
+<img src="https://wx2.sinaimg.cn/mw1024/007Diza3ly1g5ehx5aittj30ip09cmz0.jpg" width="800" height="500" />
+<img src="https://wx1.sinaimg.cn/mw1024/007Diza3ly1g5ehx5af9wj30j40ex77t.jpg" width="800" height="650" />
+<img src="https://wx2.sinaimg.cn/mw1024/007Diza3ly1g5ei1ec8zgj30d409ldh5.jpg" width="800" height="650" />
+<img src="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g5ei1edn9rj30xq0i0drb.jpg" width="800" height="650" />
+<img src="https://wx4.sinaimg.cn/mw1024/007Diza3ly1g5ei1ebcc3j30mp0acq6i.jpg" width="800" height="650" />
+<img src="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g5ei1eb1t3j30hs0ak437.jpg" width="800" height="500" />
+<img src="https://wx1.sinaimg.cn/mw1024/007Diza3ly1g5ei1eayz9j30hv0an0w8.jpg" width="800" height="650" />
+<br><br><br>
+<font color = gray size = 3>如有错误，欢迎指正！</font></p></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://oubc.github.io/tags/python/">Python</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmg4aog3074074gnf.gif?tags=%5B%5D">I </a>
+	<a href="">love</a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmfm2eg306o06o74u.gif?tags=%5B%5D"> you </a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx4tpcj30fn0bq3zg.jpg?tags=%5B%5D">three </a>
+	<a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx64ctg307s07swfy.gif?tags=%5B%5D">thousand</a>
+    <a href="https://www.kugou.com/song/#hash=96426C78381DE98DC31A5846FC274CBF&album_id=646623"> times.</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>家庭、梦想、内心的平静</span>
+  </div>
+</footer>
+
+
+
+<script src="https://oubc.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://oubc.github.io/js/zozo.js"></script>
+<script src="https://oubc.github.io/js/highlight.pack.js"></script>
+<link  href="https://oubc.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://oubc.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>

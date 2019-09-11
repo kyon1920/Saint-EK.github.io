@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Bruce Cheung"/>
+
+  
+  <meta name="description" content="一种网络机器人，它可以将你需要的数据从网页上爬取下来呈现给你
+"/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, simple, dream"/>
+  
+
+  
+  <link rel="canonical" href="https://oubc.github.io/post/p12_basicreptile/"/>
+
+  
+
+  <title>Python网络爬虫基础 &middot; Love, or death</title>
+
+  <link rel="shortcut icon" href="https://oubc.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/post/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://oubc.github.io/">
+          <span>Love, or death</span>
+          <img src="https://oubc.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">For you, a thousand times over.</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/oubc" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=uYGOjo6OiIuLivnIyJfa1tQ" title="mail" target="_blank"><i class="remixicon-mail-fill"></i></a>
+        
+        
+        
+        <a href="http://sighttp.qq.com/msgrd?v=1&amp;uin=877771223" title="qq" target="_blank"><i class="remixicon-qq-fill"></i></a>
+        
+        
+        
+        <a href="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g4klnqf0tmj30ia0widks.jpg" title="wechat" target="_blank"><i class="remixicon-wechat-fill"></i></a>
+        
+        
+        
+        <a href="https://weibo.com/u/6993631995?topnav=1&amp;wvr=6&amp;topsug=1" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://oubc.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/post/p12_basicreptile/'>Python网络爬虫基础</a></h2>
+          <span class="date">2019.07.24</span>
+        </div>
+        <div class="post_content markdown"><p>一种网络机器人，它可以将你需要的数据从网页上爬取下来呈现给你</p>
+
+<p><br><font color=black size = 4>基础语法部分</font>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;Python Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47<br>48<br>49<br>50<br>51<br>52<br>53<br>54<br>55<br>56<br>57<br>58<br>59<br>60<br>61<br>62<br>63<br>64<br>65<br>66<br>67<br>68<br>69<br>70<br>71<br>72<br>73<br>74<br>75<br>76<br>77<br>78<br>79<br>80<br>81<br>82<br>83<br>84<br>85<br>86<br>87<br>88<br>89<br>90<br>91<br>92<br>93<br>94<br>95<br>96<br>97<br>98<br>99<br>100<br>101<br>102<br>103<br>104<br>105<br>106<br>107<br>108<br>109<br>110<br>111<br>112<br>113<br>114<br>115<br>116<br>117<br>118<br>119<br>120<br>121<br>122<br>123<br>124<br>125<br>126<br>127<br>128<br>129<br>130<br>131<br>132<br>133<br>134<br>135<br>136<br>137<br>138<br>139<br>140<br>141<br>142<br>143<br>144<br>145<br>146<br>147<br>148<br>149<br>150<br>151<br>152<br>153<br>154<br>155<br>156<br>157<br>158<br>159<br>160<br>161<br>162<br>163<br>164<br>165<br>166<br>167<br>168<br>169<br>170<br>171<br>172<br>173<br>174<br>175<br>176<br>177<br>178<br>179<br>180<br>181<br>182<br>183<br>184<br>185<br>186<br>187<br>188<br>189<br>190<br>191<br>192<br>193<br>194<br>195<br>196<br>197<br>198<br>199<br>200<br>201<br>202<br>203<br>204<br>205<br>206<br>207<br>208<br>209<br>210<br>211<br>212<br>213<br>214<br>215<br>216<br>217<br>218<br>219<br>220<br>221<br>222<br>223<br>224<br>225<br>226<br>227<br>228<br>229<br>230<br>231<br>232<br>233<br>234<br>235<br>236<br>237<br>238<br>239<br>240<br>241<br>242<br>243<br>244<br>245<br>246<br>247<br>248<br>249<br>250<br>251<br>252<br>253<br>254<br>255<br>256<br>257<br>258<br>259<br>260<br>261<br>262<br>263<br>264<br>265<br>266<br>267<br>268<br>269<br>270<br>271<br>272<br>273<br>274<br>275<br>276<br>277<br>278<br>279<br>280<br>281<br>282<br>283<br>284<br>285<br>286<br>287<br>288<br>289<br>290<br>291<br>292<br>293<br>294<br>295<br>296<br>297<br>298<br>299<br>300<br>301<br>302<br>303<br>304<br>305<br>306<br>307<br>308<br>309<br>310<br>311<br>312<br>313<br>314<br>315<br>316<br>317<br>318<br>319<br>320<br>321<br>322<br>323<br>324<br>325<br>326<br>327<br>328<br>329<br>330<br>331<br>332<br>333<br>334<br>335<br>336<br>337<br>338<br>339<br>340<br>341<br>342<br>343<br>344<br>345<br>346<br>347<br>348<br>349<br>350<br>351<br>352<br>353<br>354<br>355<br>356<br>357<br>358<br>359<br>360<br>361<br>362<br>363<br>364<br>365<br>366<br>367<br>368<br>369<br>370<br>371<br>372<br>373<br>374<br>375<br>376<br>377<br>378<br>379<br>380<br>381<br>382<br>383<br>384<br>385<br>386<br>387<br>388<br>389<br>390<br>391<br>392<br>393<br>394<br>395<br>396<br>397<br>398<br>399<br>400<br>401<br>402<br>403<br>404<br>405<br>406<br>407<br>408<br>409<br>410<br>411<br>412<br>413<br>414<br>415<br>416<br>417<br>418<br>419<br>420<br>421<br>422<br>423<br>424<br>425<br>426<br>427<br>428<br>429<br>430<br>431<br>432<br>433<br>434<br>435<br>436<br>437<br>438<br>439<br>440<br>441<br>442<br>443<br>444<br>445<br>446<br>447<br>448<br>449<br>450<br>451<br>452<br>453<br>454<br>455<br>456<br>457<br>458<br>459<br>460<br>461<br>462<br>463<br>464<br>465<br>466<br>467<br>468<br>469<br>470<br>471<br>472<br>473<br>474<br>475<br>476<br>477<br>478<br>479<br>480<br>481<br>482<br>483<br>484<br>485<br>486<br>487<br>488<br>489<br>490<br>491<br>492<br>493<br>494<br>495<br>496<br>497<br>498<br>499<br>500<br>501<br>502<br>503<br>504<br>505<br>506<br>507<br>508<br>509<br>510<br>511<br>512<br>513<br>514<br>515<br>516<br>517<br>518<br>519<br>520<br>521<br>522<br>523<br>524<br>525<br>526<br>527<br>528<br>529<br>530<br>531<br>532<br>533<br>534<br>535<br>536<br>537<br>538<br>539<br>540<br>541<br>542<br>543<br>544<br>545<br>546<br>547<br>548<br>549<br>550<br>551<br>552<br>553<br>554<br>555<br>556<br>557<br>558<br>559<br>560<br>561<br>562<br>563<br>564<br>565<br>566<br>567<br>568<br>569<br>570<br>571<br>572<br>573<br>574<br>575<br>576<br>577<br>578<br>579<br>580<br>581<br>582<br>583<br>584<br>585<br>586<br>587<br>588<br>589<br>590<br>591<br>592<br>593<br>594<br>595<br>596<br>597<br>598<br>599<br>600<br>601<br>602<br>603<br>604<br>605<br>606<br>607<br>608<br>609<br>610<br>611<br>612<br>613<br>614<br>615<br>616<br>617<br>618<br>619<br>620<br>621<br>622<br>623<br>624<br>625<br>626<br>627<br>628<br>629<br>630<br>631<br>632<br>633<br>634<br>635<br>636<br>637<br>638<br>639<br>640<br>641<br>642<br>643<br>644<br>645<br>646<br>647<br>648<br>649<br>650<br>651<br>652<br>653<br>654<br>655<br>656<br>657<br>658<br>659<br>660<br>661<br>662<br>663<br>664<br>665<br>666<br>667<br>668<br>669<br>670<br>671<br>672<br>673<br>674<br>675<br>676<br>677<br>678<br>679<br>680<br>681<br>682<br>683<br>684<br>685<br>686<br>687<br>688<br>689<br>690<br>691<br>692<br>693<br>694<br>695<br>696<br>697<br>698<br>699<br>700<br>701<br>702<br>703<br>704<br>705<br>706<br>707<br>708<br>709<br>710<br>711<br>712<br>713<br>714<br>715<br>716<br>717<br>718<br>719<br>720<br>721<br>722<br>723<br>724<br>725<br>726<br>727<br>728<br>729<br>730<br>731<br>732<br>733<br>734<br>735<br>736<br>737<br>738<br>739<br>740<br>741<br>742<br>743<br>744<br>745<br>746<br>747<br>748<br>749<br>750<br>751<br>752<br>753<br>754<br>755<br>756<br>757<br>758<br>759<br>760<br>761<br>762<br>763<br>764<br>765<br>766<br>767<br>768<br>769<br>770<br>771<br>772<br>773<br>774<br>775<br>776<br>777<br>778<br>779<br>780<br>781<br>782<br>783<br>784<br>785<br>786<br>787<br>788<br>789<br>790<br>791<br>792<br>793<br>794<br>795<br>796<br>797<br>798<br>799<br>800<br>801<br>802<br>803<br>804<br>805<br>806<br>807<br>808<br>809<br>810<br>811<br>812<br>813<br>814<br>815<br>816<br>817<br>818<br>819<br>820<br>821<br>822<br>823<br>824<br>825<br>826<br>827<br>828<br>829<br>830<br>831<br>832<br>833<br>834<br>835<br>836<br>837<br>838<br>839<br>840<br>841<br>842<br>843<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#008000;">#&nbsp;初识网络爬虫<BR>
+#&nbsp;内容：什么是爬虫？&nbsp;&nbsp;网络爬虫的常用技巧、爬虫的常用框架、实战项目：快手爬票<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;什么是爬虫？<BR>
+#&nbsp;它并不是一只爬动的虫子，网络爬虫又被称为网络蜘蛛、网络机器人，他可以指定的规则(程序的算法)自动浏览网络并且获取网络中的信息<BR>
+#&nbsp;不仅仅只有Python可以编写网络爬虫，其实C/C++、JAVA、PHP都可以编写网络爬虫程序，但是Python编写的网络爬虫是最受开发人员喜爱的<BR>
+#&nbsp;利用Python编写网络爬虫程序的优点：快速开发、跨平台、解释性、多种网络爬虫框架<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;爬取百度首页代码示例<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;urllib.request&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;导入网络请求模块<BR>
+</span><span style="color:#000000;">response&nbsp;=&nbsp;urllib.request.urlopen(r</span><span style="color:#800000;">'<a href="http://www.baidu.com/'">http://www.baidu.com/'</a></span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;实现网络请求<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(response.</span><span style="color:#0000ff;">read</span><span style="color:#000000;">().</span><span style="color:#0000ff;">decode</span><span style="color:#000000;">(</span><span style="color:#800000;">'utf-8'</span><span style="color:#000000;">))<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;网络爬虫的常用技术<BR>
+#&nbsp;网络请求：确定我们要爬取的网络地址，对这个网络地址进行网络请求<BR>
+#&nbsp;最常用三个网络请求模块：Urllib(原生模块)、Urllib3、Requests<BR>
+#&nbsp;Urllib模块：提供了多个子模块：常用的有request(定义了打开URL的方法和类)、error(主要包含异常类)、parse(用于URL的解析和引用)、robotparser(解析robors.txt文件)<BR>
+#&nbsp;什么是robots.txt文件？爬虫时访问的网站根目录中的文件，该文件会设置爬虫规则，告诉我们那个信息可以爬取，那些不能爬取，如无表示所有都能爬取<BR>
+#&nbsp;实现网络请求<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;urllib.request<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;urllib.parse&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;导入解析模块<BR>
+#&nbsp;创建参数<BR>
+</span><span style="color:#000000;">data&nbsp;=&nbsp;bytes(urllib.parse.urlencode({</span><span style="color:#800000;">'word'</span><span style="color:#000000;">:</span><span style="color:#800000;">'hello'</span><span style="color:#000000;">}),encoding=</span><span style="color:#800000;">'utf-8'</span><span style="color:#000000;">)<BR>
+</span><span style="color:#008000;">#&nbsp;发送post网络请求<BR>
+</span><span style="color:#000000;">response&nbsp;=&nbsp;urllib.request.urlopen(</span><span style="color:#800000;">&quot;<a href="http://httpbin.org/post&quot;">http://httpbin.org/post&quot;</a></span><span style="color:#000000;">,data=data)<BR>
+html&nbsp;=&nbsp;response.</span><span style="color:#0000ff;">read</span><span style="color:#000000;">()<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(html)<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;标准库的升级版：Urllib3<BR>
+#&nbsp;新增功能：如&nbsp;线程安全、连接池、使用大部分编码上传文件、100%的测试覆盖率......<BR>
+#&nbsp;官网地址：<a href="https://urllib3.readthedocs.io/en/latest/">https://urllib3.readthedocs.io/en/latest/</a><BR>
+#&nbsp;安装Urllib3：在命令行下输入&nbsp;pip&nbsp;install&nbsp;urllib3<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;urllib3&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;导入标准库升级模块<BR>
+#&nbsp;创建PoolManager对象，用于处理与线程的连接以及线程安全<BR>
+</span><span style="color:#000000;">http&nbsp;=&nbsp;urllib3.PoolManager()<BR>
+</span><span style="color:#008000;">#&nbsp;发送网络请求<BR>
+#&nbsp;response&nbsp;=&nbsp;http.request('GET','<a href="http://www.baidu.com'">http://www.baidu.com'</a>)<BR>
+</span><span style="color:#000000;">response&nbsp;=&nbsp;http.request(</span><span style="color:#800000;">'POST'</span><span style="color:#000000;">,</span><span style="color:#800000;">'<a href="http://httpbin.org/post'">http://httpbin.org/post'</a></span><span style="color:#000000;">,fields={</span><span style="color:#800000;">'word'</span><span style="color:#000000;">:</span><span style="color:#800000;">'hello'</span><span style="color:#000000;">})<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(response.data.</span><span style="color:#0000ff;">decode</span><span style="color:#000000;">())&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;打印请求信息<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;非标准模块：Requests模块<BR>
+#&nbsp;优点：比标准模块简单一些，操作更加人性化<BR>
+#&nbsp;功能特征：自动内容解码、分块请求、连接超时、自动解压、文件分块上传......<BR>
+#&nbsp;官方文档：<a href="http://www.python-requests.org/en/master/">http://www.python-requests.org/en/master/</a><BR>
+#&nbsp;安装：在命令行输入&nbsp;pip&nbsp;install&nbsp;requests<BR>
+#&nbsp;get()方法使用示例<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;requests&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;导入网络请求模块<BR>
+</span><span style="color:#000000;">response&nbsp;=&nbsp;requests.</span><span style="color:#0000ff;">get</span><span style="color:#000000;">(</span><span style="color:#800000;">'<a href="http://www.baidu.com/'">http://www.baidu.com/'</a></span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;发送网络请求<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'状态码：'</span><span style="color:#000000;">,response.status_code)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;打印状态码<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'请求地址：'</span><span style="color:#000000;">,response.url)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;打印请求地址<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'头部信息：'</span><span style="color:#000000;">,response.headers)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;打印头部信息<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'cookie信息：'</span><span style="color:#000000;">,response.cookies)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;打印cookies信息<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'文本源码：'</span><span style="color:#000000;">,response.text)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;打印源码，以文本形式输出<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'字节流源码：'</span><span style="color:#000000;">,response.content)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;打印字节流源码<BR>
+#&nbsp;post()方法示例<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;requests&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;导入网络请求模块<BR>
+</span><span style="color:#000000;">data&nbsp;=&nbsp;{</span><span style="color:#800000;">'word'</span><span style="color:#000000;">:</span><span style="color:#800000;">'hello'</span><span style="color:#000000;">}&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;表单参数<BR>
+</span><span style="color:#000000;">response&nbsp;=&nbsp;requests.post(</span><span style="color:#800000;">'<a href="http://httpbin.org/post'">http://httpbin.org/post'</a></span><span style="color:#000000;">,data&nbsp;=&nbsp;data)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;发送网络请求<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'状态码：'</span><span style="color:#000000;">,response.status_code)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;打印状态码<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'字节流源码：'</span><span style="color:#000000;">,response.content)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;打印字节流源码<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;请求headers处理：也就是头部处理<BR>
+#&nbsp;当进行网络请求的时候，会产生403错误信息，这个时候就需要进行headers处理了<BR>
+#&nbsp;错误原因是为了防止恶意采集数据，所以网页设置了反爬虫操作<BR>
+#&nbsp;请求头部的参数信息：<BR>
+#&nbsp;Accept:text/html,application/xhtml+xm...plication/xml;q=0.9*/*;q=0.8&nbsp;&nbsp;浏览器可接受的MME类型<BR>
+#&nbsp;Accept-Encoding:gzip,deflate,br&nbsp;&nbsp;浏览器能进行解码的编码方式<BR>
+#&nbsp;Accept-Language:zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2&nbsp;&nbsp;浏览器的语言种类<BR>
+#&nbsp;Cache-Control:max-age=0&nbsp;&nbsp;控制网页缓存<BR>
+#&nbsp;Connection:keep-alive&nbsp;&nbsp;是否可以持久得处理网络链接<BR>
+#&nbsp;Cookie:BAIDUID=C3A70711039E0946211C95..._26350_20927;BD_UPN=13314352&nbsp;&nbsp;将cookies返回到服务器<BR>
+#&nbsp;Host:www.baidu.com&nbsp;&nbsp;初始化URL中的主机和端口<BR>
+#&nbsp;Upgrade-Insecure-Requests:1&nbsp;&nbsp;通知服务器可以处理https协议<BR>
+#&nbsp;User-Agent:Mozilla/5.0(Windows&nbsp;NT&nbsp;6.1;W...)Gecko/20100101&nbsp;Firefox/60.0&nbsp;&nbsp;用于识别浏览器的类型<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;requests<BR>
+url&nbsp;=&nbsp;r</span><span style="color:#800000;">'<a href="http://www.whatismyip.com/'">http://www.whatismyip.com/'</a></span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;网络请求地址<BR>
+</span><span style="color:#000000;">response&nbsp;=&nbsp;requests.</span><span style="color:#0000ff;">get</span><span style="color:#000000;">(url)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;发送网络请求<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(response.content.</span><span style="color:#0000ff;">decode</span><span style="color:#000000;">(</span><span style="color:#800000;">'utf-8'</span><span style="color:#000000;">))<BR>
+</span><span style="color:#008000;">#&nbsp;以上代码会出现403错误，并不能得到我们想要的数据<BR>
+#&nbsp;经过headers处理后：headers&nbsp;在我们需要爬取的网页中，按F12找到Network选项，然后找到下面变量对应的值<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;requests<BR>
+url&nbsp;=&nbsp;r</span><span style="color:#800000;">'<a href="http://www.whatismyip.com/'">http://www.whatismyip.com/'</a></span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;网络请求地址<BR>
+</span><span style="color:#000000;">headers&nbsp;=&nbsp;{</span><span style="color:#800000;">'User-Agent'</span><span style="color:#000000;">:</span><span style="color:#800000;">'Mozilla/5.0&nbsp;(Windows&nbsp;NT&nbsp;10.0;&nbsp;WOW64)&nbsp;AppleWebKit/537.36&nbsp;(KHTML,&nbsp;like&nbsp;Gecko)&nbsp;Chrome/75.0.3770.100&nbsp;Safari/537.36'</span><span style="color:#000000;">}<BR>
+response&nbsp;=&nbsp;requests.</span><span style="color:#0000ff;">get</span><span style="color:#000000;">(url,headers&nbsp;=&nbsp;headers)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;发送网络请求<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(response.content.</span><span style="color:#0000ff;">decode</span><span style="color:#000000;">(</span><span style="color:#800000;">'utf-8'</span><span style="color:#000000;">))<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;网络超时处理<BR>
+#&nbsp;出现情况：网络断开、网络不稳定、网络堵塞、网速过慢<BR>
+#&nbsp;爬虫超时示例<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;requests<BR>
+</span><span style="color:#008000;">#&nbsp;导入网络请求模块中的三个异常类<BR>
+</span><span style="color:#0000ff;">from</span><span style="color:#000000;">&nbsp;requests.exceptions&nbsp;</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;ReadTimeout,HTTPError,RequestException<BR>
+</span><span style="color:#008000;">#&nbsp;循环发送50次网络请求<BR>
+</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;a&nbsp;</span><span style="color:#0000ff;">in</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">range</span><span style="color:#000000;">(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,</span><span style="color:#ff0000;">50</span><span style="color:#000000;">):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">try</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;response&nbsp;=&nbsp;requests.</span><span style="color:#0000ff;">get</span><span style="color:#000000;">(</span><span style="color:#800000;">'<a href="http://www.baidu.com/'">http://www.baidu.com/'</a></span><span style="color:#000000;">,timeout&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">.</span><span style="color:#ff0000;">05</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(response.status_code)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;打印请求码<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">except</span><span style="color:#000000;">&nbsp;ReadTimeout:&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;except&nbsp;Exception&nbsp;as&nbsp;e:<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;print(&quot;异常：&quot;+str(e))&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;打印异常<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'timeout'</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">except</span><span style="color:#000000;">&nbsp;HTTPError:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'HTTPError'</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">except</span><span style="color:#000000;">&nbsp;RequestException:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'reqerror'</span><span style="color:#000000;">)<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;代理服务：使用代理IP<BR>
+#&nbsp;在爬取网页的过程中，会发现，不久前还可以爬取的网页，现在却爬不到了，有的会出现验证码的现象，这是因为计算机的IP被爬取的网站发现了<BR>
+#&nbsp;设置了代理IP后，网页就不再会发现你的IP，而不会出现上面的情况<BR>
+#&nbsp;可以使用代理IP的网站：www.xicidaili.com<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;requests<BR>
+</span><span style="color:#008000;">#&nbsp;设置代理IP<BR>
+</span><span style="color:#000000;">proxy&nbsp;=&nbsp;{</span><span style="color:#800000;">'http'</span><span style="color:#000000;">:</span><span style="color:#800000;">'106.75.8.141:808'</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'https'</span><span style="color:#000000;">:</span><span style="color:#800000;">'113.124.85.154:9999'</span><span style="color:#000000;">}&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;有可能失效，自行到上面网站进行更换，数据依次是'代理类型':'IP地址:端口'<BR>
+</span><span style="color:#000000;">response&nbsp;=&nbsp;requests.</span><span style="color:#0000ff;">get</span><span style="color:#000000;">(</span><span style="color:#800000;">'<a href="http://www.baidu.com/'">http://www.baidu.com/'</a></span><span style="color:#000000;">,proxies&nbsp;=&nbsp;proxy)<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(response.content.</span><span style="color:#0000ff;">decode</span><span style="color:#000000;">(</span><span style="color:#800000;">'utf-8'</span><span style="color:#000000;">))<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;最后解析HTML，找到我们需要爬取的数据<BR>
+#&nbsp;在Python中可以解析HTML代码的模块有很多<BR>
+#&nbsp;常见模块：LXML模块(速度快、需要安装C语言库)、Requests-HTML模块(第三方)、HtmlParser模块(标准库模块，执行速度适中，但容错能力弱)<BR>
+#&nbsp;续：BeautifulSoup模块(比较强大，不仅支持Python标准库解析器，还支持第三方解析器，包含MXML解析器)<BR>
+#&nbsp;以BeautifulSoup来进行安装的三种方法<BR>
+#&nbsp;在Linux安装：apt-get&nbsp;install&nbsp;Python-bs4<BR>
+#&nbsp;在Windows安装：easy_install&nbsp;beautifulsoup4&nbsp;或者&nbsp;pip&nbsp;install&nbsp;beautifulsoup4<BR>
+#&nbsp;如果下载不是我们需要的版本：则通过访问<a href="https://www.crummy.com/software/BeautifulSoup4/bs4/download/下载想要的版本，然后通过命令&nbsp;Python&nbsp;setup.py&nbsp;install进行安装">https://www.crummy.com/software/BeautifulSoup4/bs4/download/下载想要的版本，然后通过命令&nbsp;Python&nbsp;setup.py&nbsp;install进行安装</a><BR>
+#&nbsp;官方文档：<a href="https://www.crummy.com/software/BeautifulSoup/bs4/doc/index_zh.html">https://www.crummy.com/software/BeautifulSoup/bs4/doc/index_zh.html</a><BR>
+#&nbsp;解析HTML示例：解析代码中的HTML代码、解析BaiduNews的HTML代码、解析本地代码<BR>
+</span><span style="color:#0000ff;">from</span><span style="color:#000000;">&nbsp;bs4&nbsp;</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;BeautifulSoup<BR>
+html_doc&nbsp;=&nbsp;</span><span style="color:#800000;">'''<BR>
+</span><span style="color:#000000;">&lt;html&gt;&lt;head&gt;&lt;</span><span style="color:#0000ff;">title</span><span style="color:#000000;">&gt;The&nbsp;Dormouse</span><span style="color:#800000;">'s&nbsp;story&lt;/title&gt;&lt;head&gt;<BR>
+</span><span style="color:#000000;">&lt;body&gt;<BR>
+&lt;p&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;title&quot;</span><span style="color:#000000;">&gt;&lt;b&gt;The&nbsp;Dormouse</span><span style="color:#800000;">'s&nbsp;story&lt;/b&gt;&lt;/p&gt;<BR>
+</span><span style="color:#000000;"><BR>
+&lt;p&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;story&quot;</span><span style="color:#000000;">&gt;Once&nbsp;upon&nbsp;a&nbsp;time&nbsp;there&nbsp;were&nbsp;three&nbsp;little&nbsp;sisters;&nbsp;</span><span style="color:#0000ff;">and</span><span style="color:#000000;">&nbsp;their&nbsp;names&nbsp;were<BR>
+&lt;a&nbsp;href=</span><span style="color:#800000;">&quot;<a href="http://example.com/elsie&quot;">http://example.com/elsie&quot;</a></span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;sister&quot;</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">id</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;link&quot;</span><span style="color:#000000;">&gt;Elsie&lt;/a&gt;,<BR>
+&lt;a&nbsp;href=</span><span style="color:#800000;">&quot;<a href="http://example.com/elsie&quot;">http://example.com/elsie&quot;</a></span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;sister&quot;</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">id</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;link&quot;</span><span style="color:#000000;">&gt;Lacie&lt;/a&gt;&nbsp;</span><span style="color:#0000ff;">and</span><span style="color:#000000;"><BR>
+&lt;a&nbsp;href=</span><span style="color:#800000;">&quot;<a href="http://example.com/elsie&quot;">http://example.com/elsie&quot;</a></span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;sister&quot;</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">id</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;link&quot;</span><span style="color:#000000;">&gt;Tillie&lt;/a&gt;;<BR>
+</span><span style="color:#0000ff;">and</span><span style="color:#000000;">&nbsp;they&nbsp;lived&nbsp;at&nbsp;the&nbsp;bottom&nbsp;of&nbsp;a&nbsp;well.&lt;/p&gt;<BR>
+<BR>
+&lt;p&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;stroy&quot;</span><span style="color:#000000;">&gt;...&lt;/p&gt;<BR>
+</span><span style="color:#800000;">'''<BR>
+</span><span style="color:#000000;">soup&nbsp;=&nbsp;BeautifulSoup(html_doc,features=</span><span style="color:#800000;">'lxml'</span><span style="color:#000000;">)<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(soup)<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'HRML代码的title：'</span><span style="color:#000000;">,soup.</span><span style="color:#0000ff;">title</span><span style="color:#000000;">)<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'HRML代码的&lt;body&gt;部分：'</span><span style="color:#000000;">,soup.body)<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;获取百度的标题<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;requests<BR>
+response&nbsp;=&nbsp;requests.</span><span style="color:#0000ff;">get</span><span style="color:#000000;">(</span><span style="color:#800000;">'<a href="http://news.baidu.com/'">http://news.baidu.com/'</a></span><span style="color:#000000;">)<BR>
+soup1&nbsp;=&nbsp;BeautifulSoup(response.text,features=</span><span style="color:#800000;">'lxml'</span><span style="color:#000000;">)<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(soup1)<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'Baidu的title：'</span><span style="color:#000000;">,soup1.</span><span style="color:#0000ff;">find</span><span style="color:#000000;">(</span><span style="color:#800000;">'title'</span><span style="color:#000000;">).text)<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'Baidu代码的&lt;body&gt;部分：'</span><span style="color:#000000;">,soup1.body)<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;打印本地html文件代码<BR>
+</span><span style="color:#000000;">soup2&nbsp;=&nbsp;BeautifulSoup(</span><span style="color:#8000ff;">open</span><span style="color:#000000;">(r</span><span style="color:#800000;">'C:\桌面\html.html'</span><span style="color:#000000;">),features=</span><span style="color:#800000;">'lxml'</span><span style="color:#000000;">)<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(soup2.prettify())<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;网络爬虫的常用框架<BR>
+#&nbsp;Scrapy：急速而强大、易于扩展、便携式、可移植性强&nbsp;&nbsp;官方网站：<a href="https://scrapy.org/">https://scrapy.org/</a><BR>
+#&nbsp;Crawley&nbsp;Project：&nbsp;&nbsp;官方网站：<a href="http://project.crawley-cloud.com/">http://project.crawley-cloud.com/</a><BR>
+#&nbsp;pyspider：分布式架构、支持多种数据库后端、强大的WebUI支持脚本编辑器，任务监视器，项目管理器以及结果查看器<BR>
+#&nbsp;pyspider的官方网站：<a href="https://github.com/binux/pyspider/releases&nbsp;&nbsp;开发文档：http://docs.pyspider.org/">https://github.com/binux/pyspider/releases&nbsp;&nbsp;开发文档：http://docs.pyspider.org/</a><BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;实战：快手爬票<BR>
+#&nbsp;概述以及运行结果<BR>
+#&nbsp;通过12306官方网址获取车次及票况，需要我们进行输入的有出发点、目的地和日期，然后得到当天所有相关车次及有无票情况<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;搭建QT环境<BR>
+#&nbsp;QT官方地址：<a href="https://www.qt.io/download">https://www.qt.io/download</a><BR>
+#&nbsp;打开官方网站&nbsp;或者&nbsp;download.qt.io/archive/qt→建议下载5.6版本(在win10兼容性较好)、win7都行→下载<BR>
+#&nbsp;验证安装是否成功代码<BR>
+#!/usr/bin/env&nbsp;python3<BR>
+#&nbsp;-*-&nbsp;coding:&nbsp;utf-8&nbsp;-*-<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;sys<BR>
+</span><span style="color:#0000ff;">from</span><span style="color:#000000;">&nbsp;PyQt5.QtWidgets&nbsp;</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;QApplication,&nbsp;QWidget<BR>
+<BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;__name__&nbsp;==&nbsp;</span><span style="color:#800000;">'__main__'</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;app&nbsp;=&nbsp;QApplication(sys.argv)<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;w&nbsp;=&nbsp;QWidget()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;w.resize(</span><span style="color:#ff0000;">250</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">150</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;w.move(</span><span style="color:#ff0000;">300</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">300</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;w.setWindowTitle(</span><span style="color:#800000;">'Simple'</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;w.show()<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;sys.exit(app.exec_())<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;实现主窗体设计<BR>
+#&nbsp;主窗体、顶部图片、查询区域、选择车次类型、信息分类图片、信息表格区域<BR>
+#&nbsp;-*-&nbsp;coding:&nbsp;utf-8&nbsp;-*-<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;Form&nbsp;implementation&nbsp;generated&nbsp;from&nbsp;reading&nbsp;ui&nbsp;file&nbsp;'PaPiao.ui'<BR>
+#<BR>
+#&nbsp;Created&nbsp;by:&nbsp;PyQt5&nbsp;UI&nbsp;code&nbsp;generator&nbsp;5.11.3<BR>
+#<BR>
+#&nbsp;WARNING!&nbsp;All&nbsp;changes&nbsp;made&nbsp;in&nbsp;this&nbsp;file&nbsp;will&nbsp;be&nbsp;lost!<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">from</span><span style="color:#000000;">&nbsp;PyQt5&nbsp;</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;QtCore,&nbsp;QtGui,&nbsp;QtWidgets<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;sys<BR>
+</span><span style="color:#0000ff;">from</span><span style="color:#000000;">&nbsp;PyQt5.QtGui&nbsp;</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;&nbsp;QPalette,QPixmap,QColor&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;导入QtGui模块<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;Ui_MainWindow(</span><span style="color:#8000ff;">object</span><span style="color:#000000;">):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;setupUi(self,&nbsp;MainWindow):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MainWindow.setObjectName(</span><span style="color:#800000;">&quot;MainWindow&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MainWindow.resize(</span><span style="color:#ff0000;">960</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">786</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MainWindow.setMinimumSize(QtCore.QSize(</span><span style="color:#ff0000;">960</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">786</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MainWindow.setMaximumSize(QtCore.QSize(</span><span style="color:#ff0000;">960</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">786</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.centralwidget&nbsp;=&nbsp;QtWidgets.QWidget(MainWindow)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.centralwidget.setObjectName(</span><span style="color:#800000;">&quot;centralwidget&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.label0&nbsp;=&nbsp;QtWidgets.QLabel(self.centralwidget)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.label0.setGeometry(QtCore.QRect(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">960</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">141</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.label0.setText(</span><span style="color:#800000;">&quot;&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.label0.setObjectName(</span><span style="color:#800000;">&quot;label0&quot;</span><span style="color:#000000;">)<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;label0_img&nbsp;=&nbsp;QPixmap(</span><span style="color:#800000;">'train.png'</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;导入顶部位图<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.label0.setPixmap(label0_img)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;设置调色版<BR>
+</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.frame0&nbsp;=&nbsp;QtWidgets.QFrame(self.centralwidget)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.frame0.setGeometry(QtCore.QRect(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">140</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">960</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">80</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.frame0.setFrameShape(QtWidgets.QFrame.StyledPanel)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.frame0.setFrameShadow(QtWidgets.QFrame.Raised)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.frame0.setObjectName(</span><span style="color:#800000;">&quot;frame0&quot;</span><span style="color:#000000;">)<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.frame0.setAutoFillBackground(</span><span style="color:#8000ff;">True</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;开启自动填充背景<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;palette0&nbsp;=&nbsp;QPalette()&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;调色板类<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;palette0.setBrush(QPalette.Background,QtGui.QBrush(QtGui.QPixmap(</span><span style="color:#800000;">'bj.jpg'</span><span style="color:#000000;">)))&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;设置背景图片&nbsp;<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.frame0.setPalette(palette0)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;设置调色板<BR>
+</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.chufadi0&nbsp;=&nbsp;QtWidgets.QLabel(self.frame0)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.chufadi0.setGeometry(QtCore.QRect(</span><span style="color:#ff0000;">30</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">25</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">54</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">20</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.chufadi0.setObjectName(</span><span style="color:#800000;">&quot;chufadi0&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.chufadi1&nbsp;=&nbsp;QtWidgets.QTextEdit(self.frame0)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.chufadi1.setGeometry(QtCore.QRect(</span><span style="color:#ff0000;">90</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">20</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">104</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">31</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.chufadi1.setObjectName(</span><span style="color:#800000;">&quot;chufadi1&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.label_2&nbsp;=&nbsp;QtWidgets.QLabel(self.frame0)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.label_2.setGeometry(QtCore.QRect(</span><span style="color:#ff0000;">265</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">250</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">72</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">15</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.label_2.setObjectName(</span><span style="color:#800000;">&quot;label_2&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.chufari0&nbsp;=&nbsp;QtWidgets.QLabel(self.frame0)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.chufari0.setGeometry(QtCore.QRect(</span><span style="color:#ff0000;">440</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">25</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">54</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">20</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.chufari0.setObjectName(</span><span style="color:#800000;">&quot;chufari0&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.chaxun&nbsp;=&nbsp;QtWidgets.QPushButton(self.frame0)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.chaxun.setGeometry(QtCore.QRect(</span><span style="color:#ff0000;">680</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">20</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">93</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">28</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.chaxun.setObjectName(</span><span style="color:#800000;">&quot;chaxun&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.mudidi1&nbsp;=&nbsp;QtWidgets.QTextEdit(self.frame0)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.mudidi1.setGeometry(QtCore.QRect(</span><span style="color:#ff0000;">300</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">20</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">104</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">31</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.mudidi1.setObjectName(</span><span style="color:#800000;">&quot;mudidi1&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.mididi0&nbsp;=&nbsp;QtWidgets.QLabel(self.frame0)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.mididi0.setGeometry(QtCore.QRect(</span><span style="color:#ff0000;">240</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">25</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">54</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">20</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.mididi0.setObjectName(</span><span style="color:#800000;">&quot;mididi0&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.chufari1&nbsp;=&nbsp;QtWidgets.QTextEdit(self.frame0)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.chufari1.setGeometry(QtCore.QRect(</span><span style="color:#ff0000;">500</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">20</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">104</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">31</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.chufari1.setObjectName(</span><span style="color:#800000;">&quot;chufari1&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.frame1&nbsp;=&nbsp;QtWidgets.QFrame(self.centralwidget)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.frame1.setGeometry(QtCore.QRect(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">220</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">960</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.frame1.setFrameShape(QtWidgets.QFrame.StyledPanel)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.frame1.setFrameShadow(QtWidgets.QFrame.Raised)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.frame1.setObjectName(</span><span style="color:#800000;">&quot;frame1&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checkBox0&nbsp;=&nbsp;QtWidgets.QCheckBox(self.frame1)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checkBox0.setGeometry(QtCore.QRect(</span><span style="color:#ff0000;">110</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">91</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">19</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checkBox0.setObjectName(</span><span style="color:#800000;">&quot;checkBox0&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checileixing&nbsp;=&nbsp;QtWidgets.QLabel(self.frame1)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checileixing.setGeometry(QtCore.QRect(</span><span style="color:#ff0000;">30</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">13</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">72</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">15</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checileixing.setObjectName(</span><span style="color:#800000;">&quot;checileixing&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checkBox1&nbsp;=&nbsp;QtWidgets.QCheckBox(self.frame1)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checkBox1.setGeometry(QtCore.QRect(</span><span style="color:#ff0000;">260</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">91</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">19</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checkBox1.setObjectName(</span><span style="color:#800000;">&quot;checkBox1&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checkBox2&nbsp;=&nbsp;QtWidgets.QCheckBox(self.frame1)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checkBox2.setGeometry(QtCore.QRect(</span><span style="color:#ff0000;">400</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">91</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">19</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checkBox2.setObjectName(</span><span style="color:#800000;">&quot;checkBox2&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checkBox3&nbsp;=&nbsp;QtWidgets.QCheckBox(self.frame1)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checkBox3.setGeometry(QtCore.QRect(</span><span style="color:#ff0000;">550</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">91</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">19</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checkBox3.setObjectName(</span><span style="color:#800000;">&quot;checkBox3&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checkBox4&nbsp;=&nbsp;QtWidgets.QCheckBox(self.frame1)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checkBox4.setGeometry(QtCore.QRect(</span><span style="color:#ff0000;">690</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">91</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">19</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checkBox4.setObjectName(</span><span style="color:#800000;">&quot;checkBox4&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.frame1.setAutoFillBackground(</span><span style="color:#8000ff;">True</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;开启自动填充背景<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;palette1&nbsp;=&nbsp;QPalette()&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;调色板类<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;palette1.setBrush(QPalette.Background,QtGui.QBrush(QtGui.QPixmap(</span><span style="color:#800000;">'bj.jpg'</span><span style="color:#000000;">)))&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;设置背景图片&nbsp;<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.frame1.setPalette(palette1)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;设置调色板<BR>
+</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.text&nbsp;=&nbsp;QtWidgets.QTextEdit(self.centralwidget)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.text.setGeometry(QtCore.QRect(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">330</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">960</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">455</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.text.setObjectName(</span><span style="color:#800000;">&quot;text&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.label1&nbsp;=&nbsp;QtWidgets.QLabel(self.centralwidget)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.label1.setGeometry(QtCore.QRect(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">260</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">960</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">70</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.label1.setText(</span><span style="color:#800000;">&quot;&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.label1.setObjectName(</span><span style="color:#800000;">&quot;label1&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MainWindow.setCentralWidget(self.centralwidget)<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.retranslateUi(MainWindow)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;QtCore.QMetaObject.connectSlotsByName(MainWindow)<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;label1_img&nbsp;=&nbsp;QPixmap(</span><span style="color:#800000;">'train.png'</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;导入顶部位图<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.label1.setPixmap(label0_img)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;设置调色版<BR>
+</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;retranslateUi(self,&nbsp;MainWindow):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_translate&nbsp;=&nbsp;QtCore.QCoreApplication.</span><span style="color:#0000ff;">translate</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MainWindow.setWindowTitle(_translate(</span><span style="color:#800000;">&quot;MainWindow&quot;</span><span style="color:#000000;">,&nbsp;</span><span style="color:#800000;">&quot;快手爬票&quot;</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.chufadi0.setText(_translate(</span><span style="color:#800000;">&quot;MainWindow&quot;</span><span style="color:#000000;">,&nbsp;</span><span style="color:#800000;">&quot;出发地:&quot;</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.label_2.setText(_translate(</span><span style="color:#800000;">&quot;MainWindow&quot;</span><span style="color:#000000;">,&nbsp;</span><span style="color:#800000;">&quot;目的地:&quot;</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.chufari0.setText(_translate(</span><span style="color:#800000;">&quot;MainWindow&quot;</span><span style="color:#000000;">,&nbsp;</span><span style="color:#800000;">&quot;出发日:&quot;</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.chaxun.setText(_translate(</span><span style="color:#800000;">&quot;MainWindow&quot;</span><span style="color:#000000;">,&nbsp;</span><span style="color:#800000;">&quot;查询&quot;</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.mididi0.setText(_translate(</span><span style="color:#800000;">&quot;MainWindow&quot;</span><span style="color:#000000;">,&nbsp;</span><span style="color:#800000;">&quot;目的地:&quot;</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checkBox0.setText(_translate(</span><span style="color:#800000;">&quot;MainWindow&quot;</span><span style="color:#000000;">,&nbsp;</span><span style="color:#800000;">&quot;GC-高铁&quot;</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checileixing.setText(_translate(</span><span style="color:#800000;">&quot;MainWindow&quot;</span><span style="color:#000000;">,&nbsp;</span><span style="color:#800000;">&quot;车次类型:&quot;</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checkBox1.setText(_translate(</span><span style="color:#800000;">&quot;MainWindow&quot;</span><span style="color:#000000;">,&nbsp;</span><span style="color:#800000;">&quot;D-动车&quot;</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checkBox2.setText(_translate(</span><span style="color:#800000;">&quot;MainWindow&quot;</span><span style="color:#000000;">,&nbsp;</span><span style="color:#800000;">&quot;Z-直达&quot;</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checkBox3.setText(_translate(</span><span style="color:#800000;">&quot;MainWindow&quot;</span><span style="color:#000000;">,&nbsp;</span><span style="color:#800000;">&quot;T-特快&quot;</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checkBox4.setText(_translate(</span><span style="color:#800000;">&quot;MainWindow&quot;</span><span style="color:#000000;">,&nbsp;</span><span style="color:#800000;">&quot;K-快速&quot;</span><span style="color:#000000;">))<BR>
+<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;show_MainWindow():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;app&nbsp;=&nbsp;QtWidgets.QApplication(sys.argv)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;实例化Qapplication类，作为GUI主程序的入口<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;MainWindow&nbsp;=&nbsp;QtWidgets.QMainWindow()&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;创建QMainWindow<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;ui&nbsp;=&nbsp;Ui_MainWindow()&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;实例UI类<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;ui.setupUi(MainWindow)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;设置窗体UI<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;MainWindow.show()&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;显示窗体<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;sys.exit(app.exec_())&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;当窗口创建完成以后，需要结束主循环<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;__name__&nbsp;==&nbsp;</span><span style="color:#800000;">'__main__'</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;show_MainWindow()<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;分析请求参数<BR>
+#&nbsp;需要借助浏览器自带的网络监视器<BR>
+#&nbsp;以12306铁路售票官网为例，打开网络监视器会有4个参数，含义分别如下：<BR>
+#&nbsp;leftTicketDTO.from_station:BJP&nbsp;&nbsp;&nbsp;&nbsp;出发地：北京<BR>
+#&nbsp;leftTicketDTO.to_station:SHH&nbsp;&nbsp;&nbsp;&nbsp;目的地：上海<BR>
+#&nbsp;leftTicketDTO.train_data:2019-07-24&nbsp;&nbsp;&nbsp;&nbsp;出发日期<BR>
+#&nbsp;purpose_codes:ADULT&nbsp;&nbsp;&nbsp;&nbsp;成人票信息<BR>
+#&nbsp;在网络监视器中会发现这一些列的规律<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;下载站名文件<BR>
+#&nbsp;该文件可以获取城市所对应的英文缩写<BR>
+#&nbsp;站名文件地址：<a href="https://kyfw.12306.cn/otn/resources/js/framework/station_name.js?station_version=1.9058">https://kyfw.12306.cn/otn/resources/js/framework/station_name.js?station_version=1.9058</a><BR>
+#&nbsp;通过代码将网站信息用读写信息方式下载文件<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;requests<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;re<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;os<BR>
+<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;getStation():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;url&nbsp;=&nbsp;</span><span style="color:#800000;">'<a href="https://kyfw.12306.cn/otn/resources/js/framework/station_name.js?station_version=1.9058'">https://kyfw.12306.cn/otn/resources/js/framework/station_name.js?station_version=1.9058'</a></span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;response&nbsp;=&nbsp;requests.</span><span style="color:#0000ff;">get</span><span style="color:#000000;">(url,verify=</span><span style="color:#8000ff;">True</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;发送网络请求并验证<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;stations&nbsp;=&nbsp;re.findall(u</span><span style="color:#800000;">'([\u4e00-\u9fa5]+)|([A-Z]+)'</span><span style="color:#000000;">,response.text)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;stations&nbsp;=&nbsp;</span><span style="color:#8000ff;">dict</span><span style="color:#000000;">(stations)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;转换为字典形式<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;stations&nbsp;=&nbsp;</span><span style="color:#8000ff;">str</span><span style="color:#000000;">(stations)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;转换为字符串类型，否则无法写入文件<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">write</span><span style="color:#000000;">(stations)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;调用写入方法，实现下载车站文件<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">write</span><span style="color:#000000;">(stations):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">file</span><span style="color:#000000;">&nbsp;=&nbsp;</span><span style="color:#8000ff;">open</span><span style="color:#000000;">(</span><span style="color:#800000;">'stations.txt'</span><span style="color:#000000;">,</span><span style="color:#800000;">'w'</span><span style="color:#000000;">,encoding&nbsp;=&nbsp;</span><span style="color:#800000;">'utf-8_sig'</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;写入模式打开文件<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">file</span><span style="color:#000000;">.</span><span style="color:#0000ff;">write</span><span style="color:#000000;">(stations)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;写入文件<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">file</span><span style="color:#000000;">.</span><span style="color:#0000ff;">close</span><span style="color:#000000;">()<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">read</span><span style="color:#000000;">():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">file</span><span style="color:#000000;">&nbsp;=&nbsp;</span><span style="color:#8000ff;">open</span><span style="color:#000000;">(</span><span style="color:#800000;">'stations.txt'</span><span style="color:#000000;">,</span><span style="color:#800000;">'r'</span><span style="color:#000000;">,encoding&nbsp;=&nbsp;</span><span style="color:#800000;">'utf-8_sig'</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;以读模式打开文件<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;=&nbsp;</span><span style="color:#8000ff;">file</span><span style="color:#000000;">.</span><span style="color:#0000ff;">readline</span><span style="color:#000000;">()&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;以行形式读取文件<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">file</span><span style="color:#000000;">.</span><span style="color:#0000ff;">close</span><span style="color:#000000;">()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;data<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;isStations():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;isStations&nbsp;=&nbsp;os.path.exists(</span><span style="color:#800000;">'stations.txt'</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;判断车站文件是否存在<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;isStations<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;获取车票信息并将它显示在表格中<BR>
+#&nbsp;由网页监视器可以发现，在获取车票信息时我们看到的将是一大片的网页代码，其中夹杂着很多的乱码，其实这些乱码是12306的加密，是一种反爬技术<BR>
+#&nbsp;通过认真的观察之后，会发现，这些加密信息会有一定的规律<BR>
+#&nbsp;通过代码来破解信息<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;requests<BR>
+<BR>
+</span><span style="color:#800000;">'''<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">5</span><span style="color:#000000;">-</span><span style="color:#ff0000;">7</span><span style="color:#000000;">&nbsp;目的地&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">&nbsp;车次&nbsp;</span><span style="color:#ff0000;">6</span><span style="color:#000000;">&nbsp;出发地&nbsp;</span><span style="color:#ff0000;">8</span><span style="color:#000000;">&nbsp;出发时间&nbsp;</span><span style="color:#ff0000;">9</span><span style="color:#000000;">&nbsp;到达时间&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">&nbsp;历时&nbsp;</span><span style="color:#ff0000;">26</span><span style="color:#000000;">&nbsp;无座&nbsp;</span><span style="color:#ff0000;">29</span><span style="color:#000000;">&nbsp;硬座<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">24</span><span style="color:#000000;">&nbsp;软座&nbsp;</span><span style="color:#ff0000;">28</span><span style="color:#000000;">&nbsp;硬卧&nbsp;</span><span style="color:#ff0000;">33</span><span style="color:#000000;">&nbsp;动卧&nbsp;</span><span style="color:#ff0000;">23</span><span style="color:#000000;">&nbsp;软卧&nbsp;</span><span style="color:#ff0000;">21</span><span style="color:#000000;">&nbsp;高级软卧&nbsp;</span><span style="color:#ff0000;">30</span><span style="color:#000000;">&nbsp;二等座&nbsp;</span><span style="color:#ff0000;">31</span><span style="color:#000000;">&nbsp;一等座&nbsp;</span><span style="color:#ff0000;">32</span><span style="color:#000000;">&nbsp;商务特等座<BR>
+</span><span style="color:#800000;">'''<BR>
+</span><span style="color:#000000;"><BR>
+response&nbsp;=&nbsp;requests.</span><span style="color:#0000ff;">get</span><span style="color:#000000;">(</span><span style="color:#800000;">'<a href="https://kyfw.12306.cn/otn/leftTicket/query?leftTicketDTO.train_date=2019-07-25&amp;leftTicketDTO.from_station=BJP&amp;leftTicketDTO.to_station=SHH&amp;purpose_codes=ADULT'">https://kyfw.12306.cn/otn/leftTicket/query?leftTicketDTO.train_date=2019-07-25&amp;leftTicketDTO.from_station=BJP&amp;leftTicketDTO.to_station=SHH&amp;purpose_codes=ADULT'</a></span><span style="color:#000000;">)<BR>
+result&nbsp;=&nbsp;response.json()<BR>
+result&nbsp;=&nbsp;result[</span><span style="color:#800000;">'data'</span><span style="color:#000000;">][</span><span style="color:#800000;">'result'</span><span style="color:#000000;">]<BR>
+n&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;i&nbsp;</span><span style="color:#0000ff;">in</span><span style="color:#000000;">&nbsp;result:<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;print(i)<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">list</span><span style="color:#000000;">&nbsp;=&nbsp;i.</span><span style="color:#0000ff;">split</span><span style="color:#000000;">(</span><span style="color:#800000;">'|'</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;分割字符串<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;a&nbsp;</span><span style="color:#0000ff;">in</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">list</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(n,&nbsp;a)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;打印信息编号<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;n+=</span><span style="color:#ff0000;">1</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;n&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;print(list)<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;最终实现<BR>
+#&nbsp;get_stations.py<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;requests<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;re<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;os<BR>
+<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;getStation():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;url&nbsp;=&nbsp;</span><span style="color:#800000;">'<a href="https://kyfw.12306.cn/otn/resources/js/framework/station_name.js?station_version=1.9058'">https://kyfw.12306.cn/otn/resources/js/framework/station_name.js?station_version=1.9058'</a></span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;response&nbsp;=&nbsp;requests.</span><span style="color:#0000ff;">get</span><span style="color:#000000;">(url,verify=</span><span style="color:#8000ff;">True</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;发送网络请求并验证<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;stations&nbsp;=&nbsp;re.findall(u</span><span style="color:#800000;">'([\u4e00-\u9fa5]+)|([A-Z]+)'</span><span style="color:#000000;">,response.text)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;stations&nbsp;=&nbsp;</span><span style="color:#8000ff;">dict</span><span style="color:#000000;">(stations)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;转换为字典形式<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;stations&nbsp;=&nbsp;</span><span style="color:#8000ff;">str</span><span style="color:#000000;">(stations)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;转换为字符串类型，否则无法写入文件<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">write</span><span style="color:#000000;">(stations)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;调用写入方法，实现下载车站文件<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">write</span><span style="color:#000000;">(stations):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">file</span><span style="color:#000000;">&nbsp;=&nbsp;</span><span style="color:#8000ff;">open</span><span style="color:#000000;">(</span><span style="color:#800000;">'stations.txt'</span><span style="color:#000000;">,</span><span style="color:#800000;">'w'</span><span style="color:#000000;">,encoding&nbsp;=&nbsp;</span><span style="color:#800000;">'utf-8_sig'</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;写入模式打开文件<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">file</span><span style="color:#000000;">.</span><span style="color:#0000ff;">write</span><span style="color:#000000;">(stations)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;写入文件<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">file</span><span style="color:#000000;">.</span><span style="color:#0000ff;">close</span><span style="color:#000000;">()<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">read</span><span style="color:#000000;">():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">file</span><span style="color:#000000;">&nbsp;=&nbsp;</span><span style="color:#8000ff;">open</span><span style="color:#000000;">(</span><span style="color:#800000;">'stations.txt'</span><span style="color:#000000;">,</span><span style="color:#800000;">'r'</span><span style="color:#000000;">,encoding&nbsp;=&nbsp;</span><span style="color:#800000;">'utf-8_sig'</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;以读模式打开文件<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;=&nbsp;</span><span style="color:#8000ff;">file</span><span style="color:#000000;">.</span><span style="color:#0000ff;">readline</span><span style="color:#000000;">()&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;以行形式读取文件<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">file</span><span style="color:#000000;">.</span><span style="color:#0000ff;">close</span><span style="color:#000000;">()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;data<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;isStations():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;isStations&nbsp;=&nbsp;os.path.exists(</span><span style="color:#800000;">'stations.txt'</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;判断车站文件是否存在<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;isStations<BR>
+</span><span style="color:#008000;">#&nbsp;query_request.py文件<BR>
+</span><span style="color:#0000ff;">from</span><span style="color:#000000;">&nbsp;get_stations&nbsp;</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;*<BR>
+data&nbsp;=&nbsp;[]&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;用于保存整理好的车次信息<BR>
+</span><span style="color:#000000;">type_data&nbsp;=&nbsp;[]&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;用于保存分类后车次信息<BR>
+</span><span style="color:#800000;">'''<BR>
+</span><span style="color:#ff0000;">5</span><span style="color:#000000;">-</span><span style="color:#ff0000;">7</span><span style="color:#000000;">&nbsp;目的地&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">&nbsp;车次&nbsp;</span><span style="color:#ff0000;">6</span><span style="color:#000000;">&nbsp;出发地&nbsp;</span><span style="color:#ff0000;">8</span><span style="color:#000000;">&nbsp;出发时间&nbsp;</span><span style="color:#ff0000;">9</span><span style="color:#000000;">&nbsp;到达时间&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">&nbsp;历时&nbsp;</span><span style="color:#ff0000;">26</span><span style="color:#000000;">&nbsp;无座&nbsp;</span><span style="color:#ff0000;">29</span><span style="color:#000000;">&nbsp;硬座<BR>
+</span><span style="color:#ff0000;">24</span><span style="color:#000000;">&nbsp;软座&nbsp;</span><span style="color:#ff0000;">28</span><span style="color:#000000;">&nbsp;硬卧&nbsp;</span><span style="color:#ff0000;">33</span><span style="color:#000000;">&nbsp;动卧&nbsp;</span><span style="color:#ff0000;">23</span><span style="color:#000000;">&nbsp;软卧&nbsp;</span><span style="color:#ff0000;">21</span><span style="color:#000000;">&nbsp;高级软卧&nbsp;</span><span style="color:#ff0000;">30</span><span style="color:#000000;">&nbsp;二等座&nbsp;</span><span style="color:#ff0000;">31</span><span style="color:#000000;">&nbsp;一等座&nbsp;</span><span style="color:#ff0000;">32</span><span style="color:#000000;">&nbsp;商务特等座<BR>
+</span><span style="color:#800000;">'''<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;query(date,from_station,&nbsp;to_station):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;data.</span><span style="color:#0000ff;">clear</span><span style="color:#000000;">()&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;清空数据<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;response&nbsp;=&nbsp;requests.</span><span style="color:#0000ff;">get</span><span style="color:#000000;">(r</span><span style="color:#800000;">'<a href="https://kyfw.12306.cn/otn/leftTicket/query?leftTicketDTO.train_date={0}&amp;leftTicketDTO.from_station={1}&amp;leftTicketDTO.to_station={2}&amp;purpose_codes=ADULT'">https://kyfw.12306.cn/otn/leftTicket/query?leftTicketDTO.train_date={0}&amp;leftTicketDTO.from_station={1}&amp;leftTicketDTO.to_station={2}&amp;purpose_codes=ADULT'</a></span><span style="color:#000000;">.</span><span style="color:#8000ff;">format</span><span style="color:#000000;">(date,from_station,to_station))&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;发送查询请求<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;将json数据转换为字典类型，通过键值对取数据<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;result&nbsp;=&nbsp;response.json()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;result&nbsp;=&nbsp;result[</span><span style="color:#800000;">'data'</span><span style="color:#000000;">][</span><span style="color:#800000;">'result'</span><span style="color:#000000;">]<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;判断车次是否存在<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;isStations()&nbsp;==&nbsp;</span><span style="color:#8000ff;">True</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stations&nbsp;=&nbsp;</span><span style="color:#8000ff;">eval</span><span style="color:#000000;">(</span><span style="color:#0000ff;">read</span><span style="color:#000000;">())&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;读取所有车站并转换为dic类型<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">len</span><span style="color:#000000;">(result)&nbsp;!=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">:&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;判断返回值是否为空<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;i&nbsp;</span><span style="color:#0000ff;">in</span><span style="color:#000000;">&nbsp;result:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tmp_list&nbsp;=&nbsp;i.</span><span style="color:#0000ff;">split</span><span style="color:#000000;">(</span><span style="color:#800000;">'|'</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;分割数据段并添加到列表中<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;from_station&nbsp;=&nbsp;</span><span style="color:#8000ff;">list</span><span style="color:#000000;">(stations.</span><span style="color:#0000ff;">keys</span><span style="color:#000000;">())[</span><span style="color:#8000ff;">list</span><span style="color:#000000;">(stations.</span><span style="color:#0000ff;">values</span><span style="color:#000000;">()).</span><span style="color:#0000ff;">index</span><span style="color:#000000;">(tmp_list[</span><span style="color:#ff0000;">6</span><span style="color:#000000;">])]<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;to_station&nbsp;=&nbsp;</span><span style="color:#8000ff;">list</span><span style="color:#000000;">(stations.</span><span style="color:#0000ff;">keys</span><span style="color:#000000;">())[</span><span style="color:#8000ff;">list</span><span style="color:#000000;">(stations.</span><span style="color:#0000ff;">values</span><span style="color:#000000;">()).</span><span style="color:#0000ff;">index</span><span style="color:#000000;">(tmp_list[</span><span style="color:#ff0000;">7</span><span style="color:#000000;">])]<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;seat&nbsp;=&nbsp;[tmp_list[</span><span style="color:#ff0000;">3</span><span style="color:#000000;">],from_station,to_station,tmp_list[</span><span style="color:#ff0000;">8</span><span style="color:#000000;">],tmp_list[</span><span style="color:#ff0000;">9</span><span style="color:#000000;">],tmp_list[</span><span style="color:#ff0000;">10</span><span style="color:#000000;">],tmp_list[</span><span style="color:#ff0000;">32</span><span style="color:#000000;">],tmp_list[</span><span style="color:#ff0000;">31</span><span style="color:#000000;">],tmp_list[</span><span style="color:#ff0000;">30</span><span style="color:#000000;">],tmp_list[</span><span style="color:#ff0000;">21</span><span style="color:#000000;">],tmp_list[</span><span style="color:#ff0000;">23</span><span style="color:#000000;">],tmp_list[</span><span style="color:#ff0000;">33</span><span style="color:#000000;">],tmp_list[</span><span style="color:#ff0000;">28</span><span style="color:#000000;">],tmp_list[</span><span style="color:#ff0000;">24</span><span style="color:#000000;">],tmp_list[</span><span style="color:#ff0000;">29</span><span style="color:#000000;">],tmp_list[</span><span style="color:#ff0000;">26</span><span style="color:#000000;">]]<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;newSeat&nbsp;=&nbsp;[]<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;循环将座位信息中的空&nbsp;“”&nbsp;，改为--<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;s&nbsp;</span><span style="color:#0000ff;">in</span><span style="color:#000000;">&nbsp;seat:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;s&nbsp;==&nbsp;</span><span style="color:#800000;">&quot;&quot;</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;s&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;--&quot;</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;s&nbsp;=&nbsp;s<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;newSeat.</span><span style="color:#0000ff;">append</span><span style="color:#000000;">(s)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;保存新的座位信息<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data.</span><span style="color:#0000ff;">append</span><span style="color:#000000;">(newSeat)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;data&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;返回整理好的车次信息<BR>
+#&nbsp;获取高铁信息方法<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;g_vehicle():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">len</span><span style="color:#000000;">(data)&nbsp;!=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;g&nbsp;</span><span style="color:#0000ff;">in</span><span style="color:#000000;">&nbsp;data:&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;循环所有火车数据<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i&nbsp;=&nbsp;g[</span><span style="color:#ff0000;">0</span><span style="color:#000000;">].</span><span style="color:#0000ff;">startswith</span><span style="color:#000000;">(</span><span style="color:#800000;">'G'</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;判断车次首字母是不是高铁<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;i:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type_data.</span><span style="color:#0000ff;">append</span><span style="color:#000000;">(g)<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;移除高铁信息方法<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;r_g_vehicle():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">len</span><span style="color:#000000;">(data)&nbsp;!=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;g&nbsp;</span><span style="color:#0000ff;">in</span><span style="color:#000000;">&nbsp;data:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i&nbsp;=&nbsp;g[</span><span style="color:#ff0000;">0</span><span style="color:#000000;">].</span><span style="color:#0000ff;">startswith</span><span style="color:#000000;">(</span><span style="color:#800000;">'G'</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;i:&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;移除高铁信息<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type_data.</span><span style="color:#0000ff;">remove</span><span style="color:#000000;">(g)<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;获取动车信息方法<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;d_vehicle():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">len</span><span style="color:#000000;">(data)&nbsp;!=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;d&nbsp;</span><span style="color:#0000ff;">in</span><span style="color:#000000;">&nbsp;data:&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;循环所有火车数据<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i&nbsp;=&nbsp;d[</span><span style="color:#ff0000;">0</span><span style="color:#000000;">].</span><span style="color:#0000ff;">startswith</span><span style="color:#000000;">(</span><span style="color:#800000;">'D'</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;判断车次首字母是不是动车<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;i:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type_data.</span><span style="color:#0000ff;">append</span><span style="color:#000000;">(d)<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;移除动车信息方法<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;r_d_vehicle():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">len</span><span style="color:#000000;">(data)&nbsp;!=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;d&nbsp;</span><span style="color:#0000ff;">in</span><span style="color:#000000;">&nbsp;data:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i&nbsp;=&nbsp;d[</span><span style="color:#ff0000;">0</span><span style="color:#000000;">].</span><span style="color:#0000ff;">startswith</span><span style="color:#000000;">(</span><span style="color:#800000;">'D'</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;i:&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;移除动车信息<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type_data.</span><span style="color:#0000ff;">remove</span><span style="color:#000000;">(d)<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;获取直达车信息方法<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;z_vehicle():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">len</span><span style="color:#000000;">(data)&nbsp;!=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;z&nbsp;</span><span style="color:#0000ff;">in</span><span style="color:#000000;">&nbsp;data:&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;循环所有火车数据<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i&nbsp;=&nbsp;z[</span><span style="color:#ff0000;">0</span><span style="color:#000000;">].</span><span style="color:#0000ff;">startswith</span><span style="color:#000000;">(</span><span style="color:#800000;">'Z'</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;判断车次首字母是不是直达车<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;i:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type_data.</span><span style="color:#0000ff;">append</span><span style="color:#000000;">(z)<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;移除直达车信息方法<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;r_z_vehicle():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">len</span><span style="color:#000000;">(data)&nbsp;!=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;z&nbsp;</span><span style="color:#0000ff;">in</span><span style="color:#000000;">&nbsp;data:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i&nbsp;=&nbsp;z[</span><span style="color:#ff0000;">0</span><span style="color:#000000;">].</span><span style="color:#0000ff;">startswith</span><span style="color:#000000;">(</span><span style="color:#800000;">'Z'</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;i:&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;移除直达车信息<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type_data.</span><span style="color:#0000ff;">remove</span><span style="color:#000000;">(z)<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;获取特快车信息方法<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;t_vehicle():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">len</span><span style="color:#000000;">(data)&nbsp;!=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;t&nbsp;</span><span style="color:#0000ff;">in</span><span style="color:#000000;">&nbsp;data:&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;循环所有火车数据<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i&nbsp;=&nbsp;t[</span><span style="color:#ff0000;">0</span><span style="color:#000000;">].</span><span style="color:#0000ff;">startswith</span><span style="color:#000000;">(</span><span style="color:#800000;">'T'</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;判断车次首字母是不是特快车<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;i:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type_data.</span><span style="color:#0000ff;">append</span><span style="color:#000000;">(t)<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;移除特快车信息方法<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;r_t_vehicle():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">len</span><span style="color:#000000;">(data)&nbsp;!=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;t&nbsp;</span><span style="color:#0000ff;">in</span><span style="color:#000000;">&nbsp;data:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i&nbsp;=&nbsp;t[</span><span style="color:#ff0000;">0</span><span style="color:#000000;">].</span><span style="color:#0000ff;">startswith</span><span style="color:#000000;">(</span><span style="color:#800000;">'T'</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;i:&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;移除特快车信息<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type_data.</span><span style="color:#0000ff;">remove</span><span style="color:#000000;">(t)<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;获取快速车信息方法<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;k_vehicle():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">len</span><span style="color:#000000;">(data)&nbsp;!=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;k&nbsp;</span><span style="color:#0000ff;">in</span><span style="color:#000000;">&nbsp;data:&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;循环所有火车数据<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i&nbsp;=&nbsp;k[</span><span style="color:#ff0000;">0</span><span style="color:#000000;">].</span><span style="color:#0000ff;">startswith</span><span style="color:#000000;">(</span><span style="color:#800000;">'K'</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;判断车次首字母是不是快速车<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;i:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type_data.</span><span style="color:#0000ff;">append</span><span style="color:#000000;">(k)<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;移除快速车信息方法<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;r_k_vehicle():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">len</span><span style="color:#000000;">(data)&nbsp;!=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;k&nbsp;</span><span style="color:#0000ff;">in</span><span style="color:#000000;">&nbsp;data:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i&nbsp;=&nbsp;k[</span><span style="color:#ff0000;">0</span><span style="color:#000000;">].</span><span style="color:#0000ff;">startswith</span><span style="color:#000000;">(</span><span style="color:#800000;">'K'</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;i:&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;移除快速车信息<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type_data.</span><span style="color:#0000ff;">remove</span><span style="color:#000000;">(k)<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;PaPiao.py文件<BR>
+#&nbsp;-*-&nbsp;coding:&nbsp;utf-8&nbsp;-*-<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;Form&nbsp;implementation&nbsp;generated&nbsp;from&nbsp;reading&nbsp;ui&nbsp;file&nbsp;'PaPiao.ui'<BR>
+#<BR>
+#&nbsp;Created&nbsp;by:&nbsp;PyQt5&nbsp;UI&nbsp;code&nbsp;generator&nbsp;5.11.3<BR>
+#<BR>
+#&nbsp;WARNING!&nbsp;All&nbsp;changes&nbsp;made&nbsp;in&nbsp;this&nbsp;file&nbsp;will&nbsp;be&nbsp;lost!<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">from</span><span style="color:#000000;">&nbsp;PyQt5&nbsp;</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;QtCore,&nbsp;QtGui,&nbsp;QtWidgets<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;sys<BR>
+</span><span style="color:#0000ff;">from</span><span style="color:#000000;">&nbsp;PyQt5.QtGui&nbsp;</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;&nbsp;QPalette,QPixmap,QColor&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;导入QtGui模块<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">from</span><span style="color:#000000;">&nbsp;PyQt5.QtGui&nbsp;</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;*&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;导入QtGui<BR>
+</span><span style="color:#0000ff;">from</span><span style="color:#000000;">&nbsp;PyQt5.QtCore&nbsp;</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;Qt&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;导入Qt类<BR>
+</span><span style="color:#0000ff;">from</span><span style="color:#000000;">&nbsp;PyQt5.QtWidgets&nbsp;</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;*&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;导入QtWidgets下所有类及方法<BR>
+</span><span style="color:#0000ff;">from</span><span style="color:#000000;">&nbsp;query_request&nbsp;</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;*&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;导入用于查询的文件<BR>
+</span><span style="color:#0000ff;">from</span><span style="color:#000000;">&nbsp;get_stations&nbsp;</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;*&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;导入get_stations文件<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;Ui_MainWindow(</span><span style="color:#8000ff;">object</span><span style="color:#000000;">):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;setupUi(self,&nbsp;MainWindow):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MainWindow.setObjectName(</span><span style="color:#800000;">&quot;MainWindow&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MainWindow.resize(</span><span style="color:#ff0000;">960</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">786</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MainWindow.setMinimumSize(QtCore.QSize(</span><span style="color:#ff0000;">960</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">786</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MainWindow.setMaximumSize(QtCore.QSize(</span><span style="color:#ff0000;">960</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">786</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.centralwidget&nbsp;=&nbsp;QtWidgets.QWidget(MainWindow)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.centralwidget.setObjectName(</span><span style="color:#800000;">&quot;centralwidget&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.label0&nbsp;=&nbsp;QtWidgets.QLabel(self.centralwidget)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.label0.setGeometry(QtCore.QRect(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">960</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">141</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.label0.setText(</span><span style="color:#800000;">&quot;&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.label0.setObjectName(</span><span style="color:#800000;">&quot;label0&quot;</span><span style="color:#000000;">)<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;label0_img&nbsp;=&nbsp;QPixmap(</span><span style="color:#800000;">'train.png'</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;导入顶部位图<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.label0.setPixmap(label0_img)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;设置调色版<BR>
+</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.frame0&nbsp;=&nbsp;QtWidgets.QFrame(self.centralwidget)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.frame0.setGeometry(QtCore.QRect(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">140</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">960</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">80</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.frame0.setFrameShape(QtWidgets.QFrame.StyledPanel)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.frame0.setFrameShadow(QtWidgets.QFrame.Raised)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.frame0.setObjectName(</span><span style="color:#800000;">&quot;frame0&quot;</span><span style="color:#000000;">)<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.frame0.setAutoFillBackground(</span><span style="color:#8000ff;">True</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;开启自动填充背景<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;palette0&nbsp;=&nbsp;QPalette()&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;调色板类<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;palette0.setBrush(QPalette.Background,QtGui.QBrush(QtGui.QPixmap(</span><span style="color:#800000;">'bj.jpg'</span><span style="color:#000000;">)))&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;设置背景图片&nbsp;<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.frame0.setPalette(palette0)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;设置调色板<BR>
+</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.chufadi0&nbsp;=&nbsp;QtWidgets.QLabel(self.frame0)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.chufadi0.setGeometry(QtCore.QRect(</span><span style="color:#ff0000;">30</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">25</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">54</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">20</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.chufadi0.setObjectName(</span><span style="color:#800000;">&quot;chufadi0&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.chufadi1&nbsp;=&nbsp;QtWidgets.QTextEdit(self.frame0)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.chufadi1.setGeometry(QtCore.QRect(</span><span style="color:#ff0000;">90</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">20</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">104</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">31</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.chufadi1.setObjectName(</span><span style="color:#800000;">&quot;chufadi1&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.label_2&nbsp;=&nbsp;QtWidgets.QLabel(self.frame0)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.label_2.setGeometry(QtCore.QRect(</span><span style="color:#ff0000;">265</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">250</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">72</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">15</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.label_2.setObjectName(</span><span style="color:#800000;">&quot;label_2&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.chufari0&nbsp;=&nbsp;QtWidgets.QLabel(self.frame0)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.chufari0.setGeometry(QtCore.QRect(</span><span style="color:#ff0000;">440</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">25</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">54</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">20</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.chufari0.setObjectName(</span><span style="color:#800000;">&quot;chufari0&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.chaxun&nbsp;=&nbsp;QtWidgets.QPushButton(self.frame0)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.chaxun.setGeometry(QtCore.QRect(</span><span style="color:#ff0000;">680</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">20</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">93</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">28</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.chaxun.setObjectName(</span><span style="color:#800000;">&quot;chaxun&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.mudidi1&nbsp;=&nbsp;QtWidgets.QTextEdit(self.frame0)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.mudidi1.setGeometry(QtCore.QRect(</span><span style="color:#ff0000;">300</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">20</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">104</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">31</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.mudidi1.setObjectName(</span><span style="color:#800000;">&quot;mudidi1&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.mididi0&nbsp;=&nbsp;QtWidgets.QLabel(self.frame0)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.mididi0.setGeometry(QtCore.QRect(</span><span style="color:#ff0000;">240</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">25</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">54</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">20</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.mididi0.setObjectName(</span><span style="color:#800000;">&quot;mididi0&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.chufari1&nbsp;=&nbsp;QtWidgets.QTextEdit(self.frame0)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.chufari1.setGeometry(QtCore.QRect(</span><span style="color:#ff0000;">500</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">20</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">104</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">31</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.chufari1.setObjectName(</span><span style="color:#800000;">&quot;chufari1&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.frame1&nbsp;=&nbsp;QtWidgets.QFrame(self.centralwidget)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.frame1.setGeometry(QtCore.QRect(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">220</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">960</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.frame1.setFrameShape(QtWidgets.QFrame.StyledPanel)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.frame1.setFrameShadow(QtWidgets.QFrame.Raised)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.frame1.setObjectName(</span><span style="color:#800000;">&quot;frame1&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checkBox0&nbsp;=&nbsp;QtWidgets.QCheckBox(self.frame1)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checkBox0.setGeometry(QtCore.QRect(</span><span style="color:#ff0000;">110</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">91</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">19</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checkBox0.setObjectName(</span><span style="color:#800000;">&quot;checkBox0&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checileixing&nbsp;=&nbsp;QtWidgets.QLabel(self.frame1)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checileixing.setGeometry(QtCore.QRect(</span><span style="color:#ff0000;">30</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">13</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">72</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">15</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checileixing.setObjectName(</span><span style="color:#800000;">&quot;checileixing&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checkBox1&nbsp;=&nbsp;QtWidgets.QCheckBox(self.frame1)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checkBox1.setGeometry(QtCore.QRect(</span><span style="color:#ff0000;">260</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">91</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">19</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checkBox1.setObjectName(</span><span style="color:#800000;">&quot;checkBox1&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checkBox2&nbsp;=&nbsp;QtWidgets.QCheckBox(self.frame1)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checkBox2.setGeometry(QtCore.QRect(</span><span style="color:#ff0000;">400</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">91</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">19</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checkBox2.setObjectName(</span><span style="color:#800000;">&quot;checkBox2&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checkBox3&nbsp;=&nbsp;QtWidgets.QCheckBox(self.frame1)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checkBox3.setGeometry(QtCore.QRect(</span><span style="color:#ff0000;">550</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">91</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">19</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checkBox3.setObjectName(</span><span style="color:#800000;">&quot;checkBox3&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checkBox4&nbsp;=&nbsp;QtWidgets.QCheckBox(self.frame1)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checkBox4.setGeometry(QtCore.QRect(</span><span style="color:#ff0000;">690</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">91</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">19</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checkBox4.setObjectName(</span><span style="color:#800000;">&quot;checkBox4&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.frame1.setAutoFillBackground(</span><span style="color:#8000ff;">True</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;开启自动填充背景<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;palette1&nbsp;=&nbsp;QPalette()&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;调色板类<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;palette1.setBrush(QPalette.Background,QtGui.QBrush(QtGui.QPixmap(</span><span style="color:#800000;">'bj.jpg'</span><span style="color:#000000;">)))&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;设置背景图片&nbsp;<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.frame1.setPalette(palette1)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;设置调色板<BR>
+</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;self.text&nbsp;=&nbsp;QtWidgets.QTextEdit(self.centralwidget)<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.text&nbsp;=&nbsp;QtWidgets.QTableView(self.centralwidget)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.text.setGeometry(QtCore.QRect(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">330</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">960</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">457</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.text.setObjectName(</span><span style="color:#800000;">&quot;text&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.model&nbsp;=&nbsp;QStandardItemModel()&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;创建存储数据模式<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;根据空间自动改变宽度并且不可修改列宽度<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.text.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;设置表头不可见<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.text.horizontalHeader().setVisible(</span><span style="color:#8000ff;">False</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;纵向表头不可见<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.text.verticalHeader().setVisible(</span><span style="color:#8000ff;">False</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;设置表格内容文字大小<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;font&nbsp;=&nbsp;QtGui.QFont()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;font.setPointSize(</span><span style="color:#ff0000;">10</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.text.setFont(font)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;设置表格内容不可编辑<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.text.setEditTriggers(QAbstractItemView.NoEditTriggers)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;垂直滚动条始终开启<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.text.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.label1&nbsp;=&nbsp;QtWidgets.QLabel(self.centralwidget)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.label1.setGeometry(QtCore.QRect(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">260</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">960</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">70</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.label1.setText(</span><span style="color:#800000;">&quot;&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.label1.setObjectName(</span><span style="color:#800000;">&quot;label1&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MainWindow.setCentralWidget(self.centralwidget)<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.retranslateUi(MainWindow)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;QtCore.QMetaObject.connectSlotsByName(MainWindow)<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;label1_img&nbsp;=&nbsp;QPixmap(</span><span style="color:#800000;">'bg1.png'</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;导入顶部位图<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.label1.setPixmap(label1_img)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;设置调色版<BR>
+</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;查询按钮的单击事件<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;on_click(self):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get_from&nbsp;=&nbsp;self.chufadi1.toPlainText()&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;获取出发地<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get_to&nbsp;=&nbsp;self.mudidi1.toPlainText()&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;获取目的地<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get_date&nbsp;=&nbsp;self.chufari1.toPlainText()&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;获取出发日期<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;判断车站文件是否存在<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;isStations()&nbsp;==&nbsp;</span><span style="color:#8000ff;">True</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stations&nbsp;=&nbsp;</span><span style="color:#8000ff;">eval</span><span style="color:#000000;">(</span><span style="color:#0000ff;">read</span><span style="color:#000000;">())&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;读取所有车站并转换为dic类型<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;判读所有参数是否为空，出发地、目的地、出发日期<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;get_from&nbsp;!=&nbsp;</span><span style="color:#800000;">&quot;&quot;</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">and</span><span style="color:#000000;">&nbsp;get_to&nbsp;!=&nbsp;</span><span style="color:#800000;">&quot;&quot;</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">and</span><span style="color:#000000;">&nbsp;get_date&nbsp;!=&nbsp;</span><span style="color:#800000;">&quot;&quot;</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;判断输入的车站名称是否存在，以及时间格式是否正确<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;get_from&nbsp;</span><span style="color:#0000ff;">in</span><span style="color:#000000;">&nbsp;stations&nbsp;</span><span style="color:#0000ff;">and</span><span style="color:#000000;">&nbsp;get_to&nbsp;</span><span style="color:#0000ff;">in</span><span style="color:#000000;">&nbsp;stations&nbsp;</span><span style="color:#0000ff;">and</span><span style="color:#000000;">&nbsp;is_valid_data(get_date):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;获取输入的日期是当前年初到现在一共过了多少天<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inputYearDay&nbsp;=&nbsp;time.strptime(get_date,</span><span style="color:#800000;">&quot;%Y-%m-%d&quot;</span><span style="color:#000000;">).tm_yday<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;获取系统当前日期是当前年初到现在一共过了多少天<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;yearToday&nbsp;=&nbsp;time.localtime(time.time()).tm_yday<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;计算时间差，也就是输入的日期减掉系统当前的日期<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;timeDifference&nbsp;=&nbsp;inputYearDay&nbsp;-&nbsp;yearToday<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;判断时间差为0时证明查询当前的查票<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;以及29天以后的车票，12306官方要求只能查询30天以内的车票<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;timeDifference&nbsp;&gt;=</span><span style="color:#ff0000;">0</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">and</span><span style="color:#000000;">&nbsp;timeDifference&nbsp;&lt;=&nbsp;</span><span style="color:#ff0000;">28</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;from_station&nbsp;=&nbsp;stations[get_from]&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;在所有车站文件中找到对应的参数、出发地<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;to_station&nbsp;=&nbsp;stations[get_to]&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;目的地<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;=&nbsp;query(get_date,from_station,to_station)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;发送查询请求，并获取返回信息<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checkBox_default()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">len</span><span style="color:#000000;">(data)&nbsp;!=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">:&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;判断返回的值是否为空<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;如果不为空的数据就将车票信息显示在表格中<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.displayTable(</span><span style="color:#8000ff;">len</span><span style="color:#000000;">(data),</span><span style="color:#ff0000;">16</span><span style="color:#000000;">,data)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.messageDialog(</span><span style="color:#800000;">'警告'</span><span style="color:#000000;">,</span><span style="color:#800000;">'没有返回的网络数据！'</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.messageDialog(</span><span style="color:#800000;">'警告'</span><span style="color:#000000;">,</span><span style="color:#800000;">'超出查询日期的范围内，不可查询过去的以及29天以后的车票信息！'</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.messageDialog(</span><span style="color:#800000;">'警告'</span><span style="color:#000000;">,</span><span style="color:#800000;">'输入的站名不存在，或日期格式不正确！'</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.messageDialog(</span><span style="color:#800000;">'警告'</span><span style="color:#000000;">,</span><span style="color:#800000;">'请填写车站名称！'</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.messageDialog(</span><span style="color:#800000;">'警告'</span><span style="color:#000000;">,</span><span style="color:#800000;">'未下载车站查询文件！'</span><span style="color:#000000;">)<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;高铁复选框事件处理<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;change_G(self,state):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;选中将该信息添加到最后要显示的数据当中<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;state&nbsp;==&nbsp;QtCore.Qt.Checked:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;获取高铁信息<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_vehicle()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;通过表格显示该车型数据<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.displayTable(</span><span style="color:#8000ff;">len</span><span style="color:#000000;">(type_data),</span><span style="color:#ff0000;">16</span><span style="color:#000000;">,type_data)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;取消选择状态将移除数据<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;r_g_vehicle()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.displayTable(</span><span style="color:#8000ff;">len</span><span style="color:#000000;">(type_data),</span><span style="color:#ff0000;">16</span><span style="color:#000000;">,type_data)<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;动车复选框事件处理<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;change_D(self,state):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;选中将该信息添加到最后要显示的数据当中<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;state&nbsp;==&nbsp;QtCore.Qt.Checked:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;获取高铁信息<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;d_vehicle()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;通过表格显示该车型数据<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.displayTable(</span><span style="color:#8000ff;">len</span><span style="color:#000000;">(type_data),</span><span style="color:#ff0000;">16</span><span style="color:#000000;">,type_data)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;取消选择状态将移除数据<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;r_d_vehicle()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.displayTable(</span><span style="color:#8000ff;">len</span><span style="color:#000000;">(type_data),</span><span style="color:#ff0000;">16</span><span style="color:#000000;">,type_data)<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;直达车复选框事件处理<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;change_Z(self,state):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;选中将该信息添加到最后要显示的数据当中<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;state&nbsp;==&nbsp;QtCore.Qt.Checked:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;获取高铁信息<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;z_vehicle()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;通过表格显示该车型数据<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.displayTable(</span><span style="color:#8000ff;">len</span><span style="color:#000000;">(type_data),</span><span style="color:#ff0000;">16</span><span style="color:#000000;">,type_data)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;取消选择状态将移除数据<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;r_z_vehicle()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.displayTable(</span><span style="color:#8000ff;">len</span><span style="color:#000000;">(type_data),</span><span style="color:#ff0000;">16</span><span style="color:#000000;">,type_data)<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;特快车复选框事件处理<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;change_T(self,state):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;选中将该信息添加到最后要显示的数据当中<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;state&nbsp;==&nbsp;QtCore.Qt.Checked:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;获取高铁信息<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;t_vehicle()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;通过表格显示该车型数据<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.displayTable(</span><span style="color:#8000ff;">len</span><span style="color:#000000;">(type_data),</span><span style="color:#ff0000;">16</span><span style="color:#000000;">,type_data)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;取消选择状态将移除数据<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;r_t_vehicle()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.displayTable(</span><span style="color:#8000ff;">len</span><span style="color:#000000;">(type_data),</span><span style="color:#ff0000;">16</span><span style="color:#000000;">,type_data)<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;快速复选框事件处理<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;change_K(self,state):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;选中将该信息添加到最后要显示的数据当中<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;state&nbsp;==&nbsp;QtCore.Qt.Checked:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;获取高铁信息<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;k_vehicle()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;通过表格显示该车型数据<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.displayTable(</span><span style="color:#8000ff;">len</span><span style="color:#000000;">(type_data),</span><span style="color:#ff0000;">16</span><span style="color:#000000;">,type_data)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;取消选择状态将移除数据<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;r_k_vehicle()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.displayTable(</span><span style="color:#8000ff;">len</span><span style="color:#000000;">(type_data),</span><span style="color:#ff0000;">16</span><span style="color:#000000;">,type_data)<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;将所有车次分类复选框取消勾选<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;checkBox_default(self):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checkBox0.setChecked(</span><span style="color:#8000ff;">False</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checkBox1.setChecked(</span><span style="color:#8000ff;">False</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checkBox2.setChecked(</span><span style="color:#8000ff;">False</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checkBox3.setChecked(</span><span style="color:#8000ff;">False</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checkBox4.setChecked(</span><span style="color:#8000ff;">False</span><span style="color:#000000;">)<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;显示消息提示框，参数title为提示框标题文字，message为提示信息<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;messageDialog(self,</span><span style="color:#0000ff;">title</span><span style="color:#000000;">,message):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;msg_box&nbsp;=&nbsp;QMessageBox(QMessageBox.</span><span style="color:#0000ff;">Warning</span><span style="color:#000000;">,&nbsp;</span><span style="color:#0000ff;">title</span><span style="color:#000000;">,&nbsp;message)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;msg_box.exec_()<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;用于显示车次信息的表格<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;train参数为共有多少趟列车，该参数作为表格的行<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;info参数为每趟列车的具体信息，例如有座、无座、卧铺等。该参数作为表格的列<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;displayTable(self,&nbsp;train,&nbsp;info,&nbsp;data):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.model.</span><span style="color:#0000ff;">clear</span><span style="color:#000000;">()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;row&nbsp;</span><span style="color:#0000ff;">in</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">range</span><span style="color:#000000;">(train):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;column&nbsp;</span><span style="color:#0000ff;">in</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">range</span><span style="color:#000000;">(info):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;添加表格内容<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;item&nbsp;=&nbsp;QStandardItem(data[row][column])<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;向表格中添加具体内容<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.model.setItem(row,column,item)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;设置表格存储数据的模式<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.text.setModel(self.model)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;retranslateUi(self,&nbsp;MainWindow):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_translate&nbsp;=&nbsp;QtCore.QCoreApplication.</span><span style="color:#0000ff;">translate</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MainWindow.setWindowTitle(_translate(</span><span style="color:#800000;">&quot;MainWindow&quot;</span><span style="color:#000000;">,&nbsp;</span><span style="color:#800000;">&quot;快手爬票&quot;</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.chufadi0.setText(_translate(</span><span style="color:#800000;">&quot;MainWindow&quot;</span><span style="color:#000000;">,&nbsp;</span><span style="color:#800000;">&quot;出发地:&quot;</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.label_2.setText(_translate(</span><span style="color:#800000;">&quot;MainWindow&quot;</span><span style="color:#000000;">,&nbsp;</span><span style="color:#800000;">&quot;目的地:&quot;</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.chufari0.setText(_translate(</span><span style="color:#800000;">&quot;MainWindow&quot;</span><span style="color:#000000;">,&nbsp;</span><span style="color:#800000;">&quot;出发日:&quot;</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.chaxun.setText(_translate(</span><span style="color:#800000;">&quot;MainWindow&quot;</span><span style="color:#000000;">,&nbsp;</span><span style="color:#800000;">&quot;查询&quot;</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.mididi0.setText(_translate(</span><span style="color:#800000;">&quot;MainWindow&quot;</span><span style="color:#000000;">,&nbsp;</span><span style="color:#800000;">&quot;目的地:&quot;</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checkBox0.setText(_translate(</span><span style="color:#800000;">&quot;MainWindow&quot;</span><span style="color:#000000;">,&nbsp;</span><span style="color:#800000;">&quot;GC-高铁&quot;</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checileixing.setText(_translate(</span><span style="color:#800000;">&quot;MainWindow&quot;</span><span style="color:#000000;">,&nbsp;</span><span style="color:#800000;">&quot;车次类型:&quot;</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checkBox1.setText(_translate(</span><span style="color:#800000;">&quot;MainWindow&quot;</span><span style="color:#000000;">,&nbsp;</span><span style="color:#800000;">&quot;D-动车&quot;</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checkBox2.setText(_translate(</span><span style="color:#800000;">&quot;MainWindow&quot;</span><span style="color:#000000;">,&nbsp;</span><span style="color:#800000;">&quot;Z-直达&quot;</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checkBox3.setText(_translate(</span><span style="color:#800000;">&quot;MainWindow&quot;</span><span style="color:#000000;">,&nbsp;</span><span style="color:#800000;">&quot;T-特快&quot;</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checkBox4.setText(_translate(</span><span style="color:#800000;">&quot;MainWindow&quot;</span><span style="color:#000000;">,&nbsp;</span><span style="color:#800000;">&quot;K-快速&quot;</span><span style="color:#000000;">))<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.chufari1.setText(get_time())&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;出发日显示当天日期<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.chaxun.clicked.connect(self.on_click)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;查询按钮指定单击事件的方法<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checkBox0.stateChanged.connect(self.change_G)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;高铁选择与取消事件<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checkBox1.stateChanged.connect(self.change_D)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;动车选择与取消事件<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checkBox2.stateChanged.connect(self.change_Z)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;直达车选择与取消事件<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checkBox3.stateChanged.connect(self.change_T)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;特快车选择与取消事件<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.checkBox4.stateChanged.connect(self.change_K)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;快车选择与取消事件<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;time<BR>
+</span><span style="color:#008000;">#&nbsp;获取系统当前时间并转换请求数据所需要的格式<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;get_time():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;获取当前时间戳<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now&nbsp;=&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">(time.time())<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;转换为其它日期格式：如：&quot;%Y-%m-%d&nbsp;%H:%M:%S&quot;<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;timeStruct&nbsp;=&nbsp;time.localtime(now)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;strTime&nbsp;=&nbsp;time.strftime(</span><span style="color:#800000;">&quot;%Y-%m-%d&quot;</span><span style="color:#000000;">,timeStruct)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;strTime<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;is_valid_data(</span><span style="color:#8000ff;">str</span><span style="color:#000000;">):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'''判断是否是一个有效日期字符串'''</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">try</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;time.strptime(</span><span style="color:#8000ff;">str</span><span style="color:#000000;">,</span><span style="color:#800000;">&quot;%Y-%m-%d&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">True</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">except</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">False</span><span style="color:#000000;"><BR>
+<BR>
+<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;show_MainWindow():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;app&nbsp;=&nbsp;QtWidgets.QApplication(sys.argv)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;实例化Qapplication类，作为GUI主程序的入口<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;MainWindow&nbsp;=&nbsp;QtWidgets.QMainWindow()&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;创建QMainWindow<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;ui&nbsp;=&nbsp;Ui_MainWindow()&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;实例UI类<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;ui.setupUi(MainWindow)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;设置窗体UI<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;MainWindow.show()&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;显示窗体<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;sys.exit(app.exec_())&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;当窗口创建完成以后，需要结束主循环<BR>
+</span><span style="color:#000000;"><BR>
+<BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;__name__&nbsp;==&nbsp;</span><span style="color:#800000;">'__main__'</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;isStations()&nbsp;==&nbsp;</span><span style="color:#8000ff;">False</span><span style="color:#000000;">:&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;判断是否存在车站文件<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;getStation()&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;下载文件<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;show_MainWindow()&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;显示主窗体<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;show_MainWindow()<BR>
+</span></div></td></tr></table></div>
+<br><font color=black size = 4>实例(快手爬票)截图</font>
+<img src="https://wx2.sinaimg.cn/mw1024/007Diza3ly1g5b2qwmfxtj30qq0mxjto.jpg" width="960" height="785" />
+<img src="https://wx4.sinaimg.cn/mw1024/007Diza3ly1g5b2qwlhghj30qq0mx41n.jpg" width="960" height="785" />
+<img src="https://wx1.sinaimg.cn/mw1024/007Diza3ly1g5b2qwl2ilj30qq0mxgo8.jpg" width="960" height="785" />
+<br><br><br>
+<font color = gray size = 3>如有错误，欢迎指正！</font></p></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://oubc.github.io/tags/python/">Python</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmg4aog3074074gnf.gif?tags=%5B%5D">I </a>
+	<a href="">love</a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmfm2eg306o06o74u.gif?tags=%5B%5D"> you </a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx4tpcj30fn0bq3zg.jpg?tags=%5B%5D">three </a>
+	<a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx64ctg307s07swfy.gif?tags=%5B%5D">thousand</a>
+    <a href="https://www.kugou.com/song/#hash=96426C78381DE98DC31A5846FC274CBF&album_id=646623"> times.</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>家庭、梦想、内心的平静</span>
+  </div>
+</footer>
+
+
+
+<script src="https://oubc.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://oubc.github.io/js/zozo.js"></script>
+<script src="https://oubc.github.io/js/highlight.pack.js"></script>
+<link  href="https://oubc.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://oubc.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>

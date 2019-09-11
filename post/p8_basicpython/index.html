@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Bruce Cheung"/>
+
+  
+  <meta name="description" content="Python中的文件操作
+"/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, simple, dream"/>
+  
+
+  
+  <link rel="canonical" href="https://oubc.github.io/post/p8_basicpython/"/>
+
+  
+
+  <title>Python基础-文件操作 &middot; Love, or death</title>
+
+  <link rel="shortcut icon" href="https://oubc.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/post/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://oubc.github.io/">
+          <span>Love, or death</span>
+          <img src="https://oubc.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">For you, a thousand times over.</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/oubc" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=uYGOjo6OiIuLivnIyJfa1tQ" title="mail" target="_blank"><i class="remixicon-mail-fill"></i></a>
+        
+        
+        
+        <a href="http://sighttp.qq.com/msgrd?v=1&amp;uin=877771223" title="qq" target="_blank"><i class="remixicon-qq-fill"></i></a>
+        
+        
+        
+        <a href="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g4klnqf0tmj30ia0widks.jpg" title="wechat" target="_blank"><i class="remixicon-wechat-fill"></i></a>
+        
+        
+        
+        <a href="https://weibo.com/u/6993631995?topnav=1&amp;wvr=6&amp;topsug=1" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://oubc.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/post/p8_basicpython/'>Python基础-文件操作</a></h2>
+          <span class="date">2019.07.19</span>
+        </div>
+        <div class="post_content markdown"><p>Python中的文件操作</p>
+
+<p><br><font color=black size = 5>语法概念部分</font>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;Python Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47<br>48<br>49<br>50<br>51<br>52<br>53<br>54<br>55<br>56<br>57<br>58<br>59<br>60<br>61<br>62<br>63<br>64<br>65<br>66<br>67<br>68<br>69<br>70<br>71<br>72<br>73<br>74<br>75<br>76<br>77<br>78<br>79<br>80<br>81<br>82<br>83<br>84<br>85<br>86<br>87<br>88<br>89<br>90<br>91<br>92<br>93<br>94<br>95<br>96<br>97<br>98<br>99<br>100<br>101<br>102<br>103<br>104<br>105<br>106<br>107<br>108<br>109<br>110<br>111<br>112<br>113<br>114<br>115<br>116<br>117<br>118<br>119<br>120<br>121<br>122<br>123<br>124<br>125<br>126<br>127<br>128<br>129<br>130<br>131<br>132<br>133<br>134<br>135<br>136<br>137<br>138<br>139<br>140<br>141<br>142<br>143<br>144<br>145<br>146<br>147<br>148<br>149<br>150<br>151<br>152<br>153<br>154<br>155<br>156<br>157<br>158<br>159<br>160<br>161<br>162<br>163<br>164<br>165<br>166<br>167<br>168<br>169<br>170<br>171<br>172<br>173<br>174<br>175<br>176<br>177<br>178<br>179<br>180<br>181<br>182<br>183<br>184<br>185<br>186<br>187<br>188<br>189<br>190<br>191<br>192<br>193<br>194<br>195<br>196<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#008000;">#&nbsp;文件：基本文件操作、目录操作、高级文件操作<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;基本文件操作(File对象)：打开文件&nbsp;→&nbsp;(写入内容、读取内容(可以不关闭，Python回收机制))&nbsp;→&nbsp;关闭文件<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;创建和打开文件：open()函数<BR>
+#&nbsp;语法：file&nbsp;=&nbsp;open(filename(打开或者要创建的文件名：r只读、w只写、a追加)[,mode(指定文件打开模式)[,buffering（）]])<BR>
+#&nbsp;file&nbsp;=&nbsp;open('status.txt','r')&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;打开在程序目录下已存在的文件<BR>
+</span><span style="color:#000000;">file1&nbsp;=&nbsp;</span><span style="color:#8000ff;">open</span><span style="color:#000000;">(</span><span style="color:#800000;">'status.txt'</span><span style="color:#000000;">,</span><span style="color:#800000;">'w'</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;创建文件<BR>
+#&nbsp;实例：蚂蚁庄园的新鲜事<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'\n'</span><span style="color:#000000;">,</span><span style="color:#800000;">&quot;=&quot;</span><span style="color:#000000;">*</span><span style="color:#ff0000;">10</span><span style="color:#000000;">,</span><span style="color:#800000;">&quot;蚂蚁庄园动态&quot;</span><span style="color:#000000;">,</span><span style="color:#800000;">&quot;=&quot;</span><span style="color:#000000;">*</span><span style="color:#ff0000;">10</span><span style="color:#000000;">)<BR>
+</span><span style="color:#8000ff;">file</span><span style="color:#000000;">&nbsp;=&nbsp;</span><span style="color:#8000ff;">open</span><span style="color:#000000;">(</span><span style="color:#800000;">'message.txt'</span><span style="color:#000000;">,</span><span style="color:#800000;">'w'</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;自动创建文件<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;\n即将显示&nbsp;......\n&quot;</span><span style="color:#000000;">)<BR>
+</span><span style="color:#008000;">#&nbsp;file&nbsp;=&nbsp;open('message.txt','r')&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;打开文件：默认以GBK打开<BR>
+#&nbsp;file&nbsp;=&nbsp;open('message.txt','r',encoding&nbsp;=&nbsp;'utf-8')&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;以utf-8格式打开文件<BR>
+#&nbsp;print(file.read())&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;读取文件内容<BR>
+#&nbsp;以二进制形式打开文件：图片、音频......<BR>
+</span><span style="color:#8000ff;">file</span><span style="color:#000000;">&nbsp;=&nbsp;</span><span style="color:#8000ff;">open</span><span style="color:#000000;">(</span><span style="color:#800000;">'1.png'</span><span style="color:#000000;">,</span><span style="color:#800000;">'rb'</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;以二进制形式打开文件<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#8000ff;">file</span><span style="color:#000000;">)<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;关闭文件<BR>
+#&nbsp;语法：file.close()<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;关闭前：&quot;</span><span style="color:#000000;">,</span><span style="color:#8000ff;">file</span><span style="color:#000000;">.closed)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;判断文件有没有被关闭<BR>
+</span><span style="color:#8000ff;">file</span><span style="color:#000000;">.</span><span style="color:#0000ff;">close</span><span style="color:#000000;">()<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;关闭后：&quot;</span><span style="color:#000000;">,</span><span style="color:#8000ff;">file</span><span style="color:#000000;">.closed)<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;打开文件时使用with语句<BR>
+#&nbsp;语法：<BR>
+#&nbsp;with&nbsp;expression(可以指定打开文件的open函数)&nbsp;as&nbsp;target(指定一个变量，保存结果):<BR>
+#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;with-body<BR>
+</span><span style="color:#0000ff;">with</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">open</span><span style="color:#000000;">(</span><span style="color:#800000;">'status.txt'</span><span style="color:#000000;">,</span><span style="color:#800000;">'r'</span><span style="color:#000000;">)&nbsp;</span><span style="color:#0000ff;">as</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">file</span><span style="color:#000000;">:&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;打开文件<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">pass</span><span style="color:#000000;"><BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;关闭了吗？&quot;</span><span style="color:#000000;">,</span><span style="color:#8000ff;">file</span><span style="color:#000000;">.closed)<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;写入文件内容<BR>
+#&nbsp;语法：file.write(string要写入的内容)<BR>
+</span><span style="color:#000000;">list1&nbsp;=&nbsp;[</span><span style="color:#800000;">&quot;Messi&quot;</span><span style="color:#000000;">,</span><span style="color:#800000;">'姆巴佩'</span><span style="color:#000000;">,</span><span style="color:#800000;">&quot;姚明&quot;</span><span style="color:#000000;">,</span><span style="color:#800000;">&quot;张怡宁&quot;</span><span style="color:#000000;">]<BR>
+</span><span style="color:#0000ff;">with</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">open</span><span style="color:#000000;">(</span><span style="color:#800000;">'status.txt'</span><span style="color:#000000;">,</span><span style="color:#800000;">'w'</span><span style="color:#000000;">)&nbsp;</span><span style="color:#0000ff;">as</span><span style="color:#000000;">&nbsp;file1:&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;打开文件<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;file1.</span><span style="color:#0000ff;">write</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;相信自己：&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;file1.</span><span style="color:#0000ff;">writelines</span><span style="color:#000000;">(list1)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;不换行写入一个列表<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;file1.</span><span style="color:#0000ff;">writelines</span><span style="color:#000000;">(line&nbsp;+&nbsp;</span><span style="color:#800000;">&quot;\n&quot;</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;line&nbsp;</span><span style="color:#0000ff;">in</span><span style="color:#000000;">&nbsp;list1)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;换行输出<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;file1.</span><span style="color:#0000ff;">close</span><span style="color:#000000;">()&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;需要关闭或者运行下面的flush()方法才可正常写入<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;file1.flush()<BR>
+</span><span style="color:#000000;">file1&nbsp;=&nbsp;</span><span style="color:#8000ff;">open</span><span style="color:#000000;">(</span><span style="color:#800000;">'status.txt'</span><span style="color:#000000;">,</span><span style="color:#800000;">'r'</span><span style="color:#000000;">)<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;已经写入：&quot;</span><span style="color:#000000;">,file1.</span><span style="color:#0000ff;">read</span><span style="color:#000000;">())<BR>
+file1.</span><span style="color:#0000ff;">close</span><span style="color:#000000;">()<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;读取文件：打开方式只能为&nbsp;r&nbsp;读取或&nbsp;r+&nbsp;读写<BR>
+#&nbsp;语法：file.read([size(要读取的字符个数，默认为全部)])<BR>
+#&nbsp;语法：file.readline()&nbsp;&nbsp;&nbsp;&nbsp;读取一行<BR>
+#&nbsp;语法：file.readlines()&nbsp;&nbsp;&nbsp;&nbsp;读取全部行<BR>
+</span><span style="color:#000000;">file2&nbsp;=&nbsp;</span><span style="color:#8000ff;">open</span><span style="color:#000000;">(</span><span style="color:#800000;">'status.txt'</span><span style="color:#000000;">,</span><span style="color:#800000;">'r+'</span><span style="color:#000000;">)<BR>
+string&nbsp;=&nbsp;file2.</span><span style="color:#0000ff;">readline</span><span style="color:#000000;">()&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;读取一行<BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;string&nbsp;==&nbsp;</span><span style="color:#800000;">&quot;&quot;</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;exit<BR>
+</span><span style="color:#0000ff;">else</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(string,&nbsp;end&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;\n&quot;</span><span style="color:#000000;">)<BR>
+file2.</span><span style="color:#0000ff;">seek</span><span style="color:#000000;">(</span><span style="color:#ff0000;">8</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;指针移动到第5个字符<BR>
+</span><span style="color:#000000;">string&nbsp;=&nbsp;file2.</span><span style="color:#0000ff;">read</span><span style="color:#000000;">(</span><span style="color:#ff0000;">9</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;读取9个字符<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(string)<BR>
+file2.</span><span style="color:#0000ff;">close</span><span style="color:#000000;">()<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;目录操作：os/os.path模块实现<BR>
+#&nbsp;os模块：它是Python内置的与(操作系统)功能和(文件系统)相关的模块。该模块中的语句的执行结果通常与操作系统有关<BR>
+#&nbsp;os和os.path模块<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;os<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(os.name)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;获取操作系统的名字，nt表示Windows操作系统，posix表示Linux或者MacOS操作系统<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#8000ff;">str</span><span style="color:#000000;">(os.linesep))&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;获取操作系统所用的换行符<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#8000ff;">str</span><span style="color:#000000;">(os.sep))&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;获取操作系统中的分隔符<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;路径：通过它可以找到文件的字符串<BR>
+#&nbsp;相对路径：存在当前路径→确定文件路径<BR>
+#&nbsp;os模块中getcwd()函数可获取当前文件的工作目录<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;os<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(os.getcwd())<BR>
+</span><span style="color:#0000ff;">with</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">open</span><span style="color:#000000;">(</span><span style="color:#800000;">'demo/status.txt'</span><span style="color:#000000;">)&nbsp;</span><span style="color:#0000ff;">as</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">file</span><span style="color:#000000;">:&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;通过相对路径打开文件或者r'demo\status.txt'或者'demo\status.txt'<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#8000ff;">file</span><span style="color:#000000;">.</span><span style="color:#0000ff;">read</span><span style="color:#000000;">())<BR>
+</span><span style="color:#008000;">#&nbsp;绝对路径：直接确定文件位置<BR>
+#&nbsp;通过os.path.abspath(path(相对路径))来获取一个文件的绝对路径<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(os.path.abspath(r</span><span style="color:#800000;">'demo\status.txt'</span><span style="color:#000000;">))<BR>
+</span><span style="color:#008000;">#&nbsp;拼接路径<BR>
+#&nbsp;语法：os.path.join(path1[,path2[,......]])<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(os.path.</span><span style="color:#0000ff;">join</span><span style="color:#000000;">(r</span><span style="color:#800000;">'H:\Python&nbsp;Program'</span><span style="color:#000000;">,r</span><span style="color:#800000;">'demo\status.txt'</span><span style="color:#000000;">))&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;拼接路径：相对路径拼接出来的就是相对路径<BR>
+#&nbsp;拼接时出现多个绝对路径的话，系统会以最后一个为准，而且不会检查该路径是否真实存在<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(os.path.</span><span style="color:#0000ff;">join</span><span style="color:#000000;">(r</span><span style="color:#800000;">'H:\Python&nbsp;Program'</span><span style="color:#000000;">,r</span><span style="color:#800000;">'C:\Python'</span><span style="color:#000000;">,r</span><span style="color:#800000;">'demo\status.txt'</span><span style="color:#000000;">))<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;判断目录/文件是否存在<BR>
+#&nbsp;语法：os.path.exists(path)&nbsp;&nbsp;&nbsp;&nbsp;path不区分大小写<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;os<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(os.path.exists(r</span><span style="color:#800000;">'D:\demo'</span><span style="color:#000000;">))&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;判断目录是否真实存在<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(os.path.exists(r</span><span style="color:#800000;">'C:\Python'</span><span style="color:#000000;">))&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;判断目录是否真实存在<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(os.path.exists(r</span><span style="color:#800000;">'H:\Python&nbsp;Program\status.txt'</span><span style="color:#000000;">))&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;判断文件是否存在<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;创建目录<BR>
+#&nbsp;语法：os.mkdir(path,mode&nbsp;=&nbsp;0o777(可省略，通常不写))&nbsp;&nbsp;&nbsp;&nbsp;不能直接创建多级目录<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;os<BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">not</span><span style="color:#000000;">&nbsp;os.path.exists(r</span><span style="color:#800000;">'D:\demo'</span><span style="color:#000000;">):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;os.mkdir(</span><span style="color:#800000;">&quot;D:\demo&quot;</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;在D盘文件下创建demo<BR>
+</span><span style="color:#0000ff;">else</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;该目录已经存在&quot;</span><span style="color:#000000;">)<BR>
+</span><span style="color:#008000;">#&nbsp;创建多级目录<BR>
+#&nbsp;可以用上面的函数进行递归调用<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;os<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;mkdir(path):&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;创建一个递归函数用于创建目录<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">not</span><span style="color:#000000;">&nbsp;os.path.isdir(path):&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;判断是否为路径<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mkdir(os.path.</span><span style="color:#0000ff;">split</span><span style="color:#000000;">(path)[</span><span style="color:#ff0000;">0</span><span style="color:#000000;">])<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;os.mkdir(path)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;创建目录<BR>
+</span><span style="color:#000000;">mkdir(r</span><span style="color:#800000;">&quot;D:\demo\test\demo&quot;</span><span style="color:#000000;">)<BR>
+</span><span style="color:#008000;">#&nbsp;函数实现：os.mkdirs(name,mode&nbsp;=&nbsp;0o777)&nbsp;&nbsp;&nbsp;&nbsp;推荐<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;os<BR>
+os.mkdirs(r</span><span style="color:#800000;">'D:\demo\mr\demo\Navigator97'</span><span style="color:#000000;">)<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;删除目录<BR>
+#&nbsp;语法：os.rmdir(path(相对路径或者绝对路径))&nbsp;&nbsp;&nbsp;&nbsp;删除空目录<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;os<BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">not</span><span style="color:#000000;">&nbsp;os.path.exists(r</span><span style="color:#800000;">'D:\demo\mr\demo\Navigator97'</span><span style="color:#000000;">):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;os.rmdir(r</span><span style="color:#800000;">'D:\demo\mr\demo\Navigator97'</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;删除目录<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;目录删除成功&quot;</span><span style="color:#000000;">)<BR>
+</span><span style="color:#0000ff;">else</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;目录不存在！&quot;</span><span style="color:#000000;">)<BR>
+</span><span style="color:#008000;">#&nbsp;删除不为空的目录：需要使用Python内置的shutil模块<BR>
+#&nbsp;语法：shutil.rmtree(path)<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;shutil<BR>
+shutil.retree(r</span><span style="color:#800000;">'D:\demo'</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;删除不为空的目录<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;遍历目录<BR>
+#&nbsp;语法：os.walk(top[,&nbsp;topdown(确定遍历顺序，True自上而下遍历，False相反)][,onerror指定错误处理方式，默认为忽略][,followlinks(True指定在支持的系统上访问由符号链接(软链接)指向的目录)])<BR>
+#&nbsp;返回值：元组生成器对象(diepath字符串,dirnames列表,filenames列表)<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;os<BR>
+path&nbsp;=&nbsp;os.walk(r</span><span style="color:#800000;">'H:\Python&nbsp;Program'</span><span style="color:#000000;">)<BR>
+</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;p&nbsp;</span><span style="color:#0000ff;">in</span><span style="color:#000000;">&nbsp;path:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(p,</span><span style="color:#800000;">'\n'</span><span style="color:#000000;">)<BR>
+</span><span style="color:#008000;">#&nbsp;实例：遍历指定目录<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;os<BR>
+path&nbsp;=&nbsp;r</span><span style="color:#800000;">'C:/Python'</span><span style="color:#000000;"><BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'【'</span><span style="color:#000000;">,path,</span><span style="color:#800000;">&quot;】目录下包含的文件和目录：&quot;</span><span style="color:#000000;">)<BR>
+</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;root,dirs,files&nbsp;</span><span style="color:#0000ff;">in</span><span style="color:#000000;">&nbsp;os.walk(path,&nbsp;topdown&nbsp;=&nbsp;</span><span style="color:#8000ff;">True</span><span style="color:#000000;">):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;遍历指定目录<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;name&nbsp;</span><span style="color:#0000ff;">in</span><span style="color:#000000;">&nbsp;dirs:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(os.path.</span><span style="color:#0000ff;">join</span><span style="color:#000000;">(root,name))&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;输出遍历到的目录<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;name&nbsp;</span><span style="color:#0000ff;">in</span><span style="color:#000000;">&nbsp;files:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;\t&quot;</span><span style="color:#000000;">,os.path.</span><span style="color:#0000ff;">join</span><span style="color:#000000;">(root,name))&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;输出遍历到的目录<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;高级文件操作<BR>
+#&nbsp;删除文件<BR>
+#&nbsp;语法：os.remove(path)<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;os<BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;os.path.exists(r</span><span style="color:#800000;">'E:\Python'</span><span style="color:#000000;">):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;os.</span><span style="color:#0000ff;">remove</span><span style="color:#000000;">(r</span><span style="color:#800000;">&quot;E:\Python&quot;</span><span style="color:#000000;">)<BR>
+</span><span style="color:#0000ff;">else</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;文件不存在！&quot;</span><span style="color:#000000;">)<BR>
+</span><span style="color:#008000;">#&nbsp;重命名文件和目录<BR>
+#&nbsp;语法：os.rename(src要重命名的目录或文件的路径,dst重命名后的目录或文件的路径)<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;os<BR>
+</span><span style="color:#008000;">#&nbsp;对文件进行重命名<BR>
+</span><span style="color:#000000;">src&nbsp;=&nbsp;r</span><span style="color:#800000;">'E:\Python\text.txt'</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;原路径<BR>
+</span><span style="color:#000000;">dst&nbsp;=&nbsp;r</span><span style="color:#800000;">'E:\Python\m.txt'</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;修改后<BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;os.path.exists(src):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;os.rename(src,dst)<BR>
+</span><span style="color:#0000ff;">else</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;文件不存在！&quot;</span><span style="color:#000000;">)<BR>
+</span><span style="color:#008000;">#&nbsp;对目录进行重命名<BR>
+</span><span style="color:#000000;">src&nbsp;=&nbsp;r</span><span style="color:#800000;">'E:\Python\demo1'</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;原路径<BR>
+</span><span style="color:#000000;">dst&nbsp;=&nbsp;r</span><span style="color:#800000;">'E:\Python\demo2'</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;修改后<BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;os.path.exists(src):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;os.rename(src,dst)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;只能修改最后一级的目录名称<BR>
+</span><span style="color:#0000ff;">else</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;目录不存在！&quot;</span><span style="color:#000000;">)<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;获取文件基本信息：右键(属性→详细信息)<BR>
+#&nbsp;语法：os.stat(path)<BR>
+#&nbsp;返回值为一些对象&nbsp;&nbsp;下方图可见：st_ctime创建日期、st_mtime修改日期、st_size大小、st_mode文件保护模式、st_ino文件的索引号、st_atime文件的最后一次访问时间<BR>
+#&nbsp;实例：获取文件的基本信息<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;os<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;formatTime(longtime):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'''格式化时间的函数'''</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;time<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;time.strftime(</span><span style="color:#800000;">&quot;%Y-%m-%d&nbsp;%H:%M:%S&quot;</span><span style="color:#000000;">,time.localtime(longtime))&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;格式化时间<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;formatByte(number):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'''格式化文件大小'''</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(scale,label)&nbsp;</span><span style="color:#0000ff;">in</span><span style="color:#000000;">&nbsp;[(</span><span style="color:#ff0000;">1024</span><span style="color:#000000;">*</span><span style="color:#ff0000;">1024</span><span style="color:#000000;">*</span><span style="color:#ff0000;">1024</span><span style="color:#000000;">,</span><span style="color:#800000;">'GB'</span><span style="color:#000000;">),(</span><span style="color:#ff0000;">1024</span><span style="color:#000000;">*</span><span style="color:#ff0000;">1024</span><span style="color:#000000;">,</span><span style="color:#800000;">'MB'</span><span style="color:#000000;">),(</span><span style="color:#ff0000;">1024</span><span style="color:#000000;">,</span><span style="color:#800000;">'KB'</span><span style="color:#000000;">)]:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;number&nbsp;&gt;=&nbsp;scale:&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;处理大于等于1KB<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#800000;">&quot;%.2f&nbsp;%s&quot;</span><span style="color:#000000;">&nbsp;%(number*</span><span style="color:#ff0000;">0</span><span style="color:#000000;">.</span><span style="color:#ff0000;">1</span><span style="color:#000000;">/scale,label)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">elif</span><span style="color:#000000;">&nbsp;number&nbsp;==</span><span style="color:#ff0000;">1</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#800000;">&quot;1&nbsp;字节&quot;</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;">:&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;小于1KB<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;byte&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;%.2f&quot;</span><span style="color:#000000;">&nbsp;%&nbsp;(number&nbsp;</span><span style="color:#0000ff;">or</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;(byte[:-</span><span style="color:#ff0000;">3</span><span style="color:#000000;">]&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;byte.</span><span style="color:#0000ff;">endswith</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;.00&quot;</span><span style="color:#000000;">)&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;">&nbsp;byte)&nbsp;+&nbsp;</span><span style="color:#800000;">&quot;字节&quot;</span><span style="color:#000000;"><BR>
+fileinfo&nbsp;=&nbsp;os.stat(r</span><span style="color:#800000;">'mr.png'</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;获取文件的基本信息<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;文件完整路径：&quot;</span><span style="color:#000000;">,os.path.abspath(</span><span style="color:#800000;">&quot;mr.png&quot;</span><span style="color:#000000;">))&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;获取文件的完整路径<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;索引号：&quot;</span><span style="color:#000000;">,fileinfo.st_ino)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;获取文件的索引号<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;设备名：&quot;</span><span style="color:#000000;">,fileinfo.st_dev)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;获取文件设备名<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;文件大小：&quot;</span><span style="color:#000000;">,formatByte(fileinfo.st_size))&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;未格式化以字节显示<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;最后一次访问时间：&quot;</span><span style="color:#000000;">,formatTime(fileinfo.st_atime))<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;最后一次修改时间：&quot;</span><span style="color:#000000;">,formatTime(fileinfo.st_mtime))<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;最后一次状态变化时间：&quot;</span><span style="color:#000000;">,formatTime(fileinfo.st_ctime))&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;获取文件创建时间</span></div></td></tr></table></div>
+<br><font color=black size = 5>相关截图部分</font>
+<img src="https://wx1.sinaimg.cn/mw1024/007Diza3ly1g5574tec66j30o90bgdlc.jpg" width="800" height="650" />
+<img src="https://wx1.sinaimg.cn/mw1024/007Diza3ly1g5574td9auj30o80bhq89.jpg" width="800" height="650" />
+<img src="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g5574temwdj30nr0bhn2s.jpg" width="800" height="650" />
+<img src="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g5574thl8jj30o00c1n56.jpg" width="800" height="650" />
+<img src="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g5574t9vhmj30lg0bj752.jpg" width="800" height="650" />
+<img src="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g5574tc747j30o30bmdiw.jpg" width="800" height="650" />
+<br><br><br>
+<font color = gray size = 3>如有错误，欢迎指正！</font></p></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://oubc.github.io/tags/python/">Python</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmg4aog3074074gnf.gif?tags=%5B%5D">I </a>
+	<a href="">love</a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmfm2eg306o06o74u.gif?tags=%5B%5D"> you </a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx4tpcj30fn0bq3zg.jpg?tags=%5B%5D">three </a>
+	<a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx64ctg307s07swfy.gif?tags=%5B%5D">thousand</a>
+    <a href="https://www.kugou.com/song/#hash=96426C78381DE98DC31A5846FC274CBF&album_id=646623"> times.</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>家庭、梦想、内心的平静</span>
+  </div>
+</footer>
+
+
+
+<script src="https://oubc.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://oubc.github.io/js/zozo.js"></script>
+<script src="https://oubc.github.io/js/highlight.pack.js"></script>
+<link  href="https://oubc.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://oubc.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>

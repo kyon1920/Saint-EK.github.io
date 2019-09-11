@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Bruce Cheung"/>
+
+  
+  <meta name="description" content="windows下的Socket(套接字)编程：基础篇
+"/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, simple, dream"/>
+  
+
+  
+  <link rel="canonical" href="https://oubc.github.io/post/networkprogramming/"/>
+
+  
+
+  <title>windows网络编程(TCP/IP) &middot; Love, or death</title>
+
+  <link rel="shortcut icon" href="https://oubc.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/post/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://oubc.github.io/">
+          <span>Love, or death</span>
+          <img src="https://oubc.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">For you, a thousand times over.</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/oubc" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=uYGOjo6OiIuLivnIyJfa1tQ" title="mail" target="_blank"><i class="remixicon-mail-fill"></i></a>
+        
+        
+        
+        <a href="http://sighttp.qq.com/msgrd?v=1&amp;uin=877771223" title="qq" target="_blank"><i class="remixicon-qq-fill"></i></a>
+        
+        
+        
+        <a href="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g4klnqf0tmj30ia0widks.jpg" title="wechat" target="_blank"><i class="remixicon-wechat-fill"></i></a>
+        
+        
+        
+        <a href="https://weibo.com/u/6993631995?topnav=1&amp;wvr=6&amp;topsug=1" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://oubc.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/post/networkprogramming/'>windows网络编程(TCP/IP)</a></h2>
+          <span class="date">2019.02.25</span>
+        </div>
+        <div class="post_content markdown"><p>windows下的Socket(套接字)编程：基础篇</p>
+
+<p><br><font color = black size = 5>预备知识(简单说明)</font>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;TCP/IP(Transmission Control Protocol / Internet Protocol)族：指整个网络传输体系，而不只是TCP/IP传输体系
+<br>&nbsp;&nbsp;&nbsp;&nbsp;TCP/IP的特点：面向连接的、可靠的、基于字节流的传输层协议
+<br>&nbsp;&nbsp;&nbsp;&nbsp;UDP/IP的特点：面向非连接的、不可靠的、基于数据报的传输层协议
+<br>&nbsp;&nbsp;&nbsp;&nbsp;C/S模型：Client/Server即 客户端/服务器 模型，可以是基于任何的网络协议模型，通常C/S为多对一的关系
+<br>&nbsp;&nbsp;&nbsp;&nbsp;B/S模型：Browser/Server即 浏览器/服务器 模型，可以是基于任何的网络协议模型，通常B/S为多对多的关系
+<br>&nbsp;&nbsp;&nbsp;&nbsp;网络编程：网络编程的本质是两个两个设备之间的数据交换，就是Socket编程，也称套接字编程
+<br><br><font color = black size = 5>服务器端</font>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;总的来说，服务器端网络编程通常分为以下六个步骤
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(0)打开网络库and校验版本号
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(1)创建socket
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(2)绑定地址与端口
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(3)开始监听
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(4)创建客户端socket/接收客户端的连接
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(5)与客户端收发消息
+<font color = black size = 4><br><br>&nbsp;&nbsp;&nbsp;&nbsp;0、打开网络库and校验版本号(详细见代码注解)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;网络头文件-网络库
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;WinSock2.h&gt;<BR>
+</span><span style="color:#0000ff;">#pragma</span><span style="color:#000000;">&nbsp;comment(lib,&nbsp;</span><span style="color:#800000;">&quot;ws2_32.lib&quot;</span><span style="color:#000000;">)</span></div></td></tr></table></div>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;打开网络库函数：int WSAStartup(WORD wVersionRequired, LPWSADATA lpWSAData)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;函数名中W = windows &nbsp;&nbsp;&nbsp;&nbsp;S = Socket &nbsp;&nbsp;&nbsp;&nbsp; A = asynchrononous异步 &nbsp;&nbsp;&nbsp;&nbsp; startup启动
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;参数及返回值详解：(1)参数1：网络库版本号WORD wVersionRequired = MAKEWORD(2, 2)，第一个参数2为主版本号，第二个参数2为为版本号，日前一般为2.2版本；(2)参数2：WSADATA wdSocketMsg为一种结构体，用来存放Socket的相关信息；(3)返回值：返回值为int类型，当返回0时表示执行成功，否则失败并返回错误码，我们可以根据返回的错误码提示用户进行相关处理；
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;版本校验：利用宏HIBYTE(高位，为副版本号)和LOBYTE(低位，为主版本号)，利用if语句来实现，具体实现见下面代码。
+<br><br>&nbsp;&nbsp;&nbsp;&nbsp;1、什么是Soclet(创建socket)：将底层复杂的协议体系、执行流程进行了封装，就是Socket(接口)了；Socket是我们调用协议进行通信的操作接口。
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;认识：将复杂的协议过程与编程分开，我们直接操作简单的Socket函数就行，我们网络通信的函数，全部都要使用Socket，通信时用该Socket做参数，给谁通信，就要传递谁的Socket，所以网络编程就是理论层面Socket的网络封装的精华，代码层面不停地使用Socket变量，因此网络编程叫做Socket编程。
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Socket的创建：SOCKET socketSever = socket()(三个参数)；(1)参数1：地址的类型(抽象)，一般为IP地址类型AF_INET2(IPv4点分十进制，例192.186.2.105)或AF_INET6；(2)参数2：套接字类型，TCP一般用SOCK_STREAM(追求效率，提供带OOB数据传输机制的顺序、可靠、双向、基于字节连接的字节流)，UDP一般用SOCK_DGRAM(追求可靠，数据量大、固定、最大长度的无连接、不可靠、无顺序的缓冲区);(3)参数3：协议的类型，IPPROTO_TCP、IPPROTO_UDP、IPPROTO_ICMP用什么协议填什么协议参数，填0表示默认，系统帮助我们进行选择；(4)返回值：返回0表示创建Socket成功，否则失败并存在错误码(宏INVALID_SOCKET)由于情况比较杂错误码相关操作见MSDN，失败时记得清理网路库并关闭。
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&amp;nbsp参数及返回值详解：(1)参数1：地址的类型(抽象)，一般为IP地址类型AF_INET2(IPv4点分十进制，例192.186.2.105)或AF_INET6；(2)参数2：套接字类型，TCP一般用SOCK_STREAM(追求效率，提供带OOB数据传输机制的顺序、可靠、双向、基于字节连接的字节流)，UDP一般用SOCK_DGRAM(追求可靠，数据量大、固定、最大长度的无连接、不可靠、无顺序的缓冲区);(3)参数3：协议的类型，IPPROTO_TCP、IPPROTO_UDP、IPPROTO_ICMP用什么协议填什么协议参数，填0表示默认，系统帮助我们进行选择；(4)返回值：返回0表示创建Socket成功，否则失败并存在错误码(宏INVALID_SOCKET)由于情况比较杂错误码相关操作见MSDN，失败时记得清理网路库并关闭。
+<br><br>&nbsp;&nbsp;&nbsp;&nbsp;2、绑定地址和端口号
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;地址：让对方找到我们电脑唯一标识IP地址。
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;端口号：找到对应的客户端或者浏览器，每一种通信的端口号是唯一的，同一客户端或者浏览器可能占有多个端口号，不同的功能用不同的协议和端口号。
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;函数：int bind(SOCKET s. const sockaddr *addr, int namelen);
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;参数及返回值详解：(1)参数1：即上面创建的SOCKET；(2)参数2：结构体指针：大小为16个字节，sockaddr_in/_int，为结构体sockaddr的指针；(3)返回值：成功返回0，否则返回错误码，错误码通过WSAGetLastError()获得并进行相对于的处理。
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;说明：端口号填哪个值？理论上整数0~65535都可以，实际介于0~1023为系统保留端口号，一般不填，例如：21端口被分配给FTP(文件传输协议)服务，25端口被分配给SMTP(简单邮件传输协议)，80端口被分配给HTTP服务。
+<br><br>&nbsp;&nbsp;&nbsp;&nbsp;3、开始监听：将客户端连接到上面的Socket(服务器)，将套接字置于正在监听传入连接状态
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;监听函数：int WSAAPIlisten(SOCKET s, int backlog);
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;参数及返回值详解：(1)参数1：服务器的SOCKET；(2)挂起队列的最大长度(休息区)，相当于缓冲，填宏SOMAXCONN系统会选择以发挥自己最好的性能，在不同的系统环境中，发挥最好性能也不一样；(3)返回值：0表示成功，否则失败并通过上面的函数得到错误码进行处理。
+<br><br>&nbsp;&nbsp;&nbsp;&nbsp;4、创建客户端socket/接收客户端的连接：允许在套接字上进入连接尝试
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;函数：SOCKET WSAAPIaccept(SOCKET s, sockaddr* addr, int* addrlen);
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;认识：listen监听客户端的链接，accept将客户端绑定到一个socket上，也就是给客户端创建一个socket并通过返回值返回客户端的socket给我们，一次只有一次绑定，一次只能绑定一个socket，并且有多少个客户端链接，就应该调用多少次。
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;参数及返回值详解：(1)参数1：服务器Socket；(2)参数2：结构体sockaddr* addr且不用进行初始化；(3)参数3：整型变量，得到参数2的长度；(4)返回值：0表示成功，否则失败并通过上面的函数得到错误码进行处理。
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;说明：参数2、3也可以设置成为NULL，那就是不直接得到客户端的地址、端口号；可以通过函数getpeername(newSocket, (struct sockaddr*)&amp;sockclientMsg);得到客户端信息；可以通过函数getsockname(sSocket, (sockaddr*)&amp;addr, &amp;nLen);得到本地服务器信息。
+<br><br>&nbsp;&nbsp;&nbsp;&nbsp;5、与客户端收发消息:recv得到指定客户端发来的消息/send向目标发送数据
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;原理：本质就是复制，数据的接收都是由协议本身做的，也就是socket的底层替我们做的，系统会有一段缓冲区存储着接收到的数据；
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;函数：收消息int recv(SOCKET s, char* buf, int len, int flags);:recv的作用就是找到缓冲区，并把数据复制进参数2和参数3；
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;参数及返回值详解：(1)参数1：客户端的Socket；(2)参数2：消息的存储空间，也就是字符数组，这个一般为1500字节；(3)参数3：一般为buf的大小，实际为buf-1，把'\0'字符串的结尾留出来；(4)参数4：一般填0；(5)返回值：读出来的字节大小，为0时表示客户端下线，为SOCKET_ERROR表示出错了并进行相关处理。
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;函数：发消息int WSAAPIsend(SOCKET s, const char* buf, int len, int flags);
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;原理：send函数将我们的数据复制粘贴进系统的协议发送缓冲区，计算机伺机发送出去，最大传输单元为1500字节；
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;参数及返回值详解：(1)参数1：目标的socket，每个客户端对应唯一的socket；(2)参数2：给对方发送的字符串，不超过1500字节，数据量大的话会进行封包处理；(3)参数3：字节个数，一般为sizeof()，长了会出现内存泄漏；(4)参数4：发送的规则，写0就好，其它MSG_OOB带外数据、MSG_PONTROUTE忽略；(5)返回值：成功返回写入的字节数，失败返回SOCKET_ERROR并进行相关处理。
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;封包原理：包头(封包)：标识位(地址)+包体(打包)：数据+结尾的协议状态确定位。
+<br><br>服务器端代码如下：</font>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47<br>48<br>49<br>50<br>51<br>52<br>53<br>54<br>55<br>56<br>57<br>58<br>59<br>60<br>61<br>62<br>63<br>64<br>65<br>66<br>67<br>68<br>69<br>70<br>71<br>72<br>73<br>74<br>75<br>76<br>77<br>78<br>79<br>80<br>81<br>82<br>83<br>84<br>85<br>86<br>87<br>88<br>89<br>90<br>91<br>92<br>93<br>94<br>95<br>96<br>97<br>98<br>99<br>100<br>101<br>102<br>103<br>104<br>105<br>106<br>107<br>108<br>109<br>110<br>111<br>112<br>113<br>114<br>115<br>116<br>117<br>118<br>119<br>120<br>121<br>122<br>123<br>124<br>125<br>126<br>127<br>128<br>129<br>130<br>131<br>132<br>133<br>134<br>135<br>136<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;stdio.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;stdlib.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;WinSock2.h&gt;<BR>
+</span><span style="color:#0000ff;">#pragma</span><span style="color:#000000;">&nbsp;comment(lib,&nbsp;</span><span style="color:#800000;">&quot;ws2_32.lib&quot;</span><span style="color:#000000;">)<BR>
+<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;main(</span><span style="color:#8000ff;">void</span><span style="color:#000000;">)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;WORD&nbsp;wsVersion&nbsp;=&nbsp;MAKEWORD(</span><span style="color:#ff0000;">2</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;WSADATA&nbsp;wdScokMsg;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;nRes&nbsp;=&nbsp;WSAStartup(wsVersion,&nbsp;&amp;wdScokMsg);&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//打开网络库<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//SOCKET&nbsp;socketServer&nbsp;=&nbsp;socket(AF_INET,&nbsp;SOCK_STREAM,&nbsp;IPPROTO_TCP);&nbsp;&nbsp;//创建网络库<BR>
+</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">&nbsp;!=&nbsp;nRes)&nbsp;&nbsp;</span><span style="color:#008000;">//打开失败<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">switch</span><span style="color:#000000;">&nbsp;(nRes)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;WSASYSNOTREADY:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;printf(</span><span style="color:#800000;">&quot;系统配置存在问题，请重启电脑，或者检查网络库\n&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;WSAVERNOTSUPPORTED:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;printf(</span><span style="color:#800000;">&quot;请更新网络库\n&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;WSAEPROCLIM:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;printf(</span><span style="color:#800000;">&quot;请尝试关闭不必要的软件\n&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;WSAEFAULT:&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//程序员问题:参数传入错误<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;WSAEINPROGRESS:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;printf(</span><span style="color:#800000;">&quot;请重新启动软件\n&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;!=&nbsp;HIBYTE(wdScokMsg.wVersion)&nbsp;||&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;!=&nbsp;LOBYTE(wdScokMsg.wVersion))&nbsp;</span><span style="color:#008000;">//校验版本<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;printf(</span><span style="color:#800000;">&quot;该网络库版本不存在\n&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WSACleanup();&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//关闭网络库<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;SOCKET&nbsp;socketServer&nbsp;=&nbsp;socket(AF_INET,&nbsp;SOCK_STREAM,&nbsp;IPPROTO_TCP);&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//创建网络库<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//...相关操作<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(INVALID_SOCKET&nbsp;==&nbsp;socketServer)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//失败，对错误码进行操作<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;a&nbsp;=&nbsp;WSAGetLastError();&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//找出离它最近的socket函数的错误码<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//...相关操作<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WSACleanup();&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//清理/关闭网络库<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;sockaddr_in&nbsp;sockServerMsg;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//参数2结构体<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;sockServerMsg.sin_family&nbsp;=&nbsp;AF_INET;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;sockServerMsg.sin_port&nbsp;=&nbsp;htons(</span><span style="color:#ff0000;">12345</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;sockServerMsg.sin_addr.S_un.S_addr&nbsp;=&nbsp;inet_addr(</span><span style="color:#800000;">&quot;127.0.0.1&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//int&nbsp;bres&nbsp;=&nbsp;bind(socketServer,&nbsp;(const&nbsp;sockaddr*)&amp;&nbsp;si,&nbsp;sizeof(si));&nbsp;&nbsp;&nbsp;&nbsp;//绑定地址和端口号<BR>
+</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(SOCKET_ERROR&nbsp;==&nbsp;bind(socketServer,&nbsp;(</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;sockaddr*)&amp;&nbsp;sockServerMsg,&nbsp;</span><span style="color:#0000ff;">sizeof</span><span style="color:#000000;">(sockServerMsg)))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//出错了<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;a&nbsp;=&nbsp;WSAGetLastError();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//释放<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;closesocket(socketServer);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WSACleanup();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//listen(socketServer,&nbsp;SOMAXCONN);&nbsp;&nbsp;&nbsp;&nbsp;//开始监听:将服务器与客户端连接起来<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(SOCKET_ERROR&nbsp;==&nbsp;listen(socketServer,&nbsp;SOMAXCONN))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//出错了<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;a&nbsp;=&nbsp;WSAGetLastError();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//释放<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;closesocket(socketServer);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WSACleanup();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//创建客户端链接<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;printf(</span><span style="color:#800000;">&quot;正在等待客户端的接入...\n&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;sockaddr_in&nbsp;sockClientMsg;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;len&nbsp;=&nbsp;</span><span style="color:#0000ff;">sizeof</span><span style="color:#000000;">(sockClientMsg);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;SOCKET&nbsp;socketClient&nbsp;=&nbsp;accept(socketServer,&nbsp;(</span><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;sockaddr*)&nbsp;&amp;&nbsp;sockClientMsg,&nbsp;&amp;len);&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//参数socketServer,&nbsp;NULL,&nbsp;NULL<BR>
+</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//失败<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(INVALID_SOCKET&nbsp;==&nbsp;socketClient)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//出错了<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;a&nbsp;=&nbsp;WSAGetLastError();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;printf(</span><span style="color:#800000;">&quot;客户端链接失败\n&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//释放<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;closesocket(socketServer);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WSACleanup();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;printf(</span><span style="color:#800000;">&quot;客户端链接成功\n&quot;</span><span style="color:#000000;">);<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;buf[</span><span style="color:#ff0000;">1500</span><span style="color:#000000;">];<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;res&nbsp;=&nbsp;recv(socketClient,&nbsp;buf,&nbsp;</span><span style="color:#ff0000;">1499</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;printf(</span><span style="color:#800000;">&quot;%s&quot;</span><span style="color:#000000;">,&nbsp;buf);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">&nbsp;==&nbsp;res)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;printf(</span><span style="color:#800000;">&quot;链接中断/客户端下线\n&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(SOCKET_ERROR&nbsp;==&nbsp;res)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//出错了<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;a&nbsp;=&nbsp;WSAGetLastError();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//...根据实际情况分析，详情查MSDN<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//向客户端发送消息<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(SOCKET_ERROR&nbsp;==&nbsp;send(socketClient,&nbsp;</span><span style="color:#800000;">&quot;收到了，感谢来访!&quot;</span><span style="color:#000000;">,&nbsp;</span><span style="color:#0000ff;">sizeof</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;收到了，感谢来访!&quot;</span><span style="color:#000000;">),&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//发送失败<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;a&nbsp;=&nbsp;WSAGetLastError();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//...其它操作<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;printf(</span><span style="color:#800000;">&quot;向客户端发送消息失败!&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;printf(</span><span style="color:#800000;">&quot;\n&quot;</span><span style="color:#000000;">);<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//接收下线消息<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;offline&nbsp;=&nbsp;recv(socketClient,&nbsp;buf,&nbsp;</span><span style="color:#ff0000;">1499</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">&nbsp;==&nbsp;offline)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;printf(</span><span style="color:#800000;">&quot;链接中断/客户端下线/下次再见，Bye!\n&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//清理网络库<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;closesocket(socketClient);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;closesocket(socketServer);&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//释放SOCKET<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;WSACleanup();<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}</span></div></td></tr></table></div>
+<br><br><font color = black size = 5>客户端</font>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;总的来说，客户端网络编程通常分为以下五个步骤
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(0)打开网络库and校验版本号
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(1)创建socket
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(2)连接到服务器
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(3)开始监听
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(4)与客户端收发消息
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;我们发现，实现客户端与实现服务器端步骤大体相同，只是在客户端不需要绑定地址和端口、监听，而增加了连接到服务器。
+<font color = black size = 4><br><br>&nbsp;&nbsp;&nbsp;&nbsp;连接到服务器
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;函数：int WSAAPIconnect(SOCKET s, const sockaddr* name, int namelen);
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;作用：连接到服务器并把服务器信息与服务器Socket绑定到客户端；
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;参数及返回值详解：(1)参数1：服务器socket；(2)参数2：服务器信息，填入与服务器相同信息(服务器IP地址端口号结构体)；(3)参数3：sizeof(serverSocket)参数2结构体的大小；(4)返回值：成功返回0，失败返回SOCKET_ERROR并进行相关处理。
+<br><br>客户端代码如下：</font>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47<br>48<br>49<br>50<br>51<br>52<br>53<br>54<br>55<br>56<br>57<br>58<br>59<br>60<br>61<br>62<br>63<br>64<br>65<br>66<br>67<br>68<br>69<br>70<br>71<br>72<br>73<br>74<br>75<br>76<br>77<br>78<br>79<br>80<br>81<br>82<br>83<br>84<br>85<br>86<br>87<br>88<br>89<br>90<br>91<br>92<br>93<br>94<br>95<br>96<br>97<br>98<br>99<br>100<br>101<br>102<br>103<br>104<br>105<br>106<br>107<br>108<br>109<br>110<br>111<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;stdio.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;stdlib.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;WinSock2.h&gt;<BR>
+</span><span style="color:#0000ff;">#pragma</span><span style="color:#000000;">&nbsp;comment(lib,&nbsp;</span><span style="color:#800000;">&quot;ws2_32.lib&quot;</span><span style="color:#000000;">)<BR>
+<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;main(</span><span style="color:#8000ff;">void</span><span style="color:#000000;">)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;WORD&nbsp;wsVersion&nbsp;=&nbsp;MAKEWORD(</span><span style="color:#ff0000;">2</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;WSADATA&nbsp;wdScokMsg;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;nRes&nbsp;=&nbsp;WSAStartup(wsVersion,&nbsp;&amp;wdScokMsg);&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//打开网络库<BR>
+</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">&nbsp;!=&nbsp;nRes)&nbsp;&nbsp;</span><span style="color:#008000;">//打开失败<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">switch</span><span style="color:#000000;">&nbsp;(nRes)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;WSASYSNOTREADY:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;printf(</span><span style="color:#800000;">&quot;系统配置存在问题，请重启电脑，或者检查网络库\n&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;WSAVERNOTSUPPORTED:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;printf(</span><span style="color:#800000;">&quot;请更新网络库\n&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;WSAEPROCLIM:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;printf(</span><span style="color:#800000;">&quot;请尝试关闭不必要的软件\n&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;WSAEFAULT:&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//程序员问题:参数传入错误<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;WSAEINPROGRESS:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;printf(</span><span style="color:#800000;">&quot;请重新启动软件\n&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;!=&nbsp;HIBYTE(wdScokMsg.wVersion)&nbsp;||&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;!=&nbsp;LOBYTE(wdScokMsg.wVersion))&nbsp;</span><span style="color:#008000;">//校验版本<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;printf(</span><span style="color:#800000;">&quot;该网络库版本不存在\n&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WSACleanup();&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//关闭网络库<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;SOCKET&nbsp;socketServer&nbsp;=&nbsp;socket(AF_INET,&nbsp;SOCK_STREAM,&nbsp;IPPROTO_TCP);&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//创建网络库<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//...相关操作<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(INVALID_SOCKET&nbsp;==&nbsp;socketServer)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//失败，对错误码进行操作<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;a&nbsp;=&nbsp;WSAGetLastError();&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//找出离它最近的socket函数的错误码<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//...相关操作<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WSACleanup();&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//清理/关闭网络库<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//链接服务器<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;sockaddr_in&nbsp;sockServerMsg;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;sockServerMsg.sin_family&nbsp;=&nbsp;AF_INET;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;sockServerMsg.sin_port&nbsp;=&nbsp;htons(</span><span style="color:#ff0000;">12345</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;sockServerMsg.sin_addr.S_un.S_addr&nbsp;=&nbsp;inet_addr(</span><span style="color:#800000;">&quot;127.0.0.1&quot;</span><span style="color:#000000;">);<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(SOCKET_ERROR&nbsp;==&nbsp;connect(socketServer,&nbsp;(</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;sockaddr*)&amp;&nbsp;sockServerMsg,&nbsp;</span><span style="color:#0000ff;">sizeof</span><span style="color:#000000;">(sockServerMsg)))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//出错了<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;a&nbsp;=&nbsp;WSAGetLastError();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;closesocket(socketServer);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WSACleanup();&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//清理/关闭网络库<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//给服务器发送消息<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(SOCKET_ERROR&nbsp;==&nbsp;send(socketServer,&nbsp;</span><span style="color:#800000;">&quot;服务器&nbsp;你好，收到我的链接请求了吗？&quot;</span><span style="color:#000000;">,&nbsp;</span><span style="color:#0000ff;">sizeof</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;服务器&nbsp;你好，收到我的链接请求了吗？&quot;</span><span style="color:#000000;">),&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//发送失败<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;a&nbsp;=&nbsp;WSAGetLastError();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//...进行相关操作<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;printf(</span><span style="color:#800000;">&quot;向服务器发送消息失败!&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//接收服务器发来的消息<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;buf[</span><span style="color:#ff0000;">1500</span><span style="color:#000000;">];<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(SOCKET_ERROR&nbsp;==&nbsp;recv(socketServer,&nbsp;buf,&nbsp;</span><span style="color:#0000ff;">sizeof</span><span style="color:#000000;">(buf),&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//发送失败<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;a&nbsp;=&nbsp;WSAGetLastError();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//...进行相关操作<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;printf(</span><span style="color:#800000;">&quot;向服务器发送消息失败!&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;printf(</span><span style="color:#800000;">&quot;%s&quot;</span><span style="color:#000000;">,&nbsp;buf);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;printf(</span><span style="color:#800000;">&quot;\n&quot;</span><span style="color:#000000;">);<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">5</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;strBuff[</span><span style="color:#ff0000;">1500</span><span style="color:#000000;">]&nbsp;=&nbsp;{&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">&nbsp;};<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;scanf(</span><span style="color:#800000;">&quot;%s&quot;</span><span style="color:#000000;">,&nbsp;strBuff);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(SOCKET_ERROR&nbsp;==&nbsp;send(socketServer,&nbsp;strBuff,&nbsp;</span><span style="color:#0000ff;">sizeof</span><span style="color:#000000;">(strBuff),&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//发送失败<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;a&nbsp;=&nbsp;WSAGetLastError();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//...进行相关操作<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;printf(</span><span style="color:#800000;">&quot;向服务器发送消息失败!&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;printf(</span><span style="color:#800000;">&quot;\n请按任意键结束本次运行并向服务器发送结束运行通知\n&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;system(</span><span style="color:#800000;">&quot;pause&quot;</span><span style="color:#000000;">);<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//清理网络库<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;closesocket(socketServer);&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//释放SOCKET<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;WSACleanup();<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}</span></div></td></tr></table></div>
+<br><br>后续将会更新适用于网络编程中的网络模型
+<br><br><br>
+<font color = gray size = 3>如有错误，欢迎指正！</font></p></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://oubc.github.io/tags/windows/">windows</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmg4aog3074074gnf.gif?tags=%5B%5D">I </a>
+	<a href="">love</a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmfm2eg306o06o74u.gif?tags=%5B%5D"> you </a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx4tpcj30fn0bq3zg.jpg?tags=%5B%5D">three </a>
+	<a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx64ctg307s07swfy.gif?tags=%5B%5D">thousand</a>
+    <a href="https://www.kugou.com/song/#hash=96426C78381DE98DC31A5846FC274CBF&album_id=646623"> times.</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>家庭、梦想、内心的平静</span>
+  </div>
+</footer>
+
+
+
+<script src="https://oubc.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://oubc.github.io/js/zozo.js"></script>
+<script src="https://oubc.github.io/js/highlight.pack.js"></script>
+<link  href="https://oubc.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://oubc.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>

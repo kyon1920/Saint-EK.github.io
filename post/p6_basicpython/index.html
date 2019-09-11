@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Bruce Cheung"/>
+
+  
+  <meta name="description" content=""/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, simple, dream"/>
+  
+
+  
+  <link rel="canonical" href="https://oubc.github.io/post/p6_basicpython/"/>
+
+  
+
+  <title>Python基础-模块和包 &middot; Love, or death</title>
+
+  <link rel="shortcut icon" href="https://oubc.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/post/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://oubc.github.io/">
+          <span>Love, or death</span>
+          <img src="https://oubc.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">For you, a thousand times over.</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/oubc" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=uYGOjo6OiIuLivnIyJfa1tQ" title="mail" target="_blank"><i class="remixicon-mail-fill"></i></a>
+        
+        
+        
+        <a href="http://sighttp.qq.com/msgrd?v=1&amp;uin=877771223" title="qq" target="_blank"><i class="remixicon-qq-fill"></i></a>
+        
+        
+        
+        <a href="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g4klnqf0tmj30ia0widks.jpg" title="wechat" target="_blank"><i class="remixicon-wechat-fill"></i></a>
+        
+        
+        
+        <a href="https://weibo.com/u/6993631995?topnav=1&amp;wvr=6&amp;topsug=1" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://oubc.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/post/p6_basicpython/'>Python基础-模块和包</a></h2>
+          <span class="date">2019.07.18</span>
+        </div>
+        <div class="post_content markdown"><p><br><font color=black size = 5>基础语法部分</font>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;Python Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47<br>48<br>49<br>50<br>51<br>52<br>53<br>54<br>55<br>56<br>57<br>58<br>59<br>60<br>61<br>62<br>63<br>64<br>65<br>66<br>67<br>68<br>69<br>70<br>71<br>72<br>73<br>74<br>75<br>76<br>77<br>78<br>79<br>80<br>81<br>82<br>83<br>84<br>85<br>86<br>87<br>88<br>89<br>90<br>91<br>92<br>93<br>94<br>95<br>96<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#008000;">#&nbsp;模块：什么是模块？、自定义模块、以主程序的形式执行、Python中的包、引用其它模块<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;什么是模块？&nbsp;模块就是Python程序，把能够实现某一特定功能的代码放在一个文件中作为一个模块，从而方便其它程序和脚本导入并使用<BR>
+#&nbsp;使用模块的好处：可以避免函数名和变量名冲突、更容易查找代码、提高代码的可重用性、有选择的使用<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;使用import语句导入模块<BR>
+#&nbsp;语法：import&nbsp;modulename&nbsp;[as&nbsp;alias]&nbsp;&nbsp;as&nbsp;指定别名<BR>
+#&nbsp;实例:<BR>
+#&nbsp;import&nbsp;BMI&nbsp;as&nbsp;bmi&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;导入模块&nbsp;&nbsp;&nbsp;&nbsp;在和本文件相同的文件夹下有一个BMI.py文件<BR>
+#&nbsp;bmi.fun_bmi()&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;调用模块中的函数<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;使用from...import语句导入模块<BR>
+#&nbsp;语法：form&nbsp;modelname&nbsp;import&nbsp;member(变量、函数、类，导入模块中的全部定义用*)<BR>
+#&nbsp;实例：<BR>
+#&nbsp;from&nbsp;BMI&nbsp;import&nbsp;fun_bmi&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;导入模块中的fun_bmi函数<BR>
+#&nbsp;print(dir())&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;显示导入的模块的所有定义<BR>
+#&nbsp;fun_bmi()<BR>
+#&nbsp;导入两个同名的模块或者模块中有同名函数、变量、类名时，只能用import来进行导入，还可以起别名<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;模块搜索目录：要导入的模块文件不在相同目录中时用到的<BR>
+#&nbsp;import&nbsp;sys<BR>
+#&nbsp;print(sys.path)&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;系统会在列出的目录下去查找模块，找不到就会报错<BR>
+#&nbsp;三种解决方法：临时添加、添加.pth文件(推荐)、在PYTHONPATH环境变量中添加<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;临时添加：只在执行时有效，关闭就无效了<BR>
+#&nbsp;import&nbsp;sys<BR>
+#&nbsp;sys.path.append('临时目录')&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;\需要转义、也可以只用一个/<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;添加.pth文件：在Python安装目录下Python36→Lib→site-packages文件夹中添加.pth文件<BR>
+#&nbsp;文件名无要求，文件内容如下：<BR>
+#&nbsp;#&nbsp;.pth是我创建的路径文件<BR>
+#&nbsp;E:/Python&nbsp;Program/trmp<BR>
+#&nbsp;保存文件→改名为后缀为.pth的文件就行：然后直接import可用<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;添加环境变量<BR>
+#&nbsp;开始菜单下的计算机→单击鼠标右键选择属性菜单项→高级系统设置→环境变量→新建系统变量→设定变量名：PYTHONPATH、变量值为：文件所在路径→确定<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;Python中的包<BR>
+#&nbsp;包&nbsp;==&nbsp;包含__init__.py文件的文件夹<BR>
+#&nbsp;作用：模块可以避免函数名和变量名重名引发的冲突、包可以避免模块名重名引发的冲突，它还可以将功能相近的模块组织到一个目录下(起到规范代码的作用)<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;了解Python程序中的包结构：下方有图片详解<BR>
+#&nbsp;在开发过程中，通常会创建多个包来存放不同类的文件<BR>
+#&nbsp;创建包<BR>
+#&nbsp;进入相应目录→新建文件夹→在该文件夹中创建Python文件(__init__.py和其它模块)<BR>
+#&nbsp;使用包：体现使用import语句来从包当中加载模块<BR>
+#&nbsp;三种加载模式<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;import&nbsp;+&nbsp;完整包名&nbsp;+&nbsp;模块名&nbsp;&nbsp;&nbsp;&nbsp;指定加载的模块<BR>
+#&nbsp;实例：在同Python文件目录下有一个包setting，包中文件__init__.py和size.py(包含两个变量width、height)<BR>
+#&nbsp;import&nbsp;setting.size&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;导入模块size<BR>
+#&nbsp;print(&quot;width:&quot;,setting.size.width)&nbsp;&nbsp;&nbsp;#&nbsp;输出宽度<BR>
+#&nbsp;print(&quot;height:&quot;,setting.size.height)&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;输出高度<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;from&nbsp;+&nbsp;完整包名&nbsp;+&nbsp;import&nbsp;+&nbsp;模板名&nbsp;&nbsp;&nbsp;&nbsp;使用时不再需要加包名<BR>
+#&nbsp;from&nbsp;setting&nbsp;import&nbsp;size&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;导入模块size<BR>
+#&nbsp;print(&quot;width:&quot;,size.width)&nbsp;&nbsp;&nbsp;#&nbsp;输出宽度<BR>
+#&nbsp;print(&quot;height:&quot;,size.height)&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;输出高度<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;from&nbsp;+&nbsp;完整包名&nbsp;+.模块名&nbsp;+&nbsp;import&nbsp;+&nbsp;定义名&nbsp;&nbsp;&nbsp;&nbsp;可以直接用定义名进行操作&nbsp;*导入所有模块<BR>
+#&nbsp;from&nbsp;setting&nbsp;.size&nbsp;import&nbsp;width,height&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;导入模块size<BR>
+#&nbsp;print(&quot;width:&quot;,width)&nbsp;&nbsp;&nbsp;#&nbsp;输出宽度<BR>
+#&nbsp;print(&quot;height:&quot;,height)&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;输出高度<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;以主程序的形式执行<BR>
+#&nbsp;语法：if&nbsp;__name__&nbsp;==&nbsp;'__main__':<BR>
+#&nbsp;理解：通俗的理解__name__&nbsp;==&nbsp;'__main__'：假如你叫小明.py，在朋友眼中，你是小明(__name__&nbsp;==&nbsp;'小明')；在你自己眼中，你是你自己(__name__&nbsp;==&nbsp;'__main__')。<BR>
+#&nbsp;if&nbsp;__name__&nbsp;==&nbsp;'__main__'的意思是：当.py文件被直接运行时，if&nbsp;__name__&nbsp;==&nbsp;'__main__'之下的代码块将被运行；当.py文件以模块形式被导入时，if&nbsp;__name__&nbsp;==&nbsp;'__main__'之下的代码块不被运行。<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;导入和使用标准模块(标准库)&nbsp;&nbsp;import&nbsp;语句进行导入<BR>
+#&nbsp;使用生成随机数的模块<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;random<BR>
+number&nbsp;=&nbsp;random.randint(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,</span><span style="color:#ff0000;">10</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;生成一个0-10的随机整数<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(number)<BR>
+</span><span style="color:#008000;">#&nbsp;实例：生成4位由字母和数字组成的验证码<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;random&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;导入随机数模块<BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;__name__&nbsp;==&nbsp;</span><span style="color:#800000;">'__main__'</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;checkcode&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;&quot;</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;保存验证码的变量<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;i&nbsp;</span><span style="color:#0000ff;">in</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">range</span><span style="color:#000000;">(</span><span style="color:#ff0000;">4</span><span style="color:#000000;">):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">index</span><span style="color:#000000;">&nbsp;=&nbsp;random.randrange(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,</span><span style="color:#ff0000;">4</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;生成一个0~3的一个数<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">index</span><span style="color:#000000;">&nbsp;!=&nbsp;i&nbsp;</span><span style="color:#0000ff;">and</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">index</span><span style="color:#000000;">&nbsp;+&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;!=&nbsp;i:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;checkcode&nbsp;+=&nbsp;</span><span style="color:#8000ff;">chr</span><span style="color:#000000;">(random.randint(</span><span style="color:#ff0000;">97</span><span style="color:#000000;">,</span><span style="color:#ff0000;">122</span><span style="color:#000000;">))&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;生成a-z中的一个小写字母<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">elif</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">index</span><span style="color:#000000;">&nbsp;+&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;==&nbsp;i:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;checkcode&nbsp;+=&nbsp;</span><span style="color:#8000ff;">chr</span><span style="color:#000000;">(random.randint(</span><span style="color:#ff0000;">65</span><span style="color:#000000;">,</span><span style="color:#ff0000;">90</span><span style="color:#000000;">))&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;生成A-Z中的一个大写字母<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;checkcode&nbsp;+=&nbsp;</span><span style="color:#8000ff;">str</span><span style="color:#000000;">(random.randint(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,</span><span style="color:#ff0000;">9</span><span style="color:#000000;">))&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;生成0~9中的一个数字<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;验证码:&quot;</span><span style="color:#000000;">,checkcode)<BR>
+</span><span style="color:#008000;">#&nbsp;在Python中标准模块大约有200多个，例如re(正则表达式)、math(数学模块)、sys、json、time、thinter......<BR>
+#&nbsp;可以通过Python中的帮助文档来查看各标准模块的功能及用法<BR>
+#&nbsp;帮助文档所在位置：Python安装目录→Python36→Doc→python364.chm&nbsp;双击打开，节点The&nbsp;Python&nbsp;Standard&nbsp;Li/brary即为标准库帮助文档说明<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;第三方模块(第三方库)的下载和安装<BR>
+#&nbsp;<a href="https://pypi.org">https://pypi.org</a><BR>
+#&nbsp;语法：在cmd中使用&nbsp;pip&nbsp;&lt;command&gt;(常用的参数值为install、uninstall、list)&nbsp;[modulename]<BR>
+#&nbsp;pip&nbsp;list&nbsp;可以查看电脑中目前安装了那些第三方库<BR>
+#&nbsp;推荐模块导入顺序：先导入标准模块、再导入第三方模块、最后导入自定义模块</span></div></td></tr></table></div>
+<br><font color=black size = 5>相关截图部分</font>
+<img src="https://wx1.sinaimg.cn/mw1024/007Diza3ly1g53zcfa50rj30i20a5q49.jpg" width="800" height="650" />
+<img src="https://wx1.sinaimg.cn/mw1024/007Diza3ly1g53zcfewmuj30a305gaav.jpg" width="400" height="250" />
+<br><br><br>
+<font color = gray size = 3>如有错误，欢迎指正！</font></p></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://oubc.github.io/tags/python/">Python</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmg4aog3074074gnf.gif?tags=%5B%5D">I </a>
+	<a href="">love</a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmfm2eg306o06o74u.gif?tags=%5B%5D"> you </a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx4tpcj30fn0bq3zg.jpg?tags=%5B%5D">three </a>
+	<a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx64ctg307s07swfy.gif?tags=%5B%5D">thousand</a>
+    <a href="https://www.kugou.com/song/#hash=96426C78381DE98DC31A5846FC274CBF&album_id=646623"> times.</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>家庭、梦想、内心的平静</span>
+  </div>
+</footer>
+
+
+
+<script src="https://oubc.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://oubc.github.io/js/zozo.js"></script>
+<script src="https://oubc.github.io/js/highlight.pack.js"></script>
+<link  href="https://oubc.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://oubc.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>

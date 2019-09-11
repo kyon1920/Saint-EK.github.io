@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Bruce Cheung"/>
+
+  
+  <meta name="description" content="对于Linux服务器有着严格的权限等级，如果权限过高容易导致误操作会增加风险。所以对于了解Linux系统中的各种权限及要给用户、服务等分配合理的权限是十分重要的。
+"/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, simple, dream"/>
+  
+
+  
+  <link rel="canonical" href="https://oubc.github.io/post/l6_authoritymanagement/"/>
+
+  
+
+  <title>Linux权限管理 &middot; Love, or death</title>
+
+  <link rel="shortcut icon" href="https://oubc.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/post/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://oubc.github.io/">
+          <span>Love, or death</span>
+          <img src="https://oubc.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">For you, a thousand times over.</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/oubc" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=uYGOjo6OiIuLivnIyJfa1tQ" title="mail" target="_blank"><i class="remixicon-mail-fill"></i></a>
+        
+        
+        
+        <a href="http://sighttp.qq.com/msgrd?v=1&amp;uin=877771223" title="qq" target="_blank"><i class="remixicon-qq-fill"></i></a>
+        
+        
+        
+        <a href="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g4klnqf0tmj30ia0widks.jpg" title="wechat" target="_blank"><i class="remixicon-wechat-fill"></i></a>
+        
+        
+        
+        <a href="https://weibo.com/u/6993631995?topnav=1&amp;wvr=6&amp;topsug=1" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://oubc.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/post/l6_authoritymanagement/'>Linux权限管理</a></h2>
+          <span class="date">2019.08.12</span>
+        </div>
+        <div class="post_content markdown"><p>对于Linux服务器有着严格的权限等级，如果权限过高容易导致误操作会增加风险。所以对于了解Linux系统中的各种权限及要给用户、服务等分配合理的权限是十分重要的。</p>
+
+<p><br><font color=black size = 4>索引</font>
+<br><font color=black size = 4>0.ACL权限</font>
+<br><font color=black size = 4>1.文件特殊权限</font>
+<br><font color=black size = 4>2.改变文件系统属性权限(chattr)</font>
+<br><font color=black size = 4>3.系统命令sudo权限</font>
+<br>
+<br><br><font color=black size = 5>ACL权限</font>
+<br><font color=black size = 4>1、ACL权限简介与开启</font>
+<br>(1) ACL权限简介
+<br>&nbsp;&nbsp;&nbsp;&nbsp; ACL(access control list)访问控制列表
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 单独指定用户并单独分配权限：在普通权限中，用户对文件只有三种身份，就是属主、属组和其他人；每种用户身份拥有读（read）、写（write）和执行（execute）三种权限。但是在实际工作中，常常会碰到用户身份不够用的情况，例如：我有一个目录文件，它的权限为770（rwxrwx—）,那好，现在我需要添加一个新用户对这个文件的权限为r-x,这个时候你就会发现原有的用户身份不够用了，不管把这个新用户加到哪里去都不能满足r-x的权限要求。
+<br>&nbsp;&nbsp;&nbsp;&nbsp; ACL权限管理就是用来解决以上权限身份不够的情况，也就是说ACL权限管理抛开了通过用户身份来进行文件权限管理的局限，使得权限管理更加自由。
+<br>注：ACL权限管理需要文件所在分区支持ACL权限管理，但是现在大部分的Linux系统分区都已经默认支持了ACL权限管理
+<br><img src="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g5xybcszzrj30mj0btdkg.jpg" width="800" height="650" />
+<br>(2) 查看分区ACL权限是否开启
+<br> • 使用mount命令找到系统中已经挂载的分区
+<br> • 使用dumpe2fs查询指定分区文件系统详细信息
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 命令：dumpe2fs -h /dev/sda3
+<br>dumpe2fs命令是查询指定分区详细文件系统信息的命令
+<br>选项：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -h  仅显示超级块中信息，而不显示磁盘块组的详细信息
+<br>(3) 临时开启分区ACL权限
+<br>通过命令可以临时开启分区的ACL权限，如果系统重启了，那么分区权限会恢复到初始状态。
+<br>&nbsp;&nbsp;&nbsp;&nbsp; mount -o remount，acl /
+<br>重新挂载根分区，并使挂载加入ACL权限
+<br>(4) 永久开启分区ACL权限
+<br>通过vi打开编辑 /etc/fstab 文件，加入ACL权限
+<br>&nbsp;&nbsp;&nbsp;&nbsp; vi /etc/fstab
+<br>&nbsp;&nbsp;&nbsp;&nbsp; UUID=c2ca6f57-b15c-43ea-bca0-f239083d8bd2 /ext4 defaults, acl 1 1
+<br>重新挂载文件系统或重启系统，使修改生效
+<br>&nbsp;&nbsp;&nbsp;&nbsp; mount -o remount /
+<br><font color=black size = 4>2、查看与设定ACL权限</font>
+<br>(1) 查看ACL权限
+<br>&nbsp;&nbsp;&nbsp;&nbsp; getfacle 文件名
+<br>(2) 设置ACL权限
+<br>&nbsp;&nbsp;&nbsp;&nbsp; setfacl 选项 文件名
+<br>选项：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -m 设定ACL权限
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; setfacl -m u:用户名:权限 文件名  给用户设定ACL权限
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; setfacl -m g:组名:权限 文件名  给用户组设定ACL权限
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -x  删除指定的ACL权限
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -b  删除所有的ACL权限
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -d  设定默认ACL权限，只对目录生效，指目录中新建立的文件拥有此默认权限
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -k  删除默认ACL权限
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -R  递归设定ACL权限，指设定的ACL权限会对目录下的所有子文件生效
+<br>注：给用户或用户组设定ACL权限其实并不是真正设定的权限，是与 mask 的权限“相与”之后的权限才是用户的真正权限，一般默认mask权限都是rwx，与我们所设定的权限相与就是我们设定的权限。
+<br>(3) 给用户添加ACL权限
+<br>实例：在一个班级有教师(root) 学生(zhangsan，lisi) 试听生(wangwu），project为他们共享的一个文件目录。其中root是 /project 目录的属主，权限是 rwx；tgroup 是此目录的属组，tgroup 组中拥有班级学员 zhangsan 和 lisi，权限是 rwx；其他人的权限是 0。这时，试听学员 wangwu 来了，她的权限是 r-x。我们来看具体的分配命令。
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 1.添加用户和用户组，省略设定密码的过程
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; useradd zhansan
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; useradd lisi
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; useradd wangwu
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; groupadd tgroup
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 2.建立需要分配权限的目录，改变/project目录的属主和属组，指定/project目录的权限
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mkdir /project
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; chown root:tgroup /project/
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; chmod 770 /project/
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ll -d /project/  查看权限
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; drwxrwx--- 2 root tgroup 1787 Nov  5 20:20 /project/
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 3.给用户st赋予r-x权限，使用 &quot;u:用户名:权限&quot; 格式
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 如果试听生wangwu要访问/project目录，则需要给他设置一个ACL权限
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; setfacl -m u:wangwu:rx /project/
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cd /
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ll -d project/
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; drwxrwx---+ 3 root tgroup 1787 Nov  5 20:20 project/
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 使用ls-l査询时会发现，在权限位后面多了一个&quot;+&quot;，表示此目录拥有ACL权限
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 这样试听生也拥有了/project目录的读写权限
+<br>(4) 给用户组赋予ACL权限
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 添加测试组
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; groupadd tgroup2
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 给组tgroup2纷配ACL权限，使用&quot;g:组名:权限&quot;格式
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; setfacl -m g:tgroup2:rwx project/
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ll -d project/
+<br>&nbsp;&nbsp;&nbsp;&nbsp; drwxrwx---+ 2 root tgroup1787 Nov  5 20:20 project/
+<br><font color=black size = 4>3、最大有效权限与删除ACL权限</font>
+<br>(1) 最大有效权限mask
+<br>mask是用来指定最大有效权限的，如果我给用户赋予了ACL权限，是需要和mask的权限“相与”才能得到用户的真正权限。
+<br>mask 的默认权限是 rwx，如给wangwu 用户赋予了 r-x 的 ACL 权限，则需要和 mask 的 rwx 权限&quot;相与&quot;才能得到 wangwu 的真正权限，也就是 r-x &quot;相与&quot;rwx 出的值是 r-x，所以 wangwu 用户拥有 r-x 权限。
+<br>如果把 mask 的权限改为 r--，和 wangwu 用户的权限相与，也就是 r--&quot;相与&quot;r-x 得出的值是 r--，wangwu 用户的权限就会变为只读。大家可以这么理解：用户和用户组所设定的权限必须在 mask 权限设定的范围之内才能生效，mask权限就是最大有效权限。
+<br>我们一般不更改 mask 权限，只要给予 mask 最大权限 rwx，那么任何权限和 mask 权限相与，得出的值都是权限本身。也就是说，我们通过给用户和用户组直接赋予权限，就可以生效，这样做更直观。
+<br><img src="https://wx1.sinaimg.cn/mw1024/007Diza3ly1g5xybcmxqpj30lg0dddgn.jpg" width="800" height="650" />
+<br>(2) 修改最大有效权限
+<br>设定mask权限为r-x，使用“m:权限”格式
+<br>&nbsp;&nbsp;&nbsp;&nbsp; setfacl -m m:rx 文件名
+<br>(3) 删除ACL权限
+<br>&nbsp;&nbsp;&nbsp;&nbsp; setfacl -x u:用户名 文件名  删除指定用户的ACL权限
+<br>&nbsp;&nbsp;&nbsp;&nbsp; setfacl -x g:组名 文件名  删除指定用户组的ACL权限
+<br>&nbsp;&nbsp;&nbsp;&nbsp; setfacl -b 文件名  删除文件所有的ACL权限
+<br><font color=black size = 4>4、递归ACL权限和默认ACL权限</font>
+<br>(1) 递归ACL权限
+<br>递归是父目录在设定ACL权限时，所有的子文件和子目录也会拥有相同的ACL权限。
+<br>&nbsp;&nbsp;&nbsp;&nbsp; setfacl -m u:用户名:权限 -R 文件名
+<br>(2) 默认ACL权限
+<br>默认ACL权限的作用是如果给父目录设定了默认ACL权限，那么父目录所有新建的子文件都会继承父目录的ACL权限。
+<br>&nbsp;&nbsp;&nbsp;&nbsp; setfacl -m d:u:用户名:权限 文件名
+<br><br><font color=black size = 5>文件特殊权限</font>
+<br><font color=black size = 4>1、SetUID</font>
+<br>(1) setuid(suid): 针对命令和二进制程序的，当普通用户执行某个(passwd)命令的时候，可以拥有这个命令对应用户的权限,即让普通用户可以以root用户的角色执行程序或命令。
+<br>(2) SetUID的特点：
+<br> • 只有可以执行的二进制程序(.exe...)才能设定SUID权限
+<br> • 命令执行者要对该程序拥有x(执行)权限
+<br> • 命令执行者在执行该程序时获得程序文件属主的身份
+<br> • 赋予SUID权限，该用户就临时拥有了root身份，标志为把该文件的x权限更改为s
+<br> • SetUID权限只在该程序执行过程中有效，也就是说身份改变只在程序执行过程中有效
+<br>passwd命令拥有SetUID权限，所有普通用户可以修改自己的密码
+<br>&nbsp;&nbsp;&nbsp;&nbsp; ll /usr/bin/passwd
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -rwsr-xr-x. 1 root root 25980 2月 22 2012 /usr/bin/passwd
+<br>cat命令没有SetUID权限，所有普通用户不能查看/etc/shadow文件内容
+<br>&nbsp;&nbsp;&nbsp;&nbsp; ll /bin/cat
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -rwxr-xr-x. 1 root root 47976 6月 22 2012 /bin/cat
+<br>(3) 设定SetUID的方法(4代表SUID)
+<br>&nbsp;&nbsp;&nbsp;&nbsp; chmod 4755 文件名
+<br>&nbsp;&nbsp;&nbsp;&nbsp; chmod u+s 文件名
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 利用ll命令对文件权限进行查看，文件权限存在s则表明设定成功，S表明设定失败
+<br>(4) 取消SetUID的方法
+<br>&nbsp;&nbsp;&nbsp;&nbsp; chmod 755 文件名
+<br>&nbsp;&nbsp;&nbsp;&nbsp; chmod u-s 文件名
+<br>(5) 危险的SetUID
+<br>SUID 权限极其危险，若使用不当，可能会给系统带来灭顶之灾。举个例子，若你给 vim 命令设定了 SUID 权限，那么普通用户在使用 vim 的时候就会变成 root 用户的身份，那他可以用 vim 修改任何系统配置文件，比如，修改 /etc/passwd 文件，把自己也变成超级用户，这是一件很可怕的事情。
+<br> • 关键目录应严格控制写权限，比如 &quot;/&quot;、&quot;/usr&quot;等
+<br> • 用户的密码设置要严格遵守密码三原则
+<br> • 对系统中默认应该具有SetUID权限的文件作一个列表，定时检查有没有这之外的文件被设置了SUID权限
+<br><font color=black size = 4>2、SetGID</font>
+<br>(1) setgid(sgid): 希望一个目录被多个用户(同属于一个组)共享，同一个组的用户可以处理
+<br>(2) SetGID针对文件的特点：
+<br> • 只有可执行的二进制程序才能设置SGID权限
+<br> • 命令执行者要对程序拥有x(执行)权限
+<br> • 命令在执行程序的时候，组身份升级为该程序文件的属组
+<br> • SetGID权限同样只在程序执行过程中有效，也就是说组身份改变只在程序执行过程中有效
+<br>&nbsp;&nbsp;&nbsp;&nbsp; ll /usr/bin/locate
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -rwx--s--x. 1 root slocate 35612 8月 24 2010 /usr/bin/locate
+<br>&nbsp;&nbsp;&nbsp;&nbsp; locate命令 是会在mlocate.db这个数据库中查找相关内容，而find命令会对整个磁盘进行扫描
+<br>&nbsp;&nbsp;&nbsp;&nbsp; ll var/lib/mlocate/mlocate.db
+<br>&nbsp;&nbsp;&nbsp;&nbsp; --rw-r-----. root slocate 1838850 1月 20 04:29 /var/lib/mlocate/mlocate.db
+<br> • /usr/bin/locate是可执行二进制程序，可以赋予SGID
+<br> • 执行用户zhang对/usr/bin/locate命令拥有执行权限
+<br> • 执行/usr/bin/locate命令时，组身份会升级为slocate组，而slocate组对/var/lib/mlocate/mlocate.db数据库拥有r权限，所以普通用户可以使用locate查询mlocate.db数据库
+<br> • 命令结束后，zhang用户的组身份返回为zhang组
+<br>(3) SetGID针对目录的特点：
+<br> • 普通用户必须对此目录拥有r和x权限，才能进入此目录
+<br> • 普通用户在此目录中的有效组会变成此目录的属组
+<br> • 若普通用户对此目录拥有w权限时，新建的文件的默认属组是这个目录的属组
+<br>补充：r:代表能使用ls命令、x:代表能使用cd命令(能进入这个目录)、w:可删除
+<br>(4) 设定SetGID (2代表SGID)
+<br>&nbsp;&nbsp;&nbsp;&nbsp; chmod 2755 文件名
+<br>&nbsp;&nbsp;&nbsp;&nbsp; chmod g+s 文件名
+<br>(5) 取消SetGID
+<br>&nbsp;&nbsp;&nbsp;&nbsp; chmod 755 文件名
+<br>&nbsp;&nbsp;&nbsp;&nbsp; chmod g-s 文件名
+<br>注：同SetUID，SetGID也是一个及其危险的权限。
+<br><font color=black size = 4>3、Sticky BIT (粘滞位)</font>
+<br>粘滞位 权限(t)：把一个文件夹的权限都打开，然后共享文件，像/tmp一样
+<br>(1) SBIT粘着位的特点：
+<br> • 粘着位目前只对目录有效
+<br> • 普通用户对该目录拥有w和x权限，即普通用户可以在此目录拥有写入权限
+<br> • 如果没有粘着位，因为普通用户拥有w权限，所以可以删除此目录下所有文件，包括其他用户建立的文件，一旦赋予了粘着位，除了root用户可以删除所有文件，普通用户就算拥有w权限，也只能删除自己建立的文件，但是不能删除其他用户建立的文件
+<br>&nbsp;&nbsp;&nbsp;&nbsp; ll -d /tmp
+<br>&nbsp;&nbsp;&nbsp;&nbsp; drwxrwxrwt. 3 root root 4096 12 月 13 11:22 /tmp/
+<br>(2) 设置粘着位
+<br>&nbsp;&nbsp;&nbsp;&nbsp; chmod 1755 目录名
+<br>&nbsp;&nbsp;&nbsp;&nbsp; chmod o+t 目录名
+<br>(3) 取消粘着位
+<br>&nbsp;&nbsp;&nbsp;&nbsp; chmod 777 目录名
+<br>&nbsp;&nbsp;&nbsp;&nbsp; chmod o-t 目录名
+<br><br><font color=black size = 5>改变文件系统属性权限(chattr)</font>
+<br><font color=black size = 4>1、chattr命令格式</font>
+<br>&nbsp;&nbsp;&nbsp;&nbsp; chattr [+-=] [选项] 文件名或目录名
+<br>&nbsp;&nbsp;&nbsp;&nbsp; + : 增加权限
+<br>&nbsp;&nbsp;&nbsp;&nbsp; - : 删除权限
+<br>&nbsp;&nbsp;&nbsp;&nbsp; = : 等于某权限
+<br>选项(对root用户也生效)：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -i  如果对文件属性设置了i属性，那么不允许对文件进行删除、改名，也不能添加和修改数据；如果对目录设置i属性，那么只能修改目录下文件的数据，但不允许建立和删除文件。
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -a  如果对文件设置a属性，那么只能在文件中增加数据，但是不能删除不能修改数据；如果对目录设置a属性，那么只允许在目录中建立和修改文件，但是不允许删除。
+<br>&nbsp;&nbsp;&nbsp;&nbsp; echo testdate(数据) &gt;&gt; abc    向abc文件中追加testdate内容
+<br><font color=black size = 4>2、查看文件系统属性lsattr</font>
+<br>&nbsp;&nbsp;&nbsp;&nbsp; lsattr 选项 文件名
+<br>选项：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -a  显示所有文件和目录
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -d  若目标是目录，仅列出目录本身的属性，而不是子文件的
+<br><br><font color=black size = 5>系统命令sudo权限</font>
+<br><font color=black size = 4>1、sudo权限</font>
+<br>root把本来只能由超级用户执行的命令赋予普通用户执行
+<br>sudo的操作对象是系统命令
+<br><font color=black size = 4>2、sudo使用</font>
+<br>&nbsp;&nbsp;&nbsp;&nbsp; visudo  实际修改的是/etc/sudoers文件
+<br><img src="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g5xybcpl3lj30mj07f768.jpg" width="800" height="300" />
+<br><font color=black size = 4>3、授权st用户可以重启服务器</font>
+<br>&nbsp;&nbsp;&nbsp;&nbsp; visudo
+<br>&nbsp;&nbsp;&nbsp;&nbsp; st  ALL= /sbin/shutdown -r now
+<br><font color=black size = 4>4、普通用户执行sudo赋予的命令</font>
+<br>&nbsp;&nbsp;&nbsp;&nbsp; su - sc
+<br>&nbsp;&nbsp;&nbsp;&nbsp; sudo -l  查看可用的sudo命令
+<br>普通用户执行sudo赋予的命令(使用sudo的时候会暂时切换为root用户)
+<br>&nbsp;&nbsp;&nbsp;&nbsp; sudo /sbin/shutdown -r now
+<br>注：sudo权限也是非常危险的一项权限
+<br><br><br>
+<font color = gray size = 3>如有错误，欢迎指正！</font></p></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://oubc.github.io/tags/linux/">Linux</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmg4aog3074074gnf.gif?tags=%5B%5D">I </a>
+	<a href="">love</a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmfm2eg306o06o74u.gif?tags=%5B%5D"> you </a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx4tpcj30fn0bq3zg.jpg?tags=%5B%5D">three </a>
+	<a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx64ctg307s07swfy.gif?tags=%5B%5D">thousand</a>
+    <a href="https://www.kugou.com/song/#hash=96426C78381DE98DC31A5846FC274CBF&album_id=646623"> times.</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>家庭、梦想、内心的平静</span>
+  </div>
+</footer>
+
+
+
+<script src="https://oubc.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://oubc.github.io/js/zozo.js"></script>
+<script src="https://oubc.github.io/js/highlight.pack.js"></script>
+<link  href="https://oubc.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://oubc.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>

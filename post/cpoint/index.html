@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Bruce Cheung"/>
+
+  
+  <meta name="description" content="带你探索指针的秘密 领略指针的强大
+"/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, simple, dream"/>
+  
+
+  
+  <link rel="canonical" href="https://oubc.github.io/post/cpoint/"/>
+
+  
+
+  <title>指针：C语言的灵魂 &middot; Love, or death</title>
+
+  <link rel="shortcut icon" href="https://oubc.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/post/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://oubc.github.io/">
+          <span>Love, or death</span>
+          <img src="https://oubc.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">For you, a thousand times over.</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/oubc" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=uYGOjo6OiIuLivnIyJfa1tQ" title="mail" target="_blank"><i class="remixicon-mail-fill"></i></a>
+        
+        
+        
+        <a href="http://sighttp.qq.com/msgrd?v=1&amp;uin=877771223" title="qq" target="_blank"><i class="remixicon-qq-fill"></i></a>
+        
+        
+        
+        <a href="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g4klnqf0tmj30ia0widks.jpg" title="wechat" target="_blank"><i class="remixicon-wechat-fill"></i></a>
+        
+        
+        
+        <a href="https://weibo.com/u/6993631995?topnav=1&amp;wvr=6&amp;topsug=1" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://oubc.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/post/cpoint/'>指针：C语言的灵魂</a></h2>
+          <span class="date">2018.11.25</span>
+        </div>
+        <div class="post_content markdown"><p>带你探索指针的秘密 领略指针的强大</p>
+
+<p><font color=black size=5>预备知识：</font>
+<br>1、内存四区：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;a)代码区：存放代码的内存分区；
+<br>&nbsp;&nbsp;&nbsp;&nbsp;b)全局区：存放全局常量、变量的内存分区；
+<br>&nbsp;&nbsp;&nbsp;&nbsp;c)栈区：系统自动开辟、自动释放。所占内存并不是很大；
+<br>&nbsp;&nbsp;&nbsp;&nbsp;d)堆区：动态内存分区，手动开辟、释放。内存较大。
+<br><br>2、地址：把内存以单个字节为单位分开进行依次编号，这个编号就是地址值，它在C语言中也可以是一种变量，称做地址变量；例如：0x0000、0x0001、...0xFFFF
+<img src="https://github.com/oubc/oubc.github.io/blob/master/images/cpoint0.jpg?raw=true" width="1000" height="250" />
+<br>&nbsp;&nbsp;&nbsp;&nbsp;a)编号是<font color=blue size=4>连续的</font>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;b)编号是<font color=blue size=4>唯一的</font>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;c)取地址：用 &amp; 运算符（&amp;为单目运算符，优先级只比[]()底，从右向左结合）
+<br><br>3、首地址(很重要，理解指针精髓必须要理解的就是首地址)：一段内存空间中第一个<font color=blue size=4>存储单位</font>的地址。
+<img src="https://github.com/oubc/oubc.github.io/blob/master/images/cpoint1.jpg?raw=true" width="1000" height="1200" />
+<br>总结：原子变量的首地址为存储空间的第一个字节，一维数组的首地址为第一个原子变量，二维数组的首地址为第一个一维数组，三维数组的首地址为第一个二位数组，依次类推。
+<br><br><font color=black size=5>一级指针：</font>
+<br>1、指针变量：专门用来存放地址的变量(大小都是4个字节)，所以不难理解，地址也是一种数据，地址只是指针变量的数据，就好像数据1、a、1.5是int、char、float的数据一样。
+<br><br>2、指针的相关知识：定义、赋值......
+<br>&nbsp;&nbsp;&nbsp;&nbsp;a)指针变量的定义：&nbsp;&nbsp;&nbsp;&nbsp;&lt;类型名&gt;*&nbsp;&nbsp;变量名&nbsp;&nbsp;&nbsp;&nbsp;例：int*&nbsp;p;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;b)指针变量的赋值：p = &amp;a(地址值)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;c)指针变量的引用：int a;    int* p = &a;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;访问a：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(1)使用变量名；
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(2) 指针访问：(*解引用)* 取地址运算符，将返回某一地址中存储的值。
+<br>&nbsp;&nbsp;&nbsp;&nbsp;d)注意：在定义指针变量时，当只表明一个指针变量，而没有去绑地址时，就得注意了，如果此时去取p时无法确定指向的内存值，就会存在<font color=red size=4>危险、危险、危险</font>。
+<br><br>3、野指针：不能明确指定类型的指针，p里存放的地址不明确，任何时候，不允许存放数据，不允许改动。
+<br><br>4、空指针：void* p;不确定类型指针，在后面可以转换为其它数据类型的指针。
+<br><br>5、指针变量的运算(偏移)：通过 +、-、++、-- 去访问地址旁边的一些内存地址值。
+<br>例如：
+<img src="https://github.com/oubc/oubc.github.io/blob/master/images/cpoint2.jpg?raw=true" width="1000" height="275" />
+<br>...
+<br>当为整型指针变量却指向104时：那么p++指向105，p--指向103.p+3指向108，p-3指向103。p++和p--会改变p本身，而p+3和p-3并不会改变p。
+<br>回顾：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;首地址：一段内存空间中<font color=blue size=4>第一个存储单位</font>的地址；
+<br>&nbsp;&nbsp;&nbsp;&nbsp;指针变量的加减：以指针所<font color=blue size=4>指向的类型为单位</font>进行偏移。
+<br><br>6、一维数组与指针：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;a)定义一个一位数组，数组名为首地址。例：int a[5]; a为数组的首地址。
+<br>&nbsp;&nbsp;&nbsp;&nbsp;b)访问数组元素：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(1)下标法：略；
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(2)指针法：定义一个指针变量指向数组首地址，即可利用指针偏移来访问数组的每一个值。
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*p = a[0]、*(p+1) = a[1]、*(p++) = a[1](不能用*p++，*、++都是单目运算符，优先级相同，从右向左结合)、
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*(p+2) = a[2]。
+<br><br>7、二维数组与指针：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;a)定义......数组名为二位数组的首地址，二位数组的首地址为一维数组。
+<br>&nbsp;&nbsp;&nbsp;&nbsp;b)访问：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(1)下标法：略
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(2)指针法：*(*(p+m)+n) = a[m][n]、p = a[0]、p+1 = a[1]、......
+<br>总结：aint*&nbsp;&nbsp;&nbsp;&nbsp;[][]
+<br>&nbsp;&nbsp;&nbsp;&nbsp;a[]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int* []
+<br>&nbsp;&nbsp;&nbsp;&nbsp;a[][]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int*
+<br>&nbsp;&nbsp;&nbsp;&nbsp;a[][][]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;&nbsp;&nbsp;&nbsp;多维数组依次类推......
+<br><br>8、函数指针：指针作为函数返回值时，函数返回一个指针类型(地址；函数作为函数参数时，传递的是地址值，而不是变量值。
+<br><br>9、结构体指针的作用：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;a)表示普通的结构体变量&lt;外置的&gt;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;b)构建关系及寻找使用&lt;内置的&gt;
+<br><br><font color=black size=5>二级指针及多级指针：</font>
+<br>1、二级指针：二级指针也就是指针的指针，用来保存一级指针的变量而已。
+<br><br>2、多级指针：三级指针保存二级指针的地址，四级指针保存三级指针的地址，依次类推，当我们遇到多级指针时，应将它一层一层分解来理解它。
+<br><br>3、多级指针与一级指针的区别：多级指针用来保存它上一级<font color=blue size=4>指针的地址</font>，而一级指针用来保存<font color=blue size=4>非指针变量的地址</font>。
+<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color=gray size=3>如有错误，欢迎指正</font><br><br></p></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://oubc.github.io/tags/c/c&#43;&#43;/">C/C&#43;&#43;</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmg4aog3074074gnf.gif?tags=%5B%5D">I </a>
+	<a href="">love</a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmfm2eg306o06o74u.gif?tags=%5B%5D"> you </a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx4tpcj30fn0bq3zg.jpg?tags=%5B%5D">three </a>
+	<a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx64ctg307s07swfy.gif?tags=%5B%5D">thousand</a>
+    <a href="https://www.kugou.com/song/#hash=96426C78381DE98DC31A5846FC274CBF&album_id=646623"> times.</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>家庭、梦想、内心的平静</span>
+  </div>
+</footer>
+
+
+
+<script src="https://oubc.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://oubc.github.io/js/zozo.js"></script>
+<script src="https://oubc.github.io/js/highlight.pack.js"></script>
+<link  href="https://oubc.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://oubc.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>

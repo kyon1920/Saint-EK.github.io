@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Bruce Cheung"/>
+
+  
+  <meta name="description" content="你知道曾经一起开黑却不需要联外网的CS是怎么实现的吗？一起走进网络的大门吧
+"/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, simple, dream"/>
+  
+
+  
+  <link rel="canonical" href="https://oubc.github.io/post/p14_basicnetcode/"/>
+
+  
+
+  <title>网络编程基础 &middot; Love, or death</title>
+
+  <link rel="shortcut icon" href="https://oubc.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/post/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://oubc.github.io/">
+          <span>Love, or death</span>
+          <img src="https://oubc.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">For you, a thousand times over.</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/oubc" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=uYGOjo6OiIuLivnIyJfa1tQ" title="mail" target="_blank"><i class="remixicon-mail-fill"></i></a>
+        
+        
+        
+        <a href="http://sighttp.qq.com/msgrd?v=1&amp;uin=877771223" title="qq" target="_blank"><i class="remixicon-qq-fill"></i></a>
+        
+        
+        
+        <a href="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g4klnqf0tmj30ia0widks.jpg" title="wechat" target="_blank"><i class="remixicon-wechat-fill"></i></a>
+        
+        
+        
+        <a href="https://weibo.com/u/6993631995?topnav=1&amp;wvr=6&amp;topsug=1" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://oubc.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/post/p14_basicnetcode/'>网络编程基础</a></h2>
+          <span class="date">2019.07.26</span>
+        </div>
+        <div class="post_content markdown"><p>你知道曾经一起开黑却不需要联外网的CS是怎么实现的吗？一起走进网络的大门吧</p>
+
+<p><br><font color=black size = 4>基础语法部分</font>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;Python Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47<br>48<br>49<br>50<br>51<br>52<br>53<br>54<br>55<br>56<br>57<br>58<br>59<br>60<br>61<br>62<br>63<br>64<br>65<br>66<br>67<br>68<br>69<br>70<br>71<br>72<br>73<br>74<br>75<br>76<br>77<br>78<br>79<br>80<br>81<br>82<br>83<br>84<br>85<br>86<br>87<br>88<br>89<br>90<br>91<br>92<br>93<br>94<br>95<br>96<br>97<br>98<br>99<br>100<br>101<br>102<br>103<br>104<br>105<br>106<br>107<br>108<br>109<br>110<br>111<br>112<br>113<br>114<br>115<br>116<br>117<br>118<br>119<br>120<br>121<br>122<br>123<br>124<br>125<br>126<br>127<br>128<br>129<br>130<br>131<br>132<br>133<br>134<br>135<br>136<br>137<br>138<br>139<br>140<br>141<br>142<br>143<br>144<br>145<br>146<br>147<br>148<br>149<br>150<br>151<br>152<br>153<br>154<br>155<br>156<br>157<br>158<br>159<br>160<br>161<br>162<br>163<br>164<br>165<br>166<br>167<br>168<br>169<br>170<br>171<br>172<br>173<br>174<br>175<br>176<br>177<br>178<br>179<br>180<br>181<br>182<br>183<br>184<br>185<br>186<br>187<br>188<br>189<br>190<br>191<br>192<br>193<br>194<br>195<br>196<br>197<br>198<br>199<br>200<br>201<br>202<br>203<br>204<br>205<br>206<br>207<br>208<br>209<br>210<br>211<br>212<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#008000;">#&nbsp;网络编程<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;什么是网络？<BR>
+#&nbsp;各个孤立的工作站或主机相连在一起，从而达到资源共享和通信的目的<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;局域网：在某一个区域内，由多台计算机互联而成的计算机组<BR>
+#&nbsp;使用局域网可以实现文件共享、软件共享、打印机共享以及发送电子邮件和传值等<BR>
+#&nbsp;优点：规模小、容易搭建、传输数据快<BR>
+#&nbsp;缺点：规模太小<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;广域网：能够连接世界的局域网，例如&nbsp;因特网、万维网www<BR>
+#&nbsp;国家与国家之间的网络通信需要搭建海底电缆<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;局域网和广域网就是我们现在使用的网络<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;网络协议：一种联网的同一标准(互联网协议簇&nbsp;Internet&nbsp;Protocol&nbsp;Suite)<BR>
+#&nbsp;有TCP协议、IP协议、UDP协议、FTP协议、HTTP协议、DNS协议......<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;TCP/IP<BR>
+#&nbsp;TCP/IP协议扮演着非常重要的角色，通常我们用TCP/IP协议代表互联网协议簇<BR>
+#&nbsp;TCP/IP&nbsp;!=&nbsp;(TCP&nbsp;and&nbsp;IP)&nbsp;&nbsp;&nbsp;&nbsp;而是一组协议的简称<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;TCP/IP四层结构<BR>
+#&nbsp;应用层<BR>
+#&nbsp;传输层：主要包括TCP、UDP协议<BR>
+#&nbsp;网络层：主要包括IP协议<BR>
+#&nbsp;链路层<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;IP协议<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;IP地址：互联网协议地址，设备的标识<BR>
+#&nbsp;IP地址的形式：实际上是32位的整数，按8位进行分组分为4组<BR>
+#&nbsp;例如：IP&nbsp;Adress:&nbsp;127.16.254.1<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;我们要访问一个网站，首先得知道它的IP地址<BR>
+#&nbsp;例如：我们来获取百度的IP地址<BR>
+#&nbsp;在命令行cmd输入：ping&nbsp;www.baidu.com<BR>
+#&nbsp;出现的类似以上地址形式的一串数字就是百度的IP地址<BR>
+#&nbsp;可以通过IP地址来访问百度，在网页最上方地址栏输入即可<BR>
+#&nbsp;在我们访问网页的时候并没有用它的IP地址，而是用的域名<BR>
+#&nbsp;IP地址和域名是通过DNS服务器实现的映射<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;MAC地址，也就是网卡地址<BR>
+#&nbsp;每个计算机在出厂之前都会分配一个网卡地址<BR>
+#&nbsp;由48个二进制位组成，通常12个16进制位来表示<BR>
+#&nbsp;例如：MAC&nbsp;Address:00-B0-D0-86-BB-F7<BR>
+#&nbsp;查看计算机的MAC地址方式<BR>
+#&nbsp;在cmd窗口中输入：ipconfig/all&nbsp;找到物理地址即为MAC地址<BR>
+#&nbsp;IP地址可更改，MAC地址不可更改<BR>
+#&nbsp;IP地址和MAC地址之间也存在一种映射关系<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;IP的作用<BR>
+#&nbsp;IP协议处在网络层，它负责把数据从一台计算机通过网络发送给另一台计算机<BR>
+#&nbsp;从发送端到路由器，再由路由器到另一个路由器，几经周折，最后到接收端<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;TCP协议<BR>
+#&nbsp;TCP协议处于四层结构中的传输层，处于IP协议之上<BR>
+#&nbsp;主要负责在两台计算机之间建立可靠连接，保证数据包按顺序到达<BR>
+#&nbsp;为了建立可靠连接，TCP会通过三次握手的方式实现<BR>
+#&nbsp;三次握手目的：检测双方是否具备发送和接收功能<BR>
+#&nbsp;通过了三次握手就可以进行发送数据了<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;端口号：每一个端口号对应着相应的服务<BR>
+#&nbsp;例如:80端口-HTTP服务、21端口-FTP、8080端口-Tomcat、3306端口-MySQL<BR>
+#&nbsp;其实我们计算机内大多数与网络相关的应用都有对应的端口号<BR>
+#&nbsp;一个应用可以占用多个端口号<BR>
+#&nbsp;系统会使用0-1024端口号，所有我们使用的时候只能用1024以上的端口号<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;UDP简介<BR>
+#&nbsp;UDP协议和TCP协议同处于传输层，作用也为传输数据<BR>
+#&nbsp;UDP协议是面向无连接的协议<BR>
+#&nbsp;使用UDP协议时，不需要建立链接，<BR>
+#&nbsp;只需要知道对方的IP地址和端口号就可以直接发送数据包<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;TCP和UDP的区别<BR>
+#&nbsp;TCP协议在发送数据之前需要进行三次握手，而UDP没有，可直接发送<BR>
+#&nbsp;TCP协议可以反馈数据是否到达&nbsp;&nbsp;&nbsp;可靠<BR>
+#&nbsp;而UDP协议无任何反馈&nbsp;&nbsp;&nbsp;不可靠<BR>
+#&nbsp;TCP协议需要建立连接请求，连接成功后发数据&nbsp;&nbsp;效率低<BR>
+#&nbsp;而UDP协议不需要创建请求，直接发数据&nbsp;&nbsp;&nbsp;效率高<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;由于UDP的特性，它经常应用于聊天室、视频直播等应用程序中<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;TCP编程<BR>
+#&nbsp;由于TCP具有安全可靠的特性，所有TCP应用更为广泛<BR>
+#&nbsp;在创建TCP连接时，主动发起请求的叫做客户端，被动响应的是服务器<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;创建TCP服务器<BR>
+#&nbsp;步骤：<BR>
+#&nbsp;创建Socket()→绑定IP和端口号Bind()→监听数据Listen()→<BR>
+#&nbsp;接收数据Accept()→当有客户端发送请求的时候Receive()、Send()<BR>
+#&nbsp;→关闭Close()<BR>
+#&nbsp;实例：使用服务器向浏览器发送&quot;Hello&nbsp;world&quot;<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;socket<BR>
+<BR>
+host&nbsp;=&nbsp;</span><span style="color:#800000;">'127.0.0.1'</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;IP号<BR>
+</span><span style="color:#000000;">port&nbsp;=&nbsp;</span><span style="color:#ff0000;">8080</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;端口号<BR>
+</span><span style="color:#000000;"><BR>
+web&nbsp;=&nbsp;socket.socket()&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;创建socket()<BR>
+</span><span style="color:#000000;">web.bind((host,port))&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;绑定IP和端口号<BR>
+</span><span style="color:#000000;">web.listen(</span><span style="color:#ff0000;">5</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;监听<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'服务器等待客户端连接'</span><span style="color:#000000;">)<BR>
+</span><span style="color:#0000ff;">while</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">True</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;conn,addr&nbsp;=&nbsp;web.accept()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;conn是一个新的socket对象，addr是连接客户端的IP地址<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;=&nbsp;conn.recv(</span><span style="color:#ff0000;">1024</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;获取客户端请求的数据<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(data)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;conn.send(b</span><span style="color:#800000;">'HTTP/1.1&nbsp;200&nbsp;OK\r\n\r\nHello&nbsp;World'</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;conn.</span><span style="color:#0000ff;">close</span><span style="color:#000000;">()<BR>
+</span><span style="color:#008000;">#&nbsp;运行结果：服务器等待客户端连接<BR>
+#&nbsp;因为没有客户端，就当网页为客户端了<BR>
+#&nbsp;在网页地址栏输入：127.0.0.1:8080就会在网页上显示Hello&nbsp;world<BR>
+#&nbsp;这样程序运行完美结束，成功<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;创建TCP客户端<BR>
+#&nbsp;步骤：创建Socket()→调用Connect()方法连接服务器→<BR>
+#&nbsp;使用Send()发送信息、Receive()接收服务→Close()关闭Socket<BR>
+#&nbsp;实例：创建一个客户端接收上面的服务器<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;socket<BR>
+<BR>
+host&nbsp;=&nbsp;</span><span style="color:#800000;">'127.0.0.1'</span><span style="color:#000000;"><BR>
+port&nbsp;=&nbsp;</span><span style="color:#ff0000;">8080</span><span style="color:#000000;"><BR>
+<BR>
+client&nbsp;=&nbsp;socket.socket()<BR>
+client.connect((host,port))&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;连接到服务器<BR>
+</span><span style="color:#000000;">send_data&nbsp;=&nbsp;</span><span style="color:#8000ff;">input</span><span style="color:#000000;">(</span><span style="color:#800000;">'请输入要发送的数据：'</span><span style="color:#000000;">)<BR>
+client.send(send_data.</span><span style="color:#0000ff;">encode</span><span style="color:#000000;">())&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;发送前需要进行编码<BR>
+</span><span style="color:#000000;">recv_data&nbsp;=&nbsp;client.recv(</span><span style="color:#ff0000;">1024</span><span style="color:#000000;">).</span><span style="color:#0000ff;">decode</span><span style="color:#000000;">()&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;接收的解码<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'接收到的数据是%s'</span><span style="color:#000000;">&nbsp;%&nbsp;recv_data)<BR>
+client.</span><span style="color:#0000ff;">close</span><span style="color:#000000;">()<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;执行TCP服务器和客户端<BR>
+#&nbsp;实例：制作简易的聊天窗口<BR>
+#&nbsp;服务器端<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;socket<BR>
+<BR>
+host&nbsp;=&nbsp;socket.gethostname()<BR>
+port&nbsp;=&nbsp;</span><span style="color:#ff0000;">12345</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;参数socke.AF_INET表示IPV4&nbsp;socket_SOCK_STREAM表示TCP服务<BR>
+</span><span style="color:#000000;">s&nbsp;=&nbsp;socket.socket(socket.AF_INET,socket.SOCK_STREAM)<BR>
+s.bind((host,port))<BR>
+s.listen(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)<BR>
+sock,addr&nbsp;=&nbsp;s.accept()<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'连接已经建立'</span><span style="color:#000000;">)<BR>
+info&nbsp;=&nbsp;sock.recv(</span><span style="color:#ff0000;">1024</span><span style="color:#000000;">).</span><span style="color:#0000ff;">decode</span><span style="color:#000000;">()<BR>
+</span><span style="color:#0000ff;">while</span><span style="color:#000000;">&nbsp;info&nbsp;!=&nbsp;</span><span style="color:#800000;">'byebye'</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;info:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'接收到的内容：%s'</span><span style="color:#000000;">&nbsp;%&nbsp;info)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;send_data&nbsp;=&nbsp;</span><span style="color:#8000ff;">input</span><span style="color:#000000;">(</span><span style="color:#800000;">'输入发送的内容：'</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;sock.send(send_data.</span><span style="color:#0000ff;">encode</span><span style="color:#000000;">())<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;send_data&nbsp;==&nbsp;</span><span style="color:#800000;">'byebye'</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;info&nbsp;=&nbsp;sock.recv(</span><span style="color:#ff0000;">1024</span><span style="color:#000000;">).</span><span style="color:#0000ff;">decode</span><span style="color:#000000;">()<BR>
+sock.</span><span style="color:#0000ff;">close</span><span style="color:#000000;">()<BR>
+s.</span><span style="color:#0000ff;">close</span><span style="color:#000000;">()<BR>
+</span><span style="color:#008000;">#&nbsp;客户端<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;socket<BR>
+<BR>
+host&nbsp;=&nbsp;socket.gethostname()<BR>
+port&nbsp;=&nbsp;</span><span style="color:#ff0000;">12345</span><span style="color:#000000;"><BR>
+<BR>
+s&nbsp;=&nbsp;socket.socket(socket.AF_INET,socket.SOCK_STREAM)<BR>
+s.connect((host,port))<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'已经连接'</span><span style="color:#000000;">)<BR>
+info&nbsp;=&nbsp;</span><span style="color:#800000;">''</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">while</span><span style="color:#000000;">&nbsp;info&nbsp;!=&nbsp;</span><span style="color:#800000;">'byebye'</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;send_data&nbsp;=&nbsp;</span><span style="color:#8000ff;">input</span><span style="color:#000000;">(</span><span style="color:#800000;">'输入发送内容：'</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;s.send(send_data.</span><span style="color:#0000ff;">encode</span><span style="color:#000000;">())<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;send_data&nbsp;==&nbsp;</span><span style="color:#800000;">'byebye'</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;info&nbsp;=&nbsp;s.recv(</span><span style="color:#ff0000;">1024</span><span style="color:#000000;">).</span><span style="color:#0000ff;">decode</span><span style="color:#000000;">()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'接收到的内容：%s'</span><span style="color:#000000;">&nbsp;%&nbsp;info)<BR>
+s.</span><span style="color:#0000ff;">close</span><span style="color:#000000;">()<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;UDP编程<BR>
+#&nbsp;UDP是面向消息的协议，不需要建立连接，不可靠，效率高<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;UDP应用场景<BR>
+#&nbsp;语音广播<BR>
+#&nbsp;视频<BR>
+#&nbsp;聊天软件<BR>
+#&nbsp;TFTP(简单文件传送)<BR>
+#&nbsp;SNMP(简单网络管理协议)<BR>
+#&nbsp;RIP(路由信息协议，如报告股票市场、航空信息)<BR>
+#&nbsp;DNS(域名解释)<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;实例：将摄氏温度转换为华式温度<BR>
+#&nbsp;创建UDP服务器<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;socket<BR>
+<BR>
+s&nbsp;=&nbsp;socket.socket(socket.AF_INET,socket.SOCK_DGRAM)<BR>
+s.bind((</span><span style="color:#800000;">'127.0.0.1'</span><span style="color:#000000;">,</span><span style="color:#ff0000;">8888</span><span style="color:#000000;">))<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'绑定UDP到8888端口'</span><span style="color:#000000;">)<BR>
+data,addr&nbsp;=&nbsp;s.recvfrom(</span><span style="color:#ff0000;">1024</span><span style="color:#000000;">)<BR>
+data&nbsp;=&nbsp;</span><span style="color:#8000ff;">float</span><span style="color:#000000;">(data)*</span><span style="color:#ff0000;">1</span><span style="color:#000000;">.</span><span style="color:#ff0000;">8</span><span style="color:#000000;">+</span><span style="color:#ff0000;">32</span><span style="color:#000000;"><BR>
+send_data&nbsp;=&nbsp;</span><span style="color:#800000;">'转化后的温度(单位：华氏度)：'</span><span style="color:#000000;">&nbsp;+&nbsp;</span><span style="color:#8000ff;">str</span><span style="color:#000000;">(data)<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'Recieved&nbsp;from&nbsp;%s&nbsp;%s'</span><span style="color:#000000;">&nbsp;%&nbsp;addr)<BR>
+s.sendto(send_data.</span><span style="color:#0000ff;">encode</span><span style="color:#000000;">(),addr)<BR>
+s.</span><span style="color:#0000ff;">close</span><span style="color:#000000;">()<BR>
+</span><span style="color:#008000;">#&nbsp;创建UDP客户端<BR>
+#&nbsp;流程<BR>
+#&nbsp;创建客户端套接字→发送/接收数据→关闭套接字<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;socket<BR>
+<BR>
+s&nbsp;=&nbsp;socket.socket(socket.AF_INET,socket.SOCK_DGRAM)<BR>
+data&nbsp;=&nbsp;</span><span style="color:#8000ff;">input</span><span style="color:#000000;">(</span><span style="color:#800000;">'请输入要转化的温度(单位：摄氏度)：'</span><span style="color:#000000;">)<BR>
+s.sendto(data.</span><span style="color:#0000ff;">encode</span><span style="color:#000000;">(),(</span><span style="color:#800000;">'127.0.0.1'</span><span style="color:#000000;">,</span><span style="color:#ff0000;">8888</span><span style="color:#000000;">))<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'转化后的华氏度是%s'</span><span style="color:#000000;">&nbsp;%&nbsp;s.recv(</span><span style="color:#ff0000;">1024</span><span style="color:#000000;">).</span><span style="color:#0000ff;">decode</span><span style="color:#000000;">())<BR>
+s.</span><span style="color:#0000ff;">close</span><span style="color:#000000;">()<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;执行UDP服务器和客户端<BR>
+#&nbsp;UDP服务器需要绑定端口号，客户端不需要，直接向服务器发送数据</span></div></td></tr></table></div>
+<br><font color=black size = 4>截图部分</font>
+<img src="https://wx4.sinaimg.cn/mw1024/007Diza3ly1g5d1zak791j30m80gpwhe.jpg" width="800" height="800" />
+<img src="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g5d1zaku6wj30sv0k3wk5.jpg" width="800" height="750" />
+<img src="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g5d1zagytuj30h408idgy.jpg" width="800" height="650" />
+<img src="https://wx2.sinaimg.cn/mw1024/007Diza3ly1g5d1zahh5oj30m608i76j.jpg" width="800" height="400" />
+<img src="https://wx2.sinaimg.cn/mw1024/007Diza3ly1g5d1zagh59j30ef09babc.jpg" width="800" height="650" />
+<img src="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g5d1zai1uyj30m40amjte.jpg" width="800" height="600" />
+<br><br><br>
+<font color = gray size = 3>如有错误，欢迎指正！</font></p></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://oubc.github.io/tags/python/">Python</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmg4aog3074074gnf.gif?tags=%5B%5D">I </a>
+	<a href="">love</a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmfm2eg306o06o74u.gif?tags=%5B%5D"> you </a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx4tpcj30fn0bq3zg.jpg?tags=%5B%5D">three </a>
+	<a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx64ctg307s07swfy.gif?tags=%5B%5D">thousand</a>
+    <a href="https://www.kugou.com/song/#hash=96426C78381DE98DC31A5846FC274CBF&album_id=646623"> times.</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>家庭、梦想、内心的平静</span>
+  </div>
+</footer>
+
+
+
+<script src="https://oubc.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://oubc.github.io/js/zozo.js"></script>
+<script src="https://oubc.github.io/js/highlight.pack.js"></script>
+<link  href="https://oubc.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://oubc.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>

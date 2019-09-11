@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Bruce Cheung"/>
+
+  
+  <meta name="description" content="Shell是一个命令行解释器，它为用户提供了一个向Linux内核发送请求以便运行程序的界面系统级程序，用户可以用Shell来启动、挂起、停止甚至是编写一些程序。
+"/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, simple, dream"/>
+  
+
+  
+  <link rel="canonical" href="https://oubc.github.io/post/l8_shellandbash/"/>
+
+  
+
+  <title>Linux中的Shell-Bash &middot; Love, or death</title>
+
+  <link rel="shortcut icon" href="https://oubc.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/post/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://oubc.github.io/">
+          <span>Love, or death</span>
+          <img src="https://oubc.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">For you, a thousand times over.</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/oubc" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=uYGOjo6OiIuLivnIyJfa1tQ" title="mail" target="_blank"><i class="remixicon-mail-fill"></i></a>
+        
+        
+        
+        <a href="http://sighttp.qq.com/msgrd?v=1&amp;uin=877771223" title="qq" target="_blank"><i class="remixicon-qq-fill"></i></a>
+        
+        
+        
+        <a href="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g4klnqf0tmj30ia0widks.jpg" title="wechat" target="_blank"><i class="remixicon-wechat-fill"></i></a>
+        
+        
+        
+        <a href="https://weibo.com/u/6993631995?topnav=1&amp;wvr=6&amp;topsug=1" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://oubc.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/post/l8_shellandbash/'>Linux中的Shell-Bash</a></h2>
+          <span class="date">2019.09.05</span>
+        </div>
+        <div class="post_content markdown"><p>Shell是一个命令行解释器，它为用户提供了一个向Linux内核发送请求以便运行程序的界面系统级程序，用户可以用Shell来启动、挂起、停止甚至是编写一些程序。</p>
+
+<p><br><font color=black size = 4>索引</font>
+<br><font color=black size = 4>0.Shell概述</font>
+<br><font color=black size = 4>1.Shell脚本的执行方式</font>
+<br><font color=black size = 4>2.Bash的基本功能</font>
+<br><font color=black size = 4>3.Bash变量</font>
+<br><font color=black size = 4>4.Bash运算符</font>
+<br><font color=black size = 4>5.环境变量配置文件</font>
+<br>
+<br>
+<br><font color=black size = 5>Shell概述</font>
+<br><font color=black size = 4>1、Shell是什么</font>
+<br>Shell是一个功能相当强大的编程语言，灵活性较强、易编写和调试。
+<br>Shell是解释执行的脚本语言
+<br>在Shell中可以直接调用Linux系统命令
+<br><img src="https://wx1.sinaimg.cn/mw1024/007Diza3ly1g6puo8jlf1j30jj0at79a.jpg" width="800" height="650" />
+<br><font color=black size = 4>2、Shell的分类</font>
+<br>Bourne Shell：从1979年开始Unix就开始使用Bourne Shell，它的主文件名为sh
+<br>C Shell：C Shell主要在BSD版的Unix系统中使用，其语法和C语言相类似，故为C Shell
+<br><font color=black size = 4>3、Shell的两种主要语法类型</font>
+<br>Shell的两种主要语法类型为Bourne、C，它们之间彼此不兼容
+<br>Bourne家族主要包括sh、ksh、Bash、psh、zsh
+<br>C家族主要包括csh、tcsh
+<br>Bash：Bash与sh兼容，现在使用的Linux就是使用Bash作为用户的基本Shell
+<br><font color=black size = 4>4、Linux支持的Shell</font>
+<br>使用命令：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;cat /etc/shells
+<br><img src="https://wx2.sinaimg.cn/mw1024/007Diza3ly1g6puo7c7bdj30j608uwep.jpg" width="800" height="650" />
+<br><br><font color=black size = 5>Shell脚本的执行方式</font>
+<br><font color=black size = 4>1、echo输出命令</font>
+<br>&nbsp;&nbsp;&nbsp;&nbsp; echo [选项][输出内容]
+<br>选项：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -e  支持反斜线控制的字符转换
+<br><img src="https://wx1.sinaimg.cn/mw1024/007Diza3ly1g6puo8ipzzj30ja0c5mzw.jpg" width="800" height="650" />
+<br>实例：
+<br>\b删除左侧字符
+<br>&nbsp;&nbsp;&nbsp;&nbsp; echo -e &quot;ab\bc&quot;
+<br>\t制表符与换行符
+<br>&nbsp;&nbsp;&nbsp;&nbsp; echo -e &quot;a\tb\tc\nd\te\tf&quot;
+<br>按照十六进制ASCII码进行输出
+<br>&nbsp;&nbsp;&nbsp;&nbsp; echo -e &quot;\x61\t\x62\t\x63\n\x64\t\x65\t\x66&quot;
+<br>输出颜色
+<br>&nbsp;&nbsp;&nbsp;&nbsp; echo -e &quot;\e[1;31m abcde \e[0m&quot;
+<br>30m = 黑色，31m = 红色，32m = 绿色，33m = 黄色
+<br>34m = 蓝色，35m = 洋红，36m = 青色，37m = 白色
+<br>补充：输出颜色遵从固定格式
+<br><font color=black size = 4>2、第一个脚本</font>
+<br>使用命令：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; vi hello.sh
+<br>插入模式，键入以下内容
+<br>&nbsp;&nbsp;&nbsp;&nbsp; #!/bin/bash
+<br>&nbsp;&nbsp;&nbsp;&nbsp; #the first program
+<br>&nbsp;&nbsp;&nbsp;&nbsp; #Author:oubc
+<br>&nbsp;&nbsp;&nbsp;&nbsp; echo -e 'Hello,world!'
+<br>键入完毕，进入底行命令模式 wq保存并推出
+<br><font color=black size = 4>3、脚本执行</font>
+<br>方式一：赋予执行权限，直接运行
+<br>&nbsp;&nbsp;&nbsp;&nbsp; chmod 755 hello.sh
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 或者
+<br>&nbsp;&nbsp;&nbsp;&nbsp; chmod +x hello.sh
+<br>&nbsp;&nbsp;&nbsp;&nbsp; ./hello.sh 执行
+<br>方式二：通过Bash调用执行脚本
+<br>&nbsp;&nbsp;&nbsp;&nbsp; bash hello.sh
+<br><font color=black size = 4>4、Linux与Winodws编码格式转换</font>
+<br>因为Linux和Winodws中许多程序编码文件不匹配，这时候就需要进行格式转换，例如在windows中回车表示为`M\$，而在Linux中表示为\$，这时候就需要进行转换了，转换命令如下：
+<br>Windows dos转换为Linux格式命令
+<br>&nbsp;&nbsp;&nbsp;&nbsp; dos2unix xxx.sh
+<br>Linux 转换为dos格式命令
+<br>&nbsp;&nbsp;&nbsp;&nbsp; unix2dos xxx.sh
+<br><br><font color=black size = 5>Bash的基本功能</font>
+<br><font color=black size = 4>1、历史命令与命令补全</font>
+<br>(1)历史命令
+<br>&nbsp;&nbsp;&nbsp;&nbsp; history [选项][历史命令保存文件]
+<br>选项：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -c  清空历史命令
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -w  把缓存中的历史命令写入历史命令保存文件
+<br>xxx用户的历史命令保存在文件 xxx/.bash_history 中
+<br>历史命令默认会保存1000条，可以在环境变量配置文件/etc/profile中进行修改
+<br>历史命令的调用
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 使用上下箭头调用以前的历史命令
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 使用 &quot;!n&quot; 重复执行第n条历史命令
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 使用 &quot;!!&quot; 重复执行上一条命令
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 使用 &quot;!字串&quot; 重复执行最后一条以该字串开头的命令
+<br>(2)命令与文件补全
+<br>在Bash中，命令与文件补全是非常方便与常用的功能，我们只要在输入命令或者文件时，按 &quot;Tab&quot; 键就会自动进行补全
+<br>命令、目录、文件 进行补全，当有多个匹配时，不会进行自动补全，连续按两次 &quot;Tab&quot; 键就会列出所有补全
+<br><font color=black size = 4>2、命令别名与常用快捷键</font>
+<br>(1)
+<br>设定命令别名：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; alias 别名='原命令'
+<br>查询命令别名
+<br>&nbsp;&nbsp;&nbsp;&nbsp; alias
+<br>让别名永久生效
+<br>&nbsp;&nbsp;&nbsp;&nbsp; vi /root/.bashrc
+<br>删除别名
+<br>&nbsp;&nbsp;&nbsp;&nbsp; unalias 别名
+<br>命令执行时顺序
+<br>&nbsp;&nbsp; 1.第一顺位执行用绝对路径或者相对路径执行
+<br>&nbsp;&nbsp; 2.第二顺位执行别名
+<br>&nbsp;&nbsp; 3.第三顺位执行Bash内部命令
+<br>&nbsp;&nbsp; 4.第四顺位执行按照$PATH环境变量定义的目录查找顺序找到的第一个命令
+<br>补充：Linux中所有命令都是使用绝对路径执行，系统命令是因为加入了PATH环境变量，所以不需要加绝对路径或者相对路径，而Shell、Bash内部命令没有路径，可以直接执行，例如：cd 命令。
+<br>(2)Bash常用快捷键
+<br><img src="https://wx1.sinaimg.cn/mw1024/007Diza3ly1g6puo9i8eej30mz0cbn3i.jpg" width="800" height="650" />
+<br>注：ctrl+Z需要慎用，它会使得系统越来越慢
+<br><font color=black size = 4>3、输入输出重定向</font>
+<br>(1)标准输入输出
+<br>
+<table>
+        <tr>
+            <th>设 备 </th>
+            <th>设备文件名</th>
+            <th>文件描述符</th>
+            <th>类型</th>
+        </tr>
+        <tr>
+            <th>键盘</th>
+            <th>dev/stdin</th>
+            <th>0</th>
+            <th>标准输入</th>
+        </tr>
+        <tr>
+            <th>显示器</th>
+            <th>dev/stdout</th>
+            <th>1</th>
+            <th>标准输出</th>
+        </tr>
+        <tr>
+            <th>显示器</th>
+            <th>dev/stderr</th>
+            <th>2</th>
+            <th>标准错误输出</th>
+        </tr>
+    </table>
+<br>
+<br>(2)输出重定向
+<br>标准输出重定向：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 命令 &gt; 文件 以覆盖的方式，把命令的正确输出输出到指定的文件或设备中
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 命令 &gt;&gt; 文件  以追加的方式，把命令的正确输出输出到指定的文件或设备中
+<br>标准错误输出重定向：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 错误命令 2&gt; 文件  以覆盖的方式，把命令的错误输出输出到指定的文件或设备中
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 错误命令 2&gt;&gt; 文件  以追加的方式，把命令的错误输出输出到指定的文件或设备中
+<br>正确输出和错误输出：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 命令 &gt; 文件 2&gt;&amp;1  以覆盖的方式，把正确和错误输出都保存到同一个文件中
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 命令 &gt;&gt; 文件 2&gt;&amp;1  以追加的方式，把正确输出和错误输出都保存到同一个文件中
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 命令 &amp;&gt; 文件  以覆盖的方式，把正确输出和错误输出都保存到同一个文件当中
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 命令 &amp;&gt;&gt; 文件  以追加的方式，把正确输出和错误输出都保存到同一个文件中
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 命令&gt;&gt;文件1 2&gt;&gt;文件2  把正确的输出追加到文件1中，把错误的输出追加到文件2中
+<br>(3)输入重定向
+<br>&nbsp;&nbsp;&nbsp;&nbsp; wc [选项][文件名]
+<br>选项：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -c  统计字节数
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -w  统计单词数
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -l  统计行数
+<br>输入重定向的使用
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 命令&lt;文件  把文件作为命令的输入
+<br><font color=black size = 4>4、多命令顺序执行与管道符</font>
+<br>(1)多命令顺序执行
+<br>
+<table>
+        <tr>
+            <th>多命令执行符</th>
+            <th>格式</th>
+            <th>作用</th>
+        </tr>
+        <tr>
+            <th>；</th>
+            <th>命令1；命令2</th>
+            <th>多个命令顺序执行，命令之间没有任何逻辑联系</th>
+        </tr>
+        <tr>
+            <th>&amp;&amp;</th>
+            <th>命令1&amp;&amp;命令2</th>
+            <th>逻辑与，当命令1正确执行，则命令2才会执行，否则命令2不会执行</th>
+        </tr>
+        <tr>
+            <th>||</th>
+            <th>命令1||命令2</th>
+            <th>逻辑或，当命令1不正确执行，则命令2才会执行，否则命令2不会执行</th>
+        </tr>
+</table>
+<br>例子：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; ls；date；cd /user；pwd
+<br>dd命令
+<br>dd命令是进行磁盘复制或者数据复制的命令，主要是进行特殊文件、分区、整个硬盘，比cp命令更为强大
+<br>&nbsp;&nbsp;&nbsp;&nbsp; dd if=输入文件 of=输出文件 bs=字节数 count=个数
+<br>选项：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; if=输入文件  指定源文件或源设备
+<br>&nbsp;&nbsp;&nbsp;&nbsp; of=输出文件  指定目标文件或者目标设备
+<br>&nbsp;&nbsp;&nbsp;&nbsp; bs=字节数  指定一次输入/输出多少字节，即把这些字节看作一个数据块
+<br>&nbsp;&nbsp;&nbsp;&nbsp; count=个数  指定输入/输出多少个数据块
+<br>例子：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; date；dd if=/dev/zero of=/root/testfile bs=1k count=100000；date
+<br>命令前后使用了date可以实现记录复制/dev/zero目录需要的时间/时间间隔
+<br>&nbsp;&nbsp;&nbsp;&nbsp; ls anaconda-ks.cfg &amp;&amp; echo yes
+<br>&nbsp;&nbsp;&nbsp;&nbsp; ls /root/test || echo &quot;no&quot;
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 命令 &amp;&amp; echo yes || echo no  实现判断命令是否正确
+<br>(2)管道符
+<br>命令1的正确输出作为命令2的操作对象
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 命令1 | 命令2
+<br>让命令1的输出也可以使用more命令方式查看结果
+<br>&nbsp;&nbsp;&nbsp;&nbsp; ll -a /etc/ | more
+<br>查询所有网络连接
+<br>&nbsp;&nbsp;&nbsp;&nbsp; netstat -an | grep &quot;ESTABLISHED&quot;
+<br>搜索命令
+<br>&nbsp;&nbsp;&nbsp;&nbsp; grep [选项] &quot;搜索内容&quot; 文件名
+<br>选项：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -i  忽略大小写
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -n  输出行号
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -v  反向查找
+<br>&nbsp;&nbsp;&nbsp;&nbsp; --color=auto  搜索出的关键字用颜色显示
+<br><font color=black size = 4>5、通配符与其他特殊符号</font>
+<br>(1)通配符
+<br>&nbsp;&nbsp;&nbsp;&nbsp; ?  匹配一个任意字符
+<br>&nbsp;&nbsp;&nbsp;&nbsp; *  匹配0个或任意多个任意字符，也就是可以匹配任何内容
+<br>&nbsp;&nbsp;&nbsp;&nbsp; []  匹配中括号内任意一个字符
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 例如：[abc] 代表一定匹配一个字符，或者是a、或者是b、或者是c
+<br>&nbsp;&nbsp;&nbsp;&nbsp; [-]  匹配中括号内任意一个字符，-代表一个范围
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 例如:[a-z] 代表匹配一个小写字母
+<br>&nbsp;&nbsp;&nbsp;&nbsp; [`]  逻辑非，表示匹配不存在于中括号内的一个字符
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 例如：[`0-9] 代表匹配一个不是数字的字符
+<br>使用举例：
+<br>清空当前目录，删除当前目录下的所有文件及目录
+<br>&nbsp;&nbsp;&nbsp;&nbsp; rm -rf *
+<br>列出符合匹配条件的目录
+<br>&nbsp;&nbsp;&nbsp;&nbsp; ls ?abc
+<br>&nbsp;&nbsp;&nbsp;&nbsp; ls [0-9]*
+<br>&nbsp;&nbsp;&nbsp;&nbsp; ls [`0-9]*
+<br>(2)Bash中其他特殊符号
+<br><img src="https://wx4.sinaimg.cn/mw1024/007Diza3ly1g6puo9va28j30nn0c60z1.jpg" width="800" height="650" />
+<br><br>反引号与$()
+<br>&nbsp;&nbsp;&nbsp;&nbsp; echo `ls`
+<br>&nbsp;&nbsp;&nbsp;&nbsp; echo \$(date)
+<br>单引号与反引号
+<br>&nbsp;&nbsp;&nbsp;&nbsp; name=sc
+<br>&nbsp;&nbsp;&nbsp;&nbsp; echo '\$name'  输出\$name
+<br>&nbsp;&nbsp;&nbsp;&nbsp; echo &quot;\$name&quot;  输出sc
+<br>&nbsp;&nbsp;&nbsp;&nbsp; echo '\$(date)'  输出\$(date)
+<br>&nbsp;&nbsp;&nbsp;&nbsp; echo &quot;\$(date)&quot;  输出 日期
+<br><br><font color=black size = 5>Bash变量</font>
+<br><font color=black size = 4>1、用户自定义变量(本地变量)</font>
+<br>(1)什么是变量
+<br>变量是计算机内存的单元，其中存放的值可以改变。当Shell脚本需要保存一些信息时，如一个文件名或者是一个数字，就把它存放在一个变量中，每个变量都有一个名字，所以很容易引用它，使用变量可以保存有用信息，使系统获知用户相关设置，变量也可以用于保存临时信息。
+<br>(2)变量设置规则
+<br> • 变量名称可以由字母、数字和下划线组成，但是不能以数字开头
+<br> • 在Bash中，变量的默认类型都是字符串型，如果要进行数值运算，则必须指定变量类型为数值型
+<br> • 变量用等号连接值， <strong>等号左右两侧不能有空格</strong>
+<br> • 变量的值如果有空格，需要使用单引号或双引号包括
+<br> • 在变量的值中，可以使用&quot;\&quot;转义符
+<br> • 如果需要增加变量的值，那么可以进行变量值的叠加，不过变量需要用双引号包含 &quot;\$变量名&quot; 或 \${变量名}
+<br> • 如果把命令的结果作为变量值赋予变量，则需要使用反引号或\$()包含命令
+<br> • 环境变量名建议大写，便于区分
+<br>(3)变量分类
+<br> • 用户自定义变量
+<br> • 环境变量：主要保存的是和系统操作环境相关的数据
+<br> • 位置参数变量：这种变量主要是用来向脚本当中传递参数或数据时，变量名不能自定义，变量作用是固定的
+<br> • 预定义变量：是Bash中已经定义好的变量，变量名不能自定义，变量作用也是固定的
+<br>(4)本地变量
+<br>变量定义
+<br>&nbsp;&nbsp;&nbsp;&nbsp; name=&quot;Bruce Cheung&quot;
+<br>变量叠加
+<br>&nbsp;&nbsp;&nbsp;&nbsp; aa=123
+<br>&nbsp;&nbsp;&nbsp;&nbsp; aa=&quot;\$aa&quot;456
+<br>&nbsp;&nbsp;&nbsp;&nbsp; aa=\${aa}789  aa此时为123456789
+<br>变量调用
+<br>&nbsp;&nbsp;&nbsp;&nbsp; echo \$name
+<br>变量查看
+<br>&nbsp;&nbsp;&nbsp;&nbsp; set  查看所有变量
+<br>变量删除
+<br>&nbsp;&nbsp;&nbsp;&nbsp; unset 变量名
+<br><font color=black size = 4>2、环境变量</font>
+<br>一部分是系统设定的，一部分是用户添加的
+<br>(1)环境变量是什么?
+<br>用户自定义变量只在当前的Shell中生效，而环境变量会在当前Shell和这个Shell的所有子Shell当中生效，如果把环境变量写入相应的配置文件，那么这个环境变量就会在所有的Shell中生效。
+<br>(2)设置环境变量
+<br>声明变量
+<br>&nbsp;&nbsp;&nbsp;&nbsp; export 变量名=变量值
+<br>查询变量
+<br>&nbsp;&nbsp;&nbsp;&nbsp; env
+<br>删除变量
+<br>&nbsp;&nbsp;&nbsp;&nbsp; unset 变量名
+<br>(3)系统常见环境变量
+<br> • PATH：系统查找命令的路径
+<br>&nbsp;&nbsp;&nbsp;&nbsp; echo \$PATH
+<br> • PATH变量叠加
+<br>&nbsp;&nbsp;&nbsp;&nbsp; PATH=&quot;\$PATH&quot;:/root/sh
+<br> • PS1：定义系统提示符的变量
+<br>&nbsp;&nbsp;&nbsp;&nbsp; \d  显示日期，格式为 &quot;星期 月 日&quot;
+<br>&nbsp;&nbsp;&nbsp;&nbsp; \h  显示简写主机名，默认主机名 &quot;localhost&quot;
+<br>&nbsp;&nbsp;&nbsp;&nbsp; \t  显示24小时制时间，格式为 &quot;HH:MM:SS&quot;
+<br>&nbsp;&nbsp;&nbsp;&nbsp; \T  显示12小时制时间，格式为 &quot;HH:MM:SS&quot;
+<br>&nbsp;&nbsp;&nbsp;&nbsp; \A  显示24小时制时间，格式为 &quot;HH:MM&quot;
+<br>&nbsp;&nbsp;&nbsp;&nbsp; \u  显示当前用户名
+<br>&nbsp;&nbsp;&nbsp;&nbsp; \w  显示当前所在目录的完整名称
+<br>&nbsp;&nbsp;&nbsp;&nbsp; \W  显示当前所在目录的最后一个目录
+<br>&nbsp;&nbsp;&nbsp;&nbsp; \#  执行的第几个命令
+<br>&nbsp;&nbsp;&nbsp;&nbsp; \$  提示符。如果是root用户会显示为 &quot;#&quot;，如果是普通用户会显示 &quot;\$&quot;
+<br><font color=black size = 4>3、位置参数变量</font>
+<br>能改变的只有变量的值，不允许用户添加新的变量
+<br>&nbsp;&nbsp;&nbsp;&nbsp; \$n  n为数字，\$0代表命令本身，\$1-\$9代表第一个到第九个参数，10以上的参数需要用大括号包含，例如\${10}
+<br>补充：目的是为了接受用户向程序传递的值
+<br>&nbsp;&nbsp;&nbsp;&nbsp; \$*  代表命令行中所有参数并把所有参数看成一个整数
+<br>&nbsp;&nbsp;&nbsp;&nbsp; \$@  代表命令行所有的参数，不过是把每个参数区分对待
+<br>&nbsp;&nbsp;&nbsp;&nbsp; \$#  代表命令行中所有参数的个数
+<br><img src="https://wx2.sinaimg.cn/mw1024/007Diza3ly1g6puo927xfj30jv09ewer.jpg" width="800" height="650" />
+<br><img src="https://wx1.sinaimg.cn/mw1024/007Diza3ly1g6puo7ihw7j30ih097mxb.jpg" width="800" height="650" />
+<br><font color=black size = 4>4、预定义变量</font>
+<br>同上面预定义变量
+<br>预定义变量其实就是位置参数变量的一种
+<br>和位置参数一样，变量名、作用都不能更改，只能往里边传入不同的值
+<br>(1)预定义变量
+<br>&nbsp;&nbsp;&nbsp;&nbsp; \$?  最后一次执行命令的返回状态，如果这个变量的值为0，证明上一次正确执行，否则不正确，值由命令决定
+<br>&nbsp;&nbsp;&nbsp;&nbsp; \$\$  当前进程的进程号 (PID)
+<br>&nbsp;&nbsp;&nbsp;&nbsp; \$!  后台运行的最后一个进程的进程号 (PID)
+<br><img src="https://wx2.sinaimg.cn/mw1024/007Diza3ly1g6puo9hdjdj30pk0dut9t.jpg" width="800" height="650" />
+<br>(2)接受键盘输入
+<br>&nbsp;&nbsp;&nbsp;&nbsp; read [选项][变量名]
+<br>选项：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -p &quot;提示信息&quot;  在等待read输入时，输出提示信息
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -t 秒数  read命令会一直等待用户输入，使用此选项可以指定等待时间
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -n 字符数  read命令只接受指定的字符数
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -s  隐藏输入的数据，适用于机密信息的输入
+<br><img src="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g6puws7m3cj30m207pjsi.jpg" width="800" height="650" />
+<br><img src="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g6puws1h7wj30ma0evtaj.jpg" width="800" height="650" />
+<br><br><font color=black size = 5>Bash运算符</font>
+<br><font color=black size = 4>1、数值运算与运算符</font>
+<br>(1)declare声明变量类型
+<br>&nbsp;&nbsp;&nbsp;&nbsp; declare [+/-][选项] 变量名
+<br>选项：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -  给变量设定类型属性
+<br>&nbsp;&nbsp;&nbsp;&nbsp; +  取消变量的类型属性
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -i  将变量声明为整数型
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -x  将变量声明为环境变量
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -p  显示指定变量的声明的类型
+<br>(2)数值运算
+<br>方法一：
+<br>给变量aa和bb赋值
+<br>&nbsp;&nbsp;&nbsp;&nbsp; aa=1
+<br>&nbsp;&nbsp;&nbsp;&nbsp; bb=2
+<br>&nbsp;&nbsp;&nbsp;&nbsp; declare -i cc=\$aa+\$bb
+<br>cc的值为3
+<br>方法二：给expr或let数值运算工具
+<br>给变量aa和变量bb赋值
+<br>&nbsp;&nbsp;&nbsp;&nbsp; aa=11
+<br>&nbsp;&nbsp;&nbsp;&nbsp; bb=22
+<br>&nbsp;&nbsp;&nbsp;&nbsp; dd=\$(expr \$aa + \$bb)
+<br>dd的值是3，即aa+bb，注意 &quot;+&quot; 号左右两侧必须有空格
+<br>方法三：&quot;\$((运算式))&quot; 或 &quot;\$[运算式]&quot;
+<br>&nbsp;&nbsp;&nbsp;&nbsp; aa=1
+<br>&nbsp;&nbsp;&nbsp;&nbsp; bb=2
+<br>&nbsp;&nbsp;&nbsp;&nbsp; ff=\$((\$aa+\$bb))
+<br>&nbsp;&nbsp;&nbsp;&nbsp; gg=\$[\$aa+\$bb]
+<br>(3)运算符
+<br><img src="https://wx1.sinaimg.cn/mw1024/007Diza3ly1g6puwsy3b3j30m90csgp2.jpg" width="800" height="650" />
+<br>数值越大，优先级越高
+<br><img src="https://wx2.sinaimg.cn/mw1024/007Diza3ly1g6puwr5e4rj30ji076ta3.jpg" width="800" height="650" />
+<br><font color=black size = 4>2、变量测试与内容替换</font>
+<br><img src="https://wx1.sinaimg.cn/mw1024/007Diza3ly1g6puwsag8wj30mn0e8wjr.jpg" width="800" height="650" />
+<br>测试 x=\${y-新值}
+<br><img src="https://wx2.sinaimg.cn/mw1024/007Diza3ly1g6puwraxauj30m403q0te.jpg" width="800" height="250" />
+<br><br><font color=black size = 5>环境变量配置文件</font>
+<br><font color=black size = 4>1、环境变量配置文件简介</font>
+<br>(1)source命令
+<br>&nbsp;&nbsp;&nbsp;&nbsp; source 配置文件 或 .配置文件
+<br>(2)环境变量配置文件简介
+<br>&nbsp;&nbsp;&nbsp;&nbsp; /etc/profile  环境变量配置文件
+<br>&nbsp;&nbsp;&nbsp;&nbsp; /etc/profile/*.sh
+<br>&nbsp;&nbsp;&nbsp;&nbsp; ~/.bash_profile  只对当前用户生效
+<br>&nbsp;&nbsp;&nbsp;&nbsp; ~/.bashrc  只对当前用户生效
+<br>&nbsp;&nbsp;&nbsp;&nbsp; /etc/bashrc
+<br><font color=black size = 4>2、环境变量配置文件作用</font>
+<br>(1)环境变量文件优先级
+<br><img src="https://wx2.sinaimg.cn/mw1024/007Diza3ly1g6puwrdhr2j30o60dm0uc.jpg" width="800" height="650" />
+<br>(2)/etc/profile的作用：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; USER变量
+<br>&nbsp;&nbsp;&nbsp;&nbsp; LOGNAME变量
+<br>&nbsp;&nbsp;&nbsp;&nbsp; MAIL变量
+<br>&nbsp;&nbsp;&nbsp;&nbsp; PATH变量
+<br>&nbsp;&nbsp;&nbsp;&nbsp; HOSTNAME变量
+<br>&nbsp;&nbsp;&nbsp;&nbsp; HISTSIZE变量
+<br>&nbsp;&nbsp;&nbsp;&nbsp; umask
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 调用/etc/profile.d/*.sh文件
+<br>(3)~/.bash/_profile的作用：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 调用~/.bashrc文件
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 在PATH变量后面加入了目录 &quot;:\$HOME/bin&quot;
+<br>(4)~/etc/bashrc的作用：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; PS1变量
+<br>&nbsp;&nbsp;&nbsp;&nbsp; umask
+<br>&nbsp;&nbsp;&nbsp;&nbsp; PATH变量
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 调用/etc/profile.d//*.sh文件
+<br><font color=black size = 4>3、其它配置文件和登录信息</font>
+<br>(1)注销时生效的环境变量配置文件
+<br>&nbsp;&nbsp;&nbsp;&nbsp; ~/.bash_logout
+<br>可以将注销时需要执行的代码写入到这个文件中，每次注销时都会生效
+<br>(2)其它配置文件
+<br>&nbsp;&nbsp;&nbsp;&nbsp; ~/bash_history
+<br>一般不清空，可选择清楚输入密码记录
+<br>(3)Shell登录信息
+<br> • 本地终端登录后展示信息：/etc/issue
+<br>&nbsp;&nbsp;&nbsp;&nbsp; \d  显示当前系统日期
+<br>&nbsp;&nbsp;&nbsp;&nbsp; \s  显示操作系统名称
+<br>&nbsp;&nbsp;&nbsp;&nbsp; \l  显示登录的终端号，较常用
+<br>&nbsp;&nbsp;&nbsp;&nbsp; \m  显示硬件体系结构，如i386、i686等
+<br>&nbsp;&nbsp;&nbsp;&nbsp; \n  显示主机名
+<br>&nbsp;&nbsp;&nbsp;&nbsp; \o  显示域名
+<br>&nbsp;&nbsp;&nbsp;&nbsp; \r  显示内核版本
+<br>&nbsp;&nbsp;&nbsp;&nbsp; \t  显示当前系统时间
+<br>&nbsp;&nbsp;&nbsp;&nbsp; \u  显示当前登录用户的序列号
+<br> • 远程终端欢迎信息：/etc/issue.net
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 转义符在/etc/issue.net文件中不能使用
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 是否显示此欢迎信息，由ssh的配置文件/etc/ssh/sshd_config决定，加入 &quot;Banner/etc/issue.net&quot; 行才能显示 (记得重启SSH服务)
+<br> • 登录后欢迎信息：/etc/motd
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 不管是本地登录，还是远程登录，都可以显示此欢迎信息
+<br><br><br>
+<font color = gray size = 3>如有错误，欢迎指正！</font></p></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://oubc.github.io/tags/linux/">Linux</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmg4aog3074074gnf.gif?tags=%5B%5D">I </a>
+	<a href="">love</a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmfm2eg306o06o74u.gif?tags=%5B%5D"> you </a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx4tpcj30fn0bq3zg.jpg?tags=%5B%5D">three </a>
+	<a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx64ctg307s07swfy.gif?tags=%5B%5D">thousand</a>
+    <a href="https://www.kugou.com/song/#hash=96426C78381DE98DC31A5846FC274CBF&album_id=646623"> times.</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>家庭、梦想、内心的平静</span>
+  </div>
+</footer>
+
+
+
+<script src="https://oubc.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://oubc.github.io/js/zozo.js"></script>
+<script src="https://oubc.github.io/js/highlight.pack.js"></script>
+<link  href="https://oubc.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://oubc.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>

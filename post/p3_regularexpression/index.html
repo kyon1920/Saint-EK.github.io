@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Bruce Cheung"/>
+
+  
+  <meta name="description" content="Python中的正则表达式虽然比较难，但是掌握它是十分有必要的
+"/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, simple, dream"/>
+  
+
+  
+  <link rel="canonical" href="https://oubc.github.io/post/p3_regularexpression/"/>
+
+  
+
+  <title>Python中的正则表达式 &middot; Love, or death</title>
+
+  <link rel="shortcut icon" href="https://oubc.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/post/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://oubc.github.io/">
+          <span>Love, or death</span>
+          <img src="https://oubc.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">For you, a thousand times over.</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/oubc" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=uYGOjo6OiIuLivnIyJfa1tQ" title="mail" target="_blank"><i class="remixicon-mail-fill"></i></a>
+        
+        
+        
+        <a href="http://sighttp.qq.com/msgrd?v=1&amp;uin=877771223" title="qq" target="_blank"><i class="remixicon-qq-fill"></i></a>
+        
+        
+        
+        <a href="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g4klnqf0tmj30ia0widks.jpg" title="wechat" target="_blank"><i class="remixicon-wechat-fill"></i></a>
+        
+        
+        
+        <a href="https://weibo.com/u/6993631995?topnav=1&amp;wvr=6&amp;topsug=1" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://oubc.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/post/p3_regularexpression/'>Python中的正则表达式</a></h2>
+          <span class="date">2019.07.16</span>
+        </div>
+        <div class="post_content markdown"><p>Python中的正则表达式虽然比较难，但是掌握它是十分有必要的</p>
+
+<p><br><font color=black size = 5>详细代码部分</font>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;Python Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47<br>48<br>49<br>50<br>51<br>52<br>53<br>54<br>55<br>56<br>57<br>58<br>59<br>60<br>61<br>62<br>63<br>64<br>65<br>66<br>67<br>68<br>69<br>70<br>71<br>72<br>73<br>74<br>75<br>76<br>77<br>78<br>79<br>80<br>81<br>82<br>83<br>84<br>85<br>86<br>87<br>88<br>89<br>90<br>91<br>92<br>93<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#008000;">#&nbsp;正则表达式：是一种用来匹配字符串的强有力的武器，设计思想是用一种描述性的语言来给字符串定义一个规则，凡是符合规则的字符串，就认为它“匹配”，否则就不匹配<BR>
+#&nbsp;行定位符、元字符、限定符、字符类、排除字符、选择字符、转义字符、分组<BR>
+#&nbsp;行定位符：^表示开始：&quot;^Hi&quot;&nbsp;&quot;HiPython&quot;可匹配&nbsp;$表示结束：&quot;Bye$&quot;&nbsp;&quot;^Hi,GoodBye&quot;可匹配<BR>
+#&nbsp;元字符：在正则表达式中具有特殊意义的专用字符，如上面的两个行字符都是元字符、.匹配除换行外的任意字符(一个.代表一个字符)、\w匹配字母数字下划线或汉字、\W匹配字母数字下划线或汉字以外的字符、\s匹配任意的空白符、\b匹配单词的开始或结束、\d匹配数字<BR>
+#&nbsp;限定符：限制匹配数量<BR>
+#&nbsp;字符类：定义一个字符结合，匹配这个集合当中字符：[]&nbsp;&nbsp;[aeiou]匹配元音&nbsp;&nbsp;[\u4e00-\u9fa5]匹配任意一个汉字<BR>
+#&nbsp;排除字符：和字符类相反：[^a-zA-Z]<BR>
+#&nbsp;选择字符：或：用来表示符合这个条件或符合另一个条件&nbsp;|&nbsp;[a-z]|[0-9]<BR>
+#&nbsp;转义字符：&amp;nbsp;把一个特殊的字符转换为一个普通字符(上面提到的那些字符)<BR>
+#&nbsp;分组：()&nbsp;(.[0-9]{1,3}){3}&nbsp;对(.[0-9]{1,3})进行了重复三次的匹配<BR>
+#&nbsp;正则表达式模块&nbsp;re<BR>
+#&nbsp;三种操作：匹配字符串、替换字符串、分割字符串<BR>
+#&nbsp;1.匹配字符串&nbsp;&nbsp;&nbsp;&nbsp;match()、search()、findall()<BR>
+#&nbsp;语法：re.match(pattern(模式字符串),&nbsp;string(要匹配的字符串),&nbsp;<a href="标志位">flags</a>)<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;re<BR>
+pattern&nbsp;=&nbsp;r</span><span style="color:#800000;">'mr_\w'</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;模式字符串<BR>
+</span><span style="color:#000000;">string&nbsp;=&nbsp;</span><span style="color:#800000;">'MR_SHOP&nbsp;mr_shop'</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;要匹配的字符串<BR>
+</span><span style="color:#000000;">match&nbsp;=&nbsp;re.match(pattern,&nbsp;string,&nbsp;re.I)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;匹配字符串<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(match)<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;起始位置：&quot;</span><span style="color:#000000;">,match.start())<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;结束位置：&quot;</span><span style="color:#000000;">,match.end())<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;匹配数据：&quot;</span><span style="color:#000000;">,match.group())<BR>
+</span><span style="color:#008000;">#&nbsp;实例：判断是不是中国移动手机号码<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;re<BR>
+pattern&nbsp;=&nbsp;r</span><span style="color:#800000;">'(13[4-9]\d{8})|(15[01289]\d{8})$'</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;模式字符串<BR>
+</span><span style="color:#000000;">mobile&nbsp;=&nbsp;</span><span style="color:#800000;">'13634888888'</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;要匹配的模式号码<BR>
+</span><span style="color:#000000;">re.match(pattern,&nbsp;mobile)<BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;match&nbsp;==&nbsp;</span><span style="color:#800000;">'None'</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">&nbsp;(</span><span style="color:#800000;">&quot;不是有效手机号码&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">&nbsp;(moblie)<BR>
+</span><span style="color:#0000ff;">else</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;是有效手机号码&quot;</span><span style="color:#000000;">)<BR>
+</span><span style="color:#008000;">#&nbsp;语法：re.search(pattern,&nbsp;string,&nbsp;[flags])&nbsp;&nbsp;&nbsp;&nbsp;同match()<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;re<BR>
+pattern&nbsp;=&nbsp;r</span><span style="color:#800000;">'mr_\w'</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;模式字符串<BR>
+</span><span style="color:#000000;">string&nbsp;=&nbsp;</span><span style="color:#800000;">'MR_SHOP&nbsp;mr_shop'</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;要匹配的字符串<BR>
+</span><span style="color:#000000;">match&nbsp;=&nbsp;re.search(pattern,&nbsp;string,&nbsp;re.I)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;匹配字符串<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(match)<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;起始位置：&quot;</span><span style="color:#000000;">,match.start())<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;结束位置：&quot;</span><span style="color:#000000;">,match.end())<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;匹配数据：&quot;</span><span style="color:#000000;">,match.group())<BR>
+</span><span style="color:#008000;">#&nbsp;实例：黑客匹配<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;re<BR>
+pattern&nbsp;=&nbsp;r</span><span style="color:#800000;">'(黑客)|(抓包)|(监听)|(Ttojan)'</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;模式字符串<BR>
+</span><span style="color:#000000;">about&nbsp;=&nbsp;</span><span style="color:#800000;">'我是一名程序员，我喜欢看黑客方面的图书，想研究一下Trojan。'</span><span style="color:#000000;"><BR>
+match&nbsp;=&nbsp;re.search(pattern,about)<BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;match&nbsp;==&nbsp;</span><span style="color:#8000ff;">None</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(about,&nbsp;</span><span style="color:#800000;">&quot;@&nbsp;安全！&quot;</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;没有匹配成功<BR>
+</span><span style="color:#0000ff;">else</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(about,&nbsp;</span><span style="color:#800000;">&quot;@&nbsp;出现危险字符！&quot;</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;匹配成功<BR>
+</span><span style="color:#000000;">about&nbsp;=&nbsp;</span><span style="color:#800000;">'我是一名程序员，我喜欢看计算机网络方面的图书，想研究一下网址开发。'</span><span style="color:#000000;"><BR>
+match&nbsp;=&nbsp;re.search(pattern,about)<BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;match&nbsp;==&nbsp;</span><span style="color:#8000ff;">None</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(about,&nbsp;</span><span style="color:#800000;">&quot;@&nbsp;安全！&quot;</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;没有匹配成功<BR>
+</span><span style="color:#0000ff;">else</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(about,&nbsp;</span><span style="color:#800000;">&quot;@&nbsp;出现危险字符！&quot;</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;匹配成功<BR>
+#&nbsp;语法：re.findall(pattern,&nbsp;string,&nbsp;[flags])&nbsp;&nbsp;&nbsp;&nbsp;标志位同上面，返回值不一样，为列表<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;re<BR>
+pattern&nbsp;=&nbsp;r</span><span style="color:#800000;">'mr_\w'</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;模式字符串<BR>
+</span><span style="color:#000000;">string&nbsp;=&nbsp;</span><span style="color:#800000;">'MR_SHOP&nbsp;mr_shop'</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;要匹配的字符串<BR>
+</span><span style="color:#000000;">match&nbsp;=&nbsp;re.findall(pattern,&nbsp;string,&nbsp;re.I)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;匹配字符串<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(match)<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;起始位置：&quot;</span><span style="color:#000000;">,match[</span><span style="color:#ff0000;">0</span><span style="color:#000000;">])<BR>
+</span><span style="color:#008000;">#&nbsp;替换字符串<BR>
+#&nbsp;语法：re.sub(pattern(模式字符串),&nbsp;repl(用来进行替换的字符串),&nbsp;string(要查找的被替换的原始字符串),&nbsp;count(进行模式匹配后进行替换的最大次数),&nbsp;flags(标志位：控制匹配方式))<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;re<BR>
+pattern&nbsp;=&nbsp;r</span><span style="color:#800000;">'1[34578]\d{9}'</span><span style="color:#000000;"><BR>
+string&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;中奖号码：84918981&nbsp;联系电话：13611111111&quot;</span><span style="color:#000000;"><BR>
+result&nbsp;=&nbsp;re.sub(pattern,&nbsp;</span><span style="color:#800000;">&quot;1XXXXXXXXXX&quot;</span><span style="color:#000000;">,string,</span><span style="color:#ff0000;">0</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;替换字符串<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(result)<BR>
+</span><span style="color:#008000;">#&nbsp;实例：替换危险符号<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;re<BR>
+pattern&nbsp;=&nbsp;r</span><span style="color:#800000;">'(黑客)|(抓包)|(监听)|(Trojan)'</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;模式字符串<BR>
+</span><span style="color:#000000;">about&nbsp;=&nbsp;</span><span style="color:#800000;">'我是一名程序员，我喜欢看黑客方面的图书，想研究一下Trojan。'</span><span style="color:#000000;"><BR>
+match&nbsp;=&nbsp;re.sub(pattern,</span><span style="color:#800000;">&quot;@_@&quot;</span><span style="color:#000000;">,about)<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(match)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;输出替换结果<BR>
+#&nbsp;使用正则表达式分割字符串<BR>
+#&nbsp;语法：re.split(pattern,&nbsp;string,&nbsp;<a href="最大拆分次数">maxsplit</a>,&nbsp;[flags])&nbsp;&nbsp;&nbsp;&nbsp;以列表形式返回<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;re<BR>
+pattern&nbsp;=&nbsp;r</span><span style="color:#800000;">'[?|&amp;]'</span><span style="color:#000000;"><BR>
+url&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;<a href="http://Navigator97.github.io?uaername&nbsp;=&nbsp;mr&nbsp;&amp;&nbsp;pwd&nbsp;=&nbsp;Navigator97&quot;">http://Navigator97.github.io?uaername&nbsp;=&nbsp;mr&nbsp;&amp;&nbsp;pwd&nbsp;=&nbsp;Navigator97&quot;</a></span><span style="color:#000000;"><BR>
+result&nbsp;=&nbsp;re.</span><span style="color:#0000ff;">split</span><span style="color:#000000;">(pattern,&nbsp;url)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;分割字符串<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(result)<BR>
+</span><span style="color:#008000;">#&nbsp;实例：@好友<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;re<BR>
+str1&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;@Navigator&nbsp;@扎克伯格&nbsp;@俞敏洪&nbsp;@勤奋的天使&quot;</span><span style="color:#000000;"><BR>
+pattern&nbsp;=&nbsp;r</span><span style="color:#800000;">'\s*@'</span><span style="color:#000000;"><BR>
+list1&nbsp;=&nbsp;re.</span><span style="color:#0000ff;">split</span><span style="color:#000000;">(pattern,&nbsp;str1)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;使用空格或者单独的@符号进行分割<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;您@的好友为：&quot;</span><span style="color:#000000;">)<BR>
+</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;item&nbsp;</span><span style="color:#0000ff;">in</span><span style="color:#000000;">&nbsp;list1:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;item&nbsp;!=&nbsp;</span><span style="color:#800000;">&quot;&quot;</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(item)<BR>
+</span></div></td></tr></table></div>
+<br><font color=black size = 5>正则表达式相关截图</font>
+<img src="https://wx1.sinaimg.cn/mw1024/007Diza3ly1g51ukvlv61j30yp0fnn0w.jpg" width="600" height="300" />
+<img src="https://wx2.sinaimg.cn/mw1024/007Diza3ly1g51ukvf5ldj30tk0il778.jpg" width="600" height="300" />
+<img src="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g51ukvl2z0j30w00i3jvh.jpg" width="600" height="300" />
+<br><br><br>
+<font color = gray size = 3>如有错误，欢迎指正！</font></p></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://oubc.github.io/tags/python/">Python</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmg4aog3074074gnf.gif?tags=%5B%5D">I </a>
+	<a href="">love</a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmfm2eg306o06o74u.gif?tags=%5B%5D"> you </a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx4tpcj30fn0bq3zg.jpg?tags=%5B%5D">three </a>
+	<a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx64ctg307s07swfy.gif?tags=%5B%5D">thousand</a>
+    <a href="https://www.kugou.com/song/#hash=96426C78381DE98DC31A5846FC274CBF&album_id=646623"> times.</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>家庭、梦想、内心的平静</span>
+  </div>
+</footer>
+
+
+
+<script src="https://oubc.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://oubc.github.io/js/zozo.js"></script>
+<script src="https://oubc.github.io/js/highlight.pack.js"></script>
+<link  href="https://oubc.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://oubc.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>

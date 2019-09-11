@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Bruce Cheung"/>
+
+  
+  <meta name="description" content="一起去探究Python中的面向对象编程设计和类吧
+"/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, simple, dream"/>
+  
+
+  
+  <link rel="canonical" href="https://oubc.github.io/post/p5_basicpython/"/>
+
+  
+
+  <title>Python基础-面向对象 &middot; Love, or death</title>
+
+  <link rel="shortcut icon" href="https://oubc.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/post/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://oubc.github.io/">
+          <span>Love, or death</span>
+          <img src="https://oubc.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">For you, a thousand times over.</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/oubc" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=uYGOjo6OiIuLivnIyJfa1tQ" title="mail" target="_blank"><i class="remixicon-mail-fill"></i></a>
+        
+        
+        
+        <a href="http://sighttp.qq.com/msgrd?v=1&amp;uin=877771223" title="qq" target="_blank"><i class="remixicon-qq-fill"></i></a>
+        
+        
+        
+        <a href="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g4klnqf0tmj30ia0widks.jpg" title="wechat" target="_blank"><i class="remixicon-wechat-fill"></i></a>
+        
+        
+        
+        <a href="https://weibo.com/u/6993631995?topnav=1&amp;wvr=6&amp;topsug=1" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://oubc.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/post/p5_basicpython/'>Python基础-面向对象</a></h2>
+          <span class="date">2019.07.17</span>
+        </div>
+        <div class="post_content markdown"><p>一起去探究Python中的面向对象编程设计和类吧</p>
+
+<p><br><font color=black size = 4>Python中的面向对象、类</font>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;Python Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47<br>48<br>49<br>50<br>51<br>52<br>53<br>54<br>55<br>56<br>57<br>58<br>59<br>60<br>61<br>62<br>63<br>64<br>65<br>66<br>67<br>68<br>69<br>70<br>71<br>72<br>73<br>74<br>75<br>76<br>77<br>78<br>79<br>80<br>81<br>82<br>83<br>84<br>85<br>86<br>87<br>88<br>89<br>90<br>91<br>92<br>93<br>94<br>95<br>96<br>97<br>98<br>99<br>100<br>101<br>102<br>103<br>104<br>105<br>106<br>107<br>108<br>109<br>110<br>111<br>112<br>113<br>114<br>115<br>116<br>117<br>118<br>119<br>120<br>121<br>122<br>123<br>124<br>125<br>126<br>127<br>128<br>129<br>130<br>131<br>132<br>133<br>134<br>135<br>136<br>137<br>138<br>139<br>140<br>141<br>142<br>143<br>144<br>145<br>146<br>147<br>148<br>149<br>150<br>151<br>152<br>153<br>154<br>155<br>156<br>157<br>158<br>159<br>160<br>161<br>162<br>163<br>164<br>165<br>166<br>167<br>168<br>169<br>170<br>171<br>172<br>173<br>174<br>175<br>176<br>177<br>178<br>179<br>180<br>181<br>182<br>183<br>184<br>185<br>186<br>187<br>188<br>189<br>190<br>191<br>192<br>193<br>194<br>195<br>196<br>197<br>198<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#008000;">#&nbsp;面向对象和类：面向对象概述、类的定义和使用、属性(property)、继承<BR>
+#&nbsp;面向对象程序设计(Object&nbsp;Oriented&nbsp;Programming、OOP)<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;面向对象概述：核心概念：对象、类&nbsp;&nbsp;&nbsp;三个特征：封装、继承、多态<BR>
+#&nbsp;对象：万物皆对象：由&nbsp;属性(静态的)&nbsp;和&nbsp;方法(动态的)&nbsp;组成<BR>
+#&nbsp;类：一组具有相似事物的统称<BR>
+#&nbsp;类和对象的关系与联系：对象是现实生活中存在的、而类是一种抽象，类可以衍生出对象<BR>
+#&nbsp;封装：把类的内部实现和使用分离开来，保留少数的接口供用户使用<BR>
+#&nbsp;继承：子类通过继承可以获得父类的属性和方法，并且可以重写或添加属性和方法，继承可以实现代码的重用<BR>
+#&nbsp;多态：多种形态，同种名字实现不同功能<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;类：定义类、创建类的实例、创建__init__()方法、创建类的成员并访问、访问限制<BR>
+#&nbsp;定义类：class关键字<BR>
+#&nbsp;语法：class&nbsp;ClassName:&nbsp;&nbsp;&nbsp;&nbsp;([惯例]驼峰式命名法：首字母大写、多字母首字母大写)<BR>
+#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'''类的帮助信息'''<BR>
+#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;statement<BR>
+</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;Geese:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'''大雁类'''</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">pass</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;属性<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;方法<BR>
+#&nbsp;创建类的实例：ClassName(parameterlist)<BR>
+</span><span style="color:#000000;">wildGeese&nbsp;=&nbsp;Geese()&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;创建大雁类的一个实例<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(wildGeese)<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#8000ff;">type</span><span style="color:#000000;">(wildGeese))<BR>
+</span><span style="color:#008000;">#&nbsp;创建__init__()方法&nbsp;=&nbsp;构造方法：创建类的实例的时候自动执行，在Python中只能有一个构造方法<BR>
+</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;Geese:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'''大雁类'''</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">__init__</span><span style="color:#000000;">(s,&nbsp;name):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;我是一只小小雁,我叫：&quot;</span><span style="color:#000000;">,&nbsp;name)<BR>
+wildGeese&nbsp;=&nbsp;Geese(</span><span style="color:#800000;">&quot;Navi&quot;</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;创建实例<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;创建类的成员并访问：实例方法、数据成员<BR>
+#&nbsp;语法：def&nbsp;functionName(self,&nbsp;parameterlist):<BR>
+#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;block<BR>
+#&nbsp;调用：instanceName.functionName(parametervalue)<BR>
+#&nbsp;实例：创建大雁类并定义飞行方法、创建数据成员(类属性、实例属性)并访问：<BR>
+#&nbsp;类属性：在类中，并且方法体外所有实例之间共享<BR>
+</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;Geese:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'''大雁类'''</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;neck&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;脖子较长&quot;</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;类属性(脖子)<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;wing&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;振翅频率高&quot;</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;类属性(翅膀)<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;leg&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;腿位于身体的中心支点，行走自如&quot;</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;类属性(腿)<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">__init__</span><span style="color:#000000;">(self,&nbsp;name):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;我是一只小小雁,我叫：&quot;</span><span style="color:#000000;">,&nbsp;name)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;输出类属性<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(Geese.neck)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(Geese.wing)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(Geese.leg)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;flying(self,state=</span><span style="color:#800000;">'正在休息'</span><span style="color:#000000;">):&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;飞行方法<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;飞行状态：&quot;</span><span style="color:#000000;">,state)<BR>
+wildGeese&nbsp;=&nbsp;Geese(</span><span style="color:#800000;">&quot;Navi&quot;</span><span style="color:#000000;">)<BR>
+wildGeese.flying(</span><span style="color:#800000;">&quot;在天空翱翔&quot;</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;调用实例方法<BR>
+</span><span style="color:#000000;">wildGeese.flying()<BR>
+</span><span style="color:#008000;">#&nbsp;实例<BR>
+</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;Geese:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'''大雁类'''</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;neck&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;脖子较长&quot;</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;类属性(脖子)<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;wing&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;振翅频率高&quot;</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;类属性(翅膀)<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;leg&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;腿位于身体的中心支点，行走自如&quot;</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;类属性(腿)<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;number&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">__init__</span><span style="color:#000000;">(self,&nbsp;name):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;我是一只小小雁,我叫：&quot;</span><span style="color:#000000;">,&nbsp;name)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;输出类属性<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(Geese.neck)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(Geese.wing)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(Geese.leg)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Geese.number&nbsp;+=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;flying(self,state=</span><span style="color:#800000;">'正在休息'</span><span style="color:#000000;">):&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;飞行方法<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;飞行状态：&quot;</span><span style="color:#000000;">,state)<BR>
+wildGeese&nbsp;=&nbsp;Geese(</span><span style="color:#800000;">&quot;Navi&quot;</span><span style="color:#000000;">)<BR>
+list1&nbsp;=&nbsp;[]<BR>
+</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;i&nbsp;</span><span style="color:#0000ff;">in</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">range</span><span style="color:#000000;">(</span><span style="color:#ff0000;">4</span><span style="color:#000000;">):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;list1.</span><span style="color:#0000ff;">append</span><span style="color:#000000;">(Geese(</span><span style="color:#800000;">&quot;Navi&quot;</span><span style="color:#000000;">))&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;创建大雁类的实例<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;一共有%d只大雁！&quot;</span><span style="color:#000000;">%Geese.number)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;输出大雁的只数<BR>
+</span><span style="color:#000000;">Geese.beak&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;喙的基部较高，长度和头部几乎相等&quot;</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;添加一个类属性<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(wildGeese.beak)<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(list1[</span><span style="color:#ff0000;">2</span><span style="color:#000000;">].beak)<BR>
+</span><span style="color:#008000;">#&nbsp;实例属性：在类中，并且方法体内，只作用于当前实例，只能通过实例访问，不能通过类名进行访问<BR>
+</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;Geese:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'''大雁类'''</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">__init__</span><span style="color:#000000;">(self,&nbsp;name):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.neck&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;脖子较长&quot;</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;实例属性(脖子)<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.wing&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;振翅频率高&quot;</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;实例属性(翅膀)<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.leg&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;腿位于身体的中心支点，行走自如&quot;</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;实例属性(腿)<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;我是一只小小雁,我叫：&quot;</span><span style="color:#000000;">,&nbsp;name,&nbsp;</span><span style="color:#800000;">&quot;下面是我的实例属性：&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;输出实例属性<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(self.neck)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;访问实例属性<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(self.wing)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(self.leg)<BR>
+geese&nbsp;=&nbsp;Geese(</span><span style="color:#800000;">&quot;Navi&quot;</span><span style="color:#000000;">)<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(geese.leg)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;通过实例访问<BR>
+</span><span style="color:#000000;">geese.leg&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;通过腿我可以行走&quot;</span><span style="color:#000000;"><BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(geese.leg)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;修改实例属性<BR>
+</span><span style="color:#000000;">geese.eat&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;我喜欢吃虫子&quot;</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;添加一个实例属性<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(geese.eat)<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;访问限制<BR>
+#&nbsp;_foo(保护protected类型，只允许类本身和子类进行访问，实例名也可以访问)、__foo(私有类型的成员，只有类本身才能访问)、__foo__(系统定义的名字，特殊的方法)<BR>
+</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;Swan:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'''天鹅类'''</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;_neck_swan&nbsp;=&nbsp;</span><span style="color:#800000;">'天鹅的脖子很长'</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;保护类型的属性<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;__leg_swan&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;天鹅的腿也很长&quot;</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">__init__</span><span style="color:#000000;">(self):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;__init__():&quot;</span><span style="color:#000000;">,Swan._neck_swan)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;访问保护类型的属性<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;__init__():&quot;</span><span style="color:#000000;">,self.__leg_swan)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;访问私有类型的属性<BR>
+</span><span style="color:#000000;">swan&nbsp;=&nbsp;Swan()<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;直接访问：&quot;</span><span style="color:#000000;">,swan._neck_swan)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;通过实例名访问受保护类型属性<BR>
+#&nbsp;print(&quot;直接访问：&quot;,swan.__leg_swan)&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;通过实例名访问私有类型的属性&nbsp;&nbsp;&nbsp;&nbsp;会出错<BR>
+#&nbsp;私有类型的可以通过&nbsp;实例名._类名私有成员名&nbsp;来进行访问，例如：<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;直接访问：&quot;</span><span style="color:#000000;">,swan._Swan__leg_swan)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;在类外访问私有成员<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;属性&nbsp;property(也叫做装饰器)&nbsp;&nbsp;!=&nbsp;类属性和实例属性：它是一种特殊的属性，访问计算后所得的值<BR>
+#&nbsp;创建用于计算的属性：@property&nbsp;可以把一个方法转换为一个可用于计算的属性<BR>
+#&nbsp;语法：@property<BR>
+#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;def&nbsp;methodname(self):<BR>
+#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;block(return语句返回计算结果)<BR>
+</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;Rect:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">__init__</span><span style="color:#000000;">(self,width,height):&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;构造方法<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.width&nbsp;=&nbsp;width<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.height&nbsp;=&nbsp;height<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;@property<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;area(self):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;self.width&nbsp;*&nbsp;self.height&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;计算矩形面积<BR>
+</span><span style="color:#000000;">rect&nbsp;=&nbsp;Rect(</span><span style="color:#ff0000;">800</span><span style="color:#000000;">,</span><span style="color:#ff0000;">600</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;创建类的实例<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;面积为：&quot;</span><span style="color:#000000;">,rect.area)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;加上装饰器后方法后面的()就可以去掉，相当于属性<BR>
+#&nbsp;rect.area&nbsp;=&nbsp;100&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;不能对property属性进行重新赋值&nbsp;&nbsp;&nbsp;&nbsp;该语句错误<BR>
+#&nbsp;为属性添加安全保护机制：可以实现相当于私有类外读取却不能修改的功能<BR>
+</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;TVShow:&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;电视节目类<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">__init__</span><span style="color:#000000;">(self,show):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.__show&nbsp;=&nbsp;show<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;@property<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;show(self):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;self.__show&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;返回私有属性<BR>
+</span><span style="color:#000000;">tvshow&nbsp;=&nbsp;TVShow(</span><span style="color:#800000;">&quot;正在播放《战狼2》&quot;</span><span style="color:#000000;">)<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;默认：&quot;</span><span style="color:#000000;">,tvshow.show)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;获取私有属性值，但不能修改<BR>
+#&nbsp;通过装饰器为属性设定拦截器：允许对属性进行修改，但有一定的限制<BR>
+</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;TVShow:&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;电视节目类<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;list_film&nbsp;=&nbsp;[</span><span style="color:#800000;">&quot;《战狼2》&quot;</span><span style="color:#000000;">,</span><span style="color:#800000;">&quot;《红海行动》&quot;</span><span style="color:#000000;">,</span><span style="color:#800000;">&quot;《西游记之女儿国》&quot;</span><span style="color:#000000;">,</span><span style="color:#800000;">&quot;《熊出没之变形记》&quot;</span><span style="color:#000000;">]<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">__init__</span><span style="color:#000000;">(self,show):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.__show&nbsp;=&nbsp;show<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;@property<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;show(self):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;self.__show&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;返回私有属性<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;@show.setter<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;show(self,value):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;value&nbsp;</span><span style="color:#0000ff;">in</span><span style="color:#000000;">&nbsp;TVShow.list_film:&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;判断值是否在列表中<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.__show&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;您选择了&quot;</span><span style="color:#000000;">&nbsp;+&nbsp;value&nbsp;+&nbsp;</span><span style="color:#800000;">&quot;，稍后将为您播放&quot;</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;修改返回的值<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.__show&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;您点播的电影不存在！&quot;</span><span style="color:#000000;"><BR>
+tvshow&nbsp;=&nbsp;TVShow(</span><span style="color:#800000;">&quot;《战狼2》&quot;</span><span style="color:#000000;">)<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;正在播放：&quot;</span><span style="color:#000000;">,tvshow.show)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;获取私有属性值，但不能修改<BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;您可以从&quot;</span><span style="color:#000000;">,TVShow.list_film,</span><span style="color:#800000;">&quot;中选择点播的电影&quot;</span><span style="color:#000000;">)<BR>
+tvshow.show&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;《红海行动》&quot;</span><span style="color:#000000;"><BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(tvshow.show)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;获取属性值<BR>
+</span><span style="color:#000000;">tvshow.show&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;《捉妖计2》&quot;</span><span style="color:#000000;"><BR>
+</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(tvshow.show)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;获取属性值<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;继承：继承的基本语法、方法重写、在派生类当中调用基类的__init__()方法<BR>
+#&nbsp;继承的基本语法：class&nbsp;ClassName(baseclasslist):&nbsp;&nbsp;'''类的帮助信息'''&nbsp;&nbsp;statement<BR>
+#&nbsp;方法重写<BR>
+#&nbsp;再派生类中调用基类的__init__()方法：super().__init__()<BR>
+#&nbsp;实例：创建水果类，再创建它的子类<BR>
+</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;Fruit:&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;水果&nbsp;基类<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;color&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;绿色&quot;</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;类属性<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">__init__</span><span style="color:#000000;">(self,shape&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;circle&quot;</span><span style="color:#000000;">):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fruit.shape&nbsp;=&nbsp;shape<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;harvest(self,color):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;水果是&quot;</span><span style="color:#000000;">,color,</span><span style="color:#800000;">&quot;的&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;水果的形状是&quot;</span><span style="color:#000000;">,Fruit.shape,</span><span style="color:#800000;">&quot;的&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;水果已经收获...&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;水果原来是&quot;</span><span style="color:#000000;">,Fruit.color,</span><span style="color:#800000;">&quot;的&quot;</span><span style="color:#000000;">)<BR>
+</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;Apple(Fruit):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;color&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;红色&quot;</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">__init__</span><span style="color:#000000;">(self):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">super</span><span style="color:#000000;">().</span><span style="color:#0000ff;">__init__</span><span style="color:#000000;">()&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;调用基类的构造方法<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;我是苹果&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;harvest(self,color):&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;方法重写<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;苹果是&quot;</span><span style="color:#000000;">,color,</span><span style="color:#800000;">&quot;的&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;水果的形状是&quot;</span><span style="color:#000000;">,Fruit.shape,</span><span style="color:#800000;">&quot;的&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;苹果已经收获...&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;苹果原来是&quot;</span><span style="color:#000000;">,Fruit.color,</span><span style="color:#800000;">&quot;的&quot;</span><span style="color:#000000;">)<BR>
+</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;Orange(Fruit):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;color&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;橙色&quot;</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">__init__</span><span style="color:#000000;">(self):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">super</span><span style="color:#000000;">().</span><span style="color:#0000ff;">__init__</span><span style="color:#000000;">()&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;调用基类的构造方法<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;我是橘子&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;harvest(self,color):&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;方法重写<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;橘子是&quot;</span><span style="color:#000000;">,color,</span><span style="color:#800000;">&quot;的&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;水果的形状是&quot;</span><span style="color:#000000;">,Fruit.shape,</span><span style="color:#800000;">&quot;的&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;橘子已经收获...&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;橘子原来是&quot;</span><span style="color:#000000;">,Fruit.color,</span><span style="color:#800000;">&quot;的&quot;</span><span style="color:#000000;">)<BR>
+apple&nbsp;=&nbsp;Apple()&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;实例苹果的实例<BR>
+</span><span style="color:#000000;">apple.harvest(apple.color)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;调用基类的harvest()方法<BR>
+</span><span style="color:#000000;">orange&nbsp;=&nbsp;Orange()&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;实例橘子的实例<BR>
+</span><span style="color:#000000;">orange.harvest(orange.color)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;调用基类的harvest()方法<BR>
+#&nbsp;在派生类中定义了构造方法实例化对象是会执行派生类当中的构造方法，不会执行基类的构造方法，而如果在派生类中未定义构造方法，实例化对象时会执行基类的构造方法<BR>
+</span></div></td></tr></table></div>
+<br><br><br>
+<font color = gray size = 3>如有错误，欢迎指正！</font></p></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://oubc.github.io/tags/python/">Python</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmg4aog3074074gnf.gif?tags=%5B%5D">I </a>
+	<a href="">love</a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmfm2eg306o06o74u.gif?tags=%5B%5D"> you </a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx4tpcj30fn0bq3zg.jpg?tags=%5B%5D">three </a>
+	<a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx64ctg307s07swfy.gif?tags=%5B%5D">thousand</a>
+    <a href="https://www.kugou.com/song/#hash=96426C78381DE98DC31A5846FC274CBF&album_id=646623"> times.</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>家庭、梦想、内心的平静</span>
+  </div>
+</footer>
+
+
+
+<script src="https://oubc.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://oubc.github.io/js/zozo.js"></script>
+<script src="https://oubc.github.io/js/highlight.pack.js"></script>
+<link  href="https://oubc.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://oubc.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>

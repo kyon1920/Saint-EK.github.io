@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Bruce Cheung"/>
+
+  
+  <meta name="description" content="经典小游戏：童年的五子棋
+"/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, simple, dream"/>
+  
+
+  
+  <link rel="canonical" href="https://oubc.github.io/post/gobang/"/>
+
+  
+
+  <title>红蓝五子棋 &middot; Love, or death</title>
+
+  <link rel="shortcut icon" href="https://oubc.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/post/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://oubc.github.io/">
+          <span>Love, or death</span>
+          <img src="https://oubc.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">For you, a thousand times over.</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/oubc" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=uYGOjo6OiIuLivnIyJfa1tQ" title="mail" target="_blank"><i class="remixicon-mail-fill"></i></a>
+        
+        
+        
+        <a href="http://sighttp.qq.com/msgrd?v=1&amp;uin=877771223" title="qq" target="_blank"><i class="remixicon-qq-fill"></i></a>
+        
+        
+        
+        <a href="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g4klnqf0tmj30ia0widks.jpg" title="wechat" target="_blank"><i class="remixicon-wechat-fill"></i></a>
+        
+        
+        
+        <a href="https://weibo.com/u/6993631995?topnav=1&amp;wvr=6&amp;topsug=1" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://oubc.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/post/gobang/'>红蓝五子棋</a></h2>
+          <span class="date">2019.01.24</span>
+        </div>
+        <div class="post_content markdown"><p>经典小游戏：童年的五子棋</p>
+
+<p><br><br>项目名称：红蓝五子棋
+<br>开发工具：VS2019
+<br>开发语言：C/C++、windowsAPI
+<br>项目介绍：游戏分为两方，一为红方，一为蓝方，任意一方先下棋，另一方继续下，直到某一方率先筹齐五子连珠者胜。
+<br><br>具体实现：
+<br>1、游戏棋盘：15X15正方形网格图形，由windowsAPI-Rectangle()函数实现最外层框图，由windowsAPI-MoveToEx()和LineTo()两个函数结合循环画线实现内部正方形网格现，该实现被放在PAINT消息里面。
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000;">//画出五子棋格子图<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;Rectangle(hdc,&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">&nbsp;*&nbsp;</span><span style="color:#ff0000;">15</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">&nbsp;*&nbsp;</span><span style="color:#ff0000;">15</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">14</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MoveToEx(hdc,&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">&nbsp;*&nbsp;(i&nbsp;+&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">),&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">,&nbsp;</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LineTo(hdc,&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">&nbsp;*&nbsp;(i&nbsp;+&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">),&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">&nbsp;*&nbsp;</span><span style="color:#ff0000;">15</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;j&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;j&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">14</span><span style="color:#000000;">;&nbsp;++j)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MoveToEx(hdc,&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">&nbsp;*&nbsp;(j&nbsp;+&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">),&nbsp;</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LineTo(hdc,&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">&nbsp;*&nbsp;</span><span style="color:#ff0000;">15</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">&nbsp;*&nbsp;(j&nbsp;+&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}</span></div></td></tr></table></div>
+<br><br>2、实现逻辑：定义一个15x15的二维数组，并将他们全部初始化为0，由鼠标左键实现在棋盘中放置红棋，当玩家在相应位置放置红棋时，对应该数组元素设置为1，由鼠标右键实现在棋盘中放置蓝棋，当玩家在相应位置放置蓝棋时，对应该数组元素设置为2，每次下棋后(无论是红棋还是蓝棋)，都要进行该处是否被对方棋子占据和五子连珠检查，该棋盘格子处未被占据并且未形成五子连珠方可继续在该处放置棋子，当该位置被对方棋子占据时，另选位置放置棋子即可，若是形成了五子连珠，胜负决出，游戏结束。
+<br>&nbsp;&nbsp;&nbsp;&nbsp;a)左键消息：放置红棋并判断五子连珠
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47<br>48<br>49<br>50<br>51<br>52<br>53<br>54<br>55<br>56<br>57<br>58<br>59<br>60<br>61<br>62<br>63<br>64<br>65<br>66<br>67<br>68<br>69<br>70<br>71<br>72<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;WM_LBUTTONDOWN:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;POINT&nbsp;lpoint;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hdc&nbsp;=&nbsp;GetDC(hWnd);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hPen&nbsp;=&nbsp;CreatePen(BS_SOLID,&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,&nbsp;RGB(</span><span style="color:#ff0000;">255</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hOldPen&nbsp;=&nbsp;(HPEN)SelectObject(hdc,&nbsp;hPen);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hBrush&nbsp;=&nbsp;CreateSolidBrush(RGB(</span><span style="color:#ff0000;">255</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hOldBrush&nbsp;=&nbsp;(HBRUSH)SelectObject(hdc,&nbsp;hBrush);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GetCursorPos(&amp;lpoint);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ScreenToClient(hWnd,&nbsp;&amp;lpoint);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a_x&nbsp;=&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">)((lpoint.x&nbsp;+&nbsp;</span><span style="color:#ff0000;">20</span><span style="color:#000000;">)&nbsp;/&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">)&nbsp;*&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a_y&nbsp;=&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">)((lpoint.y&nbsp;+&nbsp;</span><span style="color:#ff0000;">20</span><span style="color:#000000;">)&nbsp;/&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">)&nbsp;*&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(a_x&nbsp;&gt;=&nbsp;</span><span style="color:#ff0000;">20</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;a_x&nbsp;&lt;=&nbsp;</span><span style="color:#ff0000;">620</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;a_y&nbsp;&gt;=&nbsp;</span><span style="color:#ff0000;">20</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;a_y&nbsp;&lt;=&nbsp;</span><span style="color:#ff0000;">620</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(Jud[a_x&nbsp;/&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">][a_y&nbsp;/&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">]&nbsp;==&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ellipse(hdc,&nbsp;a_x&nbsp;-&nbsp;</span><span style="color:#ff0000;">15</span><span style="color:#000000;">,&nbsp;a_y&nbsp;-&nbsp;</span><span style="color:#ff0000;">15</span><span style="color:#000000;">,&nbsp;a_x&nbsp;+&nbsp;</span><span style="color:#ff0000;">15</span><span style="color:#000000;">,&nbsp;a_y&nbsp;+&nbsp;</span><span style="color:#ff0000;">15</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jud[a_x&nbsp;/&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">][a_y&nbsp;/&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MessageBox(</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">,&nbsp;TEXT(</span><span style="color:#800000;">&quot;该位置已经被蓝棋占领，请另选位置哟~&quot;</span><span style="color:#000000;">),&nbsp;TEXT(</span><span style="color:#800000;">&quot;小提示&quot;</span><span style="color:#000000;">),&nbsp;MB_OK);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;=&nbsp;</span><span style="color:#ff0000;">15</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;j&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;&nbsp;j&nbsp;&lt;=&nbsp;</span><span style="color:#ff0000;">11</span><span style="color:#000000;">;&nbsp;++j)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(Jud[i][j]&nbsp;==&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;Jud[i][j&nbsp;+&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">]&nbsp;==&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;Jud[i][j&nbsp;+&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">]&nbsp;==&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;&amp;&amp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jud[i][j&nbsp;+&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">]&nbsp;==&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;Jud[i][j&nbsp;+&nbsp;</span><span style="color:#ff0000;">4</span><span style="color:#000000;">]&nbsp;==&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MessageBox(</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">,&nbsp;TEXT(</span><span style="color:#800000;">&quot;******红方获胜！撒花~******&quot;</span><span style="color:#000000;">),&nbsp;TEXT(</span><span style="color:#800000;">&quot;本局游戏结束&quot;</span><span style="color:#000000;">),&nbsp;MB_OK);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;=&nbsp;</span><span style="color:#ff0000;">11</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;j&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;&nbsp;j&nbsp;&lt;=&nbsp;</span><span style="color:#ff0000;">15</span><span style="color:#000000;">;&nbsp;++j)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(Jud[i][j]&nbsp;==&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;Jud[i&nbsp;+&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">][j]&nbsp;==&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;Jud[i&nbsp;+&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">][j]&nbsp;==&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;&amp;&amp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jud[i&nbsp;+&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">][j]&nbsp;==&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;Jud[i&nbsp;+&nbsp;</span><span style="color:#ff0000;">4</span><span style="color:#000000;">][j]&nbsp;==&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MessageBox(</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">,&nbsp;TEXT(</span><span style="color:#800000;">&quot;******红方获胜！撒花~******&quot;</span><span style="color:#000000;">),&nbsp;TEXT(</span><span style="color:#800000;">&quot;本局游戏结束&quot;</span><span style="color:#000000;">),&nbsp;MB_OK);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;=&nbsp;</span><span style="color:#ff0000;">11</span><span style="color:#000000;">;&nbsp;i++)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;j&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;&nbsp;j&nbsp;&lt;=&nbsp;</span><span style="color:#ff0000;">11</span><span style="color:#000000;">;&nbsp;j++)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(Jud[i][j]&nbsp;==&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;Jud[i&nbsp;+&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">][j&nbsp;+&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">]&nbsp;==&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;Jud[i&nbsp;+&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">][j&nbsp;+&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">]&nbsp;==&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;&amp;&amp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jud[i&nbsp;+&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">][j&nbsp;+&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">]&nbsp;==&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;Jud[i&nbsp;+&nbsp;</span><span style="color:#ff0000;">4</span><span style="color:#000000;">][j&nbsp;+&nbsp;</span><span style="color:#ff0000;">4</span><span style="color:#000000;">]&nbsp;==&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MessageBox(</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">,&nbsp;TEXT(</span><span style="color:#800000;">&quot;******红方获胜！撒花~******&quot;</span><span style="color:#000000;">),&nbsp;TEXT(</span><span style="color:#800000;">&quot;本局游戏结束&quot;</span><span style="color:#000000;">),&nbsp;MB_OK);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;=&nbsp;</span><span style="color:#ff0000;">11</span><span style="color:#000000;">;&nbsp;i++)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;j&nbsp;=&nbsp;</span><span style="color:#ff0000;">15</span><span style="color:#000000;">;&nbsp;j&nbsp;&gt;=&nbsp;</span><span style="color:#ff0000;">5</span><span style="color:#000000;">;&nbsp;j--)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(Jud[i][j]&nbsp;==&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;Jud[i&nbsp;+&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">][j&nbsp;-&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">]&nbsp;==&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;Jud[i&nbsp;+&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">][j&nbsp;-&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">]&nbsp;==&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;&amp;&amp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jud[i&nbsp;+&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">][j&nbsp;-&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">]&nbsp;==&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;Jud[i&nbsp;+&nbsp;</span><span style="color:#ff0000;">4</span><span style="color:#000000;">][j&nbsp;-&nbsp;</span><span style="color:#ff0000;">4</span><span style="color:#000000;">]&nbsp;==&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MessageBox(</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">,&nbsp;TEXT(</span><span style="color:#800000;">&quot;******红方获胜！撒花~******&quot;</span><span style="color:#000000;">),&nbsp;TEXT(</span><span style="color:#800000;">&quot;本局游戏结束&quot;</span><span style="color:#000000;">),&nbsp;MB_OK);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TextOut(hdc,&nbsp;</span><span style="color:#ff0000;">20</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">,&nbsp;TEXT(</span><span style="color:#800000;">&quot;现在轮到蓝方走棋，祝您好运!&quot;</span><span style="color:#000000;">),&nbsp;</span><span style="color:#ff0000;">14</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SelectObject(hdc,&nbsp;hOldPen);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SelectObject(hdc,&nbsp;hOldBrush);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ReleaseDC(hWnd,&nbsp;hdc);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;</span></div></td></tr></table></div>
+<br><br>&nbsp;&nbsp;&nbsp;&nbsp;b)右键消息：放置蓝棋并判断五子连珠
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47<br>48<br>49<br>50<br>51<br>52<br>53<br>54<br>55<br>56<br>57<br>58<br>59<br>60<br>61<br>62<br>63<br>64<br>65<br>66<br>67<br>68<br>69<br>70<br>71<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;WM_RBUTTONDOWN:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;POINT&nbsp;rpoint;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hdc&nbsp;=&nbsp;GetDC(hWnd);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hPen&nbsp;=&nbsp;CreatePen(BS_SOLID,&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,&nbsp;RGB(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">255</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hOldPen&nbsp;=&nbsp;(HPEN)SelectObject(hdc,&nbsp;hPen);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hBrush&nbsp;=&nbsp;CreateSolidBrush(RGB(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">255</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hOldBrush&nbsp;=&nbsp;(HBRUSH)SelectObject(hdc,&nbsp;hBrush);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GetCursorPos(&amp;rpoint);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ScreenToClient(hWnd,&nbsp;&amp;rpoint);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;b_x&nbsp;=&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">)((rpoint.x&nbsp;+&nbsp;</span><span style="color:#ff0000;">20</span><span style="color:#000000;">)&nbsp;/&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">)&nbsp;*&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;b_y&nbsp;=&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">)((rpoint.y&nbsp;+&nbsp;</span><span style="color:#ff0000;">20</span><span style="color:#000000;">)&nbsp;/&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">)&nbsp;*&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(b_x&nbsp;&gt;=&nbsp;</span><span style="color:#ff0000;">20</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;b_x&nbsp;&lt;=&nbsp;</span><span style="color:#ff0000;">620</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;b_y&nbsp;&gt;=&nbsp;</span><span style="color:#ff0000;">20</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;b_y&nbsp;&lt;=&nbsp;</span><span style="color:#ff0000;">620</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(Jud[b_x&nbsp;/&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">][b_y&nbsp;/&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">]&nbsp;==&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ellipse(hdc,&nbsp;b_x&nbsp;-&nbsp;</span><span style="color:#ff0000;">15</span><span style="color:#000000;">,&nbsp;b_y&nbsp;-&nbsp;</span><span style="color:#ff0000;">15</span><span style="color:#000000;">,&nbsp;b_x&nbsp;+&nbsp;</span><span style="color:#ff0000;">15</span><span style="color:#000000;">,&nbsp;b_y&nbsp;+&nbsp;</span><span style="color:#ff0000;">15</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jud[b_x&nbsp;/&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">][b_y&nbsp;/&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MessageBox(</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">,&nbsp;TEXT(</span><span style="color:#800000;">&quot;该位置已经被红棋占领，请另选位置哟~&quot;</span><span style="color:#000000;">),&nbsp;TEXT(</span><span style="color:#800000;">&quot;小提示&quot;</span><span style="color:#000000;">),&nbsp;MB_OK);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;=&nbsp;</span><span style="color:#ff0000;">15</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;j&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;&nbsp;j&nbsp;&lt;=&nbsp;</span><span style="color:#ff0000;">11</span><span style="color:#000000;">;&nbsp;++j)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(Jud[i][j]&nbsp;==&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;Jud[i][j&nbsp;+&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">]&nbsp;==&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;Jud[i][j&nbsp;+&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">]&nbsp;==&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;&amp;&amp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jud[i][j&nbsp;+&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">]&nbsp;==&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;Jud[i][j&nbsp;+&nbsp;</span><span style="color:#ff0000;">4</span><span style="color:#000000;">]&nbsp;==&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MessageBox(</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">,&nbsp;TEXT(</span><span style="color:#800000;">&quot;******蓝方获胜！撒花~******&quot;</span><span style="color:#000000;">),&nbsp;TEXT(</span><span style="color:#800000;">&quot;本局游戏结束&quot;</span><span style="color:#000000;">),&nbsp;MB_OK);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;=&nbsp;</span><span style="color:#ff0000;">11</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;j&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;&nbsp;j&nbsp;&lt;=&nbsp;</span><span style="color:#ff0000;">15</span><span style="color:#000000;">;&nbsp;++j)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(Jud[i][j]&nbsp;==&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;Jud[i&nbsp;+&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">][j]&nbsp;==&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;Jud[i&nbsp;+&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">][j]&nbsp;==&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;&amp;&amp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jud[i&nbsp;+&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">][j]&nbsp;==&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;Jud[i&nbsp;+&nbsp;</span><span style="color:#ff0000;">4</span><span style="color:#000000;">][j]&nbsp;==&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MessageBox(</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">,&nbsp;TEXT(</span><span style="color:#800000;">&quot;******蓝方获胜！撒花~******&quot;</span><span style="color:#000000;">),&nbsp;TEXT(</span><span style="color:#800000;">&quot;本局游戏结束&quot;</span><span style="color:#000000;">),&nbsp;MB_OK);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;=&nbsp;</span><span style="color:#ff0000;">11</span><span style="color:#000000;">;&nbsp;i++)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;j&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;&nbsp;j&nbsp;&lt;=&nbsp;</span><span style="color:#ff0000;">11</span><span style="color:#000000;">;&nbsp;j++)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(Jud[i][j]&nbsp;==&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;Jud[i&nbsp;+&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">][j&nbsp;+&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">]&nbsp;==&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;Jud[i&nbsp;+&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">][j&nbsp;+&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">]&nbsp;==&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;&amp;&amp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jud[i&nbsp;+&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">][j&nbsp;+&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">]&nbsp;==&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;Jud[i&nbsp;+&nbsp;</span><span style="color:#ff0000;">4</span><span style="color:#000000;">][j&nbsp;+&nbsp;</span><span style="color:#ff0000;">4</span><span style="color:#000000;">]&nbsp;==&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MessageBox(</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">,&nbsp;TEXT(</span><span style="color:#800000;">&quot;******蓝方获胜！撒花~******&quot;</span><span style="color:#000000;">),&nbsp;TEXT(</span><span style="color:#800000;">&quot;本局游戏结束&quot;</span><span style="color:#000000;">),&nbsp;MB_OK);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;=&nbsp;</span><span style="color:#ff0000;">11</span><span style="color:#000000;">;&nbsp;i++)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;j&nbsp;=&nbsp;</span><span style="color:#ff0000;">15</span><span style="color:#000000;">;&nbsp;j&nbsp;&gt;=&nbsp;</span><span style="color:#ff0000;">5</span><span style="color:#000000;">;&nbsp;j--)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(Jud[i][j]&nbsp;==&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;Jud[i&nbsp;+&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">][j&nbsp;-&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">]&nbsp;==&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;Jud[i&nbsp;+&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">][j&nbsp;-&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">]&nbsp;==&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;&amp;&amp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jud[i&nbsp;+&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">][j&nbsp;-&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">]&nbsp;==&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;Jud[i&nbsp;+&nbsp;</span><span style="color:#ff0000;">4</span><span style="color:#000000;">][j&nbsp;-&nbsp;</span><span style="color:#ff0000;">4</span><span style="color:#000000;">]&nbsp;==&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MessageBox(</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">,&nbsp;TEXT(</span><span style="color:#800000;">&quot;******蓝方获胜！撒花~******&quot;</span><span style="color:#000000;">),&nbsp;TEXT(</span><span style="color:#800000;">&quot;本局游戏结束&quot;</span><span style="color:#000000;">),&nbsp;MB_OK);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TextOut(hdc,&nbsp;</span><span style="color:#ff0000;">20</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">,&nbsp;TEXT(</span><span style="color:#800000;">&quot;现在轮到红方走棋，祝您好运!&quot;</span><span style="color:#000000;">),&nbsp;</span><span style="color:#ff0000;">14</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SelectObject(hdc,&nbsp;hOldPen);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SelectObject(hdc,&nbsp;hOldBrush);<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ReleaseDC(hWnd,&nbsp;hdc);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;</span></div></td></tr></table></div>
+<br><br>3、实现分析：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;a)待优化处：应将棋盘的实现、判断五子连珠单独写在一个函数中，这样可以避免代码重复，减少工作量。
+<br>&nbsp;&nbsp;&nbsp;&nbsp;b)优点：每次利用鼠标点击来放置棋子时，并不是鼠标点哪里就在哪里放置棋子，而是首先对鼠标点击位置进行判断，只有当鼠标点击位置在棋盘格子的左右上下15个像素点的时候，才会在棋盘放置以该格子为中心，半径为15的圆形相应颜色的棋子，从而避免了鼠标点哪里就在哪里放置棋子。
+<br><br>4、完整代码：
+<br><br>framework.h文件
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#008000;">//&nbsp;header.h:&nbsp;标准系统包含文件的包含文件，<BR>
+//&nbsp;或特定于项目的包含文件<BR>
+//<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">#pragma</span><span style="color:#000000;">&nbsp;once<BR>
+<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;</span><span style="color:#800000;">&quot;targetver.h&quot;</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;WIN32_LEAN_AND_MEAN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;从&nbsp;Windows&nbsp;头文件中排除极少使用的内容<BR>
+//&nbsp;Windows&nbsp;头文件<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;windows.h&gt;<BR>
+</span><span style="color:#008000;">//&nbsp;C&nbsp;运行时头文件<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;stdlib.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;malloc.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;memory.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;tchar.h&gt;<BR>
+</span></div></td></tr></table></div>
+<br><br>Resource.h文件<br>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#008000;">//{{NO_DEPENDENCIES}}<BR>
+//&nbsp;Microsoft&nbsp;Visual&nbsp;C++&nbsp;生成的包含文件。<BR>
+//&nbsp;使用者&nbsp;五子棋.rc<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;IDS_APP_TITLE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">103</span><span style="color:#000000;"><BR>
+<BR>
+</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;IDR_MAINFRAME&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">128</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;IDD_MY_DIALOG&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">102</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;IDD_ABOUTBOX&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">103</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;IDM_ABOUT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">104</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;IDM_EXIT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">105</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;IDI_MY&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">107</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;IDI_SMALL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">108</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;IDC_MY&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">109</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;IDC_MYICON&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">#ifndef</span><span style="color:#000000;">&nbsp;IDC_STATIC<BR>
+</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;IDC_STATIC&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-</span><span style="color:#ff0000;">1</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">#endif</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">//&nbsp;新对象的下一组默认值<BR>
+//<BR>
+</span><span style="color:#0000ff;">#ifdef</span><span style="color:#000000;">&nbsp;APSTUDIO_INVOKED<BR>
+</span><span style="color:#0000ff;">#ifndef</span><span style="color:#000000;">&nbsp;APSTUDIO_READONLY_SYMBOLS<BR>
+<BR>
+</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;_APS_NO_MFC&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">130</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;_APS_NEXT_RESOURCE_VALUE&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">129</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;_APS_NEXT_COMMAND_VALUE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">32771</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;_APS_NEXT_CONTROL_VALUE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">1000</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;_APS_NEXT_SYMED_VALUE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">110</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">#endif</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">#endif</span><span style="color:#000000;"><BR>
+</span></div></td></tr></table></div>
+<br><br>targetver.h文件<br>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#pragma</span><span style="color:#000000;">&nbsp;once<BR>
+<BR>
+</span><span style="color:#008000;">//&nbsp;//&nbsp;包含&nbsp;SDKDDKVer.h&nbsp;可定义可用的最高版本的&nbsp;Windows&nbsp;平台。<BR>
+//&nbsp;如果希望为之前的&nbsp;Windows&nbsp;平台构建应用程序，在包含&nbsp;SDKDDKVer.h&nbsp;之前请先包含&nbsp;WinSDKVer.h&nbsp;并<BR>
+//&nbsp;将&nbsp;_WIN32_WINNT&nbsp;宏设置为想要支持的平台。<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;SDKDDKVer.h&gt;<BR>
+</span></div></td></tr></table></div>
+<br><br>五子棋.cpp文件<br>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47<br>48<br>49<br>50<br>51<br>52<br>53<br>54<br>55<br>56<br>57<br>58<br>59<br>60<br>61<br>62<br>63<br>64<br>65<br>66<br>67<br>68<br>69<br>70<br>71<br>72<br>73<br>74<br>75<br>76<br>77<br>78<br>79<br>80<br>81<br>82<br>83<br>84<br>85<br>86<br>87<br>88<br>89<br>90<br>91<br>92<br>93<br>94<br>95<br>96<br>97<br>98<br>99<br>100<br>101<br>102<br>103<br>104<br>105<br>106<br>107<br>108<br>109<br>110<br>111<br>112<br>113<br>114<br>115<br>116<br>117<br>118<br>119<br>120<br>121<br>122<br>123<br>124<br>125<br>126<br>127<br>128<br>129<br>130<br>131<br>132<br>133<br>134<br>135<br>136<br>137<br>138<br>139<br>140<br>141<br>142<br>143<br>144<br>145<br>146<br>147<br>148<br>149<br>150<br>151<br>152<br>153<br>154<br>155<br>156<br>157<br>158<br>159<br>160<br>161<br>162<br>163<br>164<br>165<br>166<br>167<br>168<br>169<br>170<br>171<br>172<br>173<br>174<br>175<br>176<br>177<br>178<br>179<br>180<br>181<br>182<br>183<br>184<br>185<br>186<br>187<br>188<br>189<br>190<br>191<br>192<br>193<br>194<br>195<br>196<br>197<br>198<br>199<br>200<br>201<br>202<br>203<br>204<br>205<br>206<br>207<br>208<br>209<br>210<br>211<br>212<br>213<br>214<br>215<br>216<br>217<br>218<br>219<br>220<br>221<br>222<br>223<br>224<br>225<br>226<br>227<br>228<br>229<br>230<br>231<br>232<br>233<br>234<br>235<br>236<br>237<br>238<br>239<br>240<br>241<br>242<br>243<br>244<br>245<br>246<br>247<br>248<br>249<br>250<br>251<br>252<br>253<br>254<br>255<br>256<br>257<br>258<br>259<br>260<br>261<br>262<br>263<br>264<br>265<br>266<br>267<br>268<br>269<br>270<br>271<br>272<br>273<br>274<br>275<br>276<br>277<br>278<br>279<br>280<br>281<br>282<br>283<br>284<br>285<br>286<br>287<br>288<br>289<br>290<br>291<br>292<br>293<br>294<br>295<br>296<br>297<br>298<br>299<br>300<br>301<br>302<br>303<br>304<br>305<br>306<br>307<br>308<br>309<br>310<br>311<br>312<br>313<br>314<br>315<br>316<br>317<br>318<br>319<br>320<br>321<br>322<br>323<br>324<br>325<br>326<br>327<br>328<br>329<br>330<br>331<br>332<br>333<br>334<br>335<br>336<br>337<br>338<br>339<br>340<br>341<br>342<br>343<br>344<br>345<br>346<br>347<br>348<br>349<br>350<br>351<br>352<br>353<br>354<br>355<br>356<br>357<br>358<br>359<br>360<br>361<br>362<br>363<br>364<br>365<br>366<br>367<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#pragma</span><span style="color:#000000;">&nbsp;once<BR>
+<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;</span><span style="color:#800000;">&quot;resource.h&quot;</span><span style="color:#000000;"><BR>
+<BR>
+</span><span style="color:#008000;">//&nbsp;五子棋.cpp&nbsp;:&nbsp;定义应用程序的入口点。<BR>
+//<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;</span><span style="color:#800000;">&quot;framework.h&quot;</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;</span><span style="color:#800000;">&quot;五子棋.h&quot;</span><span style="color:#000000;"><BR>
+<BR>
+</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;MAX_LOADSTRING&nbsp;</span><span style="color:#ff0000;">100</span><span style="color:#000000;"><BR>
+<BR>
+</span><span style="color:#008000;">//&nbsp;全局变量:<BR>
+</span><span style="color:#000000;">HINSTANCE&nbsp;hInst;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;当前实例<BR>
+</span><span style="color:#000000;">WCHAR&nbsp;szTitle[MAX_LOADSTRING];&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;标题栏文本<BR>
+</span><span style="color:#000000;">WCHAR&nbsp;szWindowClass[MAX_LOADSTRING];&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;主窗口类名<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">//&nbsp;此代码模块中包含的函数的前向声明:<BR>
+</span><span style="color:#000000;">ATOM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MyRegisterClass(HINSTANCE&nbsp;hInstance);<BR>
+BOOL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InitInstance(HINSTANCE,&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">);<BR>
+LRESULT&nbsp;CALLBACK&nbsp;&nbsp;&nbsp;&nbsp;WndProc(HWND,&nbsp;UINT,&nbsp;WPARAM,&nbsp;LPARAM);<BR>
+INT_PTR&nbsp;CALLBACK&nbsp;&nbsp;&nbsp;&nbsp;About(HWND,&nbsp;UINT,&nbsp;WPARAM,&nbsp;LPARAM);<BR>
+<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;APIENTRY&nbsp;wWinMain(<em>In</em>&nbsp;HINSTANCE&nbsp;hInstance,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_In<em>opt</em>&nbsp;HINSTANCE&nbsp;hPrevInstance,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em>In</em>&nbsp;LPWSTR&nbsp;&nbsp;&nbsp;&nbsp;lpCmdLine,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em>In</em>&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;nCmdShow)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;UNREFERENCED_PARAMETER(hPrevInstance);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;UNREFERENCED_PARAMETER(lpCmdLine);<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;TODO:&nbsp;在此处放置代码。<BR>
+</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;初始化全局字符串<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;LoadStringW(hInstance,&nbsp;IDS_APP_TITLE,&nbsp;szTitle,&nbsp;MAX_LOADSTRING);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;LoadStringW(hInstance,&nbsp;IDC_MY,&nbsp;szWindowClass,&nbsp;MAX_LOADSTRING);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;MyRegisterClass(hInstance);<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;执行应用程序初始化:<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(!InitInstance&nbsp;(hInstance,&nbsp;nCmdShow))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;FALSE;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;HACCEL&nbsp;hAccelTable&nbsp;=&nbsp;LoadAccelerators(hInstance,&nbsp;MAKEINTRESOURCE(IDC_MY));<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;MSG&nbsp;msg;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;主消息循环:<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">while</span><span style="color:#000000;">&nbsp;(GetMessage(&amp;msg,&nbsp;nullptr,&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(!TranslateAccelerator(msg.hwnd,&nbsp;hAccelTable,&nbsp;&amp;msg))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TranslateMessage(&amp;msg);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DispatchMessage(&amp;msg);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">)&nbsp;msg.wParam;<BR>
+}<BR>
+<BR>
+<BR>
+<BR>
+</span><span style="color:#008000;">//<BR>
+//&nbsp;&nbsp;函数:&nbsp;MyRegisterClass()<BR>
+//<BR>
+//&nbsp;&nbsp;目标:&nbsp;注册窗口类。<BR>
+//<BR>
+</span><span style="color:#000000;">ATOM&nbsp;MyRegisterClass(HINSTANCE&nbsp;hInstance)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;WNDCLASSEXW&nbsp;wcex;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;wcex.cbSize&nbsp;=&nbsp;</span><span style="color:#0000ff;">sizeof</span><span style="color:#000000;">(WNDCLASSEX);<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;wcex.style&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;CS_HREDRAW&nbsp;|&nbsp;CS_VREDRAW;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;wcex.lpfnWndProc&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;WndProc;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;wcex.cbClsExtra&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;wcex.cbWndExtra&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;wcex.hInstance&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;hInstance;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;wcex.hIcon&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;LoadIcon(hInstance,&nbsp;MAKEINTRESOURCE(IDI_MY));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;wcex.hCursor&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;LoadCursor(nullptr,&nbsp;IDC_ARROW);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;wcex.hbrBackground&nbsp;&nbsp;=&nbsp;(HBRUSH)(COLOR_WINDOW+</span><span style="color:#ff0000;">1</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;wcex.lpszMenuName&nbsp;&nbsp;&nbsp;=&nbsp;MAKEINTRESOURCEW(IDC_MY);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;wcex.lpszClassName&nbsp;&nbsp;=&nbsp;szWindowClass;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;wcex.hIconSm&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;LoadIcon(wcex.hInstance,&nbsp;MAKEINTRESOURCE(IDI_SMALL));<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;RegisterClassExW(&amp;wcex);<BR>
+}<BR>
+<BR>
+</span><span style="color:#008000;">//<BR>
+//&nbsp;&nbsp;&nbsp;函数:&nbsp;InitInstance(HINSTANCE,&nbsp;int)<BR>
+//<BR>
+//&nbsp;&nbsp;&nbsp;目标:&nbsp;保存实例句柄并创建主窗口<BR>
+//<BR>
+//&nbsp;&nbsp;&nbsp;注释:<BR>
+//<BR>
+//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;在此函数中，我们在全局变量中保存实例句柄并<BR>
+//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;创建和显示主程序窗口。<BR>
+//<BR>
+</span><span style="color:#000000;">BOOL&nbsp;InitInstance(HINSTANCE&nbsp;hInstance,&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;nCmdShow)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;hInst&nbsp;=&nbsp;hInstance;&nbsp;</span><span style="color:#008000;">//&nbsp;将实例句柄存储在全局变量中<BR>
+</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;HWND&nbsp;hWnd&nbsp;=&nbsp;CreateWindowW(szWindowClass,&nbsp;szTitle,&nbsp;WS_OVERLAPPEDWINDOW,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CW_USEDEFAULT,&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">850</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">700</span><span style="color:#000000;">,&nbsp;nullptr,&nbsp;nullptr,&nbsp;hInstance,&nbsp;nullptr);<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(!hWnd)<BR>
+&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;FALSE;<BR>
+&nbsp;&nbsp;&nbsp;}<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;ShowWindow(hWnd,&nbsp;nCmdShow);<BR>
+&nbsp;&nbsp;&nbsp;UpdateWindow(hWnd);<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;TRUE;<BR>
+}<BR>
+<BR>
+</span><span style="color:#008000;">//<BR>
+//&nbsp;&nbsp;函数:&nbsp;WndProc(HWND,&nbsp;UINT,&nbsp;WPARAM,&nbsp;LPARAM)<BR>
+//<BR>
+//&nbsp;&nbsp;目标:&nbsp;处理主窗口的消息。<BR>
+//<BR>
+//&nbsp;&nbsp;WM_COMMAND&nbsp;&nbsp;-&nbsp;处理应用程序菜单<BR>
+//&nbsp;&nbsp;WM_PAINT&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;绘制主窗口<BR>
+//&nbsp;&nbsp;WM_DESTROY&nbsp;&nbsp;-&nbsp;发送退出消息并返回<BR>
+//<BR>
+//<BR>
+</span><span style="color:#000000;">LRESULT&nbsp;CALLBACK&nbsp;WndProc(HWND&nbsp;hWnd,&nbsp;UINT&nbsp;message,&nbsp;WPARAM&nbsp;wParam,&nbsp;LPARAM&nbsp;lParam)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">static</span><span style="color:#000000;">&nbsp;HPEN&nbsp;hPen,&nbsp;hOldPen;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">static</span><span style="color:#000000;">&nbsp;HBRUSH&nbsp;hBrush,&nbsp;hOldBrush;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;HDC&nbsp;hdc;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">static</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;Jud[</span><span style="color:#ff0000;">16</span><span style="color:#000000;">][</span><span style="color:#ff0000;">16</span><span style="color:#000000;">]&nbsp;=&nbsp;{&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">&nbsp;};<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;a_x,&nbsp;a_y;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;b_x,&nbsp;b_y;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">switch</span><span style="color:#000000;">&nbsp;(message)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;WM_COMMAND:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;wmId&nbsp;=&nbsp;LOWORD(wParam);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;分析菜单选择:<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">switch</span><span style="color:#000000;">&nbsp;(wmId)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;IDM_ABOUT:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DialogBox(hInst,&nbsp;MAKEINTRESOURCE(IDD_ABOUTBOX),&nbsp;hWnd,&nbsp;About);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;IDM_EXIT:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DestroyWindow(hWnd);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">default</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;DefWindowProc(hWnd,&nbsp;message,&nbsp;wParam,&nbsp;lParam);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;WM_LBUTTONDOWN:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;POINT&nbsp;lpoint;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hdc&nbsp;=&nbsp;GetDC(hWnd);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hPen&nbsp;=&nbsp;CreatePen(BS_SOLID,&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,&nbsp;RGB(</span><span style="color:#ff0000;">255</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hOldPen&nbsp;=&nbsp;(HPEN)SelectObject(hdc,&nbsp;hPen);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hBrush&nbsp;=&nbsp;CreateSolidBrush(RGB(</span><span style="color:#ff0000;">255</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hOldBrush&nbsp;=&nbsp;(HBRUSH)SelectObject(hdc,&nbsp;hBrush);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GetCursorPos(&amp;lpoint);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ScreenToClient(hWnd,&nbsp;&amp;lpoint);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a_x&nbsp;=&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">)((lpoint.x&nbsp;+&nbsp;</span><span style="color:#ff0000;">20</span><span style="color:#000000;">)&nbsp;/&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">)&nbsp;*&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a_y&nbsp;=&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">)((lpoint.y&nbsp;+&nbsp;</span><span style="color:#ff0000;">20</span><span style="color:#000000;">)&nbsp;/&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">)&nbsp;*&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(a_x&nbsp;&gt;=&nbsp;</span><span style="color:#ff0000;">20</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;a_x&nbsp;&lt;=&nbsp;</span><span style="color:#ff0000;">620</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;a_y&nbsp;&gt;=&nbsp;</span><span style="color:#ff0000;">20</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;a_y&nbsp;&lt;=&nbsp;</span><span style="color:#ff0000;">620</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(Jud[a_x&nbsp;/&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">][a_y&nbsp;/&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">]&nbsp;==&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ellipse(hdc,&nbsp;a_x&nbsp;-&nbsp;</span><span style="color:#ff0000;">15</span><span style="color:#000000;">,&nbsp;a_y&nbsp;-&nbsp;</span><span style="color:#ff0000;">15</span><span style="color:#000000;">,&nbsp;a_x&nbsp;+&nbsp;</span><span style="color:#ff0000;">15</span><span style="color:#000000;">,&nbsp;a_y&nbsp;+&nbsp;</span><span style="color:#ff0000;">15</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jud[a_x&nbsp;/&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">][a_y&nbsp;/&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MessageBox(</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">,&nbsp;TEXT(</span><span style="color:#800000;">&quot;该位置已经被蓝棋占领，请另选位置哟~&quot;</span><span style="color:#000000;">),&nbsp;TEXT(</span><span style="color:#800000;">&quot;小提示&quot;</span><span style="color:#000000;">),&nbsp;MB_OK);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;=&nbsp;</span><span style="color:#ff0000;">15</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;j&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;&nbsp;j&nbsp;&lt;=&nbsp;</span><span style="color:#ff0000;">11</span><span style="color:#000000;">;&nbsp;++j)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(Jud[i][j]&nbsp;==&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;Jud[i][j&nbsp;+&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">]&nbsp;==&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;Jud[i][j&nbsp;+&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">]&nbsp;==&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;&amp;&amp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jud[i][j&nbsp;+&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">]&nbsp;==&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;Jud[i][j&nbsp;+&nbsp;</span><span style="color:#ff0000;">4</span><span style="color:#000000;">]&nbsp;==&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MessageBox(</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">,&nbsp;TEXT(</span><span style="color:#800000;">&quot;******红方获胜！撒花~******&quot;</span><span style="color:#000000;">),&nbsp;TEXT(</span><span style="color:#800000;">&quot;本局游戏结束&quot;</span><span style="color:#000000;">),&nbsp;MB_OK);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;=&nbsp;</span><span style="color:#ff0000;">11</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;j&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;&nbsp;j&nbsp;&lt;=&nbsp;</span><span style="color:#ff0000;">15</span><span style="color:#000000;">;&nbsp;++j)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(Jud[i][j]&nbsp;==&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;Jud[i&nbsp;+&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">][j]&nbsp;==&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;Jud[i&nbsp;+&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">][j]&nbsp;==&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;&amp;&amp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jud[i&nbsp;+&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">][j]&nbsp;==&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;Jud[i&nbsp;+&nbsp;</span><span style="color:#ff0000;">4</span><span style="color:#000000;">][j]&nbsp;==&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MessageBox(</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">,&nbsp;TEXT(</span><span style="color:#800000;">&quot;******红方获胜！撒花~******&quot;</span><span style="color:#000000;">),&nbsp;TEXT(</span><span style="color:#800000;">&quot;本局游戏结束&quot;</span><span style="color:#000000;">),&nbsp;MB_OK);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;=&nbsp;</span><span style="color:#ff0000;">11</span><span style="color:#000000;">;&nbsp;i++)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;j&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;&nbsp;j&nbsp;&lt;=&nbsp;</span><span style="color:#ff0000;">11</span><span style="color:#000000;">;&nbsp;j++)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(Jud[i][j]&nbsp;==&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;Jud[i&nbsp;+&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">][j&nbsp;+&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">]&nbsp;==&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;Jud[i&nbsp;+&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">][j&nbsp;+&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">]&nbsp;==&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;&amp;&amp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jud[i&nbsp;+&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">][j&nbsp;+&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">]&nbsp;==&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;Jud[i&nbsp;+&nbsp;</span><span style="color:#ff0000;">4</span><span style="color:#000000;">][j&nbsp;+&nbsp;</span><span style="color:#ff0000;">4</span><span style="color:#000000;">]&nbsp;==&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MessageBox(</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">,&nbsp;TEXT(</span><span style="color:#800000;">&quot;******红方获胜！撒花~******&quot;</span><span style="color:#000000;">),&nbsp;TEXT(</span><span style="color:#800000;">&quot;本局游戏结束&quot;</span><span style="color:#000000;">),&nbsp;MB_OK);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;=&nbsp;</span><span style="color:#ff0000;">11</span><span style="color:#000000;">;&nbsp;i++)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;j&nbsp;=&nbsp;</span><span style="color:#ff0000;">15</span><span style="color:#000000;">;&nbsp;j&nbsp;&gt;=&nbsp;</span><span style="color:#ff0000;">5</span><span style="color:#000000;">;&nbsp;j--)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(Jud[i][j]&nbsp;==&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;Jud[i&nbsp;+&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">][j&nbsp;-&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">]&nbsp;==&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;Jud[i&nbsp;+&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">][j&nbsp;-&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">]&nbsp;==&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;&amp;&amp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jud[i&nbsp;+&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">][j&nbsp;-&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">]&nbsp;==&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;Jud[i&nbsp;+&nbsp;</span><span style="color:#ff0000;">4</span><span style="color:#000000;">][j&nbsp;-&nbsp;</span><span style="color:#ff0000;">4</span><span style="color:#000000;">]&nbsp;==&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MessageBox(</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">,&nbsp;TEXT(</span><span style="color:#800000;">&quot;******红方获胜！撒花~******&quot;</span><span style="color:#000000;">),&nbsp;TEXT(</span><span style="color:#800000;">&quot;本局游戏结束&quot;</span><span style="color:#000000;">),&nbsp;MB_OK);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TextOut(hdc,&nbsp;</span><span style="color:#ff0000;">20</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">,&nbsp;TEXT(</span><span style="color:#800000;">&quot;现在轮到蓝方走棋，祝您好运!&quot;</span><span style="color:#000000;">),&nbsp;</span><span style="color:#ff0000;">14</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SelectObject(hdc,&nbsp;hOldPen);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SelectObject(hdc,&nbsp;hOldBrush);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ReleaseDC(hWnd,&nbsp;hdc);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;WM_RBUTTONDOWN:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;POINT&nbsp;rpoint;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hdc&nbsp;=&nbsp;GetDC(hWnd);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hPen&nbsp;=&nbsp;CreatePen(BS_SOLID,&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,&nbsp;RGB(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">255</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hOldPen&nbsp;=&nbsp;(HPEN)SelectObject(hdc,&nbsp;hPen);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hBrush&nbsp;=&nbsp;CreateSolidBrush(RGB(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">255</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hOldBrush&nbsp;=&nbsp;(HBRUSH)SelectObject(hdc,&nbsp;hBrush);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GetCursorPos(&amp;rpoint);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ScreenToClient(hWnd,&nbsp;&amp;rpoint);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;b_x&nbsp;=&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">)((rpoint.x&nbsp;+&nbsp;</span><span style="color:#ff0000;">20</span><span style="color:#000000;">)&nbsp;/&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">)&nbsp;*&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;b_y&nbsp;=&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">)((rpoint.y&nbsp;+&nbsp;</span><span style="color:#ff0000;">20</span><span style="color:#000000;">)&nbsp;/&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">)&nbsp;*&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(b_x&nbsp;&gt;=&nbsp;</span><span style="color:#ff0000;">20</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;b_x&nbsp;&lt;=&nbsp;</span><span style="color:#ff0000;">620</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;b_y&nbsp;&gt;=&nbsp;</span><span style="color:#ff0000;">20</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;b_y&nbsp;&lt;=&nbsp;</span><span style="color:#ff0000;">620</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(Jud[b_x&nbsp;/&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">][b_y&nbsp;/&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">]&nbsp;==&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ellipse(hdc,&nbsp;b_x&nbsp;-&nbsp;</span><span style="color:#ff0000;">15</span><span style="color:#000000;">,&nbsp;b_y&nbsp;-&nbsp;</span><span style="color:#ff0000;">15</span><span style="color:#000000;">,&nbsp;b_x&nbsp;+&nbsp;</span><span style="color:#ff0000;">15</span><span style="color:#000000;">,&nbsp;b_y&nbsp;+&nbsp;</span><span style="color:#ff0000;">15</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jud[b_x&nbsp;/&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">][b_y&nbsp;/&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MessageBox(</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">,&nbsp;TEXT(</span><span style="color:#800000;">&quot;该位置已经被红棋占领，请另选位置哟~&quot;</span><span style="color:#000000;">),&nbsp;TEXT(</span><span style="color:#800000;">&quot;小提示&quot;</span><span style="color:#000000;">),&nbsp;MB_OK);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;=&nbsp;</span><span style="color:#ff0000;">15</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;j&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;&nbsp;j&nbsp;&lt;=&nbsp;</span><span style="color:#ff0000;">11</span><span style="color:#000000;">;&nbsp;++j)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(Jud[i][j]&nbsp;==&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;Jud[i][j&nbsp;+&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">]&nbsp;==&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;Jud[i][j&nbsp;+&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">]&nbsp;==&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;&amp;&amp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jud[i][j&nbsp;+&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">]&nbsp;==&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;Jud[i][j&nbsp;+&nbsp;</span><span style="color:#ff0000;">4</span><span style="color:#000000;">]&nbsp;==&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MessageBox(</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">,&nbsp;TEXT(</span><span style="color:#800000;">&quot;******蓝方获胜！撒花~******&quot;</span><span style="color:#000000;">),&nbsp;TEXT(</span><span style="color:#800000;">&quot;本局游戏结束&quot;</span><span style="color:#000000;">),&nbsp;MB_OK);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;=&nbsp;</span><span style="color:#ff0000;">11</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;j&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;&nbsp;j&nbsp;&lt;=&nbsp;</span><span style="color:#ff0000;">15</span><span style="color:#000000;">;&nbsp;++j)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(Jud[i][j]&nbsp;==&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;Jud[i&nbsp;+&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">][j]&nbsp;==&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;Jud[i&nbsp;+&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">][j]&nbsp;==&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;&amp;&amp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jud[i&nbsp;+&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">][j]&nbsp;==&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;Jud[i&nbsp;+&nbsp;</span><span style="color:#ff0000;">4</span><span style="color:#000000;">][j]&nbsp;==&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MessageBox(</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">,&nbsp;TEXT(</span><span style="color:#800000;">&quot;******蓝方获胜！撒花~******&quot;</span><span style="color:#000000;">),&nbsp;TEXT(</span><span style="color:#800000;">&quot;本局游戏结束&quot;</span><span style="color:#000000;">),&nbsp;MB_OK);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;=&nbsp;</span><span style="color:#ff0000;">11</span><span style="color:#000000;">;&nbsp;i++)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;j&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;&nbsp;j&nbsp;&lt;=&nbsp;</span><span style="color:#ff0000;">11</span><span style="color:#000000;">;&nbsp;j++)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(Jud[i][j]&nbsp;==&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;Jud[i&nbsp;+&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">][j&nbsp;+&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">]&nbsp;==&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;Jud[i&nbsp;+&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">][j&nbsp;+&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">]&nbsp;==&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;&amp;&amp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jud[i&nbsp;+&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">][j&nbsp;+&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">]&nbsp;==&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;Jud[i&nbsp;+&nbsp;</span><span style="color:#ff0000;">4</span><span style="color:#000000;">][j&nbsp;+&nbsp;</span><span style="color:#ff0000;">4</span><span style="color:#000000;">]&nbsp;==&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MessageBox(</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">,&nbsp;TEXT(</span><span style="color:#800000;">&quot;******蓝方获胜！撒花~******&quot;</span><span style="color:#000000;">),&nbsp;TEXT(</span><span style="color:#800000;">&quot;本局游戏结束&quot;</span><span style="color:#000000;">),&nbsp;MB_OK);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;=&nbsp;</span><span style="color:#ff0000;">11</span><span style="color:#000000;">;&nbsp;i++)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;j&nbsp;=&nbsp;</span><span style="color:#ff0000;">15</span><span style="color:#000000;">;&nbsp;j&nbsp;&gt;=&nbsp;</span><span style="color:#ff0000;">5</span><span style="color:#000000;">;&nbsp;j--)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(Jud[i][j]&nbsp;==&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;Jud[i&nbsp;+&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">][j&nbsp;-&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">]&nbsp;==&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;Jud[i&nbsp;+&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">][j&nbsp;-&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">]&nbsp;==&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;&amp;&amp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jud[i&nbsp;+&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">][j&nbsp;-&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">]&nbsp;==&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;Jud[i&nbsp;+&nbsp;</span><span style="color:#ff0000;">4</span><span style="color:#000000;">][j&nbsp;-&nbsp;</span><span style="color:#ff0000;">4</span><span style="color:#000000;">]&nbsp;==&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MessageBox(</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">,&nbsp;TEXT(</span><span style="color:#800000;">&quot;******蓝方获胜！撒花~******&quot;</span><span style="color:#000000;">),&nbsp;TEXT(</span><span style="color:#800000;">&quot;本局游戏结束&quot;</span><span style="color:#000000;">),&nbsp;MB_OK);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TextOut(hdc,&nbsp;</span><span style="color:#ff0000;">20</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">,&nbsp;TEXT(</span><span style="color:#800000;">&quot;现在轮到红方走棋，祝您好运!&quot;</span><span style="color:#000000;">),&nbsp;</span><span style="color:#ff0000;">14</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SelectObject(hdc,&nbsp;hOldPen);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SelectObject(hdc,&nbsp;hOldBrush);<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ReleaseDC(hWnd,&nbsp;hdc);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;WM_PAINT:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PAINTSTRUCT&nbsp;ps;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hdc&nbsp;=&nbsp;BeginPaint(hWnd,&nbsp;&amp;ps);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hPen&nbsp;=&nbsp;CreatePen(BS_SOLID,&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,&nbsp;RGB(</span><span style="color:#ff0000;">255</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">255</span><span style="color:#000000;">));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hOldPen&nbsp;=&nbsp;(HPEN)SelectObject(hdc,&nbsp;hPen);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MoveToEx(hdc,&nbsp;</span><span style="color:#ff0000;">640</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LineTo(hdc,&nbsp;</span><span style="color:#ff0000;">640</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">2000</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TextOut(hdc,&nbsp;</span><span style="color:#ff0000;">650</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">200</span><span style="color:#000000;">,&nbsp;TEXT(</span><span style="color:#800000;">&quot;游戏规则:&quot;</span><span style="color:#000000;">),&nbsp;</span><span style="color:#ff0000;">5</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TextOut(hdc,&nbsp;</span><span style="color:#ff0000;">650</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">220</span><span style="color:#000000;">,&nbsp;TEXT(</span><span style="color:#800000;">&quot;单击鼠标左键出红棋&quot;</span><span style="color:#000000;">),&nbsp;</span><span style="color:#ff0000;">9</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TextOut(hdc,&nbsp;</span><span style="color:#ff0000;">650</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">240</span><span style="color:#000000;">,&nbsp;TEXT(</span><span style="color:#800000;">&quot;单击鼠标右键出蓝棋&quot;</span><span style="color:#000000;">),&nbsp;</span><span style="color:#ff0000;">9</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TextOut(hdc,&nbsp;</span><span style="color:#ff0000;">650</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">260</span><span style="color:#000000;">,&nbsp;TEXT(</span><span style="color:#800000;">&quot;左上方有下一步提示&quot;</span><span style="color:#000000;">),&nbsp;</span><span style="color:#ff0000;">9</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TextOut(hdc,&nbsp;</span><span style="color:#ff0000;">650</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">300</span><span style="color:#000000;">,&nbsp;TEXT(</span><span style="color:#800000;">&quot;由一方先下棋&quot;</span><span style="color:#000000;">),&nbsp;</span><span style="color:#ff0000;">6</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TextOut(hdc,&nbsp;</span><span style="color:#ff0000;">650</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">320</span><span style="color:#000000;">,&nbsp;TEXT(</span><span style="color:#800000;">&quot;另一方下棋&quot;</span><span style="color:#000000;">),&nbsp;</span><span style="color:#ff0000;">5</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TextOut(hdc,&nbsp;</span><span style="color:#ff0000;">650</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">340</span><span style="color:#000000;">,&nbsp;TEXT(</span><span style="color:#800000;">&quot;先筹齐五子连珠者胜&quot;</span><span style="color:#000000;">),&nbsp;</span><span style="color:#ff0000;">9</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TextOut(hdc,&nbsp;</span><span style="color:#ff0000;">650</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">,&nbsp;TEXT(</span><span style="color:#800000;">&quot;********欢迎********&quot;</span><span style="color:#000000;">),&nbsp;</span><span style="color:#ff0000;">18</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TextOut(hdc,&nbsp;</span><span style="color:#ff0000;">650</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">60</span><span style="color:#000000;">,&nbsp;TEXT(</span><span style="color:#800000;">&quot;***祝你游戏愉快***&quot;</span><span style="color:#000000;">),&nbsp;</span><span style="color:#ff0000;">12</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SelectObject(hdc,&nbsp;hOldPen);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hPen&nbsp;=&nbsp;CreatePen(BS_SOLID,&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,&nbsp;RGB(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">255</span><span style="color:#000000;">));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hOldPen&nbsp;=&nbsp;(HPEN)SelectObject(hdc,&nbsp;hPen);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//画出五子棋格子图<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Rectangle(hdc,&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">&nbsp;*&nbsp;</span><span style="color:#ff0000;">15</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">&nbsp;*&nbsp;</span><span style="color:#ff0000;">15</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">14</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MoveToEx(hdc,&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">&nbsp;*&nbsp;(i&nbsp;+&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">),&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">,&nbsp;</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LineTo(hdc,&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">&nbsp;*&nbsp;(i&nbsp;+&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">),&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">&nbsp;*&nbsp;</span><span style="color:#ff0000;">15</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;j&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;j&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">14</span><span style="color:#000000;">;&nbsp;++j)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MoveToEx(hdc,&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">&nbsp;*&nbsp;(j&nbsp;+&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">),&nbsp;</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LineTo(hdc,&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">&nbsp;*&nbsp;</span><span style="color:#ff0000;">15</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">&nbsp;*&nbsp;(j&nbsp;+&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SelectObject(hdc,&nbsp;hOldPen);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EndPaint(hWnd,&nbsp;&amp;ps);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;WM_DESTROY:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PostQuitMessage(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">default</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;DefWindowProc(hWnd,&nbsp;message,&nbsp;wParam,&nbsp;lParam);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}<BR>
+<BR>
+</span><span style="color:#008000;">//&nbsp;“关于”框的消息处理程序。<BR>
+</span><span style="color:#000000;">INT_PTR&nbsp;CALLBACK&nbsp;About(HWND&nbsp;hDlg,&nbsp;UINT&nbsp;message,&nbsp;WPARAM&nbsp;wParam,&nbsp;LPARAM&nbsp;lParam)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;UNREFERENCED_PARAMETER(lParam);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">switch</span><span style="color:#000000;">&nbsp;(message)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;WM_INITDIALOG:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;(INT_PTR)TRUE;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;WM_COMMAND:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(LOWORD(wParam)&nbsp;==&nbsp;IDOK&nbsp;||&nbsp;LOWORD(wParam)&nbsp;==&nbsp;IDCANCEL)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EndDialog(hDlg,&nbsp;LOWORD(wParam));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;(INT_PTR)TRUE;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;(INT_PTR)FALSE;<BR>
+}<BR>
+</span></div></td></tr></table></div>
+<br><br>5、游戏截图：<br>
+<img src="https://wx4.sinaimg.cn/mw1024/007Diza3ly1g3dwhfesdcj30t10o2go9.jpg" width="800" height="650" />
+<br><br><br>
+<font color = gray size = 3>如有错误，欢迎指正！</font></p></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://oubc.github.io/tags/windows/">windows</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmg4aog3074074gnf.gif?tags=%5B%5D">I </a>
+	<a href="">love</a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmfm2eg306o06o74u.gif?tags=%5B%5D"> you </a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx4tpcj30fn0bq3zg.jpg?tags=%5B%5D">three </a>
+	<a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx64ctg307s07swfy.gif?tags=%5B%5D">thousand</a>
+    <a href="https://www.kugou.com/song/#hash=96426C78381DE98DC31A5846FC274CBF&album_id=646623"> times.</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>家庭、梦想、内心的平静</span>
+  </div>
+</footer>
+
+
+
+<script src="https://oubc.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://oubc.github.io/js/zozo.js"></script>
+<script src="https://oubc.github.io/js/highlight.pack.js"></script>
+<link  href="https://oubc.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://oubc.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>

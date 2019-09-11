@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Bruce Cheung"/>
+
+  
+  <meta name="description" content="利用C/C&#43;&#43;语言模拟E-Mail的登录
+"/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, simple, dream"/>
+  
+
+  
+  <link rel="canonical" href="https://oubc.github.io/post/simulatede-maillogin/"/>
+
+  
+
+  <title>模拟E-Mail登录程序 &middot; Love, or death</title>
+
+  <link rel="shortcut icon" href="https://oubc.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/post/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://oubc.github.io/">
+          <span>Love, or death</span>
+          <img src="https://oubc.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">For you, a thousand times over.</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/oubc" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=uYGOjo6OiIuLivnIyJfa1tQ" title="mail" target="_blank"><i class="remixicon-mail-fill"></i></a>
+        
+        
+        
+        <a href="http://sighttp.qq.com/msgrd?v=1&amp;uin=877771223" title="qq" target="_blank"><i class="remixicon-qq-fill"></i></a>
+        
+        
+        
+        <a href="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g4klnqf0tmj30ia0widks.jpg" title="wechat" target="_blank"><i class="remixicon-wechat-fill"></i></a>
+        
+        
+        
+        <a href="https://weibo.com/u/6993631995?topnav=1&amp;wvr=6&amp;topsug=1" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://oubc.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/post/simulatede-maillogin/'>模拟E-Mail登录程序</a></h2>
+          <span class="date">2018.12.16</span>
+        </div>
+        <div class="post_content markdown"><p>利用C/C++语言模拟E-Mail的登录</p>
+
+<p><br>项目名称：模拟E-Mail登录程序
+<br>开发工具：VS2019
+<br>开发语言：C/C++
+<br>项目介绍：本次项目实现了模拟E-Mail的登录，并实现了userName的检查，如果符合基本邮箱格式，即可输入密码，否则重新输入userName，再输入密码，用户名和密码都验证通过后，将会弹出登录进度条，进度条到达100%以后提示用户登录成功，然后通过system函数打开电脑内置记事本程序。
+<br><br>具体实现：
+<br><font color=black size = 3>1、界面实现：全部通过C语言system函数实现，设置标题、背景颜色和窗体大小，具体代码如下：</font>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;SetWindowStyle()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;system(</span><span style="color:#800000;">&quot;title&nbsp;邮箱登陆&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;system(</span><span style="color:#800000;">&quot;color&nbsp;f0&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;system(</span><span style="color:#800000;">&quot;mode&nbsp;con&nbsp;cols=50&nbsp;lines=10&quot;</span><span style="color:#000000;">);<BR>
+}</span></div></td></tr></table></div>
+<br><font color=black size = 3>2、输入用户名和密码：用户名的输入和普通字符串输入相似，输入密码时为了实现隐藏，导入了C语言库<conio.h>并使用了库中函数 _getch()和 _putch()函数。
+<br>3、用户名格式判断和密码验证：用户名的判断是通过<regex>库中的正则表达式实现，相关邮箱格式则来自网络(我暂时还没有学习正则表达式)，如果符合正则表达式对应格式则通过用户名的输入，进入密码的输入，否则通过system函数实现清屏，重新显示界面并重新输入用户名，密码的判断十分简单，只要和录入的密码一致时则可进行登录，否则提示用户”密码或者用户名错误“并进行清屏重头开始；
+<br>4、登录进度条的实现：；利用循环和清屏函数实现，循环是加多'■'字符的个数和百分数的大小，每一次循环进行一次清屏和显示，直到进度条达到100%；
+<br>5、登录成功，打开记事本。
+<br>6、完整代码如下：</font>
+<div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47<br>48<br>49<br>50<br>51<br>52<br>53<br>54<br>55<br>56<br>57<br>58<br>59<br>60<br>61<br>62<br>63<br>64<br>65<br>66<br>67<br>68<br>69<br>70<br>71<br>72<br>73<br>74<br>75<br>76<br>77<br>78<br>79<br>80<br>81<br>82<br>83<br>84<br>85<br>86<br>87<br>88<br>89<br>90<br>91<br>92<br>93<br>94<br>95<br>96<br>97<br>98<br>99<br>100<br>101<br>102<br>103<br>104<br>105<br>106<br>107<br>108<br>109<br>110<br>111<br>112<br>113<br>114<br>115<br>116<br>117<br>118<br>119<br>120<br>121<br>122<br>123<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;iostream&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;string&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;regex&gt;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//正则库<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;cstdio&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;</span><span style="color:#800000;">&quot;conio.h&quot;</span><span style="color:#000000;">&nbsp;&nbsp;</span><span style="color:#008000;">//_getch() and _putch()<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;Windows.h&gt;<BR>
+<BR>
+</span><span style="color:#0000ff;">using</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">namespace</span><span style="color:#000000;">&nbsp;std;<BR>
+</span><span style="color:#008000;">/*******************************/</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">//&nbsp;&nbsp;调整窗口大小<BR>
+//&nbsp;&nbsp;system函数+dos指令<BR>
+//&nbsp;&nbsp;标题&nbsp;title&nbsp;标题名<BR>
+//&nbsp;&nbsp;颜色&nbsp;color&nbsp;f0<BR>
+//&nbsp;&nbsp;大小&nbsp;mode&nbsp;con&nbsp;cols&nbsp;=&nbsp;50&nbsp;lines&nbsp;=&nbsp;10<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;SetWindowStyle()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;system(</span><span style="color:#800000;">&quot;title&nbsp;邮箱登陆&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;system(</span><span style="color:#800000;">&quot;color&nbsp;f0&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;system(</span><span style="color:#800000;">&quot;mode&nbsp;con&nbsp;cols=50&nbsp;lines=10&quot;</span><span style="color:#000000;">);<BR>
+}<BR>
+<BR>
+</span><span style="color:#008000;">/*******************************/</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">//&nbsp;&nbsp;检查用户名<BR>
+//&nbsp;&nbsp;利用正则表达式来检查用户名<BR>
+//&nbsp;&nbsp;如果是正确的邮箱格式返回true，否则返回false<BR>
+</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&nbsp;CheckEmail(</span><span style="color:#8000ff;">char</span><span style="color:#000000;">*&nbsp;username)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;regex&nbsp;object(</span><span style="color:#800000;">&quot;^[A-Za-z\d]+([-_.][A-Za-z\d]+)*@([A-Za-z\d]+[-.])+[A-Za-z\d]{2,4}\$&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&nbsp;result&nbsp;=&nbsp;regex_match(username,&nbsp;object);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;result;<BR>
+}<BR>
+<BR>
+</span><span style="color:#008000;">/*******************************/</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">//给用户给予登陆提示<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;SetTips()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\n\n\n\t\t&nbsp;&nbsp;Welcome!&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;Sleep(</span><span style="color:#ff0000;">3000</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;system(</span><span style="color:#800000;">&quot;cls&quot;</span><span style="color:#000000;">);<BR>
+}<BR>
+<BR>
+</span><span style="color:#008000;">/*******************************/</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">//&nbsp;&nbsp;实现进度条<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;proc()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;str(</span><span style="color:#800000;">&quot;■&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">20</span><span style="color:#000000;">;&nbsp;i++)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;system(</span><span style="color:#800000;">&quot;cls&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;str&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;(i&nbsp;+&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)&nbsp;*&nbsp;</span><span style="color:#ff0000;">5</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;%&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;str&nbsp;+=&nbsp;</span><span style="color:#800000;">&quot;■&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sleep(</span><span style="color:#ff0000;">200</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;登陆成功！&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;endl;<BR>
+}<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;InputUserEmail(</span><span style="color:#8000ff;">char</span><span style="color:#000000;">*&nbsp;username,&nbsp;</span><span style="color:#8000ff;">char</span><span style="color:#000000;">*&nbsp;password)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\n\n\tUsername:&nbsp;&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cin&nbsp;&gt;&gt;&nbsp;username;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">/*******************************/</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//检查用户名格式<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//不正确提示用户重新输入<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">while</span><span style="color:#000000;">&nbsp;(!CheckEmail(username))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;用户名格式不正确，请重新输入！&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sleep(</span><span style="color:#ff0000;">1000</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;system(</span><span style="color:#800000;">&quot;cls&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\n\n\tUsername:&nbsp;&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cin&nbsp;&gt;&gt;&nbsp;username;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\tPassword:&nbsp;&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">/*******************************/</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//密码不可见，字符串当作字符处理<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//每次按键输入一个*就可以&nbsp;然后把所有按键保存到password中<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;key;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">while</span><span style="color:#000000;">&nbsp;((key&nbsp;=&nbsp;_getch())&nbsp;!=&nbsp;</span><span style="color:#800000;">'\r'</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(i&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">8</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;password[i++]&nbsp;=&nbsp;key;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_putch(</span><span style="color:#800000;">'*'</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\nPassword&nbsp;too&nbsp;long，请重新输入！&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sleep(</span><span style="color:#ff0000;">1000</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;system(</span><span style="color:#800000;">&quot;cls&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\n\n\tUsername:&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;username&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\tPassword:&nbsp;&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">/*******************************/</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//字符串结束标准<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;password[i]&nbsp;=&nbsp;</span><span style="color:#800000;">'\0'</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;endl;<BR>
+}<BR>
+<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;main()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">/*******************************/</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//用户名+密码<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;username[</span><span style="color:#ff0000;">20</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;password[</span><span style="color:#ff0000;">9</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;SetWindowStyle();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;SetTips();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;InputUserEmail(username,&nbsp;password);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">while</span><span style="color:#000000;">&nbsp;(strcmp(username,&nbsp;</span><span style="color:#800000;">&quot;137989531@qq.com&quot;</span><span style="color:#000000;">)&nbsp;||&nbsp;strcmp(password,&nbsp;</span><span style="color:#800000;">&quot;12345&quot;</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;用户名或者密码错误，请检查后重新输入！\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sleep(</span><span style="color:#ff0000;">1000</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;system(</span><span style="color:#800000;">&quot;cls&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InputUserEmail(username,&nbsp;password);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//弹出进度条<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;proc();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//打开记事本<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;system(</span><span style="color:#800000;">&quot;notepad&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}</span></div></td></tr></table></div>
+<br><br><br><font color=black size = 3>存在缺陷：只能实现语言内设置用户的登录，无法增加用户和进行注册，这项技术应该由数据库来完成。</font>
+<br><br><br>
+<font color = gray size = 3>如有错误，欢迎指正！</font></p></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://oubc.github.io/tags/c/c&#43;&#43;/">C/C&#43;&#43;</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmg4aog3074074gnf.gif?tags=%5B%5D">I </a>
+	<a href="">love</a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmfm2eg306o06o74u.gif?tags=%5B%5D"> you </a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx4tpcj30fn0bq3zg.jpg?tags=%5B%5D">three </a>
+	<a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx64ctg307s07swfy.gif?tags=%5B%5D">thousand</a>
+    <a href="https://www.kugou.com/song/#hash=96426C78381DE98DC31A5846FC274CBF&album_id=646623"> times.</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>家庭、梦想、内心的平静</span>
+  </div>
+</footer>
+
+
+
+<script src="https://oubc.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://oubc.github.io/js/zozo.js"></script>
+<script src="https://oubc.github.io/js/highlight.pack.js"></script>
+<link  href="https://oubc.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://oubc.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>

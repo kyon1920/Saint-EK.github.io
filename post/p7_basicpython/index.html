@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Bruce Cheung"/>
+
+  
+  <meta name="description" content="Python也和其它编程语言一样，有异常处理的功能，异常处理可以使得程序不会因为一些小问题而出现崩溃
+"/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, simple, dream"/>
+  
+
+  
+  <link rel="canonical" href="https://oubc.github.io/post/p7_basicpython/"/>
+
+  
+
+  <title>Python基础-异常处理 &middot; Love, or death</title>
+
+  <link rel="shortcut icon" href="https://oubc.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/post/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://oubc.github.io/">
+          <span>Love, or death</span>
+          <img src="https://oubc.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">For you, a thousand times over.</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/oubc" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=uYGOjo6OiIuLivnIyJfa1tQ" title="mail" target="_blank"><i class="remixicon-mail-fill"></i></a>
+        
+        
+        
+        <a href="http://sighttp.qq.com/msgrd?v=1&amp;uin=877771223" title="qq" target="_blank"><i class="remixicon-qq-fill"></i></a>
+        
+        
+        
+        <a href="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g4klnqf0tmj30ia0widks.jpg" title="wechat" target="_blank"><i class="remixicon-wechat-fill"></i></a>
+        
+        
+        
+        <a href="https://weibo.com/u/6993631995?topnav=1&amp;wvr=6&amp;topsug=1" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://oubc.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/post/p7_basicpython/'>Python基础-异常处理</a></h2>
+          <span class="date">2019.07.18</span>
+        </div>
+        <div class="post_content markdown"><p>Python也和其它编程语言一样，有异常处理的功能，异常处理可以使得程序不会因为一些小问题而出现崩溃</p>
+
+<p><br><font color=black size = 4>语法和概念部分</font>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;Python Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47<br>48<br>49<br>50<br>51<br>52<br>53<br>54<br>55<br>56<br>57<br>58<br>59<br>60<br>61<br>62<br>63<br>64<br>65<br>66<br>67<br>68<br>69<br>70<br>71<br>72<br>73<br>74<br>75<br>76<br>77<br>78<br>79<br>80<br>81<br>82<br>83<br>84<br>85<br>86<br>87<br>88<br>89<br>90<br>91<br>92<br>93<br>94<br>95<br>96<br>97<br>98<br>99<br>100<br>101<br>102<br>103<br>104<br>105<br>106<br>107<br>108<br>109<br>110<br>111<br>112<br>113<br>114<br>115<br>116<br>117<br>118<br>119<br>120<br>121<br>122<br>123<br>124<br>125<br>126<br>127<br>128<br>129<br>130<br>131<br>132<br>133<br>134<br>135<br>136<br>137<br>138<br>139<br>140<br>141<br>142<br>143<br>144<br>145<br>146<br>147<br>148<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#008000;">#&nbsp;异常处理及程序调试<BR>
+#&nbsp;Bug：原意为“臭虫”或“虫子”，现指系统或程序中的缺陷或错误<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;异常概述<BR>
+#&nbsp;什么是异常：异常就意味着出现错误并且中断程序的正常执行<BR>
+#&nbsp;print&nbsp;（&quot;拼搏到感动自己&quot;)&nbsp;前面的括号为中文状态下输入的，会出现无效的语法错误<BR>
+#&nbsp;还有一种情况，就是程序可以正常运行，由于使用者操作不当或者输入的数据不符合要求也会出现异常<BR>
+#&nbsp;例如：除数为0的异常、NameError尝试访问一个未声明的变量、IndexError索引超出范围、IndentationError缩进错误、TypeError型错误<BR>
+#&nbsp;ValueError传值错误、KeyError请求不存在的字典关键字、IOError&nbsp;IO错误、ImportError找不到要导入的模块、MemoryError内存不足出错......<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;异常处理语句<BR>
+#&nbsp;异常相关语句：try...except语句、try...except...else语句、try...except...finally语句、使用raise语句抛出异常<BR>
+#&nbsp;try...except语句：可以捕获异常并进行相应的处理，得到处理结果<BR>
+#&nbsp;语法：<BR>
+#&nbsp;try:<BR>
+#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;block1<BR>
+#&nbsp;except&nbsp;[ExceptionName(指定异常名字，如果指明了就处理该异常，未指明就都处理)&nbsp;[as&nbsp;alias(给异常起别名)]]:<BR>
+#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;block2<BR>
+#&nbsp;实例：模拟幼儿园分苹果<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;division():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'''分苹果'''</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;=&quot;</span><span style="color:#000000;">*</span><span style="color:#ff0000;">15</span><span style="color:#000000;">,</span><span style="color:#800000;">&quot;分苹果了&quot;</span><span style="color:#000000;">,</span><span style="color:#800000;">&quot;=&quot;</span><span style="color:#000000;">*</span><span style="color:#ff0000;">15</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;apple&nbsp;=&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">(</span><span style="color:#8000ff;">input</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;请输入苹果的个数：&quot;</span><span style="color:#000000;">))&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;输入苹果个数<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;children&nbsp;=&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">(</span><span style="color:#8000ff;">input</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;请输入来了几个小朋友：&quot;</span><span style="color:#000000;">))&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;输入小朋友人数<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;result&nbsp;=&nbsp;apple//children<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;remain&nbsp;=&nbsp;apple&nbsp;-&nbsp;result*children<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;remain&nbsp;&gt;&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(apple,</span><span style="color:#800000;">&quot;个苹果，平均分给&quot;</span><span style="color:#000000;">,children,</span><span style="color:#800000;">&quot;个小朋友，每人分&quot;</span><span style="color:#000000;">,result,</span><span style="color:#800000;">&quot;个，剩下&quot;</span><span style="color:#000000;">,remain,</span><span style="color:#800000;">&quot;个&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(apple,</span><span style="color:#800000;">&quot;个苹果，平均分给&quot;</span><span style="color:#000000;">,children,</span><span style="color:#800000;">&quot;个小朋友，每人分&quot;</span><span style="color:#000000;">,result,</span><span style="color:#800000;">&quot;个&quot;</span><span style="color:#000000;">)<BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;__name__&nbsp;==&nbsp;</span><span style="color:#800000;">'__main__'</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">try</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;division()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">except</span><span style="color:#000000;">&nbsp;(</span><span style="color:#0000ff;">ZeroDivisionError</span><span style="color:#000000;">,</span><span style="color:#0000ff;">ValueError</span><span style="color:#000000;">)&nbsp;</span><span style="color:#0000ff;">as</span><span style="color:#000000;">&nbsp;e:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;输入错误：&quot;</span><span style="color:#000000;">,&nbsp;e)<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;try...except...else语句：可以捕获异常并进行相应的处理，得到处理结果<BR>
+#&nbsp;语法：<BR>
+#&nbsp;try:<BR>
+#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;block1<BR>
+#&nbsp;except&nbsp;[ExceptionName(指定异常名字，如果指明了就处理该异常，未指明就都处理)&nbsp;[as&nbsp;alias(给异常起别名)]]:<BR>
+#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;block2<BR>
+#&nbsp;else:<BR>
+#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;block3<BR>
+#&nbsp;以分苹果为例：<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;division():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'''分苹果'''</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;=&quot;</span><span style="color:#000000;">*</span><span style="color:#ff0000;">15</span><span style="color:#000000;">,</span><span style="color:#800000;">&quot;分苹果了&quot;</span><span style="color:#000000;">,</span><span style="color:#800000;">&quot;=&quot;</span><span style="color:#000000;">*</span><span style="color:#ff0000;">15</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;apple&nbsp;=&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">(</span><span style="color:#8000ff;">input</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;请输入苹果的个数：&quot;</span><span style="color:#000000;">))&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;输入苹果个数<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;children&nbsp;=&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">(</span><span style="color:#8000ff;">input</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;请输入来了几个小朋友：&quot;</span><span style="color:#000000;">))&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;输入小朋友人数<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;result&nbsp;=&nbsp;apple//children<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;remain&nbsp;=&nbsp;apple&nbsp;-&nbsp;result*children<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;remain&nbsp;&gt;&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(apple,</span><span style="color:#800000;">&quot;个苹果，平均分给&quot;</span><span style="color:#000000;">,children,</span><span style="color:#800000;">&quot;个小朋友，每人分&quot;</span><span style="color:#000000;">,result,</span><span style="color:#800000;">&quot;个，剩下&quot;</span><span style="color:#000000;">,remain,</span><span style="color:#800000;">&quot;个&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(apple,</span><span style="color:#800000;">&quot;个苹果，平均分给&quot;</span><span style="color:#000000;">,children,</span><span style="color:#800000;">&quot;个小朋友，每人分&quot;</span><span style="color:#000000;">,result,</span><span style="color:#800000;">&quot;个&quot;</span><span style="color:#000000;">)<BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;__name__&nbsp;==&nbsp;</span><span style="color:#800000;">'__main__'</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">try</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;division()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">except</span><span style="color:#000000;">&nbsp;(</span><span style="color:#0000ff;">ZeroDivisionError</span><span style="color:#000000;">,&nbsp;</span><span style="color:#0000ff;">ValueError</span><span style="color:#000000;">)&nbsp;</span><span style="color:#0000ff;">as</span><span style="color:#000000;">&nbsp;e:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;输入错误：&quot;</span><span style="color:#000000;">,&nbsp;e)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;分苹果顺利完成！&quot;</span><span style="color:#000000;">)<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;try...except...finally语句：可以捕获异常并进行相应的处理，得到处理结果<BR>
+#&nbsp;语法：<BR>
+#&nbsp;try:<BR>
+#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;block1<BR>
+#&nbsp;except&nbsp;[ExceptionName(指定异常名字，如果指明了就处理该异常，未指明就都处理)&nbsp;[as&nbsp;alias(给异常起别名)]]:<BR>
+#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;block2<BR>
+#&nbsp;finally:&nbsp;&nbsp;&nbsp;&nbsp;(无论是否出现异常，都会执行这个代码块)<BR>
+#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;block3<BR>
+#&nbsp;以分苹果为例：<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;division():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'''分苹果'''</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;=&quot;</span><span style="color:#000000;">*</span><span style="color:#ff0000;">15</span><span style="color:#000000;">,</span><span style="color:#800000;">&quot;分苹果了&quot;</span><span style="color:#000000;">,</span><span style="color:#800000;">&quot;=&quot;</span><span style="color:#000000;">*</span><span style="color:#ff0000;">15</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;apple&nbsp;=&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">(</span><span style="color:#8000ff;">input</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;请输入苹果的个数：&quot;</span><span style="color:#000000;">))&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;输入苹果个数<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;children&nbsp;=&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">(</span><span style="color:#8000ff;">input</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;请输入来了几个小朋友：&quot;</span><span style="color:#000000;">))&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;输入小朋友人数<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;result&nbsp;=&nbsp;apple//children<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;remain&nbsp;=&nbsp;apple&nbsp;-&nbsp;result*children<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;remain&nbsp;&gt;&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(apple,</span><span style="color:#800000;">&quot;个苹果，平均分给&quot;</span><span style="color:#000000;">,children,</span><span style="color:#800000;">&quot;个小朋友，每人分&quot;</span><span style="color:#000000;">,result,</span><span style="color:#800000;">&quot;个，剩下&quot;</span><span style="color:#000000;">,remain,</span><span style="color:#800000;">&quot;个&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(apple,</span><span style="color:#800000;">&quot;个苹果，平均分给&quot;</span><span style="color:#000000;">,children,</span><span style="color:#800000;">&quot;个小朋友，每人分&quot;</span><span style="color:#000000;">,result,</span><span style="color:#800000;">&quot;个&quot;</span><span style="color:#000000;">)<BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;__name__&nbsp;==&nbsp;</span><span style="color:#800000;">'__main__'</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">try</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;division()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">except</span><span style="color:#000000;">&nbsp;(</span><span style="color:#0000ff;">ZeroDivisionError</span><span style="color:#000000;">,&nbsp;</span><span style="color:#0000ff;">ValueError</span><span style="color:#000000;">)&nbsp;</span><span style="color:#0000ff;">as</span><span style="color:#000000;">&nbsp;e:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;输入错误：&quot;</span><span style="color:#000000;">,&nbsp;e)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;分苹果顺利完成！&quot;</span><span style="color:#000000;">)&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">finally</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;进行了一次分苹果操作。&quot;</span><span style="color:#000000;">)<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;使用raise语句抛出异常：我们预测到某语句可能会出现异常，而我们又不想在这个时候处理异常的话就使用raise语句来抛出<BR>
+#&nbsp;语法：raise&nbsp;[ExceptionName若不写还是会出现异常[(reason描述信息)]]<BR>
+#&nbsp;还是以小朋友分苹果为例：<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;division():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'''功能：分苹果'''</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;=&quot;</span><span style="color:#000000;">*</span><span style="color:#ff0000;">15</span><span style="color:#000000;">,</span><span style="color:#800000;">&quot;分苹果了&quot;</span><span style="color:#000000;">,</span><span style="color:#800000;">&quot;=&quot;</span><span style="color:#000000;">*</span><span style="color:#ff0000;">15</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;apple&nbsp;=&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">(</span><span style="color:#8000ff;">input</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;请输入苹果的个数：&quot;</span><span style="color:#000000;">))&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;输入苹果个数<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;children&nbsp;=&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">(</span><span style="color:#8000ff;">input</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;请输入来了几个小朋友：&quot;</span><span style="color:#000000;">))&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;输入小朋友人数<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;apple&nbsp;&lt;&nbsp;children:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">raise</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">ValueError</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;苹果太少了，不够分&quot;</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;该语句执行后&nbsp;后面的语句将不会执行<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;result&nbsp;=&nbsp;apple//children<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;remain&nbsp;=&nbsp;apple&nbsp;-&nbsp;result*children<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;remain&nbsp;&gt;&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(apple,</span><span style="color:#800000;">&quot;个苹果，平均分给&quot;</span><span style="color:#000000;">,children,</span><span style="color:#800000;">&quot;个小朋友，每人分&quot;</span><span style="color:#000000;">,result,</span><span style="color:#800000;">&quot;个，剩下&quot;</span><span style="color:#000000;">,remain,</span><span style="color:#800000;">&quot;个&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(apple,</span><span style="color:#800000;">&quot;个苹果，平均分给&quot;</span><span style="color:#000000;">,children,</span><span style="color:#800000;">&quot;个小朋友，每人分&quot;</span><span style="color:#000000;">,result,</span><span style="color:#800000;">&quot;个&quot;</span><span style="color:#000000;">)<BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;__name__&nbsp;==&nbsp;</span><span style="color:#800000;">'__main__'</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">try</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;division()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">except</span><span style="color:#000000;">&nbsp;(</span><span style="color:#0000ff;">ZeroDivisionError</span><span style="color:#000000;">,&nbsp;</span><span style="color:#0000ff;">ValueError</span><span style="color:#000000;">)&nbsp;</span><span style="color:#0000ff;">as</span><span style="color:#000000;">&nbsp;e:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;输入错误：&quot;</span><span style="color:#000000;">,&nbsp;e)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;分苹果顺利完成！&quot;</span><span style="color:#000000;">)&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">finally</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;进行了一次分苹果操作。&quot;</span><span style="color:#000000;">)<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;程序调试：<BR>
+#&nbsp;使用自带IDLE进行程序调试：<BR>
+#&nbsp;打开IDLE→点击上方有个Debug菜单→弹出对话框→由IDLE打开文件→在文件中设置断点(鼠标右键菜单中Set&nbsp;breakpoint)<BR>
+#&nbsp;→执行程序(会在Debug窗口中显示执行信息)→Debug窗口应用见下方图片→根据Debug窗口进行相应调试→找出问题，进行修改<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;使用assert(断言)语句调试程序：<BR>
+#&nbsp;语法：assert&nbsp;expression(为真什么都不做，为假是抛出AssertionError异常)&nbsp;[,reason]<BR>
+#&nbsp;还是以小朋友分苹果为例：<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;division():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'''功能：分苹果'''</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;=&quot;</span><span style="color:#000000;">*</span><span style="color:#ff0000;">15</span><span style="color:#000000;">,</span><span style="color:#800000;">&quot;分苹果了&quot;</span><span style="color:#000000;">,</span><span style="color:#800000;">&quot;=&quot;</span><span style="color:#000000;">*</span><span style="color:#ff0000;">15</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;apple&nbsp;=&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">(</span><span style="color:#8000ff;">input</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;请输入苹果的个数：&quot;</span><span style="color:#000000;">))&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;输入苹果个数<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;children&nbsp;=&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">(</span><span style="color:#8000ff;">input</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;请输入来了几个小朋友：&quot;</span><span style="color:#000000;">))&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;输入小朋友人数<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">assert</span><span style="color:#000000;">&nbsp;apple&nbsp;&gt;&nbsp;children,&nbsp;</span><span style="color:#800000;">&quot;苹果不够分&quot;</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;应用断言调试<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;result&nbsp;=&nbsp;apple//children<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;remain&nbsp;=&nbsp;apple&nbsp;-&nbsp;result*children<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;remain&nbsp;&gt;&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(apple,</span><span style="color:#800000;">&quot;个苹果，平均分给&quot;</span><span style="color:#000000;">,children,</span><span style="color:#800000;">&quot;个小朋友，每人分&quot;</span><span style="color:#000000;">,result,</span><span style="color:#800000;">&quot;个，剩下&quot;</span><span style="color:#000000;">,remain,</span><span style="color:#800000;">&quot;个&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(apple,</span><span style="color:#800000;">&quot;个苹果，平均分给&quot;</span><span style="color:#000000;">,children,</span><span style="color:#800000;">&quot;个小朋友，每人分&quot;</span><span style="color:#000000;">,result,</span><span style="color:#800000;">&quot;个&quot;</span><span style="color:#000000;">)<BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;__name__&nbsp;==&nbsp;</span><span style="color:#800000;">'__main__'</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">try</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;division()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">except</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">AssertionError</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">as</span><span style="color:#000000;">&nbsp;e:&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;处理断言异常<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">&quot;输入有误：&quot;</span><span style="color:#000000;">,&nbsp;e)<BR>
+</span><span style="color:#008000;">#&nbsp;断言不能用在检查用户输入，只能用在检测某些内容是否始终为真，如果不能保证，说明程序当中存在Bug，我们需要对这种情况进行处理，因为assert语句只对调试阶段有效<BR>
+#&nbsp;Python&nbsp;-O&nbsp;文件名.py&nbsp;命令&nbsp;来关闭断言语句<BR>
+</span></div></td></tr></table></div>
+<br><font color=black size = 4>相关截图</font>
+<br><img src="https://wx2.sinaimg.cn/mw1024/007Diza3ly1g549fz0xy8j30om0brmym.jpg" width="800" height="650" />
+<img src="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g549fyu076j308s05ya9w.jpg" width="400" height="350" />
+<img src="https://wx1.sinaimg.cn/mw1024/007Diza3ly1g549fyw8njj30kr0cpmxz.jpg" width="800" height="650" />
+<img src="https://wx2.sinaimg.cn/mw1024/007Diza3ly1g549fyw0q7j30iz0bk3zy.jpg" width="800" height="650" />
+<br><br><br>
+<font color = gray size = 3>如有错误，欢迎指正！</font></p></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://oubc.github.io/tags/python/">Python</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmg4aog3074074gnf.gif?tags=%5B%5D">I </a>
+	<a href="">love</a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmfm2eg306o06o74u.gif?tags=%5B%5D"> you </a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx4tpcj30fn0bq3zg.jpg?tags=%5B%5D">three </a>
+	<a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx64ctg307s07swfy.gif?tags=%5B%5D">thousand</a>
+    <a href="https://www.kugou.com/song/#hash=96426C78381DE98DC31A5846FC274CBF&album_id=646623"> times.</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>家庭、梦想、内心的平静</span>
+  </div>
+</footer>
+
+
+
+<script src="https://oubc.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://oubc.github.io/js/zozo.js"></script>
+<script src="https://oubc.github.io/js/highlight.pack.js"></script>
+<link  href="https://oubc.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://oubc.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>

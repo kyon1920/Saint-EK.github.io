@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Bruce Cheung"/>
+
+  
+  <meta name="description" content="让我们一起去了解Linux的用户配置文件以及用户管理文件和相关的命令吧
+"/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, simple, dream"/>
+  
+
+  
+  <link rel="canonical" href="https://oubc.github.io/post/l5_uusermanage/"/>
+
+  
+
+  <title>用户及用户组管理 &middot; Love, or death</title>
+
+  <link rel="shortcut icon" href="https://oubc.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/post/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://oubc.github.io/">
+          <span>Love, or death</span>
+          <img src="https://oubc.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">For you, a thousand times over.</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/oubc" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=uYGOjo6OiIuLivnIyJfa1tQ" title="mail" target="_blank"><i class="remixicon-mail-fill"></i></a>
+        
+        
+        
+        <a href="http://sighttp.qq.com/msgrd?v=1&amp;uin=877771223" title="qq" target="_blank"><i class="remixicon-qq-fill"></i></a>
+        
+        
+        
+        <a href="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g4klnqf0tmj30ia0widks.jpg" title="wechat" target="_blank"><i class="remixicon-wechat-fill"></i></a>
+        
+        
+        
+        <a href="https://weibo.com/u/6993631995?topnav=1&amp;wvr=6&amp;topsug=1" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://oubc.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/post/l5_uusermanage/'>用户及用户组管理</a></h2>
+          <span class="date">2019.08.10</span>
+        </div>
+        <div class="post_content markdown"><p>让我们一起去了解Linux的用户配置文件以及用户管理文件和相关的命令吧</p>
+
+<p><br><font color=black size = 4>索引</font>
+<br><font color=black size = 4>0.用户配置文件</font>
+<br><font color=black size = 4>1.用户管理相关文件</font>
+<br><font color=black size = 4>2.用户管理命令</font>
+<br><font color=black size = 4>3.用户组管理命令</font>
+<br>
+<br>
+<br><font color=black size = 5>用户配置文件</font>
+<br><font color=black size = 4>用户配置文件及其相关目录：</font>
+<br>&nbsp;&nbsp;&nbsp;&nbsp; /etc/passwd  用户信息文件
+<br>&nbsp;&nbsp;&nbsp;&nbsp; /etc/shadow  影子文件
+<br>&nbsp;&nbsp;&nbsp;&nbsp; /etc/group 组信息文件
+<br>&nbsp;&nbsp;&nbsp;&nbsp; /etc/gshadow  组密码文件
+<br>&nbsp;&nbsp;&nbsp;&nbsp; /var/spool/mail/用户名/  邮箱目录
+<br>&nbsp;&nbsp;&nbsp;&nbsp; /etc/skel/  模板目录
+<br><font color=black size = 4>1、用户信息文件/etc/passwd</font>
+<br>(1) 用户管理简介：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 越是对服务器安全性要求高的服务器，越需要建立合理的用户权限等级制度和服务器操作规范。
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 在Linux中主要是通过用户配置文件来查看和修改用户信息。
+<br>(2) /etc/passwd - 键入命令：cat /etc/passwd
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 第一字段：用户名称
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 第二字段：密码标志
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 第三字段：UID (用户ID)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0  超级用户
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1-499  系统用户(伪用户)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 500-65535  超级用户
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 第四字段：GID (用户初始组ID)
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 第五字段：用户说明
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 第六字段：家目录
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 普通用户：/home/用户名/
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 超级用户：/root/
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 第七字段：登陆之后的Shell
+<br>(3) 什么是初始组和附加组
+<br>初始组：就是指用户一登录就立刻拥有这个用户组且拥有这个组的相关权限，每个用户的初始组只能有一个，一般就是和这个用户的用户名相同的组名作为这个用户的初始组。
+<br>附加组：指用户可以加入多个其它的用户组，并拥有这些组的权限，附加组可以有多个。
+<br>(4) Shell是什么
+<br>&nbsp;&nbsp;&nbsp;&nbsp; Shell就是Linux的命令解释器
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 在/etc/passwd当中，除了标准Shell是/bin/bash之外，还可以写入/sbin/nologin
+<br>(5) 用户的家目录
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 普通用户：/home/用户名/，所有者和所属组都是此用户，权限为700
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 超级用户：/root/，所有者和所属组都是root用户，权限为550
+<br><font color=black size = 4>2、影子文件/etc/shadow</font>
+<br>键入命令：cat /etc/shadow
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 第一字段：用户名
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 第二字段：加密密码
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 加密算法升级为SHA512散列加密算法
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 如果密码位是 &quot;!!&quot; 或 &quot;*&quot; 代表没有密码，不能登录
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 第三字段：密码最后一次修改日期
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 使用1970年1月1日为标准时间，没过一天时间戳加1
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 第四字段：两次密码的修改时间间隔(和第三字段相比)
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 第五字段：密码有效期(和第三字段相比)
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 第六字段：密码修改到期前的警告天数(和第五字段相比)
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 第七字段：密码过期后的宽限天数(和第五字段相比)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0  代表密码过期后立即失效
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -1  代表密码永远不会失效
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 第八字段：账号失效时间
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 需要使用时间戳表示
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 第九字段：保留
+<br>时间戳换算
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 把时间换算为日期
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; date -d &quot;1970-01-01 16066 days&quot;
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 把日期换算为时间戳
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; echo $(($date --date=&quot;2019/08/09&quot; +%s)/86400+1))
+<br><font color=black size = 4>3、组信息文件/etc/group和组密码文件/etc/gshadow</font>
+<br>组信息文件/etc/group
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 键入命令：cat /etc/group
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 第一字段：组名
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 第二字段：组密码标志
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 第三字段：GID (groupID)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 第四字段：组中附加用户
+<br>组密码文件/etc/gshadow
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 键入命令：cat /etc/gshadow
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 第一字段：组名
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 第二字段：组密码
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 第三字段：组管理员用户名
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 第四字段：组中附加用户
+<br><br><font color=black size = 5>用户管理相关文件</font>
+<br>用户的家目录
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 普通用户：/home/用户名/，所有者和所属组都是此用户，权限为700
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 超级用户：/root/，所有者和所属组都是root用户，权限为550
+<br>/var/spool/mail/用户名/  邮箱目录
+<br>/etc/skel/  模板目录
+<br><br><font color=black size = 5>用户管理命令</font>
+<br><font color=black size = 4>1、用户添加命令useradd</font>
+<br>(1) useradd命令格式
+<br>useradd [选项] 用户名
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -u UID  手工指定用户的UID号
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -d 家目录  手工指定用户的家目录
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -c 用户说明  手工指定用户的说明
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -g 组名  手工指定用户的初始组
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -G 组名  指定用户的附加组  添加到多个附加组时用逗号隔开
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -s shell  手工指定用户的登录shell，默认是/bin/bash
+<br>(2) 添加默认用户
+<br>&nbsp;&nbsp;&nbsp;&nbsp; useradd sc
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; grep sc /etc/passwd
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; grep sc /etc/shadow
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; grep sc /etc/group
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; grep sc /etc/gshadow
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ll -d /home/zhang/
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ll /var/spool/mail/zhang/
+<br>grep 指令用于查找内容包含指定的范本样式的文件，如果发现某文件的内容符合所指定的范本样式，预设 grep 指令会把含有范本样式的那一列显示出来。若不指定任何文件名称，或是所给予的文件名为 -，则 grep 指令会从标准输入设备读取数据。
+<br>(3) 指定选项添加用户
+<br>&nbsp;&nbsp;&nbsp;&nbsp; useradd -u 550 -G root,bin -d /home/zhang ＼ -c &quot;test user&quot; -s /bin/bash sc
+<br>(4) 用户默认值文件
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 键入命令：cat /etc/default/useradd
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; GROUP=100  用户默认组
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; HOME=/home  用户家目录
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; INACTIVE=-1  密码过期宽限天数(shadow文件第七字段)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EXPIRE=  密码失效时间(shadow文件第八字段)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SHELL=/bin/bash  默认shell
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SKEL=/etc/skel  模板目录
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CREATE_MAIL_SPOOL=yes  是否建立邮箱
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 键入命令：cat /etc/login.defs
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PASS_MAX_DAYS 99999  密码有效期(shadow第五字段)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PASS_MIN_DAYS 0  密码修改间隔(shadow第四字段)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PASS_MIN_LEN 5  密码最小位数(PAM)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PASS_WARN_AGE 7  密码到期警告(shadow第六字段)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; UID_MIN 500  最小UID值
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; UID_MAX 60000  最大UID值
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ENCRYPT_METHOD SHA512  加密模式
+<br><font color=black size = 4>2、修改用户密码passwd</font>
+<br>(1) passwd命令格式
+<br>&nbsp;&nbsp;&nbsp;&nbsp; passwd [选项] 用户名
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -S  查询用户密码的密码状态，仅root用户可用
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -l  暂时锁定用户，仅root用户可用
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -l  解锁用户，仅root用户可用
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; --stdin  可以通过管道符输出的数据作为用户的密码
+<br>(2) 查看密码状态
+<br>&nbsp;&nbsp;&nbsp;&nbsp; passwd -S zhang
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; zhang PS 2019-08-09 0 99999 7 -1
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 用户名设定时间(2019-08-09)、密码修改时间间隔(0)、密码有效期(99999)、警告时间(7)、密码不失效(-1)
+<br>(3) 锁定用户和解锁用户
+<br>&nbsp;&nbsp;&nbsp;&nbsp; passwd -l zhang  锁定用户，仅root用户可用
+<br>&nbsp;&nbsp;&nbsp;&nbsp; passwd -u zhang  解锁用户，仅root用户可用
+<br>(4) 使用字符串作为用户的密码
+<br>&nbsp;&nbsp;&nbsp;&nbsp; echo &quot;123&quot; | passwd --stdin zhang
+<br><font color=black size = 4>3、修改用户信息usermod</font>
+<br>usermod命令格式
+<br>&nbsp;&nbsp;&nbsp;&nbsp; usermod [选项] 用户名
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -U UID  修改用户的UID号
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -c 用户说明  修改用户的说明信息
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -G 组名  修改用户的附加组
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -L Lock  临时锁定用户
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -U Unlock  解除用户锁定
+<br>实例：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; usermod -c &quot;test user&quot; zhang  修改用户说明
+<br>&nbsp;&nbsp;&nbsp;&nbsp; usermod -G root zhang  把zhang用户加入root组
+<br>&nbsp;&nbsp;&nbsp;&nbsp; usermod -L zhang  锁定用户
+<br>&nbsp;&nbsp;&nbsp;&nbsp; usermod -U zhang  解锁用户
+<br><font color=black size = 4>4、修改用户密码状态chage</font>
+<br>chage命令格式
+<br>&nbsp;&nbsp;&nbsp;&nbsp; chage [选项] 用户名
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -l (list)  列出用户的详细密码状态
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -d (date)  修改密码最后一次更改时间(shadow第三字段)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -m (天数)  两次密码的修改时间间隔(shadow第四字段)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -M (天数)  密码有效期(shadow第五字段)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -W (天数)  密码过期前警告天数(shadow第六字段)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -I (天数)  密码过期后宽限天数(shadow第七字段)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -E (日期)  账号失效时间(shadow第八字段)
+<br>实例：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; chage -d 0 zhang
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 这个命令其实是把密码修改日期间隔设置为0了
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 这样用户每次登录就需要修改密码，有利于服务器安全
+<br><font color=black size = 4>5、删除用户userdel</font>
+<br>userdel命令格式
+<br>&nbsp;&nbsp;&nbsp;&nbsp; userdel [-r] 用户名
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -r 删除用户的同时删除用户家目录(一般都需要加上这个选项)
+<br>手工删除用户
+<br>&nbsp;&nbsp;&nbsp;&nbsp; vi /etc/passwd
+<br>&nbsp;&nbsp;&nbsp;&nbsp; vi /etc/shadow
+<br>&nbsp;&nbsp;&nbsp;&nbsp; vi /etc/group
+<br>&nbsp;&nbsp;&nbsp;&nbsp; vi /etc/gshadow
+<br>&nbsp;&nbsp;&nbsp;&nbsp; rm -rf /var/spool/mail/zhang/
+<br>&nbsp;&nbsp;&nbsp;&nbsp; rm -rf /home/zhang/
+<br>注：手工删除十分麻烦，一般不建议这样删除用户
+<br><font color=black size = 4>6、查看用户ID</font>
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 键入命令：id 用户名
+<br><font color=black size = 4>7、用户切换命令su</font>
+<br>su命令格式
+<br>&nbsp;&nbsp;&nbsp;&nbsp; su [选项] 用户名
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -  选项只使用 &quot;-&quot; 代表连带用户的环境变量一起切换
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -c  仅执行一次命令，而不切换用户身份
+<br>&nbsp;&nbsp;&nbsp;&nbsp; env命令  查看当前目录的环境变量
+<br>实例：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; su - root  切换到root超级用户
+<br>&nbsp;&nbsp;&nbsp;&nbsp; su - root -c &quot;useradd user1&quot;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 不切换到root超级用户，但是通过该命令执行useradd命令添加user1用户
+<br>补充：root超级用户切换到普通用户不需要密码，普通用户切换到root用户需要密码
+<br><br><font color=black size = 5>用户组管理命令</font>
+<br>(1) 添加用户组
+<br>&nbsp;&nbsp;&nbsp;&nbsp; groupadd [选项] 组名
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -g GID  指定组ID
+<br>(2) 修改用户组
+<br>&nbsp;&nbsp;&nbsp;&nbsp; groupmod [选项] 组名
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -g GID  修改组ID
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -n (name)  修改组名 不建议修改组名
+<br>实例：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; groupmod -n testgrp testgrp1  把组testgrp的组名修改为testgrp1
+<br>(3) 删除用户组
+<br>&nbsp;&nbsp;&nbsp;&nbsp; groupdel 组名
+<br>注：不能删除含有附属用户的组，如果该组只有附加用户则可以删除
+<br>(4) 把用户添加组或从组中删除
+<br>&nbsp;&nbsp;&nbsp;&nbsp; gpasswd [选项] 用户名 组名
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -a  把用户加入组
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -d  把用户从组中删除
+<br><br><br>
+<font color = gray size = 3>如有错误，欢迎指正！</font></p></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://oubc.github.io/tags/linux/">Linux</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmg4aog3074074gnf.gif?tags=%5B%5D">I </a>
+	<a href="">love</a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmfm2eg306o06o74u.gif?tags=%5B%5D"> you </a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx4tpcj30fn0bq3zg.jpg?tags=%5B%5D">three </a>
+	<a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx64ctg307s07swfy.gif?tags=%5B%5D">thousand</a>
+    <a href="https://www.kugou.com/song/#hash=96426C78381DE98DC31A5846FC274CBF&album_id=646623"> times.</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>家庭、梦想、内心的平静</span>
+  </div>
+</footer>
+
+
+
+<script src="https://oubc.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://oubc.github.io/js/zozo.js"></script>
+<script src="https://oubc.github.io/js/highlight.pack.js"></script>
+<link  href="https://oubc.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://oubc.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>

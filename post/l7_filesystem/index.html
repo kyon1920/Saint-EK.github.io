@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Bruce Cheung"/>
+
+  
+  <meta name="description" content="你可能听说对于Linux “一切皆文件”，那么本篇博客就带你探索Linux中文件系统的奥秘
+"/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, simple, dream"/>
+  
+
+  
+  <link rel="canonical" href="https://oubc.github.io/post/l7_filesystem/"/>
+
+  
+
+  <title>Linux文件系统 &middot; Love, or death</title>
+
+  <link rel="shortcut icon" href="https://oubc.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/post/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://oubc.github.io/">
+          <span>Love, or death</span>
+          <img src="https://oubc.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">For you, a thousand times over.</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/oubc" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=uYGOjo6OiIuLivnIyJfa1tQ" title="mail" target="_blank"><i class="remixicon-mail-fill"></i></a>
+        
+        
+        
+        <a href="http://sighttp.qq.com/msgrd?v=1&amp;uin=877771223" title="qq" target="_blank"><i class="remixicon-qq-fill"></i></a>
+        
+        
+        
+        <a href="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g4klnqf0tmj30ia0widks.jpg" title="wechat" target="_blank"><i class="remixicon-wechat-fill"></i></a>
+        
+        
+        
+        <a href="https://weibo.com/u/6993631995?topnav=1&amp;wvr=6&amp;topsug=1" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://oubc.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/post/l7_filesystem/'>Linux文件系统</a></h2>
+          <span class="date">2019.08.14</span>
+        </div>
+        <div class="post_content markdown"><p>你可能听说对于Linux “一切皆文件”，那么本篇博客就带你探索Linux中文件系统的奥秘</p>
+
+<p><br><font color=black size = 4>索引</font>
+<br><font color=black size = 4>0.分区和文件系统</font>
+<br><font color=black size = 4>1.文件系统常用命令</font>
+<br><font color=black size = 4>2.fdisk分区</font>
+<br><font color=black size = 4>3./etc/fstab文件修复</font>
+<br><font color=black size = 4>4.分配swap分区</font>
+<br>
+<br>
+<br><font color=black size = 5>分区和文件系统</font>
+<br><font color=black size = 4>1、分区</font>
+<br>(1) 分区类型
+<br> ◆ 主分区：总共最多只能分为四个
+<br> ◆ 扩展分区：只能有一个，也算作主分区的一种，就是说主分区加上扩展分区最多有四个
+<br> ◆ 扩展分区不能存储数据和格式化，必须再划分成逻辑分区才能使用
+<br> ◆ 逻辑分区：逻辑分区是在扩展分区中划分的，如果是IDE硬盘，Linux最多支持59个逻辑分区，如果是SCSI硬盘，Linux最多支持11个逻辑分区。
+<br>(2) 分区表示方法
+<br><img src="https://wx2.sinaimg.cn/mw1024/007Diza3ly1g5zhk3yyizj30n206j0um.jpg" width="800" height="350" />
+<br><img src="https://wx1.sinaimg.cn/mw1024/007Diza3ly1g5zhk3xrybj30gq09wq4c.jpg" width="800" height="650" />
+<br>sdax(x是数字)详解：
+<br> ▪ sd代表scsi硬盘接口，hd代表id硬盘接口；
+<br> ▪ a、b、c、d 代表第几块硬盘(sda代表第一块硬盘)；
+<br> ▪ 1、2、3、4代表是第几个主分区(sda1代表是第一个主分区)；
+<br> ▪ 5、6、7、8代表逻辑分区(sda5代表逻辑分区1)；
+<br><img src="https://wx1.sinaimg.cn/mw1024/007Diza3ly1g5zhk3y8y3j30ne0783zz.jpg" width="800" height="300" />
+<br><img src="https://wx1.sinaimg.cn/mw1024/007Diza3ly1g5zhk3ykbzj30mg0b6wgq.jpg" width="800" height="650" />
+<br><font color=black size = 4>2、文件系统</font>
+<br>有了分区，Linux还不能使用，必须进行格式化，格式化就是把前面划分好的分区写入文件系统。
+<br>现在Linux文件系统大多都使用ext
+<br> • ext2：是ext文件系统的升级版本，1993年发布，最大支持16TB的分区和最大2TB的文件，RedHat Linux7.2版本以前的默认系统都是ext2文件系统。
+<br> • ext3：是ext2文件系统的升级版本，与ext2最大的区别就是带有日志功能，在系统突然停止时提高文件系统的可靠性。
+<br> • ext4：是ext3文件系统的升级版本，ext4的变化可以用翻天覆地来形容，ext4在性能、伸缩性和可靠性方面进行了大量改进、向下兼容ext3、最大1EB文件系统和16TB文件、无限数量子目录、Extents连续数据块概念、多块分配、延迟分配、持久预分配、快速FSCK、日志校验、无日志模式、在线碎片整理、inode增强、默认启用barrier等，它是CentOS6.3的默认文件系统。
+<br>补充：(1TB = 1024GB = 1024*1024KB) (1EB = 1024PB = 1024*1024TB)
+<br><br><font color=black size = 5>文件系统常用命令</font>
+<br><font color=black size = 4>1、df命令、du命令、fsck命令和dumpe2fs命令</font>
+<br>(1) 文件系统查看命令df (统计文件系统的占有情况)
+<br>&nbsp;&nbsp;&nbsp;&nbsp; df [选项] [挂载点]
+<br>选项：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -a  显示所有的文件系统信息，包括特殊文件系统，如：/proc、/sysfs......
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -h  使用习惯单位显示容量，如：KB、MB、GB等
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -T  显示文件系统类型
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -m  以MB为单位显示容量
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -k  以KB为单位显示容量 (该选项为默认选项)
+<br>(2) 统计目录或文件大小du (一般可以使用 ll -h 命令替代)
+<br>&nbsp;&nbsp;&nbsp;&nbsp; du [选项] [目录或文件名]
+<br>选项：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -a  显示每个子文件的磁盘占用量，默认只统计子目录的磁盘占用量
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -h  使用习惯单位显示磁盘占用量，如：KB、MB、GB等
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -s  统计总占用量，而不列出子目录和子文件的占用量
+<br>df命令和du命令的区别：
+<br> ▪ df命令是从文件系统进行考虑的，不光考虑文件占用的空间，还要统计被命令或程序占用的空间，最常见的就是文件已经删除，但是程序并没有释放空间
+<br> ▪ du命令是面向文件的，只会计算文件或目录占用的空间
+<br>(3) 文件系统修复目录fsck
+<br>&nbsp;&nbsp;&nbsp;&nbsp; fsck [选项] 分区设备文件名
+<br>选项：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -a  不用显示用户提示，自动修复文件系统
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -y  自动修复，和-a 选项作用一致，不过有些文件系统不支持该选项
+<br>说明：一般不会使用这个命令，除非磁盘真的出现了异常
+<br>(4) 显示磁盘状态命令dumpe2fs
+<br>&nbsp;&nbsp;&nbsp;&nbsp; dumpe2fs 分区设备文件名
+<br><font color=black size = 4>2、挂载命令</font>
+<br>&nbsp;&nbsp;&nbsp;&nbsp; mount [-l]  查询系统中已经挂载的设备，-l 会显示卷标名称
+<br>&nbsp;&nbsp;&nbsp;&nbsp; mount -a  依据配置文件 /etc/fstab 的内容，自动挂载
+<br>挂载命令
+<br>&nbsp;&nbsp;&nbsp;&nbsp; mount [-t 文件系统] [-L 卷标名] ＼ [-o 特殊选项] 设备文件名 挂载点
+<br>选项：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -t  文件系统  加入文件系统类型来指定挂载的类型，可以ext3、ext4(硬盘)、iso9660(光驱)等文件系统
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -L  卷标名  挂载指定卷标的分区，而不是安装设备文件名挂载
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -o  特殊选项  可以指定挂载的额外选项，见下表
+<br><img src="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g5zhk41kz6j30mq0enqcc.jpg" width="800" height="650" />
+<br>实例：使其不支持可执行文件
+<br>&nbsp;&nbsp;&nbsp;&nbsp; mount -o remount,noexec /home  重新挂载/boot分区，并使用noexec权限
+<br>&nbsp;&nbsp;&nbsp;&nbsp; cd /home
+<br>&nbsp;&nbsp;&nbsp;&nbsp; vi hello.sh
+<br>&nbsp;&nbsp;&nbsp;&nbsp; chmod 755 hello.sh
+<br>&nbsp;&nbsp;&nbsp;&nbsp; ./hello.sh  执行失败
+<br>&nbsp;&nbsp;&nbsp;&nbsp; mount -o remount,exec /home  改为可执行
+<br><font color=black size = 4>3、挂载光盘和U盘</font>
+<br>(1) 挂载光盘
+<br>&nbsp;&nbsp;&nbsp;&nbsp; mkdir /mnt/cdrom  建立挂载点
+<br>&nbsp;&nbsp;&nbsp;&nbsp; mount -t iso9660 /dev/cdrom /mnt/cdrom  挂载光盘，手动设定文件系统名iso9660，可省略
+<br>&nbsp;&nbsp;&nbsp;&nbsp; mount /dev/sr0 /mnt/cdrom/  与挂载点联系起来
+<br>(2) 卸载命令
+<br>&nbsp;&nbsp;&nbsp;&nbsp; umount 设备文件名或挂载点
+<br>&nbsp;&nbsp;&nbsp;&nbsp; umount /mnt/cdrom
+<br>注：不能在光盘目录下卸载，会报错：光盘正忙
+<br>(3) 挂载U盘
+<br>&nbsp;&nbsp;&nbsp;&nbsp; fdisk -l  查看U盘设备文件名
+<br>&nbsp;&nbsp;&nbsp;&nbsp; mkdir /mnt/usb
+<br>&nbsp;&nbsp;&nbsp;&nbsp; mount -t vfat /dev/sdb1 /mnt/usb/  (dev/sdb1是通过前面命令查看到的设备文件名)
+<br>注：Linux默认是不支持NTFS文件系统的
+<br><font color=black size = 4>4、支持NTFS文件系统</font>
+<br>两种方法：编译内核(不用)、利用NTFS-3G插件
+<br>利用NTFS-3G插件步骤：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 下载NTFS-3G插件：<a href="https://www.tuxera.com/community/ntfs-3g-download/">https://www.tuxera.com/community/ntfs-3g-download/</a>
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 安装NTFS-3G
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tar -zxvf ntfs-3g_ntfsprogs-2013.1.13.tgz  解压
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cd ntfs-3g_ntfsprogs-2013.1.13  进入解压目录
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ./configure  编译器准备，没有指定安装目录，安装到默认位置
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; make  编译
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; make install  编译安装
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 使用
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mount -t ntfs-3g 分区设备文件名 挂载点
+<br><br><font color=black size = 5>fdisk分区</font>
+<br><font color=black size = 4>1、fdisk命令分区过程</font>
+<br>(1) 添加新硬盘
+<br><img src="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g5zhk3vvjej30es0c9tau.jpg" width="800" height="650" />
+<br>(2) 查看新硬盘
+<br>&nbsp;&nbsp;&nbsp;&nbsp; fdisk -l
+<br>(3) 使用fdisk命令分区
+<br>&nbsp;&nbsp;&nbsp;&nbsp; fdisk /dev/sdb
+<br>备注：输入错误需要按Ctrl+退格键才能进行删除
+<br><img src="https://wx4.sinaimg.cn/mw1024/007Diza3ly1g5zhk3yfirj30ni0eb0wr.jpg" width="800" height="650" />
+<br>(4) 重新读取分区表信息
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 键入命令 partprobe
+<br>(5) 格式化分区
+<br>&nbsp;&nbsp;&nbsp;&nbsp; mkfs -t ext4 /dev/sdb1
+<br>备注：不能格式化sdb2(扩展分区)
+<br>(6) 建立挂载点并挂载
+<br>&nbsp;&nbsp;&nbsp;&nbsp; mkdir /disk1/
+<br>&nbsp;&nbsp;&nbsp;&nbsp; mount /dev/sdb1 /disk1/
+<br>备注：检查是否挂载成功要么使用mount命令，要么使用df命令
+<br>补充：fdisk命令只能看到分配大小
+<br><font color=black size = 4>2、分区自动挂载与fstab文件修复</font>
+<br>手动挂载在下次开机时会失效，需要重新进行手动再次挂载，十分麻烦，所以使用分区自动挂载就十分有意义了
+<br>fstab文件是系统启动的一个重要文件，写错了很有可能导致系统崩溃
+<br>(1) /etc/fstab文件
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 第一字段：分区设备文件名或UUID (硬盘通用唯一识别码)
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 第二字段：挂载点
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 第三字段：文件系统名称
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 第四字段：挂载参数
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 第五字段：指定分区是否被dump备份，0代表不备份，1代表每天备份，2代表不定期备份
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 第六字段：指定分区是否被fsck检测，0代表不检测，其它数字代表检测的优先级，当然1的优先级比2高
+<br>备注：备份是指备份到分区文件 lost+found文件
+<br>查看UUID：
+<br><img src="https://wx4.sinaimg.cn/mw1024/007Diza3ly1g5zhk3ruxzj30c60783yo.jpg" width="400" height="250" />
+<br><img src="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g5zhk3u761j30oh07njx8.jpg" width="800" height="450" />
+<br>(2) 分区自动挂载
+<br>&nbsp;&nbsp;&nbsp;&nbsp; vi /etc/fstab
+<br>&nbsp;&nbsp;&nbsp;&nbsp; ...省略部分输出...
+<br>&nbsp;&nbsp;&nbsp;&nbsp; /dev/sdb1 &nbsp;&nbsp;&nbsp;&nbsp; disk1 &nbsp;&nbsp;&nbsp;&nbsp; ext4 &nbsp;&nbsp;&nbsp;&nbsp; defaults &nbsp;&nbsp;&nbsp;&nbsp; 1 2
+<br>配置文件内容截图
+<br><img src="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g5zhnlomyqj30o70doai2.jpg" width="800" height="650" />
+<br>(3) 依据配置文件内容，自动挂载
+<br>&nbsp;&nbsp;&nbsp;&nbsp; mount -a
+<br>备注：此命令也可以检测挂载是否成功，fstab写错会导致系统崩溃，fstab内容不小心写错此命令会报错
+<br><br><font color=black size = 5>/etc/fstab文件修复</font>
+<br>&nbsp;&nbsp;&nbsp;&nbsp; mount -o remount,rw /
+<br>说明：在fstab文件不小心写错重启后发生错误时，可使用上面命令进行文件修复，此命令功能是为/目录加入写权限，能让root重新编辑fstab文件
+<br>备注：此命令有局限性，只能修复fstab文件错误
+<br><br><font color=black size = 5>分配swap分区</font>
+<br>(1) free命令：查看内存与swap分区使用情况
+<br>&nbsp;&nbsp;&nbsp;&nbsp; free <a href="可省略">选项</a>
+<br>选项：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -k|-m|-g...  将文件大小以KB、MB、GB等单位显示出来
+<br> ◆ cached(缓冲)：是指把读取出来的数据保存在内存当中，当再次读取时，不用读取硬盘而直接从内存当中读取，加速了数据的读取过程
+<br> ◆ buffer(缓冲)：是指在写入数据时，先把分散的写入操作保存到内存中，当达到一定程度再集中写入硬盘，减少了磁盘碎片和硬盘的反复寻道，加速了数据的写入过程
+<br>(2) 新建swap分区
+<br>&nbsp;&nbsp;&nbsp;&nbsp; fdisk /dev/sdb
+<br>备注：别忘记把分区ID改为82，见下图
+<br><img src="https://wx4.sinaimg.cn/mw1024/007Diza3ly1g5zhnllmo5j30ng0acq7w.jpg" width="800" height="650" />
+<br><img src="https://wx2.sinaimg.cn/mw1024/007Diza3ly1g5zhnlp9alj30nr0cithp.jpg" width="800" height="650" />
+<br><img src="https://wx4.sinaimg.cn/mw1024/007Diza3ly1g5zhnll965j30o20bc497.jpg" width="800" height="650" />
+<br><img src="https://wx1.sinaimg.cn/mw1024/007Diza3ly1g5zhnllq3sj30np0e9tgx.jpg" width="800" height="650" />
+<br><img src="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g5zhnlhpe6j30o40cvn58.jpg" width="800" height="650" />
+<br><img src="https://wx4.sinaimg.cn/mw1024/007Diza3ly1g5zhnljtdcj30ok08btfo.jpg" width="800" height="350" />
+<br>(3) 格式化
+<br>&nbsp;&nbsp;&nbsp;&nbsp; mkswap /dev/sdb6
+<br>(4) 加入swap分区
+<br>&nbsp;&nbsp;&nbsp;&nbsp; swapon /dev/sdb6  加入swap分区
+<br>&nbsp;&nbsp;&nbsp;&nbsp; swapoff /dev/sdb6  取消swap分区
+<br>(5) swap分区开机自动挂载
+<br>&nbsp;&nbsp;&nbsp;&nbsp; vi /etc/fstab
+<br>&nbsp;&nbsp;&nbsp;&nbsp; /dev/sdb6 &nbsp;&nbsp;&nbsp;&nbsp; swap &nbsp;&nbsp;&nbsp;&nbsp; eswap &nbsp;&nbsp;&nbsp;&nbsp; defaults &nbsp;&nbsp;&nbsp;&nbsp; 0 0
+<br><img src="https://wx1.sinaimg.cn/mw1024/007Diza3ly1g5zhnll07lj30o40e0qbj.jpg" width="800" height="650" />
+<br><br><br>
+<font color = gray size = 3>如有错误，欢迎指正！</font></p></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://oubc.github.io/tags/linux/">Linux</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmg4aog3074074gnf.gif?tags=%5B%5D">I </a>
+	<a href="">love</a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmfm2eg306o06o74u.gif?tags=%5B%5D"> you </a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx4tpcj30fn0bq3zg.jpg?tags=%5B%5D">three </a>
+	<a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx64ctg307s07swfy.gif?tags=%5B%5D">thousand</a>
+    <a href="https://www.kugou.com/song/#hash=96426C78381DE98DC31A5846FC274CBF&album_id=646623"> times.</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>家庭、梦想、内心的平静</span>
+  </div>
+</footer>
+
+
+
+<script src="https://oubc.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://oubc.github.io/js/zozo.js"></script>
+<script src="https://oubc.github.io/js/highlight.pack.js"></script>
+<link  href="https://oubc.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://oubc.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>

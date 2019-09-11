@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>windows on Love, or death</title>
+    <link>https://oubc.github.io/tags/windows/</link>
+    <description>Recent content in windows on Love, or death</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Sat, 22 Jun 2019 16:45:53 +0800</lastBuildDate>
+    
+	<atom:link href="https://oubc.github.io/tags/windows/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>俄罗斯方块</title>
+      <link>https://oubc.github.io/post/tetris/</link>
+      <pubDate>Sat, 22 Jun 2019 16:45:53 +0800</pubDate>
+      
+      <guid>https://oubc.github.io/post/tetris/</guid>
+      <description>&lt;p&gt;经典小游戏：俄罗斯方块&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>联机对战版-红蓝五子棋</title>
+      <link>https://oubc.github.io/post/gobangnetworked/</link>
+      <pubDate>Sat, 02 Mar 2019 21:50:35 +0800</pubDate>
+      
+      <guid>https://oubc.github.io/post/gobangnetworked/</guid>
+      <description>&lt;p&gt;经典小游戏：童年的五子棋-联网对战版&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>windows网络编程(TCP/IP)</title>
+      <link>https://oubc.github.io/post/networkprogramming/</link>
+      <pubDate>Mon, 25 Feb 2019 17:06:37 +0800</pubDate>
+      
+      <guid>https://oubc.github.io/post/networkprogramming/</guid>
+      <description>&lt;p&gt;windows下的Socket(套接字)编程：基础篇&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>红蓝五子棋</title>
+      <link>https://oubc.github.io/post/gobang/</link>
+      <pubDate>Thu, 24 Jan 2019 21:50:35 +0800</pubDate>
+      
+      <guid>https://oubc.github.io/post/gobang/</guid>
+      <description>&lt;p&gt;经典小游戏：童年的五子棋&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

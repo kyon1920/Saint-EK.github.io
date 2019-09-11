@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Bruce Cheung"/>
+
+  
+  <meta name="description" content="入门Python中的GUI编程，实现从命令行到图形界面的转换
+"/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, simple, dream"/>
+  
+
+  
+  <link rel="canonical" href="https://oubc.github.io/post/p10_basicpygui/"/>
+
+  
+
+  <title>GUI基础-wxPython &middot; Love, or death</title>
+
+  <link rel="shortcut icon" href="https://oubc.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/post/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://oubc.github.io/">
+          <span>Love, or death</span>
+          <img src="https://oubc.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">For you, a thousand times over.</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/oubc" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=uYGOjo6OiIuLivnIyJfa1tQ" title="mail" target="_blank"><i class="remixicon-mail-fill"></i></a>
+        
+        
+        
+        <a href="http://sighttp.qq.com/msgrd?v=1&amp;uin=877771223" title="qq" target="_blank"><i class="remixicon-qq-fill"></i></a>
+        
+        
+        
+        <a href="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g4klnqf0tmj30ia0widks.jpg" title="wechat" target="_blank"><i class="remixicon-wechat-fill"></i></a>
+        
+        
+        
+        <a href="https://weibo.com/u/6993631995?topnav=1&amp;wvr=6&amp;topsug=1" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://oubc.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/post/p10_basicpygui/'>GUI基础-wxPython</a></h2>
+          <span class="date">2019.07.21</span>
+        </div>
+        <div class="post_content markdown"><p>入门Python中的GUI编程，实现从命令行到图形界面的转换</p>
+
+<p><br><font color=black size = 4>基础语法部分</font>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;Python Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47<br>48<br>49<br>50<br>51<br>52<br>53<br>54<br>55<br>56<br>57<br>58<br>59<br>60<br>61<br>62<br>63<br>64<br>65<br>66<br>67<br>68<br>69<br>70<br>71<br>72<br>73<br>74<br>75<br>76<br>77<br>78<br>79<br>80<br>81<br>82<br>83<br>84<br>85<br>86<br>87<br>88<br>89<br>90<br>91<br>92<br>93<br>94<br>95<br>96<br>97<br>98<br>99<br>100<br>101<br>102<br>103<br>104<br>105<br>106<br>107<br>108<br>109<br>110<br>111<br>112<br>113<br>114<br>115<br>116<br>117<br>118<br>119<br>120<br>121<br>122<br>123<br>124<br>125<br>126<br>127<br>128<br>129<br>130<br>131<br>132<br>133<br>134<br>135<br>136<br>137<br>138<br>139<br>140<br>141<br>142<br>143<br>144<br>145<br>146<br>147<br>148<br>149<br>150<br>151<br>152<br>153<br>154<br>155<br>156<br>157<br>158<br>159<br>160<br>161<br>162<br>163<br>164<br>165<br>166<br>167<br>168<br>169<br>170<br>171<br>172<br>173<br>174<br>175<br>176<br>177<br>178<br>179<br>180<br>181<br>182<br>183<br>184<br>185<br>186<br>187<br>188<br>189<br>190<br>191<br>192<br>193<br>194<br>195<br>196<br>197<br>198<br>199<br>200<br>201<br>202<br>203<br>204<br>205<br>206<br>207<br>208<br>209<br>210<br>211<br>212<br>213<br>214<br>215<br>216<br>217<br>218<br>219<br>220<br>221<br>222<br>223<br>224<br>225<br>226<br>227<br>228<br>229<br>230<br>231<br>232<br>233<br>234<br>235<br>236<br>237<br>238<br>239<br>240<br>241<br>242<br>243<br>244<br>245<br>246<br>247<br>248<br>249<br>250<br>251<br>252<br>253<br>254<br>255<br>256<br>257<br>258<br>259<br>260<br>261<br>262<br>263<br>264<br>265<br>266<br>267<br>268<br>269<br>270<br>271<br>272<br>273<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#008000;">#&nbsp;GUI编程<BR>
+#&nbsp;什么是GUI：它的全称是&nbsp;Graphical&nbsp;User&nbsp;Interface&nbsp;图形用户界面，与之对应的是CMI&nbsp;它的全称是command-line&nbsp;interface&nbsp;命令行界面<BR>
+#&nbsp;安装wxPython：只需在cmd中输入一行命令pip&nbsp;install&nbsp;-U&nbsp;wxPython即可<BR>
+#&nbsp;在安装时出现超时是因为安装源是国外网站，只需要切换一下就好：pip&nbsp;install&nbsp;-i&nbsp;<a href="https://pypi.doubanio.com/simple/&nbsp;--trusted-host&nbsp;pypi.doubanio.com&nbsp;wxpython">https://pypi.doubanio.com/simple/&nbsp;--trusted-host&nbsp;pypi.doubanio.com&nbsp;wxpython</a><BR>
+#&nbsp;升级wxPython：python&nbsp;-m&nbsp;pip&nbsp;install&nbsp;--upgrade&nbsp;pip<BR>
+#&nbsp;官方文档地址：<a href="https://wxpython.org/pages/overview/">https://wxpython.org/pages/overview/</a><BR>
+#&nbsp;wxPython官方网站：<a href="https://wxpython.org/">https://wxpython.org/</a><BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;示例：在官方文档中的hello-world示例<BR>
+#&nbsp;First&nbsp;things,&nbsp;first.&nbsp;Import&nbsp;the&nbsp;wxPython&nbsp;package.<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;wx<BR>
+</span><span style="color:#008000;">#&nbsp;Next,&nbsp;create&nbsp;an&nbsp;application&nbsp;object.<BR>
+</span><span style="color:#000000;">app&nbsp;=&nbsp;wx.App()<BR>
+</span><span style="color:#008000;">#&nbsp;Then&nbsp;a&nbsp;frame.<BR>
+</span><span style="color:#000000;">frm&nbsp;=&nbsp;wx.Frame(</span><span style="color:#8000ff;">None</span><span style="color:#000000;">,&nbsp;</span><span style="color:#0000ff;">title</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;Hello&nbsp;World&quot;</span><span style="color:#000000;">)<BR>
+</span><span style="color:#008000;">#&nbsp;Show&nbsp;it.<BR>
+</span><span style="color:#000000;">frm.Show()<BR>
+</span><span style="color:#008000;">#&nbsp;Start&nbsp;the&nbsp;event&nbsp;loop.<BR>
+</span><span style="color:#000000;">app.MainLoop()<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;常用的GUI框架：wxPython&nbsp;pyQt&nbsp;Kivy&nbsp;Flexx&nbsp;Tkinter<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;创建应用程序<BR>
+#&nbsp;应用程序对象：管理主事件循环&nbsp;&nbsp;通过app=wx.App()来创建一个应用程序对象，对于复杂的程序可以用子类来继承wx.App()类<BR>
+#&nbsp;顶级窗口对象：管理数据，控制并呈现给用户&nbsp;&nbsp;调用&nbsp;frame=wx.Frame()来创建一个顶级窗口对象<BR>
+#&nbsp;应用程序对象和顶级窗口对象的关系：如下图<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;创建wx.App的子类<BR>
+#&nbsp;实现步骤：定义子类(继承wx.App)→定义Onlnit()(创建Frame顶级窗口)初始化方法→创建实例→调用实例的MainLoop()方法<BR>
+#&nbsp;创建实例：<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;wx&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;导入wxpython<BR>
+</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;App(wx.App):&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;定义一个子类<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;OnInit(self):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;frame&nbsp;=&nbsp;wx.Frame(parent=</span><span style="color:#8000ff;">None</span><span style="color:#000000;">,</span><span style="color:#0000ff;">title</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;Hello&nbsp;wxPython&quot;</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;因为是顶级窗口，所以没有父窗口None<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;frame.Show()&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;顶级窗口的Show方法<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">True</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;__name__&nbsp;==&nbsp;</span><span style="color:#800000;">'__main__'</span><span style="color:#000000;">:&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;以主程序的形式运行<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;app&nbsp;=&nbsp;App()&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;实例化该子类<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;app.MainLoop()&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;调用主循环方法<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;使用wx.Frame框架(窗口)<BR>
+#&nbsp;wx.Frame()语法：见下图<BR>
+#&nbsp;实例：<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;wx<BR>
+</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;MyFrame(wx.Frame):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">__init__</span><span style="color:#000000;">(self,parent,</span><span style="color:#8000ff;">id</span><span style="color:#000000;">):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wx.Frame.</span><span style="color:#0000ff;">__init__</span><span style="color:#000000;">(self,parent,</span><span style="color:#8000ff;">id</span><span style="color:#000000;">,</span><span style="color:#0000ff;">title</span><span style="color:#000000;">=</span><span style="color:#800000;">'创建Frame'</span><span style="color:#000000;">,pos=(</span><span style="color:#ff0000;">500</span><span style="color:#000000;">,</span><span style="color:#ff0000;">500</span><span style="color:#000000;">),size=(</span><span style="color:#ff0000;">300</span><span style="color:#000000;">,</span><span style="color:#ff0000;">300</span><span style="color:#000000;">))&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;__name__&nbsp;==&nbsp;</span><span style="color:#800000;">'__main__'</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;app1&nbsp;=&nbsp;wx.App()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;frame1&nbsp;=&nbsp;MyFrame(parent=</span><span style="color:#8000ff;">None</span><span style="color:#000000;">,</span><span style="color:#8000ff;">id</span><span style="color:#000000;">=-</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;frame1.Show()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;app1.MainLoop()<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;直接使用wx.App类<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;wx<BR>
+app2&nbsp;=&nbsp;wx.App()<BR>
+frame2&nbsp;=&nbsp;wx.Frame(</span><span style="color:#8000ff;">None</span><span style="color:#000000;">,</span><span style="color:#0000ff;">title</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;Hello&nbsp;wxPython&quot;</span><span style="color:#000000;">)<BR>
+frame2.Show()<BR>
+app2.MainLoop()<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;窗口中的常用控件：文本、按钮、输入框、单选框、多选框......<BR>
+#&nbsp;首先需要画一个画板，在画板中我们才能做相应的操做，如添加控件，画图象等<BR>
+#&nbsp;wx.Panel(self)是一个画板<BR>
+#&nbsp;文本控件：StaticText文本类&nbsp;&nbsp;wx.StaticText()<BR>
+#&nbsp;步骤：创建窗口→设置画板，使其铺满整个窗口→在画板窗口部分添加画板<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;wx.StaticText()语法格式：见下图<BR>
+#&nbsp;实例：使用wx.StaticText输出Python之禅<BR>
+#&nbsp;使用font&nbsp;=&nbsp;wx.Font(...)和title.setFont(font)函数来设置字体<BR>
+</span><span style="color:#000000;">string&nbsp;=&nbsp;</span><span style="color:#800000;">'''<BR>
+</span><span style="color:#000000;">The&nbsp;Zen&nbsp;of&nbsp;Python,&nbsp;by&nbsp;Tim&nbsp;Peters<BR>
+<BR>
+Beautiful&nbsp;</span><span style="color:#0000ff;">is</span><span style="color:#000000;">&nbsp;better&nbsp;than&nbsp;ugly.<BR>
+Explicit&nbsp;</span><span style="color:#0000ff;">is</span><span style="color:#000000;">&nbsp;better&nbsp;than&nbsp;implicit.<BR>
+Simple&nbsp;</span><span style="color:#0000ff;">is</span><span style="color:#000000;">&nbsp;better&nbsp;than&nbsp;</span><span style="color:#8000ff;">complex</span><span style="color:#000000;">.<BR>
+Complex&nbsp;</span><span style="color:#0000ff;">is</span><span style="color:#000000;">&nbsp;better&nbsp;than&nbsp;complicated.<BR>
+Flat&nbsp;</span><span style="color:#0000ff;">is</span><span style="color:#000000;">&nbsp;better&nbsp;than&nbsp;nested.<BR>
+Sparse&nbsp;</span><span style="color:#0000ff;">is</span><span style="color:#000000;">&nbsp;better&nbsp;than&nbsp;dense.<BR>
+Readability&nbsp;counts.<BR>
+Special&nbsp;cases&nbsp;aren</span><span style="color:#800000;">'t&nbsp;special&nbsp;enough&nbsp;to&nbsp;break&nbsp;the&nbsp;rules.<BR>
+</span><span style="color:#000000;">Although&nbsp;practicality&nbsp;beats&nbsp;purity.<BR>
+Errors&nbsp;should&nbsp;never&nbsp;</span><span style="color:#0000ff;">pass</span><span style="color:#000000;">&nbsp;silently.<BR>
+Unless&nbsp;explicitly&nbsp;silenced.<BR>
+In&nbsp;the&nbsp;face&nbsp;of&nbsp;ambiguity,&nbsp;refuse&nbsp;the&nbsp;temptation&nbsp;to&nbsp;guess.<BR>
+There&nbsp;should&nbsp;be&nbsp;one--&nbsp;</span><span style="color:#0000ff;">and</span><span style="color:#000000;">&nbsp;preferably&nbsp;only&nbsp;one&nbsp;--obvious&nbsp;way&nbsp;to&nbsp;do&nbsp;it.<BR>
+Although&nbsp;that&nbsp;way&nbsp;may&nbsp;</span><span style="color:#0000ff;">not</span><span style="color:#000000;">&nbsp;be&nbsp;obvious&nbsp;at&nbsp;first&nbsp;unless&nbsp;you</span><span style="color:#800000;">'re&nbsp;Dutch.<BR>
+</span><span style="color:#000000;">Now&nbsp;</span><span style="color:#0000ff;">is</span><span style="color:#000000;">&nbsp;better&nbsp;than&nbsp;never.<BR>
+Although&nbsp;never&nbsp;</span><span style="color:#0000ff;">is</span><span style="color:#000000;">&nbsp;often&nbsp;better&nbsp;than&nbsp;*right*&nbsp;now.<BR>
+If&nbsp;the&nbsp;implementation&nbsp;</span><span style="color:#0000ff;">is</span><span style="color:#000000;">&nbsp;hard&nbsp;to&nbsp;explain,&nbsp;it</span><span style="color:#800000;">'s&nbsp;a&nbsp;bad&nbsp;idea.<BR>
+</span><span style="color:#000000;">If&nbsp;the&nbsp;implementation&nbsp;</span><span style="color:#0000ff;">is</span><span style="color:#000000;">&nbsp;easy&nbsp;to&nbsp;explain,&nbsp;it&nbsp;may&nbsp;be&nbsp;a&nbsp;good&nbsp;idea.<BR>
+Namespaces&nbsp;are&nbsp;one&nbsp;honking&nbsp;great&nbsp;idea&nbsp;--&nbsp;let</span><span style="color:#800000;">'s&nbsp;do&nbsp;more&nbsp;of&nbsp;those!<BR>
+'''<BR>
+</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;MyFrame(wx.Frame):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">__init__</span><span style="color:#000000;">(self,&nbsp;parent,&nbsp;</span><span style="color:#8000ff;">id</span><span style="color:#000000;">):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wx.Frame.</span><span style="color:#0000ff;">__init__</span><span style="color:#000000;">(self,parent,</span><span style="color:#0000ff;">title</span><span style="color:#000000;">&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;Python之禅&quot;</span><span style="color:#000000;">,&nbsp;pos&nbsp;=&nbsp;(</span><span style="color:#ff0000;">200</span><span style="color:#000000;">,</span><span style="color:#ff0000;">100</span><span style="color:#000000;">),&nbsp;size&nbsp;=&nbsp;(</span><span style="color:#ff0000;">600</span><span style="color:#000000;">,</span><span style="color:#ff0000;">600</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;panel&nbsp;=&nbsp;wx.Panel(self)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;font&nbsp;=&nbsp;wx.Font(</span><span style="color:#ff0000;">16</span><span style="color:#000000;">,wx.DEFAULT,wx.FONTSTYLE_NORMAL,wx.NORMAL)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">title</span><span style="color:#000000;">&nbsp;=&nbsp;wx.StaticText(panel,label=</span><span style="color:#800000;">'Python之禅——Tim&nbsp;Peters'</span><span style="color:#000000;">,pos&nbsp;=&nbsp;(</span><span style="color:#ff0000;">100</span><span style="color:#000000;">,</span><span style="color:#ff0000;">20</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">title</span><span style="color:#000000;">.SetFont(font)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;font1&nbsp;=&nbsp;wx.Font(</span><span style="color:#ff0000;">14</span><span style="color:#000000;">,wx.DEFAULT,wx.FONTSTYLE_NORMAL,wx.NORMAL)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;title1&nbsp;=&nbsp;wx.StaticText(panel,label=string,pos&nbsp;=&nbsp;(</span><span style="color:#ff0000;">100</span><span style="color:#000000;">,</span><span style="color:#ff0000;">40</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;title1.SetFont(font1)<BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;__name__&nbsp;==&nbsp;</span><span style="color:#800000;">'__main__'</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;app3&nbsp;=&nbsp;wx.App()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;frame3&nbsp;=&nbsp;MyFrame(parent&nbsp;=&nbsp;</span><span style="color:#8000ff;">None</span><span style="color:#000000;">,&nbsp;</span><span style="color:#8000ff;">id</span><span style="color:#000000;">&nbsp;=&nbsp;-</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;frame3.Show()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;app.MainLoop()<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;TextCtrl输入文本类<BR>
+#&nbsp;可以输入单行多行文本，还可以实现密码输入控件<BR>
+#&nbsp;语法格式如下图<BR>
+#&nbsp;实例：实现用户登录<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;wx<BR>
+</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;MyFrame(wx.Frame):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">__init__</span><span style="color:#000000;">(self,parent,</span><span style="color:#8000ff;">id</span><span style="color:#000000;">):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wx.Frame.</span><span style="color:#0000ff;">__init__</span><span style="color:#000000;">(self,parent,</span><span style="color:#8000ff;">id</span><span style="color:#000000;">,</span><span style="color:#0000ff;">title</span><span style="color:#000000;">=</span><span style="color:#800000;">'用户登录'</span><span style="color:#000000;">,pos=(</span><span style="color:#ff0000;">100</span><span style="color:#000000;">,</span><span style="color:#ff0000;">100</span><span style="color:#000000;">),size=(</span><span style="color:#ff0000;">400</span><span style="color:#000000;">,</span><span style="color:#ff0000;">300</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;panel&nbsp;=&nbsp;wx.Panel(self)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.</span><span style="color:#0000ff;">title</span><span style="color:#000000;">&nbsp;=&nbsp;wx.StaticText(panel,label=</span><span style="color:#800000;">&quot;请输入用户名和密码&quot;</span><span style="color:#000000;">,pos=(</span><span style="color:#ff0000;">140</span><span style="color:#000000;">,</span><span style="color:#ff0000;">20</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.label_user&nbsp;=&nbsp;wx.StaticText(panel,label&nbsp;=&nbsp;</span><span style="color:#800000;">'用户名'</span><span style="color:#000000;">,pos=(</span><span style="color:#ff0000;">50</span><span style="color:#000000;">,</span><span style="color:#ff0000;">50</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.text_user&nbsp;=&nbsp;wx.TextCtrl(panel,pos=(</span><span style="color:#ff0000;">100</span><span style="color:#000000;">,</span><span style="color:#ff0000;">50</span><span style="color:#000000;">),size=(</span><span style="color:#ff0000;">235</span><span style="color:#000000;">,</span><span style="color:#ff0000;">25</span><span style="color:#000000;">),style=wx.TE_LEFT)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.label_password&nbsp;=&nbsp;wx.StaticText(panel,label=</span><span style="color:#800000;">'密码'</span><span style="color:#000000;">,pos=(</span><span style="color:#ff0000;">50</span><span style="color:#000000;">,</span><span style="color:#ff0000;">90</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.text_password&nbsp;=&nbsp;wx.TextCtrl(panel,pos=(</span><span style="color:#ff0000;">100</span><span style="color:#000000;">,</span><span style="color:#ff0000;">90</span><span style="color:#000000;">),size=(</span><span style="color:#ff0000;">235</span><span style="color:#000000;">,</span><span style="color:#ff0000;">25</span><span style="color:#000000;">),style=wx.TE_PASSWORD)<BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;__name__&nbsp;==&nbsp;</span><span style="color:#800000;">'__main__'</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;app&nbsp;=&nbsp;wx.App()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;frame&nbsp;=&nbsp;MyFrame(parent=</span><span style="color:#8000ff;">None</span><span style="color:#000000;">,</span><span style="color:#8000ff;">id</span><span style="color:#000000;">=-</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;frame.Show()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;app.MainLoop()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+</span><span style="color:#008000;">#&nbsp;Button按钮类<BR>
+#&nbsp;语法格式如下图<BR>
+#&nbsp;实例：在上面的代码中添加确定和取消按钮<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;wx<BR>
+</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;MyFrame(wx.Frame):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">__init__</span><span style="color:#000000;">(self,parent,</span><span style="color:#8000ff;">id</span><span style="color:#000000;">):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wx.Frame.</span><span style="color:#0000ff;">__init__</span><span style="color:#000000;">(self,parent,</span><span style="color:#8000ff;">id</span><span style="color:#000000;">,</span><span style="color:#0000ff;">title</span><span style="color:#000000;">=</span><span style="color:#800000;">'用户登录'</span><span style="color:#000000;">,pos=(</span><span style="color:#ff0000;">100</span><span style="color:#000000;">,</span><span style="color:#ff0000;">100</span><span style="color:#000000;">),size=(</span><span style="color:#ff0000;">400</span><span style="color:#000000;">,</span><span style="color:#ff0000;">300</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;panel&nbsp;=&nbsp;wx.Panel(self)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.</span><span style="color:#0000ff;">title</span><span style="color:#000000;">&nbsp;=&nbsp;wx.StaticText(panel,label=</span><span style="color:#800000;">&quot;请输入用户名和密码&quot;</span><span style="color:#000000;">,pos=(</span><span style="color:#ff0000;">140</span><span style="color:#000000;">,</span><span style="color:#ff0000;">20</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.label_user&nbsp;=&nbsp;wx.StaticText(panel,label&nbsp;=&nbsp;</span><span style="color:#800000;">'用户名'</span><span style="color:#000000;">,pos=(</span><span style="color:#ff0000;">50</span><span style="color:#000000;">,</span><span style="color:#ff0000;">50</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.text_user&nbsp;=&nbsp;wx.TextCtrl(panel,pos=(</span><span style="color:#ff0000;">100</span><span style="color:#000000;">,</span><span style="color:#ff0000;">50</span><span style="color:#000000;">),size=(</span><span style="color:#ff0000;">235</span><span style="color:#000000;">,</span><span style="color:#ff0000;">25</span><span style="color:#000000;">),style=wx.TE_LEFT)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.label_password&nbsp;=&nbsp;wx.StaticText(panel,label=</span><span style="color:#800000;">'密码'</span><span style="color:#000000;">,pos=(</span><span style="color:#ff0000;">50</span><span style="color:#000000;">,</span><span style="color:#ff0000;">90</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.text_password&nbsp;=&nbsp;wx.TextCtrl(panel,pos=(</span><span style="color:#ff0000;">100</span><span style="color:#000000;">,</span><span style="color:#ff0000;">90</span><span style="color:#000000;">),size=(</span><span style="color:#ff0000;">235</span><span style="color:#000000;">,</span><span style="color:#ff0000;">25</span><span style="color:#000000;">),style=wx.TE_PASSWORD)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;创建确定和取消按钮<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.bt_confirm&nbsp;=&nbsp;wx.Button(panel,label=</span><span style="color:#800000;">'确定'</span><span style="color:#000000;">,pos=(</span><span style="color:#ff0000;">105</span><span style="color:#000000;">,</span><span style="color:#ff0000;">130</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.bt_cancle&nbsp;=&nbsp;wx.Button(panel,label=</span><span style="color:#800000;">'取消'</span><span style="color:#000000;">,pos=(</span><span style="color:#ff0000;">195</span><span style="color:#000000;">,</span><span style="color:#ff0000;">130</span><span style="color:#000000;">))<BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;__name__&nbsp;==&nbsp;</span><span style="color:#800000;">'__main__'</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;app&nbsp;=&nbsp;wx.App()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;frame&nbsp;=&nbsp;MyFrame(parent=</span><span style="color:#8000ff;">None</span><span style="color:#000000;">,</span><span style="color:#8000ff;">id</span><span style="color:#000000;">=-</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;frame.Show()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;app.MainLoop()<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;Sizer布局：可以保持窗体的布局以适应窗体的改变，以上布局做不到<BR>
+#&nbsp;什么是BoxSizer：它是垂直列(VERTICAL)或者水平行(HORIZONTAL)布局<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;使用BoxSizer布局<BR>
+#&nbsp;创建BoxSizer：sizer&nbsp;=&nbsp;wx.BoxSizer(wx.VERTICAL(竖直方向)/HORIZONTAL(水平方向))<BR>
+#&nbsp;添加控件：sizer.Add()<BR>
+#&nbsp;面板中设置Sizer：panel.SetSizer(sizer)<BR>
+#&nbsp;实例：<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;wx<BR>
+</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;MyFrame(wx.Frame):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">__init__</span><span style="color:#000000;">(self,parent,</span><span style="color:#8000ff;">id</span><span style="color:#000000;">):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wx.Frame.</span><span style="color:#0000ff;">__init__</span><span style="color:#000000;">(self,parent,</span><span style="color:#8000ff;">id</span><span style="color:#000000;">,</span><span style="color:#0000ff;">title</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;用户登录&quot;</span><span style="color:#000000;">,pos=(</span><span style="color:#ff0000;">100</span><span style="color:#000000;">,</span><span style="color:#ff0000;">100</span><span style="color:#000000;">),size=(</span><span style="color:#ff0000;">500</span><span style="color:#000000;">,</span><span style="color:#ff0000;">500</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;panel4&nbsp;=&nbsp;wx.Panel(self)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.</span><span style="color:#0000ff;">title</span><span style="color:#000000;">&nbsp;=&nbsp;wx.StaticText(panel4,label=</span><span style="color:#800000;">&quot;请输入用户名和密码&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vsizer&nbsp;=&nbsp;wx.BoxSizer(wx.VERTICAL)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vsizer.Add(self.</span><span style="color:#0000ff;">title</span><span style="color:#000000;">,proportion=</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,flag=wx.BOTTOM|wx.TOP|wx.ALIGN_CENTER,border=</span><span style="color:#ff0000;">25</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;panel4.SetSizer(vsizer)<BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;__name__&nbsp;==&nbsp;</span><span style="color:#800000;">'__main__'</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;app4&nbsp;=&nbsp;wx.App()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;frame4&nbsp;=&nbsp;MyFrame(parent=</span><span style="color:#8000ff;">None</span><span style="color:#000000;">,</span><span style="color:#8000ff;">id</span><span style="color:#000000;">=-</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;frame4.Show()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;app4.MainLoop()<BR>
+</span><span style="color:#008000;">#&nbsp;实例：使用BoxSizer设置登录界面布局<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;wx<BR>
+</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;MyFrame(wx.Frame):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">__init__</span><span style="color:#000000;">(self,parent,</span><span style="color:#8000ff;">id</span><span style="color:#000000;">):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wx.Frame.</span><span style="color:#0000ff;">__init__</span><span style="color:#000000;">(self,parent,</span><span style="color:#8000ff;">id</span><span style="color:#000000;">,</span><span style="color:#0000ff;">title</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;用户登录&quot;</span><span style="color:#000000;">,pos=(</span><span style="color:#ff0000;">100</span><span style="color:#000000;">,</span><span style="color:#ff0000;">100</span><span style="color:#000000;">),size=(</span><span style="color:#ff0000;">400</span><span style="color:#000000;">,</span><span style="color:#ff0000;">300</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;panel5&nbsp;=&nbsp;wx.Panel(self)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;创建按钮<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.bt_confirm&nbsp;=&nbsp;wx.Button(panel5,label=</span><span style="color:#800000;">&quot;确定&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.bt_cancel&nbsp;=&nbsp;wx.Button(panel5,label=</span><span style="color:#800000;">&quot;取消&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;创建文本<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.</span><span style="color:#0000ff;">title</span><span style="color:#000000;">&nbsp;=&nbsp;wx.StaticText(panel5,label=</span><span style="color:#800000;">&quot;请输入用户名和密码&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.label_user&nbsp;=&nbsp;wx.StaticText(panel5,label=</span><span style="color:#800000;">&quot;用户名：&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.text_user&nbsp;=&nbsp;wx.TextCtrl(panel5,style=wx.TE_LEFT)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.label_pwd&nbsp;=&nbsp;wx.StaticText(panel5,label=</span><span style="color:#800000;">&quot;密　码：&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.text_pwd&nbsp;=&nbsp;wx.TextCtrl(panel5,style=wx.TE_PASSWORD)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;创建横行容器<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hsizer_user&nbsp;=&nbsp;wx.BoxSizer(wx.HORIZONTAL)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hsizer_user.Add(self.label_user,proportion=</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,flag=wx.ALL,border=</span><span style="color:#ff0000;">5</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hsizer_user.Add(self.text_user,proportion=</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,flag=wx.ALL,border=</span><span style="color:#ff0000;">5</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hsizer_pwd&nbsp;=&nbsp;wx.BoxSizer(wx.HORIZONTAL)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hsizer_pwd.Add(self.label_pwd,proportion=</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,flag=wx.ALL,border=</span><span style="color:#ff0000;">5</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hsizer_pwd.Add(self.text_pwd,proportion=</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,flag=wx.ALL,border=</span><span style="color:#ff0000;">5</span><span style="color:#000000;">)<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hsizer_botton&nbsp;=&nbsp;wx.BoxSizer(wx.HORIZONTAL)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hsizer_botton.Add(self.bt_confirm,proportion=</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,flag=wx.ALL,border=</span><span style="color:#ff0000;">5</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hsizer_botton.Add(self.bt_cancel,proportion=</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,flag=wx.ALL,border=</span><span style="color:#ff0000;">5</span><span style="color:#000000;">)<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vsizer_all&nbsp;=&nbsp;wx.BoxSizer(wx.VERTICAL)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vsizer_all.Add(self.</span><span style="color:#0000ff;">title</span><span style="color:#000000;">,proportion=</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,flag=wx.BOTTOM|wx.TOP|wx.ALIGN_CENTER,border=</span><span style="color:#ff0000;">15</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vsizer_all.Add(hsizer_user,proportion=</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,flag=wx.EXPAND|wx.LEFT|wx.RIGHT,border=</span><span style="color:#ff0000;">45</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vsizer_all.Add(hsizer_pwd,proportion=</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,flag=wx.EXPAND|wx.LEFT|wx.RIGHT,border=</span><span style="color:#ff0000;">45</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vsizer_all.Add(hsizer_botton,proportion=</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,flag=wx.ALIGN_CENTER|wx.TOP,border=</span><span style="color:#ff0000;">15</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;panel5.SetSizer(vsizer_all)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;__name__&nbsp;==&nbsp;</span><span style="color:#800000;">'__main__'</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;app5&nbsp;=&nbsp;wx.App()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;frame5&nbsp;=&nbsp;MyFrame(parent=</span><span style="color:#8000ff;">None</span><span style="color:#000000;">,</span><span style="color:#8000ff;">id</span><span style="color:#000000;">=-</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;frame5.Show()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;app5.MainLoop()<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;事件处理<BR>
+#&nbsp;什么是事件：用户在GUI组件上进行的操作都可以叫做事件，比如：按下按钮、输入文字、关闭窗口<BR>
+#&nbsp;绑定事件<BR>
+#&nbsp;语法格式：例在确定按钮上绑定事件bt_confirm，Bind(wx.EVT_BUTTON,OnclickSubmit(函数，当事件发生时执行函数))，可以参考官方手册<BR>
+#&nbsp;实例：使用事件判断用户登录<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;wx<BR>
+</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;MyFrame(wx.Frame):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">__init__</span><span style="color:#000000;">(self,parent,</span><span style="color:#8000ff;">id</span><span style="color:#000000;">):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wx.Frame.</span><span style="color:#0000ff;">__init__</span><span style="color:#000000;">(self,parent,</span><span style="color:#8000ff;">id</span><span style="color:#000000;">,</span><span style="color:#0000ff;">title</span><span style="color:#000000;">=</span><span style="color:#800000;">&quot;用户登录&quot;</span><span style="color:#000000;">,pos=(</span><span style="color:#ff0000;">100</span><span style="color:#000000;">,</span><span style="color:#ff0000;">100</span><span style="color:#000000;">),size=(</span><span style="color:#ff0000;">400</span><span style="color:#000000;">,</span><span style="color:#ff0000;">300</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;panel5&nbsp;=&nbsp;wx.Panel(self)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;创建按钮<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.bt_confirm&nbsp;=&nbsp;wx.Button(panel5,label=</span><span style="color:#800000;">&quot;确定&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.bt_confirm.Bind(wx.EVT_BUTTON,self.OnClickSubmit)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.bt_cancel&nbsp;=&nbsp;wx.Button(panel5,label=</span><span style="color:#800000;">&quot;取消&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.bt_cancel.Bind(wx.EVT_BUTTON,self.OnClickCancel)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;创建文本<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.</span><span style="color:#0000ff;">title</span><span style="color:#000000;">&nbsp;=&nbsp;wx.StaticText(panel5,label=</span><span style="color:#800000;">&quot;请输入用户名和密码&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.label_user&nbsp;=&nbsp;wx.StaticText(panel5,label=</span><span style="color:#800000;">&quot;用户名：&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.text_user&nbsp;=&nbsp;wx.TextCtrl(panel5,style=wx.TE_LEFT)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.label_pwd&nbsp;=&nbsp;wx.StaticText(panel5,label=</span><span style="color:#800000;">&quot;密　码：&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.text_pwd&nbsp;=&nbsp;wx.TextCtrl(panel5,style=wx.TE_PASSWORD)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;创建横行容器<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hsizer_user&nbsp;=&nbsp;wx.BoxSizer(wx.HORIZONTAL)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hsizer_user.Add(self.label_user,proportion=</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,flag=wx.ALL,border=</span><span style="color:#ff0000;">5</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hsizer_user.Add(self.text_user,proportion=</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,flag=wx.ALL,border=</span><span style="color:#ff0000;">5</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hsizer_pwd&nbsp;=&nbsp;wx.BoxSizer(wx.HORIZONTAL)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hsizer_pwd.Add(self.label_pwd,proportion=</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,flag=wx.ALL,border=</span><span style="color:#ff0000;">5</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hsizer_pwd.Add(self.text_pwd,proportion=</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,flag=wx.ALL,border=</span><span style="color:#ff0000;">5</span><span style="color:#000000;">)<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hsizer_botton&nbsp;=&nbsp;wx.BoxSizer(wx.HORIZONTAL)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hsizer_botton.Add(self.bt_confirm,proportion=</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,flag=wx.ALL,border=</span><span style="color:#ff0000;">5</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hsizer_botton.Add(self.bt_cancel,proportion=</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,flag=wx.ALL,border=</span><span style="color:#ff0000;">5</span><span style="color:#000000;">)<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;创建纵向容器<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vsizer_all&nbsp;=&nbsp;wx.BoxSizer(wx.VERTICAL)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vsizer_all.Add(self.</span><span style="color:#0000ff;">title</span><span style="color:#000000;">,proportion=</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,flag=wx.BOTTOM|wx.TOP|wx.ALIGN_CENTER,border=</span><span style="color:#ff0000;">15</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vsizer_all.Add(hsizer_user,proportion=</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,flag=wx.EXPAND|wx.LEFT|wx.RIGHT,border=</span><span style="color:#ff0000;">45</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vsizer_all.Add(hsizer_pwd,proportion=</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,flag=wx.EXPAND|wx.LEFT|wx.RIGHT,border=</span><span style="color:#ff0000;">45</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vsizer_all.Add(hsizer_botton,proportion=</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,flag=wx.ALIGN_CENTER|wx.TOP,border=</span><span style="color:#ff0000;">15</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;panel5.SetSizer(vsizer_all)<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;OnClickSubmit(self,&nbsp;event):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;message&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;&quot;</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;username&nbsp;=&nbsp;self.text_user.GetValue()&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;获取text_user的值<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;password&nbsp;=&nbsp;self.text_pwd.GetValue()&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;获取text_pwd的值<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;username&nbsp;==&nbsp;</span><span style="color:#800000;">&quot;&quot;</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">or</span><span style="color:#000000;">&nbsp;password&nbsp;==&nbsp;</span><span style="color:#800000;">&quot;&quot;</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;message&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;用户名或密码不能为空&quot;</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">elif</span><span style="color:#000000;">&nbsp;username&nbsp;==&nbsp;</span><span style="color:#800000;">&quot;Navigator&quot;</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">and</span><span style="color:#000000;">&nbsp;password&nbsp;==&nbsp;</span><span style="color:#800000;">&quot;zhangshao976&quot;</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;message&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;登录成功&quot;</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;message&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;用户名和密码不匹配&quot;</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wx.MessageBox(message)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;弹窗<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;OnClickCancel(self,event):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.text_user.SetValue(</span><span style="color:#800000;">&quot;&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.text_pwd.SetValue(</span><span style="color:#800000;">&quot;&quot;</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;__name__&nbsp;==&nbsp;</span><span style="color:#800000;">'__main__'</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;app5&nbsp;=&nbsp;wx.App()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;frame5&nbsp;=&nbsp;MyFrame(parent=</span><span style="color:#8000ff;">None</span><span style="color:#000000;">,</span><span style="color:#8000ff;">id</span><span style="color:#000000;">=-</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;frame5.Show()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;app5.MainLoop()</span></div></td></tr></table></div>
+<br><font color=black size = 4>对应截图部分</font>
+<img src="https://wx2.sinaimg.cn/mw1024/007Diza3ly1g57rdi2wqqj30eu0bjgmp.jpg" width="400" height="350" />
+<img src="https://wx4.sinaimg.cn/mw1024/007Diza3ly1g57rdi0vemj30qm0a1whj.jpg" width="800" height="550" />
+<img src="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g57rdi2z72j30qe0chwki.jpg" width="800" height="650" />
+<img src="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g57rdi2izij30qk0b4dju.jpg" width="800" height="650" />
+<img src="https://wx1.sinaimg.cn/mw1024/007Diza3ly1g57rdi0eptj30q70awgqc.jpg" width="800" height="650" />
+<img src="https://wx4.sinaimg.cn/mw1024/007Diza3ly1g57rdhzvm3j30qn09z76x.jpg" width="800" height="650" />
+<img src="https://wx1.sinaimg.cn/mw1024/007Diza3ly1g57rdhz1ofj30m108u0w8.jpg" width="800" height="650" />
+<img src="https://wx2.sinaimg.cn/mw1024/007Diza3ly1g57rdhsqxoj30lj06wdgx.jpg" width="800" height="500" />
+<img src="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g57rdhtyo0j30m008s440.jpg" width="800" height="650" />
+<br><br><br>
+<font color = gray size = 3>如有错误，欢迎指正！</font></p></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://oubc.github.io/tags/python/">Python</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmg4aog3074074gnf.gif?tags=%5B%5D">I </a>
+	<a href="">love</a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmfm2eg306o06o74u.gif?tags=%5B%5D"> you </a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx4tpcj30fn0bq3zg.jpg?tags=%5B%5D">three </a>
+	<a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx64ctg307s07swfy.gif?tags=%5B%5D">thousand</a>
+    <a href="https://www.kugou.com/song/#hash=96426C78381DE98DC31A5846FC274CBF&album_id=646623"> times.</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>家庭、梦想、内心的平静</span>
+  </div>
+</footer>
+
+
+
+<script src="https://oubc.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://oubc.github.io/js/zozo.js"></script>
+<script src="https://oubc.github.io/js/highlight.pack.js"></script>
+<link  href="https://oubc.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://oubc.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Bruce Cheung"/>
+
+  
+  <meta name="description" content="一起去探索操作系统的密秘啊
+"/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, simple, dream"/>
+  
+
+  
+  <link rel="canonical" href="https://oubc.github.io/post/p13_basicospython/"/>
+
+  
+
+  <title>利用Python进行系统编程 &middot; Love, or death</title>
+
+  <link rel="shortcut icon" href="https://oubc.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/post/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://oubc.github.io/">
+          <span>Love, or death</span>
+          <img src="https://oubc.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">For you, a thousand times over.</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/oubc" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=uYGOjo6OiIuLivnIyJfa1tQ" title="mail" target="_blank"><i class="remixicon-mail-fill"></i></a>
+        
+        
+        
+        <a href="http://sighttp.qq.com/msgrd?v=1&amp;uin=877771223" title="qq" target="_blank"><i class="remixicon-qq-fill"></i></a>
+        
+        
+        
+        <a href="https://wx3.sinaimg.cn/mw1024/007Diza3ly1g4klnqf0tmj30ia0widks.jpg" title="wechat" target="_blank"><i class="remixicon-wechat-fill"></i></a>
+        
+        
+        
+        <a href="https://weibo.com/u/6993631995?topnav=1&amp;wvr=6&amp;topsug=1" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://oubc.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/post/p13_basicospython/'>利用Python进行系统编程</a></h2>
+          <span class="date">2019.07.25</span>
+        </div>
+        <div class="post_content markdown"><p>一起去探索操作系统的密秘啊</p>
+
+<p><br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;Python Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47<br>48<br>49<br>50<br>51<br>52<br>53<br>54<br>55<br>56<br>57<br>58<br>59<br>60<br>61<br>62<br>63<br>64<br>65<br>66<br>67<br>68<br>69<br>70<br>71<br>72<br>73<br>74<br>75<br>76<br>77<br>78<br>79<br>80<br>81<br>82<br>83<br>84<br>85<br>86<br>87<br>88<br>89<br>90<br>91<br>92<br>93<br>94<br>95<br>96<br>97<br>98<br>99<br>100<br>101<br>102<br>103<br>104<br>105<br>106<br>107<br>108<br>109<br>110<br>111<br>112<br>113<br>114<br>115<br>116<br>117<br>118<br>119<br>120<br>121<br>122<br>123<br>124<br>125<br>126<br>127<br>128<br>129<br>130<br>131<br>132<br>133<br>134<br>135<br>136<br>137<br>138<br>139<br>140<br>141<br>142<br>143<br>144<br>145<br>146<br>147<br>148<br>149<br>150<br>151<br>152<br>153<br>154<br>155<br>156<br>157<br>158<br>159<br>160<br>161<br>162<br>163<br>164<br>165<br>166<br>167<br>168<br>169<br>170<br>171<br>172<br>173<br>174<br>175<br>176<br>177<br>178<br>179<br>180<br>181<br>182<br>183<br>184<br>185<br>186<br>187<br>188<br>189<br>190<br>191<br>192<br>193<br>194<br>195<br>196<br>197<br>198<br>199<br>200<br>201<br>202<br>203<br>204<br>205<br>206<br>207<br>208<br>209<br>210<br>211<br>212<br>213<br>214<br>215<br>216<br>217<br>218<br>219<br>220<br>221<br>222<br>223<br>224<br>225<br>226<br>227<br>228<br>229<br>230<br>231<br>232<br>233<br>234<br>235<br>236<br>237<br>238<br>239<br>240<br>241<br>242<br>243<br>244<br>245<br>246<br>247<br>248<br>249<br>250<br>251<br>252<br>253<br>254<br>255<br>256<br>257<br>258<br>259<br>260<br>261<br>262<br>263<br>264<br>265<br>266<br>267<br>268<br>269<br>270<br>271<br>272<br>273<br>274<br>275<br>276<br>277<br>278<br>279<br>280<br>281<br>282<br>283<br>284<br>285<br>286<br>287<br>288<br>289<br>290<br>291<br>292<br>293<br>294<br>295<br>296<br>297<br>298<br>299<br>300<br>301<br>302<br>303<br>304<br>305<br>306<br>307<br>308<br>309<br>310<br>311<br>312<br>313<br>314<br>315<br>316<br>317<br>318<br>319<br>320<br>321<br>322<br>323<br>324<br>325<br>326<br>327<br>328<br>329<br>330<br>331<br>332<br>333<br>334<br>335<br>336<br>337<br>338<br>339<br>340<br>341<br>342<br>343<br>344<br>345<br>346<br>347<br>348<br>349<br>350<br>351<br>352<br>353<br>354<br>355<br>356<br>357<br>358<br>359<br>360<br>361<br>362<br>363<br>364<br>365<br>366<br>367<br>368<br>369<br>370<br>371<br>372<br>373<br>374<br>375<br>376<br>377<br>378<br>379<br>380<br>381<br>382<br>383<br>384<br>385<br>386<br>387<br>388<br>389<br>390<br>391<br>392<br>393<br>394<br>395<br>396<br>397<br>398<br>399<br>400<br>401<br>402<br>403<br>404<br>405<br>406<br>407<br>408<br>409<br>410<br>411<br>412<br>413<br>414<br>415<br>416<br>417<br>418<br>419<br>420<br>421<br>422<br>423<br>424<br>425<br>426<br>427<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#008000;">#&nbsp;进程、队列、多进程、线程、进程间通信、互斥锁<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;进程<BR>
+#&nbsp;什么是进程？进程就是计算机中已运行程序的实体<BR>
+#&nbsp;但是，进程&nbsp;!=&nbsp;程序<BR>
+#&nbsp;在Python中通过调用相应Python进程模块去操纵OS中的进程<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;创建进程的几种方式<BR>
+#&nbsp;调用os.fork()函数<BR>
+#&nbsp;os.fork()不支持Windows系统，只支持Linux和类Linux系统<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;使用multiprocessing模块Process创建进程<BR>
+#&nbsp;Process([group[,target[,name[,args[,kwargs]]]]])<BR>
+#&nbsp;参数详解如下：<BR>
+#&nbsp;group：参数未使用，值始终为None<BR>
+#&nbsp;target：表示当前进程启动时执行的可调用对象<BR>
+#&nbsp;name：为当前进程实例的别名<BR>
+#&nbsp;args：表示传递给target函数的参数元组<BR>
+#&nbsp;kwargs：表示传递给target函数的参数字典<BR>
+#&nbsp;创建进程示例：<BR>
+</span><span style="color:#0000ff;">from</span><span style="color:#000000;">&nbsp;multiprocessing&nbsp;</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;Process<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;time<BR>
+<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;test(intervel):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;time.sleep(intervel)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'我是子进程'</span><span style="color:#000000;">)<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;main():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'主进程开始'</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;p&nbsp;=&nbsp;Process(target=test,args=(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;p.start()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'主进程结束'</span><span style="color:#000000;">)<BR>
+<BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;__name__&nbsp;==&nbsp;</span><span style="color:#800000;">'__main__'</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;main()<BR>
+</span><span style="color:#008000;">#&nbsp;结果分析见下图<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;Process类的常用方法和属性<BR>
+#&nbsp;js_alive()：判断进程实例是否还在执行<BR>
+#&nbsp;join([timeout])：是否等待进程实例执行结束，或等待多少秒<BR>
+#&nbsp;start()：启动进程实例(创建子进程)<BR>
+#&nbsp;run()：如果没有给定target参数，对这个对象调用start()方法时，<BR>
+#&nbsp;就将执行对象中的run()方法<BR>
+#&nbsp;terminate()：不管任务是否完成，立即终止<BR>
+#&nbsp;name：当前进程实例别名，默认为Process-N，N为从1开始递增的整数<BR>
+#&nbsp;pid：当前进程实例的PID值<BR>
+#&nbsp;实例：使用Process子类创建2个子进程，并记录子进程运行时间<BR>
+</span><span style="color:#0000ff;">from</span><span style="color:#000000;">&nbsp;multiprocessing&nbsp;</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;Process<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;time<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;os<BR>
+<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;child_1(intervel):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;getpid()获取进程id，getppid()获取它的父进程的id<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'子进程(%s)开始执行，它的父进程是(%s)'</span><span style="color:#000000;">&nbsp;%(os.getpid(),os.getppid()))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;t_start&nbsp;=&nbsp;time.time()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;time.sleep(intervel)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;t_end&nbsp;=&nbsp;time.time()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'子进程(%s)执行时间为(%0.2f)'</span><span style="color:#000000;">&nbsp;%&nbsp;(os.getpid(),t_end-t_start))<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;child_2(intervel):&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'子进程(%s)开始执行，它的父进程是(%s)'</span><span style="color:#000000;">&nbsp;%&nbsp;(os.getpid(),os.getppid()))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;t_start&nbsp;=&nbsp;time.time()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;time.sleep(intervel)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;t_end&nbsp;=&nbsp;time.time()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'子进程(%s)执行时间为(%0.2f)'</span><span style="color:#000000;">&nbsp;%&nbsp;(os.getpid(),t_end-t_start))<BR>
+<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;main():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'主进程开始'</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'主进程的PID：(%s)'</span><span style="color:#000000;">&nbsp;%&nbsp;os.getpid())<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;p1&nbsp;=&nbsp;Process(target=child_1,args=(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;p2&nbsp;=&nbsp;Process(target=child_2,name=</span><span style="color:#800000;">'Navi'</span><span style="color:#000000;">,args=(</span><span style="color:#ff0000;">2</span><span style="color:#000000;">,))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;p1.start()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;p2.start()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'p1.is_alive=%s'</span><span style="color:#000000;">&nbsp;%&nbsp;p1.is_alive())<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'p2.is_alive=%s'</span><span style="color:#000000;">&nbsp;%&nbsp;p2.is_alive())<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'p1.name=%s'</span><span style="color:#000000;">&nbsp;%&nbsp;p1.name,</span><span style="color:#800000;">'p1.id=%s'</span><span style="color:#000000;">&nbsp;%&nbsp;p1.pid)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'p2.name=%s'</span><span style="color:#000000;">&nbsp;%&nbsp;p2.name,</span><span style="color:#800000;">'p2.id=%s'</span><span style="color:#000000;">&nbsp;%&nbsp;p2.pid)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;p1.</span><span style="color:#0000ff;">join</span><span style="color:#000000;">()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;p2.</span><span style="color:#0000ff;">join</span><span style="color:#000000;">()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'主进程结束'</span><span style="color:#000000;">)<BR>
+<BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;__name__&nbsp;==&nbsp;</span><span style="color:#800000;">'__main__'</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;main()<BR>
+</span><span style="color:#008000;">#&nbsp;运行结果<BR>
+#&nbsp;主进程开始<BR>
+#&nbsp;主进程的PID：(18416)<BR>
+#&nbsp;p1.is_alive=True<BR>
+#&nbsp;p2.is_alive=True<BR>
+#&nbsp;p1.name=Process-1&nbsp;p1.id=12672<BR>
+#&nbsp;p2.name=Navi&nbsp;p2.id=15064<BR>
+#&nbsp;子进程(12672)开始执行，它的父进程是(18416)<BR>
+#&nbsp;子进程(12672)执行时间为(1.00)<BR>
+#&nbsp;子进程(15064)开始执行，它的父进程是(18416)<BR>
+#&nbsp;子进程(15064)执行时间为(2.00)<BR>
+#&nbsp;主进程结束<BR>
+#&nbsp;[Finished&nbsp;in&nbsp;2.8s]<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;使用Process子类创建进程<BR>
+#&nbsp;像前面的创建进程的方法，每创建一个进程都要使用Process类<BR>
+#&nbsp;如果要同时创建多个子进程的就会比较麻烦<BR>
+#&nbsp;子类都继承自Process类就相当于创建了进程<BR>
+#&nbsp;实例：使用Process子类创建2个子进程，并记录子进程运行时间<BR>
+</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;SubProcess(Process):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">__init__</span><span style="color:#000000;">(self,intervel,name=</span><span style="color:#800000;">''</span><span style="color:#000000;">):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">super</span><span style="color:#000000;">(SubProcess,self).</span><span style="color:#0000ff;">__init__</span><span style="color:#000000;">()&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;也可这样写Process.__init__(self)<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.intervel&nbsp;=&nbsp;intervel<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;name&nbsp;:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.name&nbsp;=&nbsp;name<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;run(self):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;getpid()获取进程id，getppid()获取它的父进程的id<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'子进程(%s)开始执行，它的父进程是(%s)'</span><span style="color:#000000;">&nbsp;%(os.getpid(),os.getppid()))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;t_start&nbsp;=&nbsp;time.time()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;time.sleep(self.intervel)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;t_end&nbsp;=&nbsp;time.time()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'子进程(%s)执行时间为(%0.2f)'</span><span style="color:#000000;">&nbsp;%&nbsp;(os.getpid(),t_end-t_start))<BR>
+<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;main():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'主进程开始'</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'主进程的PID：(%s)'</span><span style="color:#000000;">&nbsp;%&nbsp;os.getpid())<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;p1&nbsp;=&nbsp;SubProcess(intervel=</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,name=</span><span style="color:#800000;">'Navi'</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;p2&nbsp;=&nbsp;SubProcess(intervel=</span><span style="color:#ff0000;">2</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;p1.start()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;p2.start()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'p1.is_alive=%s'</span><span style="color:#000000;">&nbsp;%&nbsp;p1.is_alive())<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'p2.is_alive=%s'</span><span style="color:#000000;">&nbsp;%&nbsp;p2.is_alive())<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'p1.name=%s'</span><span style="color:#000000;">&nbsp;%&nbsp;p1.name,</span><span style="color:#800000;">'p1.id=%s'</span><span style="color:#000000;">&nbsp;%&nbsp;p1.pid)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'p2.name=%s'</span><span style="color:#000000;">&nbsp;%&nbsp;p2.name,</span><span style="color:#800000;">'p2.id=%s'</span><span style="color:#000000;">&nbsp;%&nbsp;p2.pid)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;p1.</span><span style="color:#0000ff;">join</span><span style="color:#000000;">()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;p2.</span><span style="color:#0000ff;">join</span><span style="color:#000000;">()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'主进程结束'</span><span style="color:#000000;">)<BR>
+<BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;__name__&nbsp;==&nbsp;</span><span style="color:#800000;">'__main__'</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;main()<BR>
+</span><span style="color:#008000;">#&nbsp;值得注意的是：在实例化对象时，并没有指定执行函数<BR>
+#&nbsp;run()方法是进程运行时可执行的方法<BR>
+#&nbsp;而start()是进程执行的方法，调用该方法时会自动调用run()方法<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;使用进程池Pool创建进程<BR>
+#&nbsp;当创建进程较多的时候，需要实例化很多类，会占有较多资源<BR>
+#&nbsp;进程池Pool可以解决这样问题<BR>
+#&nbsp;Pool类的常用方法<BR>
+#&nbsp;apply_async(func[,args[,kwds]])：使用非阻塞方式调用func函数(并行执行，<BR>
+#&nbsp;堵塞方式必须等待上一个进程退出才能执行下一个进程)，args为传递给func的参数<BR>
+#&nbsp;传递列表，kwds为传递给func的关键字参数列表<BR>
+#&nbsp;apply(func[,args[,kwds]])：使用阻塞方式调用func函数<BR>
+#&nbsp;close()：关闭Pool，使其不再接收新的任务<BR>
+#&nbsp;terminate()：不管任务是否完成，立即终止<BR>
+#&nbsp;join()：主进程阻塞，等待子进程的退出，必须在close或terminate之后使用<BR>
+#&nbsp;阻塞和非阻塞：阻塞就是顺序执行，非阻塞就是多个任务并行<BR>
+#&nbsp;实例：使用进程池创建进程<BR>
+</span><span style="color:#0000ff;">from</span><span style="color:#000000;">&nbsp;multiprocessing&nbsp;</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;Pool<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;os<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;time<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;task(name):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'子进程(%s)&nbsp;执行任务%s&nbsp;'</span><span style="color:#000000;">&nbsp;%&nbsp;(os.getpid(),name)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;time.sleep(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)<BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;__name__&nbsp;==&nbsp;</span><span style="color:#800000;">'__mian__'</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'父进程(%s)'</span><span style="color:#000000;">&nbsp;%&nbsp;os.getpid())<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;p&nbsp;=&nbsp;Pool(</span><span style="color:#ff0000;">3</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;i&nbsp;</span><span style="color:#0000ff;">in</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">range</span><span style="color:#000000;">(</span><span style="color:#ff0000;">10</span><span style="color:#000000;">):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;p.apply_async(task,args=(i,))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;p.</span><span style="color:#0000ff;">close</span><span style="color:#000000;">()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;p.</span><span style="color:#0000ff;">join</span><span style="color:#000000;">()&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;join()方法必须在close()方法后面使用<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'所有子进程结束'</span><span style="color:#000000;">)<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;进程间通信<BR>
+#&nbsp;主进程和子进程之间不能进行直接通信<BR>
+#&nbsp;因为每个进程都有自己的地址空间、内存、数据栈以及记录其状态的普通数据<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;如果要实现进程间通信，需要借助其它方法<BR>
+#&nbsp;队列、管道：下面就探究一下由队列实现的进程间通信<BR>
+</span><span style="color:#000000;"><BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;什么是队列：先进先出，即FIFO模型<BR>
+#&nbsp;多进程队列的使用<BR>
+#&nbsp;Queue类常用操作<BR>
+#&nbsp;插入数据put()、取出数据get()、判空empty()、判满full()、数量qsize()<BR>
+#&nbsp;Queue类的常用方法<BR>
+#&nbsp;Queue.qsize()：返回当前队列包含的消息数量<BR>
+#&nbsp;Queue.empty()：如果队列为空，返回True，否则返回False<BR>
+#&nbsp;Queue.full()：如果队列满了，返回True，否则返回False<BR>
+#&nbsp;Queue.get([block[,timeout]])：获取队列中的一条消息，然后将从队列中移除<BR>
+#&nbsp;block的默认值为True<BR>
+#&nbsp;Queue.get_nowait()：相当Queue.get(False)<BR>
+#&nbsp;Queue.put(item,[block[,timeout]])：将item消息写入队列，block默认值True<BR>
+#&nbsp;Queue.put_nowait(item)：相当Queue.put(item,False)<BR>
+#&nbsp;队列示例：<BR>
+</span><span style="color:#0000ff;">from</span><span style="color:#000000;">&nbsp;multiprocessing&nbsp;</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;Queue<BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;__name__&nbsp;==&nbsp;</span><span style="color:#800000;">'__main__'</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;q&nbsp;=&nbsp;Queue(</span><span style="color:#ff0000;">3</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;q.put(</span><span style="color:#800000;">'消息1'</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;q.put(</span><span style="color:#800000;">'消息2'</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'队列是否已满：%s'</span><span style="color:#000000;">&nbsp;%&nbsp;q.full())<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;q.put(</span><span style="color:#800000;">'消息3'</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'队列是否已满：%s'</span><span style="color:#000000;">&nbsp;%&nbsp;q.full())<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">try</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;q.put(</span><span style="color:#800000;">'消息4'</span><span style="color:#000000;">,</span><span style="color:#8000ff;">True</span><span style="color:#000000;">,</span><span style="color:#ff0000;">2</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">except</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'消息队列已满，现在消息数量%s'</span><span style="color:#000000;">&nbsp;%&nbsp;q.qsize())<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">try</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;q.putnowait(</span><span style="color:#800000;">'消息4'</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">except</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'消息队列以满，现在消息数量%s'</span><span style="color:#000000;">&nbsp;%&nbsp;q.qsize())<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">not</span><span style="color:#000000;">&nbsp;q.empty():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'--从队列中取出消息--'</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;i&nbsp;</span><span style="color:#0000ff;">in</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">range</span><span style="color:#000000;">(q.qsize()):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(q.get_nowait())<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">not</span><span style="color:#000000;">&nbsp;q.full():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;q.put(</span><span style="color:#800000;">'消息4'</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(q.qsize())<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;使用队列在进程间通信<BR>
+#&nbsp;分别向队列中写入和读取数据<BR>
+</span><span style="color:#0000ff;">from</span><span style="color:#000000;">&nbsp;multiprocessing&nbsp;</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;Process,Queue<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;time<BR>
+<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;write_task():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">not</span><span style="color:#000000;">&nbsp;q.full():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;i&nbsp;</span><span style="color:#0000ff;">in</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">range</span><span style="color:#000000;">(</span><span style="color:#ff0000;">5</span><span style="color:#000000;">):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;message&nbsp;=&nbsp;</span><span style="color:#800000;">'消息'</span><span style="color:#000000;">&nbsp;+&nbsp;</span><span style="color:#8000ff;">str</span><span style="color:#000000;">(i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;q.put(message)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'写入：%s'</span><span style="color:#000000;">&nbsp;%&nbsp;message)<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;read_task():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;time.sleep(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">while</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">not</span><span style="color:#000000;">&nbsp;q.empty():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'读取：%s'</span><span style="color:#000000;">&nbsp;%&nbsp;q.</span><span style="color:#0000ff;">get</span><span style="color:#000000;">(</span><span style="color:#8000ff;">True</span><span style="color:#000000;">,</span><span style="color:#ff0000;">2</span><span style="color:#000000;">))<BR>
+<BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;__name__&nbsp;==&nbsp;</span><span style="color:#800000;">'__main__'</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'--主进程开始--'</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;pw&nbsp;=&nbsp;Process(target=write_task)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;pr&nbsp;=&nbsp;Process(target=read_task)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;pw.start()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;pr.start()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;pw.</span><span style="color:#0000ff;">join</span><span style="color:#000000;">()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;pr.</span><span style="color:#0000ff;">join</span><span style="color:#000000;">()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'--主进程结束--'</span><span style="color:#000000;">)<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;线程<BR>
+#&nbsp;什么是线程？<BR>
+#&nbsp;操作系统能够进行运算调度的最小单位<BR>
+#&nbsp;它被包含在进程之中，是进程中的实际运作单位<BR>
+#&nbsp;一个线程指的是进程中单一顺序的控制流<BR>
+#&nbsp;在一个进程中可以并发多个线程，每个线程可以执行多个任务<BR>
+#&nbsp;CPU在每一个线程之间以时间片的形式执行<BR>
+#&nbsp;由于CPU处理速度非常快，使得每个线程好像在同时运行一样<BR>
+#&nbsp;线程的特点：<BR>
+#&nbsp;1、进程是资源分配的最小单位，线程是最小的执行单位<BR>
+#&nbsp;2、一个进程可以有多个线程<BR>
+#&nbsp;3、线程可以共享进程资源<BR>
+#&nbsp;进程与线程的关系<BR>
+#&nbsp;进程相当于一个容器，它不去执行操作，线程来执行不同的任务<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;创建线程的几种方式<BR>
+#&nbsp;threading模块Thread类创建线程<BR>
+#&nbsp;语法及参数<BR>
+#&nbsp;Thread([group[,target[,name[,args[,kwargs]]]]])<BR>
+#&nbsp;group：参数未使用，始终为None<BR>
+#&nbsp;target：表示当前线程启动时执行的可调用对象<BR>
+#&nbsp;name：为当前线程实例的别名<BR>
+#&nbsp;args：表示传递给target函数的参数元组<BR>
+#&nbsp;kwargs：表示传递给target函数的参数字典<BR>
+#&nbsp;示例：<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;threading<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;time<BR>
+<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;thread():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;i&nbsp;</span><span style="color:#0000ff;">in</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">range</span><span style="color:#000000;">(</span><span style="color:#ff0000;">3</span><span style="color:#000000;">):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;time.sleep(</span><span style="color:#ff0000;">3</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'thread&nbsp;name&nbsp;is&nbsp;%s'</span><span style="color:#000000;">&nbsp;%&nbsp;threading.current_thread().name)<BR>
+<BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;__name__&nbsp;==&nbsp;</span><span style="color:#800000;">'__main__'</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'--主线程开始--'</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;threads&nbsp;=&nbsp;[threading.Thread(target=thread)&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;i&nbsp;</span><span style="color:#0000ff;">in</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">range</span><span style="color:#000000;">(</span><span style="color:#ff0000;">4</span><span style="color:#000000;">)]<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;t&nbsp;</span><span style="color:#0000ff;">in</span><span style="color:#000000;">&nbsp;threads:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;t.start()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;t&nbsp;</span><span style="color:#0000ff;">in</span><span style="color:#000000;">&nbsp;threads:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;t.</span><span style="color:#0000ff;">join</span><span style="color:#000000;">()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'--主进程结束--'</span><span style="color:#000000;">)<BR>
+<BR>
+</span><span style="color:#008000;">#&nbsp;使用Thread子类创建线程<BR>
+#&nbsp;实例：使用Thread子类创建线程<BR>
+</span><span style="color:#0000ff;">from</span><span style="color:#000000;">&nbsp;threading&nbsp;</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;Thread<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;time<BR>
+<BR>
+</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;SubThread(Thread):&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">#&nbsp;创建Thread子类<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;run(self):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;i&nbsp;</span><span style="color:#0000ff;">in</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">range</span><span style="color:#000000;">(</span><span style="color:#ff0000;">3</span><span style="color:#000000;">):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;time.sleep(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;msg&nbsp;=&nbsp;</span><span style="color:#800000;">'子线程'</span><span style="color:#000000;">&nbsp;+&nbsp;self.name&nbsp;+&nbsp;</span><span style="color:#800000;">'执行，i='</span><span style="color:#000000;">+&nbsp;</span><span style="color:#8000ff;">str</span><span style="color:#000000;">(i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(msg)<BR>
+<BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;__name__&nbsp;==&nbsp;</span><span style="color:#800000;">'__main__'</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'--主线程开始--'</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;t1&nbsp;=&nbsp;SubThread()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;t2&nbsp;=&nbsp;SubThread()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;t1.start()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;t2.start()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;t1.</span><span style="color:#0000ff;">join</span><span style="color:#000000;">()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;t2.</span><span style="color:#0000ff;">join</span><span style="color:#000000;">()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'--主线程结束--'</span><span style="color:#000000;">)<BR>
+</span><span style="color:#008000;">#&nbsp;与Process子类创建子进程进行比较<BR>
+#&nbsp;Process子类使用了初始化方法和run()方法<BR>
+#&nbsp;而Thread子类只使用了run()方法<BR>
+#&nbsp;因为在线程创建的时候没有加参数，不用为Thread类初始化<BR>
+#&nbsp;而在创建进程时加了参数，需要调用Process类的初始化方法来接收参数<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;线程间通信<BR>
+#&nbsp;进程之间不能直接进行通信，而是要通过队列或者管道的中间桥梁才能通信<BR>
+#&nbsp;而线程间是可以直接进行通信的<BR>
+#&nbsp;代码测试<BR>
+</span><span style="color:#0000ff;">from</span><span style="color:#000000;">&nbsp;threading&nbsp;</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;Thread<BR>
+<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;plus():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'--子线程1开始--'</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">global</span><span style="color:#000000;">&nbsp;g_num<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;g_num&nbsp;+=&nbsp;</span><span style="color:#ff0000;">50</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'g_num&nbsp;is&nbsp;%d'</span><span style="color:#000000;">&nbsp;%&nbsp;g_num)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'--子线程1结束--'</span><span style="color:#000000;">)<BR>
+<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;minus():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'--子线程2开始--'</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">global</span><span style="color:#000000;">&nbsp;g_num<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;g_num&nbsp;-=&nbsp;</span><span style="color:#ff0000;">50</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'g_num&nbsp;is&nbsp;%d'</span><span style="color:#000000;">&nbsp;%&nbsp;g_num)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'--子线程2结束--'</span><span style="color:#000000;">)<BR>
+<BR>
+g_num&nbsp;=&nbsp;</span><span style="color:#ff0000;">100</span><span style="color:#000000;"><BR>
+<BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;__name__&nbsp;==&nbsp;</span><span style="color:#800000;">'__main__'</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'--主线程开始--'</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;t1&nbsp;=&nbsp;Thread(target=plus)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;t2&nbsp;=&nbsp;Thread(target=minus)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;t1.start()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;t2.start()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;t1.</span><span style="color:#0000ff;">join</span><span style="color:#000000;">()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;t2.</span><span style="color:#0000ff;">join</span><span style="color:#000000;">()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'g_num&nbsp;is&nbsp;%d'</span><span style="color:#000000;">&nbsp;%&nbsp;g_num)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'--主线程结束--'</span><span style="color:#000000;">)<BR>
+</span><span style="color:#008000;">#&nbsp;最终结果及步骤结果都正确<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;但是设想一下，会发现，多个线程同时操作同一个全局变量时就会发生混乱<BR>
+#&nbsp;上诉就为不安全线程<BR>
+#&nbsp;为了实现安全的线程：给线程加锁、解锁来现象(threading.Lock())<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;互斥锁<BR>
+#&nbsp;防止多个线程同时读取某一内存的区域<BR>
+#&nbsp;互斥锁给资源引入一个状态，要么锁定，要么非锁定<BR>
+#&nbsp;当线程需要对某一资源进行操作时，就将其设定为锁定，其它线程不可操作<BR>
+#&nbsp;操作结束后解锁定，此时其它线程才可以对该资源进行操作并锁定<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;互斥锁的使用<BR>
+#&nbsp;步骤<BR>
+#&nbsp;创建锁：mutex&nbsp;=&nbsp;threading.Lock()<BR>
+#&nbsp;锁定：mutex.acquire([blocking])<BR>
+#&nbsp;释放锁：mutex.release()<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;实例：使用互斥锁实现多人同时订购电影票功能<BR>
+</span><span style="color:#0000ff;">from</span><span style="color:#000000;">&nbsp;threading&nbsp;</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;Thread,Lock<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;time<BR>
+<BR>
+n&nbsp;=&nbsp;</span><span style="color:#ff0000;">100</span><span style="color:#000000;"><BR>
+<BR>
+</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;task():<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">global</span><span style="color:#000000;">&nbsp;n<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;mutex.acquire()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;time.sleep(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">.</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;n&nbsp;-=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'购买成功，剩余%d张电影票'</span><span style="color:#000000;">&nbsp;%&nbsp;n)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;mutex.release()<BR>
+<BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;__name__&nbsp;==&nbsp;</span><span style="color:#800000;">'__main__'</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;mutex&nbsp;=&nbsp;Lock()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;t_l&nbsp;=&nbsp;[]<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;i&nbsp;</span><span style="color:#0000ff;">in</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">range</span><span style="color:#000000;">(</span><span style="color:#ff0000;">10</span><span style="color:#000000;">):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;t&nbsp;=&nbsp;Thread(target=task)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;t_l.</span><span style="color:#0000ff;">append</span><span style="color:#000000;">(t)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;t.start()<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;t&nbsp;</span><span style="color:#0000ff;">in</span><span style="color:#000000;">&nbsp;t_l:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;t.</span><span style="color:#0000ff;">join</span><span style="color:#000000;">()<BR>
+</span><span style="color:#008000;">#&nbsp;结果正确<BR>
+#&nbsp;但是需要注意一个问题<BR>
+#&nbsp;死锁(发生概率小)：所有线程都在等待<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">#&nbsp;使用队列在线程间通信<BR>
+#&nbsp;通常用于生产者与消费者之间的关系<BR>
+#&nbsp;产生数据的模块称为生产者，处理数据的模块称为消费者<BR>
+#&nbsp;在生产者和消费者之间有一个缓冲区，称为仓库<BR>
+#&nbsp;使用队列模拟生产者消费者模式<BR>
+</span><span style="color:#0000ff;">from</span><span style="color:#000000;">&nbsp;queue&nbsp;</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;Queue<BR>
+</span><span style="color:#0000ff;">from</span><span style="color:#000000;">&nbsp;threading&nbsp;</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;Thread<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;time<BR>
+</span><span style="color:#0000ff;">import</span><span style="color:#000000;">&nbsp;random<BR>
+<BR>
+</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;Producer(Thread):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">__init__</span><span style="color:#000000;">(self,name,queue):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Thread.</span><span style="color:#0000ff;">__init__</span><span style="color:#000000;">(self,name=name)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.data&nbsp;=&nbsp;queue<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;run(self):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;i&nbsp;</span><span style="color:#0000ff;">in</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">range</span><span style="color:#000000;">(</span><span style="color:#ff0000;">5</span><span style="color:#000000;">):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'生产者%s将产品%d加入队列'</span><span style="color:#000000;">&nbsp;%&nbsp;(self.getName(),i))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.data.put(i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;time.sleep(random.random())<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'生产者%s完成！'</span><span style="color:#000000;">&nbsp;%&nbsp;(self.getName()))<BR>
+<BR>
+</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;Consumer(Thread):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">__init__</span><span style="color:#000000;">(self,name,queue):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Thread.</span><span style="color:#0000ff;">__init__</span><span style="color:#000000;">(self,name=name)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.data&nbsp;=&nbsp;queue<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">def</span><span style="color:#000000;">&nbsp;run(self):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;i&nbsp;</span><span style="color:#0000ff;">in</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">range</span><span style="color:#000000;">(</span><span style="color:#ff0000;">5</span><span style="color:#000000;">):<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;val&nbsp;=&nbsp;self.data.</span><span style="color:#0000ff;">get</span><span style="color:#000000;">()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'消费者%s将产品%d从队列中取出'</span><span style="color:#000000;">%&nbsp;(self.getName(),val))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;time.sleep(random.random())<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'消费者完成！'</span><span style="color:#000000;">)<BR>
+<BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;__name__&nbsp;==&nbsp;</span><span style="color:#800000;">'__main__'</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'--主线程开始--'</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;queue&nbsp;=&nbsp;Queue()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;producer&nbsp;=&nbsp;Producer(</span><span style="color:#800000;">'Producer'</span><span style="color:#000000;">,queue)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;consumer&nbsp;=&nbsp;Consumer(</span><span style="color:#800000;">'Consumer'</span><span style="color:#000000;">,queue)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;producer.start()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;consumer.start()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;producer.</span><span style="color:#0000ff;">join</span><span style="color:#000000;">()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;consumer.</span><span style="color:#0000ff;">join</span><span style="color:#000000;">()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">print</span><span style="color:#000000;">(</span><span style="color:#800000;">'--主线程结束--'</span><span style="color:#000000;">)<BR>
+</span><span style="color:#008000;">#&nbsp;结果为生产者和消费者的执行顺序是随机的</span></div></td></tr></table></div>
+<br><font color=black size = 4>截图部分</font>
+<img src="https://wx2.sinaimg.cn/mw1024/007Diza3ly1g5d1zamriqj30q40cr0wa.jpg" width="800" height="650" />
+<br><br><br>
+<font color = gray size = 3>如有错误，欢迎指正！</font></p></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://oubc.github.io/tags/python/">Python</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmg4aog3074074gnf.gif?tags=%5B%5D">I </a>
+	<a href="">love</a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmfm2eg306o06o74u.gif?tags=%5B%5D"> you </a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx4tpcj30fn0bq3zg.jpg?tags=%5B%5D">three </a>
+	<a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx64ctg307s07swfy.gif?tags=%5B%5D">thousand</a>
+    <a href="https://www.kugou.com/song/#hash=96426C78381DE98DC31A5846FC274CBF&album_id=646623"> times.</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>家庭、梦想、内心的平静</span>
+  </div>
+</footer>
+
+
+
+<script src="https://oubc.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://oubc.github.io/js/zozo.js"></script>
+<script src="https://oubc.github.io/js/highlight.pack.js"></script>
+<link  href="https://oubc.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://oubc.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>
