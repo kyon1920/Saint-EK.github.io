@@ -69,7 +69,7 @@
   <div class="site_title_container">
     <div class="site_title">
       <h1>
-        <a href="https://oubc.github.io">
+        <a href="https://oubc.github.io/">
           <span>Love, or death</span>
           <img src="https://oubc.github.io/images/logo.svg"/>
         </a>
@@ -114,15 +114,16 @@
         </div>
         <div class="post_content markdown"><p>你可能听说对于Linux “一切皆文件”，那么本篇博客就带你探索Linux中文件系统的奥秘</p>
 
-<p><br><font color=black size = 4>索引</font>
-<br><font color=black size = 4>0.分区和文件系统</font>
-<br><font color=black size = 4>1.文件系统常用命令</font>
-<br><font color=black size = 4>2.fdisk分区</font>
-<br><font color=black size = 4>3./etc/fstab文件修复</font>
-<br><font color=black size = 4>4.分配swap分区</font>
+<p><br><font color=black size = 4>索引</font> (点击跳转)
+<br><font color=black size = 4>0.<a href="#bc0" class="aaa">分区和文件系统</a></font>
+<br><font color=black size = 4>1.<a href="#bc1" class="aaa">文件系统常用命令</a></font>
+<br><font color=black size = 4>2.<a href="#bc2" class="aaa">fdisk分区</a></font>
+<br><font color=black size = 4>3.<a href="#bc3" class="aaa">/etc/fstab文件修复</a></font>
+<br><font color=black size = 4>4.<a href="#bc4" class="aaa">分配swap分区</a></font>
 <br>
 <br>
-<br><font color=black size = 5>分区和文件系统</font>
+<br>
+<br><font color=black size = 5><a name="bc0" class="aaa1">分区和文件系统</a></font>
 <br><font color=black size = 4>1、分区</font>
 <br>(1) 分区类型
 <br> ◆ 主分区：总共最多只能分为四个
@@ -146,7 +147,8 @@
 <br> • ext3：是ext2文件系统的升级版本，与ext2最大的区别就是带有日志功能，在系统突然停止时提高文件系统的可靠性。
 <br> • ext4：是ext3文件系统的升级版本，ext4的变化可以用翻天覆地来形容，ext4在性能、伸缩性和可靠性方面进行了大量改进、向下兼容ext3、最大1EB文件系统和16TB文件、无限数量子目录、Extents连续数据块概念、多块分配、延迟分配、持久预分配、快速FSCK、日志校验、无日志模式、在线碎片整理、inode增强、默认启用barrier等，它是CentOS6.3的默认文件系统。
 <br>补充：(1TB = 1024GB = 1024*1024KB) (1EB = 1024PB = 1024*1024TB)
-<br><br><font color=black size = 5>文件系统常用命令</font>
+<br>
+<br><font color=black size = 5><a name="bc1" class="aaa1">文件系统常用命令</a></font>
 <br><font color=black size = 4>1、df命令、du命令、fsck命令和dumpe2fs命令</font>
 <br>(1) 文件系统查看命令df (统计文件系统的占有情况)
 <br>&nbsp;&nbsp;&nbsp;&nbsp; df [选项] [挂载点]
@@ -216,7 +218,8 @@
 <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; make install  编译安装
 <br>&nbsp;&nbsp;&nbsp;&nbsp; 使用
 <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mount -t ntfs-3g 分区设备文件名 挂载点
-<br><br><font color=black size = 5>fdisk分区</font>
+<br>
+<br><font color=black size = 5><a name="bc2" class="aaa1">fdisk分区</a></font>
 <br><font color=black size = 4>1、fdisk命令分区过程</font>
 <br>(1) 添加新硬盘
 <br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L7_FileSystem5.jpg?raw=true" width="800" height="650" />
@@ -259,11 +262,13 @@
 <br>(3) 依据配置文件内容，自动挂载
 <br>&nbsp;&nbsp;&nbsp;&nbsp; mount -a
 <br>备注：此命令也可以检测挂载是否成功，fstab写错会导致系统崩溃，fstab内容不小心写错此命令会报错
-<br><br><font color=black size = 5>/etc/fstab文件修复</font>
+<br>
+<br><font color=black size = 5><a name="bc3" class="aaa1">/etc/fstab文件修复</a></font>
 <br>&nbsp;&nbsp;&nbsp;&nbsp; mount -o remount,rw /
 <br>说明：在fstab文件不小心写错重启后发生错误时，可使用上面命令进行文件修复，此命令功能是为/目录加入写权限，能让root重新编辑fstab文件
 <br>备注：此命令有局限性，只能修复fstab文件错误
-<br><br><font color=black size = 5>分配swap分区</font>
+<br>
+<br><font color=black size = 5><a name="bc4" class="aaa1">分配swap分区</a></font>
 <br>(1) free命令：查看内存与swap分区使用情况
 <br>&nbsp;&nbsp;&nbsp;&nbsp; free <a href="可省略">选项</a>
 <br>选项：

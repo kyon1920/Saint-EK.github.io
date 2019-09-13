@@ -69,7 +69,7 @@
   <div class="site_title_container">
     <div class="site_title">
       <h1>
-        <a href="https://oubc.github.io">
+        <a href="https://oubc.github.io/">
           <span>Love, or death</span>
           <img src="https://oubc.github.io/images/logo.svg"/>
         </a>
@@ -114,13 +114,14 @@
         </div>
         <div class="post_content markdown"><p>对于Linux服务器有着严格的权限等级，如果权限过高容易导致误操作会增加风险。所以对于了解Linux系统中的各种权限及要给用户、服务等分配合理的权限是十分重要的。</p>
 
-<p><br><font color=black size = 4>索引</font>
-<br><font color=black size = 4>0.ACL权限</font>
-<br><font color=black size = 4>1.文件特殊权限</font>
-<br><font color=black size = 4>2.改变文件系统属性权限(chattr)</font>
-<br><font color=black size = 4>3.系统命令sudo权限</font>
+<p><br><font color=black size = 4>索引</font> (点击跳转)
+<br><font color=black size = 4>0.<a href="#bc0" class="aaa">ACL权限</a></font>
+<br><font color=black size = 4>1.<a href="#bc1" class="aaa">文件特殊权限</a></font>
+<br><font color=black size = 4>2.<a href="#bc2" class="aaa">改变文件系统属性权限(chattr)</a></font>
+<br><font color=black size = 4>3.<a href="#bc3" class="aaa">系统命令sudo权限</a></font>
 <br>
-<br><br><font color=black size = 5>ACL权限</font>
+<br>
+<br><font color=black size = 5><a name="bc0" class="aaa1">ACL权限</a></font>
 <br><font color=black size = 4>1、ACL权限简介与开启</font>
 <br>(1) ACL权限简介
 <br>&nbsp;&nbsp;&nbsp;&nbsp; ACL(access control list)访问控制列表
@@ -209,7 +210,8 @@
 <br>(2) 默认ACL权限
 <br>默认ACL权限的作用是如果给父目录设定了默认ACL权限，那么父目录所有新建的子文件都会继承父目录的ACL权限。
 <br>&nbsp;&nbsp;&nbsp;&nbsp; setfacl -m d:u:用户名:权限 文件名
-<br><br><font color=black size = 5>文件特殊权限</font>
+<br>
+<br><font color=black size = 5><a name="bc1" class="aaa1">文件特殊权限</a></font>
 <br><font color=black size = 4>1、SetUID</font>
 <br>(1) setuid(suid): 针对命令和二进制程序的，当普通用户执行某个(passwd)命令的时候，可以拥有这个命令对应用户的权限,即让普通用户可以以root用户的角色执行程序或命令。
 <br>(2) SetUID的特点：
@@ -278,7 +280,8 @@
 <br>(3) 取消粘着位
 <br>&nbsp;&nbsp;&nbsp;&nbsp; chmod 777 目录名
 <br>&nbsp;&nbsp;&nbsp;&nbsp; chmod o-t 目录名
-<br><br><font color=black size = 5>改变文件系统属性权限(chattr)</font>
+<br>
+<br><font color=black size = 5><a name="bc2" class="aaa1">改变文件系统属性权限(chattr)</a></font>
 <br><font color=black size = 4>1、chattr命令格式</font>
 <br>&nbsp;&nbsp;&nbsp;&nbsp; chattr [+-=] [选项] 文件名或目录名
 <br>&nbsp;&nbsp;&nbsp;&nbsp; + : 增加权限
@@ -293,7 +296,8 @@
 <br>选项：
 <br>&nbsp;&nbsp;&nbsp;&nbsp; -a  显示所有文件和目录
 <br>&nbsp;&nbsp;&nbsp;&nbsp; -d  若目标是目录，仅列出目录本身的属性，而不是子文件的
-<br><br><font color=black size = 5>系统命令sudo权限</font>
+<br>
+<br><font color=black size = 5><a name="bc3" class="aaa1">系统命令sudo权限</a></font>
 <br><font color=black size = 4>1、sudo权限</font>
 <br>root把本来只能由超级用户执行的命令赋予普通用户执行
 <br>sudo的操作对象是系统命令

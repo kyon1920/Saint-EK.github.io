@@ -6,10 +6,19 @@
     <description>Recent content in Linux on Love, or death</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Thu, 05 Sep 2019 12:08:40 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 11 Sep 2019 21:05:22 +0800</lastBuildDate>
     
 	<atom:link href="https://oubc.github.io/tags/linux/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Linux中的Shell编程</title>
+      <link>https://oubc.github.io/post/l9_shellcode/</link>
+      <pubDate>Wed, 11 Sep 2019 21:05:22 +0800</pubDate>
+      
+      <guid>https://oubc.github.io/post/l9_shellcode/</guid>
+      <description>&lt;p&gt;首先会提到正则表达式，它在编程中很重要且常见，然后是字符相关命令，最后是shell中的条件判断和流程控制。&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Linux中的Shell-Bash</title>

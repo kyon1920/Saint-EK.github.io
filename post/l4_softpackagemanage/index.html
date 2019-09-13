@@ -69,7 +69,7 @@
   <div class="site_title_container">
     <div class="site_title">
       <h1>
-        <a href="https://oubc.github.io">
+        <a href="https://oubc.github.io/">
           <span>Love, or death</span>
           <img src="https://oubc.github.io/images/logo.svg"/>
         </a>
@@ -114,15 +114,15 @@
         </div>
         <div class="post_content markdown"><p>本文将告诉我们在Linux系统中如何对软件包进行管理以及安装、卸载、更新软件的常用命令</p>
 
-<p><br><font color=black size = 4>索引</font>
-<br><font color=black size = 4>0.软件包管理简介</font>
-<br><font color=black size = 4>1.RPM包管理-rpm命令管理</font>
-<br><font color=black size = 4>2.RPM包管理-yum在线管理</font>
-<br><font color=black size = 4>3.源码包管理</font>
-<br><font color=black size = 4>4.脚本安装包与软件包选择</font>
+<p><br><font color=black size = 4>索引</font> (点击跳转)
+<br><font color=black size = 4>0.<a href="#bc0" class="aaa">软件包管理简介</a></font>
+<br><font color=black size = 4>1.<a href="#bc1" class="aaa">RPM包管理-rpm命令管理</a></font>
+<br><font color=black size = 4>2.<a href="#bc2" class="aaa">RPM包管理-yum在线管理</a></font>
+<br><font color=black size = 4>3.<a href="#bc3" class="aaa">源码包管理</a></font>
+<br><font color=black size = 4>4.<a href="#bc4" class="aaa">脚本安装包与软件包选择</a></font>
 <br>
 <br>
-<br><font color=black size = 5>软件包管理简介</font>
+<br><font color=black size = 5><a name="bc0" class="aaa1">软件包管理简介</a></font>
 <br>Linux发行版中附带有成千上万的可用包，其中包括了Internet工具、开发工具、办公工具、游戏等，如果你没有选择完整安装，则只会安装这些包的“子集”，如何删除不想要的包，如何安装遗漏的包，学习Linux系统的软件包管理将解决你的这些问题。
 <br><font color=black size = 4>1、软件包分类</font>
 <br>(1) 源码包
@@ -160,7 +160,8 @@
 <br>(3) 包名和包全名
 <br>包全名：操作的包是没有安装的软件包时，使用包全名，而且要注意路径
 <br>包名：操作已经安装的软件包时，使用包名，系统通过搜索/var/lib/rpm/中的数据库得到包
-<br><br><font color=black size = 5>RPM包管理-rpm命令管理</font>
+<br>
+<br><font color=black size = 5><a name="bc1" class="aaa1">RPM包管理-rpm命令管理</a></font>
 <br><font color=black size = 4>1、RPM包的安装、升级和卸载</font>
 <br>(1) RPM安装
 <br>rpm -ivh 包全名
@@ -235,7 +236,8 @@
 <br>功能：提取RPM包中ls命令到当前目录的bin/ls下
 <br>命令：cp /root/bin/ls /bin/ls
 <br>功能：把ls命令复制到/bin/目录，修复文件丢失
-<br><br><font color=black size = 5>RPM包管理-yum在线管理</font>
+<br>
+<br><font color=black size = 5><a name="bc2" class="aaa1">RPM包管理-yum在线管理</a></font>
 <br><font color=black size = 4>1、IP地址配置</font>
 <br><font color=black size = 3>(1) 键入命令setup使用setup工具</font>
 <br><font color=black size = 3>(2) 修改主机名(启动网卡)</font>
@@ -339,7 +341,8 @@
 <br>功能：安装指定软件组，组名可以由grouplist查询出来
 <br>命令：yum groupremove
 <br>功能：卸载指定软件组，组名可以由grouplist查询出来
-<br><br><font color=black size = 5>源码包管理</font>
+<br>
+<br><font color=black size = 5><a name="bc3" class="aaa1">源码包管理</a></font>
 <br><font color=black size = 4>1、源码包和RPM包的区别</font>
 <br>(1)安装之前的区别：概念上的区别
 <br>源码包是开源的，安装更自由，安装效率更高，但是它安装更慢，更容易报错；rpm包是经过编译的，安装更快，报错容易解决，只有依赖性的相关问题
@@ -381,10 +384,11 @@
 <br> make  编译
 <br>&nbsp;&nbsp;&nbsp;&nbsp; make clean 报错时用此命令清除临时文件
 <br> make install  编译安装
-<br>(3) 源码包的卸载
+<br>(4) 源码包的卸载
 <br> 不需要卸载命令，直接删除安装目录即可，而且不会遗留任何垃圾文件
 <br>&nbsp;&nbsp;&nbsp;&nbsp; rm -rf /usr/loacl/apache2/
-<br><br><font color=black size = 5>脚本安装包与软件包选择</font>
+<br>
+<br><font color=black size = 5><a name="bc4" class="aaa1">脚本安装包与软件包选择</a></font>
 <br><font color=black size = 4>1、脚本安装包</font>
 <br>脚本安装包并不是独立的软件包类型，常见安装的是源码包
 <br>是人为把安装过程写成自动安装的脚本，只要执行脚本，定义简单的参数，就可以完成安装

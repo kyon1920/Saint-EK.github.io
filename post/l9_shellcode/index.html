@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Bruce Cheung"/>
+
+  
+  <meta name="description" content="首先会提到正则表达式，它在编程中很重要且常见，然后是字符相关命令，最后是shell中的条件判断和流程控制。
+"/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, simple, dream"/>
+  
+
+  
+  <link rel="canonical" href="https://oubc.github.io/post/l9_shellcode/"/>
+
+  
+
+  <title>Linux中的Shell编程 &middot; Love, or death</title>
+
+  <link rel="shortcut icon" href="https://oubc.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/post/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://oubc.github.io/">
+          <span>Love, or death</span>
+          <img src="https://oubc.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">For you, a thousand times over.</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/oubc" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=uYGOjo6OiIuLivnIyJfa1tQ" title="mail" target="_blank"><i class="remixicon-mail-fill"></i></a>
+        
+        
+        
+        <a href="http://sighttp.qq.com/msgrd?v=1&amp;uin=877771223" title="qq" target="_blank"><i class="remixicon-qq-fill"></i></a>
+        
+        
+        
+        <a href="https://github.com/oubc/oubc.github.io/blob/master/images/wx.jpg?raw=true" title="wechat" target="_blank"><i class="remixicon-wechat-fill"></i></a>
+        
+        
+        
+        <a href="https://weibo.com/u/6993631995?topnav=1&amp;wvr=6&amp;topsug=1" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://oubc.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/post/l9_shellcode/'>Linux中的Shell编程</a></h2>
+          <span class="date">2019.09.11</span>
+        </div>
+        <div class="post_content markdown"><p>首先会提到正则表达式，它在编程中很重要且常见，然后是字符相关命令，最后是shell中的条件判断和流程控制。</p>
+
+<p><br><font color=black size = 4>索引</font> (点击跳转)
+<br><font color=black size = 4>0.<a href="#bc0" class="aaa">正则表达式</a></font>
+<br><font color=black size = 4>1.<a href="#bc1" class="aaa">字符截取命令</a></font>
+<br><font color=black size = 4>2.<a href="#bc2" class="aaa">字符处理命令</a></font>
+<br><font color=black size = 4>3.<a href="#bc3" class="aaa">条件判断</a></font>
+<br><font color=black size = 4>4.<a href="#bc4" class="aaa">流程控制</a></font>
+<br><font color=black size = 4>5.<a href="#bc5" class="aaa">sed命令</a></font>
+<br>
+<br>
+<br><font color=black size = 5><a name="bc0" class="aaa1">正则表达式</a></font>
+<br><font color=black size = 4>1、正则表达式和通配符概念</font>
+<br> ◆ 正则表达式是用来在文件中匹配符合条件的字符串，正则是包含匹配，grep、awk、sed 等命令可以支持正则表达式
+<br> ◆ 通配符用来匹配符合条件的文件名，通配符是完全匹配，ls、find、cp 这些命令不支持正则表达式，所以只能使用shell自己的通配符来进行匹配了
+<br><font color=black size = 4>2、基础正则表达式</font>
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L9_ShellCode0.png?raw=true" width="800" height="650" />
+<br>(1)
+<br> “ * ”前一个字符匹配0次，或任意多次
+<br>匹配所有内容，包括空白行
+<br>&nbsp;&nbsp;&nbsp;&nbsp; grep &quot;a*&quot; demo.txt
+<br>匹配至少包含有一个a的行
+<br>&nbsp;&nbsp;&nbsp;&nbsp; grep &quot;aa*&quot; demo.txt
+<br>匹配至少包含两个连续a的字符串
+<br>&nbsp;&nbsp;&nbsp;&nbsp; grep &quot;aaa*&quot; demo.txt
+<br>匹配至少包含四个连续a的字符串
+<br>&nbsp;&nbsp;&nbsp;&nbsp; grep &quot;aaaaa*&quot; demo.txt
+<br>(2)
+<br> “ . ”匹配除了换行符以外的任意一个字符
+<br>“a..b”会匹配在a和b这两个字母之间一定有两个字符的单词
+<br>&nbsp;&nbsp;&nbsp;&nbsp; grep &quot;a..b&quot; demo.txt
+<br>匹配在a和b字母之间有任意字符
+<br>&nbsp;&nbsp;&nbsp;&nbsp; grep &quot;a.*b&quot; demo.txt
+<br>匹配所有内容
+<br>&nbsp;&nbsp;&nbsp;&nbsp; grep &quot;.*&quot; demo.txt
+<br>(3)
+<br>“ ^ ”匹配行首，“ \$ ”匹配行尾
+<br>匹配以大写字母 “M”开头的行
+<br>&nbsp;&nbsp;&nbsp;&nbsp; grep &quot;^M&quot; demo.txt
+<br>匹配以小写 “n”结尾的行
+<br>&nbsp;&nbsp;&nbsp;&nbsp; grep &quot;\$n&quot; demo.txt
+<br>匹配空白行，并添加行号
+<br>&nbsp;&nbsp;&nbsp;&nbsp; grep -n &quot;^\$&quot; demo.txt
+<br>(4)
+<br>“ [] ”匹配中括号中指定的任意一个字符，只匹配一个字符
+<br>匹配a和b字母中，是d、e、f其中一个
+<br>&nbsp;&nbsp;&nbsp;&nbsp; grep &quot;a[def]bc&quot; demo.txt
+<br>匹配任意一个数字
+<br>&nbsp;&nbsp;&nbsp;&nbsp; grep &quot;[0-9]&quot; demo.txt
+<br>匹配用小写字母开头的行
+<br>&nbsp;&nbsp;&nbsp;&nbsp; grep &quot;^[a-z]&quot; demo.txt
+<br>(5)
+<br>“ [^] ”匹配除中括号的字符以外的任意一个字符
+<br>匹配不用小写字母开头的行
+<br>&nbsp;&nbsp;&nbsp;&nbsp; grep &quot;^[^a-z]&quot; demo.txt
+<br>匹配不用字母开头的行
+<br>&nbsp;&nbsp;&nbsp;&nbsp; grep &quot;^[^a-zA-Z]&quot; demo.txt
+<br>(6)
+<br>“ \ ”转义符
+<br>匹配使用“.”结尾的行
+<br>&nbsp;&nbsp;&nbsp;&nbsp; grep &quot;.$&quot; demo.txt
+<br>(7)
+<br>“ {\n} 表示其前面的字符恰好出现n次”
+<br>匹配a字母连续出现三次的字符串
+<br>&nbsp;&nbsp;&nbsp;&nbsp; grep &quot;a\{3\}&quot; demo.txt
+<br>匹配包含连续三个数字的字符串
+<br>&nbsp;&nbsp;&nbsp;&nbsp; grep &quot;[0-9]\{3\}&quot; demo.txt
+<br>(8)
+<br>“ {n,} ”表示其前面的字符出现不小于n次
+<br>匹配最少用连续三个数字开头的行
+<br>&nbsp;&nbsp;&nbsp;&nbsp; grep &quot;^[0-9]\{3,\}[a-z]&quot; demo.txt
+<br><font color=black size = 4>3、扩展正则表达式</font>
+<br>egrep或者grep -E
+<br>(1)
+<br>“ + ”表示重复一个或以上前面的字符
+<br>匹配“+”前面字符至少一次的字符串 rot / root / rooot
+<br>&nbsp;&nbsp;&nbsp;&nbsp; egrep -o &quot;ro+t&quot; demo.txt /
+<br>&nbsp;&nbsp;&nbsp;&nbsp; grep -Eo &quot;ro+t&quot; demo.txt
+<br>(2)
+<br>“ ? ”表示0个或者1个前面的字符 rt / rot
+<br>&nbsp;&nbsp;&nbsp;&nbsp; egrep -o &quot;ro?t&quot; demo.txt /
+<br>&nbsp;&nbsp;&nbsp;&nbsp; grep -Eo &quot;ro?t&quot; demo.txt
+<br>(3)
+<br>“ | ”用或的方式查找多个符合的字符串
+<br>&nbsp;&nbsp;&nbsp;&nbsp; egrep -o &quot;abc|cde&quot; demo.txt /
+<br>&nbsp;&nbsp;&nbsp;&nbsp; grep -Eo &quot;abc|cde&quot; demo.txt
+<br>(4)“ () ”找出“用户组”字符串
+<br>&nbsp;&nbsp;&nbsp;&nbsp; egrep &quot;(root)&quot; demo.txt /
+<br>&nbsp;&nbsp;&nbsp;&nbsp; grep -Eo&quot;(oubc)&quot; demo.txt
+<br>
+<br><font color=black size = 5><a name="bc1" class="aaa1">字符截取命令</a></font>
+<br><font color=black size = 4>1、cut字段提取命令</font>
+<br>命令
+<br>&nbsp;&nbsp;&nbsp;&nbsp; cut [选项] 文件名
+<br>选项：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -f 列号  提取第几列
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -d 分隔符  按照指定分隔符分割列
+<br>实例：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; vim demo.txt
+<br>&nbsp;&nbsp;&nbsp;&nbsp; ID &nbsp;&nbsp; Name &nbsp;&nbsp; gender &nbsp;&nbsp; Mark
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 1 &nbsp;&nbsp; Zhangsan &nbsp;&nbsp; M &nbsp;&nbsp; 86
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 2 &nbsp;&nbsp; Liming &nbsp;&nbsp; M &nbsp;&nbsp; 90
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 3 &nbsp;&nbsp; Zhaoxiao &nbsp;&nbsp; M &nbsp;&nbsp; 83
+<br>注：上面的空格都以制表符Tab作为分割，而不是空格符
+<br>补：空格作为分隔符，不好确定空格数量
+<br>提取第二列
+<br>&nbsp;&nbsp;&nbsp;&nbsp; cut -f 2 demo.txt
+<br>提取第二列和第三列
+<br>&nbsp;&nbsp;&nbsp;&nbsp; cut -f 2,3 demo.txt
+<br>以“ : ”作为分割符显示/etc/passwd中的第一列和第三列
+<br>&nbsp;&nbsp;&nbsp;&nbsp; cut -d &quot;:&quot; -f 1,3 /etc/passwd
+<br>cut命令的局限：不能在管道符起作用
+<br>&nbsp;&nbsp;&nbsp;&nbsp; df -h | cut -d &quot;&quot; -f 1,3
+<br><font color=black size = 4>2、printf命令</font>
+<br>printf命令其实不算是字符截取命令，而是格式化输出命令
+<br>&nbsp;&nbsp;&nbsp;&nbsp; printf '输出类型输出格式' 输出内容
+<br>&nbsp;&nbsp;&nbsp;&nbsp; %ns  输出字符串，n时数字代表输出n个字符
+<br>&nbsp;&nbsp;&nbsp;&nbsp; %ni  输出整数，n是数字代表输出n个整数
+<br>&nbsp;&nbsp;&nbsp;&nbsp; %m.nf  输出浮点数，m和n是数字，代表输出的整数位和小数位
+<br>输出格式：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; \a  输出警告声音
+<br>&nbsp;&nbsp;&nbsp;&nbsp; \b  输出退格键，也就是Backspace键
+<br>&nbsp;&nbsp;&nbsp;&nbsp; \f  清楚屏幕
+<br>&nbsp;&nbsp;&nbsp;&nbsp; \n  换行
+<br>&nbsp;&nbsp;&nbsp;&nbsp; \r  回车，也就是Enter键
+<br>&nbsp;&nbsp;&nbsp;&nbsp; \t  水平输出退格键，也就是Tab键
+<br>&nbsp;&nbsp;&nbsp;&nbsp; \v  垂直输出退格键，也就是Tab键
+<br>不调整格式输出
+<br>&nbsp;&nbsp;&nbsp;&nbsp; printf '%s' \$(cat demo.txt)
+<br>调整格式输出
+<br>&nbsp;&nbsp;&nbsp;&nbsp; printf '%s\t%s\t%s\t' \$(cat demo.txt)
+<br>在awk命令的输出中支持print和printf命令
+<br> ◆ print:print会在每个输出之后自动加入一个换行符(Linux中默认没有print命令)
+<br> ◆ printf:printf是标准格式输出命令,并不会自动加入换行符,如果需要换行,需要手动加入
+<br><font color=black size = 4>3、awk命令</font>
+<br>&nbsp;&nbsp;&nbsp;&nbsp; awk '条件1{动作1} 条件2{动作2}...' 文件名
+<br>条件(Pattern):
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 一般使用关系表达式作为条件
+<br>&nbsp;&nbsp;&nbsp;&nbsp; x &gt; 10  判断变量x是否大于10
+<br>&nbsp;&nbsp;&nbsp;&nbsp; x &gt;= 10  判断变量x是否大于等于10
+<br>&nbsp;&nbsp;&nbsp;&nbsp; x &lt;= 10  判断变量x是否小于等于10
+<br>动作(Action):
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 格式化输出
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 流程控制语句
+<br>应用:
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L9_ShellCode1.png?raw=true" width="800" height="450" />
+<br>BEGIN:在所有动作执行之前执行
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L9_ShellCode2.png?raw=true" width="800" height="350" />
+<br>END:在所有动作执行之后执行
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L9_ShellCode3.png?raw=true" width="800" height="350" />
+<br>FS内置变量
+<br>BEGIN和END就是为FS内置变量服务的
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L9_ShellCode4.png?raw=true" width="800" height="350" />
+<br>关系运算符
+<br>&nbsp;&nbsp;&nbsp;&nbsp; cat demo | grep -v Name | awk '\$6&gt;=87 {printf \$2 &quot;\n&quot;}'
+<br>命令执行顺序-先判断条件式是否成立,成立则执行命令
+<br>grep -v Name  表示只包含Name列
+<br><br><font color=black size = 5><a name="bc2" class="aaa1">字符处理命令</a></font>
+<br><font color=black size = 4>1、排序命令sort</font>
+<br>&nbsp;&nbsp;&nbsp;&nbsp; sort [选项] 文件名
+<br>选项：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -f  忽略大小写
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -n  以数值型进行排序，默认使用字符串型排序
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -r  反向排序
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -t  指定分隔符，默认分隔符是制表符
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -k n[,m]  按照指定的字段范围排序，从第n字段开始，m字段结束(默认到行尾)
+<br>实例：
+<br>排序用户信息文件
+<br>&nbsp;&nbsp;&nbsp;&nbsp; sort /etc/passwd
+<br>反向排序用户信息文件
+<br>&nbsp;&nbsp;&nbsp;&nbsp; sort -r /etc/passwd
+<br>指定分隔符“:”，用第三字段开头，第三字段结尾排序，就是只用第三字段排序
+<br>&nbsp;&nbsp;&nbsp;&nbsp; sort -t &quot;:&quot; -k 3,3 /etc/passwd
+<br>转换为数值型
+<br>&nbsp;&nbsp;&nbsp;&nbsp; sort -n-t &quot;:&quot; -k 3,3 /etc/passwd
+<br><font color=black size = 4>2、统计命令wc</font>
+<br>&nbsp;&nbsp;&nbsp;&nbsp; wc [选项] 文件名
+<br>选项：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -l  只统计行数
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -w  只统计单词数
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -m  只统计字符数
+<br><br><font color=black size = 5><a name="bc3" class="aaa1">条件判断</a></font>
+<br><font color=black size = 4>1、按照文件类型进行判断</font>
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L9_ShellCode5.png?raw=true" width="800" height="650" />
+<br>两种判断格式，主要是让程序判断，而不是人为判断，人为判断就不需要这么麻烦
+<br>&nbsp;&nbsp;&nbsp;&nbsp; test -e /root/install.log
+<br>&nbsp;&nbsp;&nbsp;&nbsp; [-e /root/install.log]
+<br>判断判断命令是否正确执行
+<br>&nbsp;&nbsp;&nbsp;&nbsp; [-d /root] &amp;&amp; echo &quot;yes&quot; || echo &quot;no&quot;
+<br><font color=black size = 4>2、按照文件权限进行判断</font>
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L9_ShellCode6.png?raw=true" width="800" height="650" />
+<br>实例：
+<br>判断文件是否拥有写权限
+<br>&nbsp;&nbsp;&nbsp;&nbsp; [-w demo.txt] &amp;&amp; echo &quot;yes&quot; || echo &quot;no&quot;
+<br><font color=black size = 4>3、两个文件之间进行比较</font>
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L9_ShellCode7.png?raw=true" width="800" height="650" />
+<br>人为判断是否为硬链接时，用 ll -i 命令来查看Inode号是否相同，相同就为硬链接
+<br>实例：
+<br>创建一个硬链接
+<br>&nbsp;&nbsp;&nbsp;&nbsp; In /root/demo.txt /tmp/stu.txt
+<br>用test测试
+<br>&nbsp;&nbsp;&nbsp;&nbsp; [/root/demo.txt -ef /tmp/stu.txt] &amp;&amp; echo &quot;yes&quot; || echo &quot;no&quot;
+<br><font color=black size = 4>4、两个整数之间的比较</font>
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L9_ShellCode8.png?raw=true" width="800" height="650" />
+<br><font color=black size = 4>5、字符串的判断</font>
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L9_ShellCode9.png?raw=true" width="800" height="650" />
+<br>判断字符串name是否为空
+<br>&nbsp;&nbsp;&nbsp;&nbsp; name = bc  给name变量赋值
+<br>&nbsp;&nbsp;&nbsp;&nbsp; [-z &quot;\$name&quot;] &amp;&amp; echo &quot;yes&quot; || echo &quot;no&quot;
+<br>给变量aa和变量bb赋值，判断两个变量的值是否相等
+<br>&nbsp;&nbsp;&nbsp;&nbsp; aa=11
+<br>&nbsp;&nbsp;&nbsp;&nbsp; bb=22
+<br>&nbsp;&nbsp;&nbsp;&nbsp; [&quot;\$aa&quot;==&quot;bb&quot;] &amp;&amp; echo &quot;yes&quot; || echo &quot;no&quot;
+<br><font color=black size = 4>6、多重条件判断</font>
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L9_ShellCode10.png?raw=true" width="800" height="650" />
+<br>实例：
+<br>判断变量aa是否有值，同时判断变量aa的值是否大于23
+<br>&nbsp;&nbsp;&nbsp;&nbsp; aa=11
+<br>&nbsp;&nbsp;&nbsp;&nbsp; [-n &quot;\$aa&quot; -a &quot;\$aa&quot; -gt 23] &amp;&amp; echo &quot;yes&quot; || echo &quot;no&quot;
+<br><br><font color=black size = 5><a name="bc4" class="aaa1">流程控制</a></font>
+<br><font color=black size = 4>1、if语句</font>
+<br>(1)单分支if条件语句
+<br>&nbsp;&nbsp;&nbsp;&nbsp; if [ 条件判断式 ];then
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 程序
+<br>&nbsp;&nbsp;&nbsp;&nbsp; fi
+<br>或者
+<br>&nbsp;&nbsp;&nbsp;&nbsp; if [ 条件判断式 ]
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; then
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 程序
+<br>&nbsp;&nbsp;&nbsp;&nbsp; fi
+<br>单分支条件语句需要注意的几个点
+<br> ▪ if语句使用fi结尾，和一般语言使用大括号结尾不同
+<br> ▪ [ 条件判断式 ]就是使用test命令判断，所以中括号和条件判断式之间必须有 空格
+<br> ▪ then后面跟符合条件之后执行的程序，可以放在[]之后，用“;”分割，也可以换行写入，就不需要“;”了
+<br>实例：判断分区使用率
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;">#!/bin/bash<BR>
+#&nbsp;统计根分区使用率<BR>
+#&nbsp;Author：oubc<BR>
+rate=\$(df&nbsp;-h&nbsp;|&nbsp;grep&nbsp;<span style="color:#800000;">&quot;/dev/sda3&quot;</span><span style="color:#000000;">&nbsp;|&nbsp;awk&nbsp;</span><span style="color:#800000;">'{print&nbsp;\$5}'</span><span style="color:#000000;">&nbsp;|&nbsp;cut&nbsp;-d&nbsp;</span><span style="color:#800000;">&quot;%&quot;</span><span style="color:#000000;">&nbsp;-f1)<BR>
+#&nbsp;把根分区使用率作为变量值赋予变量rate<BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;[&nbsp;\$rate&nbsp;-ge&nbsp;</span><span style="color:#ff0000;">80</span><span style="color:#000000;">&nbsp;]<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;then<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo&nbsp;</span><span style="color:#800000;">&quot;Warning!&nbsp;/dev/sda3&nbsp;will&nbsp;full!&quot;</span><span style="color:#000000;"><BR>
+fi</span></div></td></tr></table></div>
+<br>(2)双分支if条件语句
+<br>语法：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; if [ 条件判断式 ]
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; then
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 条件成立时，执行的语句
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 条件不成立时，执行的语句
+<br>&nbsp;&nbsp;&nbsp;&nbsp; fi
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 实例：备份MySQL数据库
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;Batch Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;">#!/bin/bash<BR>
+#&nbsp;备份MySQL数据库<BR>
+#&nbsp;Author：oubc<BR>
+<BR>
+ntpdate&nbsp;asia.pool.ntp.org&nbsp;&amp;&gt;/dev/null&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;同步系统时间<BR>
+<span style="color:#0000ff;">date</span><span style="color:#000000;">=\$(</span><span style="color:#0000ff;">date</span><span style="color:#000000;">&nbsp;+%y%m%d)&nbsp;&nbsp;&nbsp;#&nbsp;把当前系统时间按照“年&nbsp;月&nbsp;日”格式赋予变量date<BR>
+size=\$(du&nbsp;-sh&nbsp;/var/lib/mysql)&nbsp;&nbsp;#&nbsp;统计MySQL数据库的大小，并把大小赋予size变量<BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;[&nbsp;-d&nbsp;/tmp/dbbak&nbsp;]<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">then</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">echo</span><span style="color:#000000;">&nbsp;</span><span style="color:#800000;">&quot;Date：\$date&nbsp;!&quot;</span><span style="color:#000000;">&nbsp;&gt;&nbsp;/tmp/dbbak/dbinfo.txt<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">echo</span><span style="color:#000000;">&nbsp;</span><span style="color:#800000;">&quot;Data&nbsp;size：\$size&quot;</span><span style="color:#000000;">&nbsp;&gt;&gt;&nbsp;/tmp/dbbak/dbinfo.txt<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">cd</span><span style="color:#000000;">&nbsp;/tmp/dbbak<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tar&nbsp;-zcf&nbsp;mysql-lib-\$date.tar.gz&nbsp;/var/lib/mysql&nbsp;dainfo.txt&nbsp;&amp;&nbsp;&gt;&nbsp;/dev/null<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rm&nbsp;-rf&nbsp;/tmp/dabak/dainfo.txt<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">mkdir</span><span style="color:#000000;">&nbsp;/tmp/dbbak<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">echo</span><span style="color:#000000;">&nbsp;</span><span style="color:#800000;">&quot;Date：\$date&nbsp;!&quot;</span><span style="color:#000000;">&nbsp;&gt;&nbsp;/tmp/dbbak/dbinfo.txt<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">echo</span><span style="color:#000000;">&nbsp;</span><span style="color:#800000;">&quot;Data&nbsp;size：\$size&quot;</span><span style="color:#000000;">&nbsp;&gt;&gt;&nbsp;/tmp/dbbak/dbinfo.txt<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">cd</span><span style="color:#000000;">&nbsp;/tmp/dbbak<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tar&nbsp;-zcf&nbsp;mysql-lib-\$date.tar.gz&nbsp;/var/lib/mysql&nbsp;dainfo.txt&nbsp;&amp;&nbsp;&gt;&nbsp;/dev/null<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rm&nbsp;-rf&nbsp;/tmp/dabak/dainfo.txt<BR>
+fi</span></div></td></tr></table></div>
+<br>实例：判断apache是否启动
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;">#!/bin/bash<BR>
+#&nbsp;判断Apache是否启动<BR>
+#&nbsp;Author：oubc<BR>
+<BR>
+port=\$(nmap&nbsp;-sT&nbsp;<span style="color:#ff0000;">192</span><span style="color:#000000;">.</span><span style="color:#ff0000;">168</span><span style="color:#000000;">.xxx.x&nbsp;|&nbsp;grep&nbsp;tcp&nbsp;|&nbsp;grep&nbsp;http&nbsp;|&nbsp;awk&nbsp;</span><span style="color:#800000;">'{print&nbsp;\$2}'</span><span style="color:#000000;">)<BR>
+#&nbsp;使用nmap命令扫描服务器，并截取apache服务的状态，赋予变量port<BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;[&nbsp;</span><span style="color:#800000;">&quot;\$port&quot;</span><span style="color:#000000;">&nbsp;==&nbsp;</span><span style="color:#800000;">&quot;open&quot;</span><span style="color:#000000;">&nbsp;]<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;then<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo&nbsp;</span><span style="color:#800000;">&quot;\$(date)&nbsp;httpd&nbsp;is&nbsp;ok&nbsp;!&quot;</span><span style="color:#000000;">&nbsp;&gt;&gt;&nbsp;/tmp/autostart-acc.log<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/etc/rc.d/init.d/httpd&nbsp;start&nbsp;&amp;&gt;/dev/null<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo&nbsp;</span><span style="color:#800000;">&quot;\$(date)&nbsp;restart&nbsp;httpd&nbsp;!&quot;</span><span style="color:#000000;">&nbsp;&gt;&gt;&nbsp;/tmp/autostart-err.log<BR>
+fi</span></div></td></tr></table></div>
+<br>(3)多分支if条件语句
+<br>语法：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; if [ 条件判断式1 ]
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; then
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 条件1成立时，执行的语句
+<br>&nbsp;&nbsp;&nbsp;&nbsp; elif [ 条件判断式2 ]
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; then
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 条件2成立时，执行的语句
+<br>&nbsp;&nbsp;&nbsp;&nbsp; ...省略更多条件...
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 条件不成立时，执行的语句
+<br>&nbsp;&nbsp;&nbsp;&nbsp; fi
+<br><font color=black size = 4>2、case语句</font>
+<br>case语句和if...elif...else语句一样都是多分支条件语句，不过和if多分支条件语句不同的是，case语句只能判断一种条件关系，而if语句可以判断多种条件关系
+<br>语法：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; case \$变量名 in
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;值1&quot;)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 如果变量的值等于值1，则执行程序1
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;值2&quot;)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 如果变量的值等于值2，则执行程序2
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp; ...省略其它分支...
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 如果变量的值都不等于以上的值，则执行此程序
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;;
+<br>&nbsp;&nbsp;&nbsp; esac
+<br><font color=black size = 4>3、for循环</font>
+<br>语法一：
+<br>&nbsp;&nbsp;&nbsp; for 变量 in 值1 值2 值3
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; do
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 程序
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; done
+<br>实例：批量解压缩脚本
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;">#!/bin/bash<BR>
+#&nbsp;批量解压缩脚本<BR>
+#&nbsp;Author：oubc<BR>
+cd&nbsp;/oubc<BR>
+ls&nbsp;*.tar.gz&nbsp;&gt;&nbsp;ls.log<BR>
+<span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;i&nbsp;in&nbsp;\$(cat&nbsp;ls.log)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">do</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tar&nbsp;-zxf&nbsp;\$i&nbsp;&amp;&gt;/dev/null<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;done<BR>
+rm&nbsp;-rf&nbsp;/oubc/lks.log</span></div></td></tr></table></div>
+<br>语法二：
+<br>&nbsp;&nbsp;&nbsp; for(( 初始值;循环控制条件;变量变化 ))
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; do
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 程序
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; done
+<br>实例：批量添加指定数量的用户
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;">#!/bin/bash<BR>
+#&nbsp;批量添加指定数量的用户<BR>
+#&nbsp;Author：oubc<BR>
+read&nbsp;-p&nbsp;<span style="color:#800000;">&quot;Please&nbsp;input&nbsp;username:&quot;</span><span style="color:#000000;">&nbsp;-t&nbsp;</span><span style="color:#ff0000;">30</span><span style="color:#000000;">&nbsp;name<BR>
+read&nbsp;-p&nbsp;</span><span style="color:#800000;">&quot;Please&nbsp;input&nbsp;the&nbsp;number&nbsp;of&nbsp;users:&quot;</span><span style="color:#000000;">&nbsp;-t&nbsp;</span><span style="color:#ff0000;">30</span><span style="color:#000000;">&nbsp;num<BR>
+read&nbsp;-p&nbsp;</span><span style="color:#800000;">&quot;Please&nbsp;input&nbsp;the&nbsp;password&nbsp;of&nbsp;users:&quot;</span><span style="color:#000000;">&nbsp;-t&nbsp;</span><span style="color:#ff0000;">30</span><span style="color:#000000;">&nbsp;pass<BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;[&nbsp;!&nbsp;-z&nbsp;</span><span style="color:#800000;">&quot;\$name&quot;</span><span style="color:#000000;">&nbsp;-a&nbsp;!&nbsp;-z&nbsp;</span><span style="color:#800000;">&quot;\$num&quot;</span><span style="color:#000000;">&nbsp;-a&nbsp;!&nbsp;-z&nbsp;</span><span style="color:#800000;">&quot;\$pass&quot;</span><span style="color:#000000;">&nbsp;]<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;then<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;y=\$(echo&nbsp;\$num&nbsp;|&nbsp;sed&nbsp;</span><span style="color:#800000;">'s/[0-9]//g'</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;[&nbsp;-z&nbsp;</span><span style="color:#800000;">&quot;\$y&quot;</span><span style="color:#000000;">&nbsp;]<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;then<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;((i=</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;i&lt;=\$num;i++))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">do</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/user/sbin/useradd&nbsp;\$name\$i&nbsp;&amp;&gt;&nbsp;/dev/null<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo&nbsp;\$pass&nbsp;|&nbsp;/usr/bin/passwd&nbsp;--stdin&nbsp;\$name\$i&nbsp;&amp;&gt;&nbsp;/dev/null<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;done<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fi<BR>
+fi</span></div></td></tr></table></div>
+<br><font color=black size = 4>4、while循环</font>
+<br>while循环是不定循环，也称作条件循环，只要条件判断式成立，循环就会一直继续，知道条件判断不成立，循环才会停止，这就和for的固定循环不太一样了
+<br>语法：
+<br>&nbsp;&nbsp;&nbsp; while [ 条件判断式 ]
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; do
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 程序
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; done
+<br><font color=black size = 4>5、until循环</font>
+<br>until循环和while循环相反，until循环是只要条件判断式不成立则进行循环，并执行循环程序，一旦循环条件成立，则终止循环
+<br>&nbsp;&nbsp;&nbsp; until [ 条件判断式 ]
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; do
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 程序
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; done
+<br><br><font color=black size = 5><a name="bc5" class="aaa1">sed命令</a></font>
+<br> ▪ sed命令是一种几乎包括在所有的UNIX平台(包括Linux)的轻量级编辑器,sed主要是用来将数据进行选取、替换、删除、新增的命令。
+<br> ▪ 它与vi命令不同的是可以接受命令结果(管道符之类的)
+<br>&nbsp;&nbsp;&nbsp;&nbsp; sed [选项] '[动作]' 文件名
+<br>选项：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -n  一般sed命令会把所有数据都输出到屏幕，如果加入此选项，则只会把经过sed命令处理的行输出到屏幕
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -e  允许对输入数据应用多条sed命令编辑
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 用sed的修改结果直接修改读取数据的文件，而不是由屏幕输出
+<br>动作：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; a \：追加，在当前行后添加一行或多行，添加多行时，除最后一行外，每行末尾需要用“\”代表数据未完结
+<br>&nbsp;&nbsp;&nbsp;&nbsp; c \：行替换，用c后面的字符串替换原数据行，替换多行时，除最后一行外，每行末尾需用“\”代表数据未完结
+<br>&nbsp;&nbsp;&nbsp;&nbsp; i \：插入，在当前行前插入一行或多行，插入多行时，除最后一行外，每行末尾需用“\”代表数据未完结
+<br>&nbsp;&nbsp;&nbsp;&nbsp; d：删除，删除指定的行
+<br>&nbsp;&nbsp;&nbsp;&nbsp; p：打印，输出指定的行
+<br>&nbsp;&nbsp;&nbsp;&nbsp; s：字串替换，用一个字符串替换另外一个字符串，格式为“行范围s/旧字串/新字串/g”(和vim中的替换格式类似)
+<br>行数据操作
+<br>查看文件的第二行
+<br>&nbsp;&nbsp;&nbsp;&nbsp; sed '2p' demo.txt
+<br>&nbsp;&nbsp;&nbsp;&nbsp; sed -n '2p' demo.txt
+<br>删除第二行到第四行的数据，但不修改文件本身
+<br>&nbsp;&nbsp;&nbsp;&nbsp; sed '2,4d' demo.txt
+<br>在第二行后追加hello world
+<br>&nbsp;&nbsp;&nbsp;&nbsp; sed '2a &quot;hello world&quot;' demo.txt
+<br>在第二行前插入两行数据
+<br>&nbsp;&nbsp;&nbsp;&nbsp; sed '2i hello world' demo.txt
+<br>数据替换
+<br>&nbsp;&nbsp;&nbsp;&nbsp; sed '2c No such person' demo.txt
+<br>字符串替换
+<br>&nbsp;&nbsp;&nbsp;&nbsp; sed 's/旧字串/新字串/g' 文件名
+<br>例子：
+<br>把第三行中的74替换为99
+<br>&nbsp;&nbsp;&nbsp;&nbsp; sed '3s/74/99/g' demo.txt
+<br>sed操作的数据直接写入文件
+<br>&nbsp;&nbsp;&nbsp;&nbsp; sed -i '3s/74/99/g' demo.txt
+<br>同时把“Zhangsan”和“Liming”替换为空
+<br>&nbsp;&nbsp;&nbsp;&nbsp; sed -e 's/Liming/g;s/Zhangsan/g' demo.txt</p>
+
+<p><br><br><br>
+<font color = gray size = 3>如有错误，欢迎指正！</font></p></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://oubc.github.io/tags/linux/">Linux</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmg4aog3074074gnf.gif?tags=%5B%5D">I </a>
+	<a href="">love</a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmfm2eg306o06o74u.gif?tags=%5B%5D"> you </a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx4tpcj30fn0bq3zg.jpg?tags=%5B%5D">three </a>
+	<a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx64ctg307s07swfy.gif?tags=%5B%5D">thousand</a>
+    <a href="https://www.kugou.com/song/#hash=96426C78381DE98DC31A5846FC274CBF&album_id=646623"> times.</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>家庭、梦想、内心的平静</span>
+  </div>
+</footer>
+
+
+
+<script src="https://oubc.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://oubc.github.io/js/zozo.js"></script>
+<script src="https://oubc.github.io/js/highlight.pack.js"></script>
+<link  href="https://oubc.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://oubc.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>

@@ -69,7 +69,7 @@
   <div class="site_title_container">
     <div class="site_title">
       <h1>
-        <a href="https://oubc.github.io">
+        <a href="https://oubc.github.io/">
           <span>Love, or death</span>
           <img src="https://oubc.github.io/images/logo.svg"/>
         </a>
@@ -114,16 +114,17 @@
         </div>
         <div class="post_content markdown"><p>Shell是一个命令行解释器，它为用户提供了一个向Linux内核发送请求以便运行程序的界面系统级程序，用户可以用Shell来启动、挂起、停止甚至是编写一些程序。</p>
 
-<p><br><font color=black size = 4>索引</font>
-<br><font color=black size = 4>0.Shell概述</font>
-<br><font color=black size = 4>1.Shell脚本的执行方式</font>
-<br><font color=black size = 4>2.Bash的基本功能</font>
-<br><font color=black size = 4>3.Bash变量</font>
-<br><font color=black size = 4>4.Bash运算符</font>
-<br><font color=black size = 4>5.环境变量配置文件</font>
+<p><br><font color=black size = 4>索引</font> (点击跳转)
+<br><font color=black size = 4>0.<a href="#bc0" class="aaa">Shell概述</a></font>
+<br><font color=black size = 4>1.<a href="#bc1" class="aaa">Shell脚本的执行方式</a></font>
+<br><font color=black size = 4>2.<a href="#bc2" class="aaa">Bash的基本功能</a></font>
+<br><font color=black size = 4>3.<a href="#bc3" class="aaa">Bash变量</a></font>
+<br><font color=black size = 4>4.<a href="#bc4" class="aaa">Bash运算符</a></font>
+<br><font color=black size = 4>5.<a href="#bc5" class="aaa">环境变量配置文件</a></font>
 <br>
 <br>
-<br><font color=black size = 5>Shell概述</font>
+<br>
+<br><font color=black size = 5><a name="bc0" class="aaa1">Shell概述</a></font>
 <br><font color=black size = 4>1、Shell是什么</font>
 <br>Shell是一个功能相当强大的编程语言，灵活性较强、易编写和调试。
 <br>Shell是解释执行的脚本语言
@@ -141,7 +142,8 @@
 <br>使用命令：
 <br>&nbsp;&nbsp;&nbsp;&nbsp;cat /etc/shells
 <br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L8_ShellandBash1.jpg?raw=true" width="800" height="650" />
-<br><br><font color=black size = 5>Shell脚本的执行方式</font>
+<br>
+<br><font color=black size = 5><a name="bc1" class="aaa1">Shell脚本的执行方式</a></font>
 <br><font color=black size = 4>1、echo输出命令</font>
 <br>&nbsp;&nbsp;&nbsp;&nbsp; echo [选项][输出内容]
 <br>选项：
@@ -182,7 +184,8 @@
 <br>&nbsp;&nbsp;&nbsp;&nbsp; dos2unix xxx.sh
 <br>Linux 转换为dos格式命令
 <br>&nbsp;&nbsp;&nbsp;&nbsp; unix2dos xxx.sh
-<br><br><font color=black size = 5>Bash的基本功能</font>
+<br>
+<br><font color=black size = 5><a name="bc2" class="aaa1">Bash的基本功能</a></font>
 <br><font color=black size = 4>1、历史命令与命令补全</font>
 <br>(1)历史命令
 <br>&nbsp;&nbsp;&nbsp;&nbsp; history [选项][历史命令保存文件]
@@ -352,7 +355,9 @@
 <br>&nbsp;&nbsp;&nbsp;&nbsp; echo &quot;\$name&quot;  输出sc
 <br>&nbsp;&nbsp;&nbsp;&nbsp; echo '\$(date)'  输出\$(date)
 <br>&nbsp;&nbsp;&nbsp;&nbsp; echo &quot;\$(date)&quot;  输出 日期
-<br><br><font color=black size = 5>Bash变量</font>
+<br><br><font color=black size = 5></font>
+<br>
+<br><font color=black size = 5><a name="bc3" class="aaa1">Bash变量</a></font>
 <br><font color=black size = 4>1、用户自定义变量(本地变量)</font>
 <br>(1)什么是变量
 <br>变量是计算机内存的单元，其中存放的值可以改变。当Shell脚本需要保存一些信息时，如一个文件名或者是一个数字，就把它存放在一个变量中，每个变量都有一个名字，所以很容易引用它，使用变量可以保存有用信息，使系统获知用户相关设置，变量也可以用于保存临时信息。
@@ -437,7 +442,8 @@
 <br>&nbsp;&nbsp;&nbsp;&nbsp; -s  隐藏输入的数据，适用于机密信息的输入
 <br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L8_ShellandBash8.jpg?raw=true" width="800" height="650" />
 <br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L8_ShellandBash9.jpg?raw=true" width="800" height="650" />
-<br><br><font color=black size = 5>Bash运算符</font>
+<br>
+<br><font color=black size = 5><a name="bc4" class="aaa1">Bash运算符</a></font>
 <br><font color=black size = 4>1、数值运算与运算符</font>
 <br>(1)declare声明变量类型
 <br>&nbsp;&nbsp;&nbsp;&nbsp; declare [+/-][选项] 变量名
@@ -473,7 +479,8 @@
 <br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L8_ShellandBash12.jpg?raw=true" width="800" height="650" />
 <br>测试 x=\${y-新值}
 <br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L8_ShellandBash13.jpg?raw=true" width="800" height="250" />
-<br><br><font color=black size = 5>环境变量配置文件</font>
+<br>
+<br><font color=black size = 5><a name="bc5" class="aaa1">环境变量配置文件</a></font>
 <br><font color=black size = 4>1、环境变量配置文件简介</font>
 <br>(1)source命令
 <br>&nbsp;&nbsp;&nbsp;&nbsp; source 配置文件 或 .配置文件

@@ -69,7 +69,7 @@
   <div class="site_title_container">
     <div class="site_title">
       <h1>
-        <a href="https://oubc.github.io">
+        <a href="https://oubc.github.io/">
           <span>Love, or death</span>
           <img src="https://oubc.github.io/images/logo.svg"/>
         </a>
@@ -114,14 +114,15 @@
         </div>
         <div class="post_content markdown"><p>让我们一起去了解Linux的用户配置文件以及用户管理文件和相关的命令吧</p>
 
-<p><br><font color=black size = 4>索引</font>
-<br><font color=black size = 4>0.用户配置文件</font>
-<br><font color=black size = 4>1.用户管理相关文件</font>
-<br><font color=black size = 4>2.用户管理命令</font>
-<br><font color=black size = 4>3.用户组管理命令</font>
+<p><br><font color=black size = 4>索引</font> (点击跳转)
+<br><font color=black size = 4>0.<a href="#bc0" class="aaa">用户配置文件</a></font>
+<br><font color=black size = 4>1.<a href="#bc1" class="aaa">用户管理相关文件</a></font>
+<br><font color=black size = 4>2.<a href="#bc2" class="aaa">用户管理命令</a></font>
+<br><font color=black size = 4>3.<a href="#bc3" class="aaa">用户组管理命令</a></font>
 <br>
 <br>
-<br><font color=black size = 5>用户配置文件</font>
+<br>
+<br><font color=black size = 5><a name="bc0" class="aaa1">用户配置文件</a></font>
 <br><font color=black size = 4>用户配置文件及其相关目录：</font>
 <br>&nbsp;&nbsp;&nbsp;&nbsp; /etc/passwd  用户信息文件
 <br>&nbsp;&nbsp;&nbsp;&nbsp; /etc/shadow  影子文件
@@ -190,13 +191,15 @@
 <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 第二字段：组密码
 <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 第三字段：组管理员用户名
 <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 第四字段：组中附加用户
-<br><br><font color=black size = 5>用户管理相关文件</font>
+<br>
+<br><font color=black size = 5><a name="bc1" class="aaa1">用户管理相关文件</a></font>
 <br>用户的家目录
 <br>&nbsp;&nbsp;&nbsp;&nbsp; 普通用户：/home/用户名/，所有者和所属组都是此用户，权限为700
 <br>&nbsp;&nbsp;&nbsp;&nbsp; 超级用户：/root/，所有者和所属组都是root用户，权限为550
 <br>/var/spool/mail/用户名/  邮箱目录
 <br>/etc/skel/  模板目录
-<br><br><font color=black size = 5>用户管理命令</font>
+<br>
+<br><font color=black size = 5><a name="bc2" class="aaa1">用户管理命令</a></font>
 <br><font color=black size = 4>1、用户添加命令useradd</font>
 <br>(1) useradd命令格式
 <br>useradd [选项] 用户名
@@ -302,7 +305,8 @@
 <br>&nbsp;&nbsp;&nbsp;&nbsp; su - root -c &quot;useradd user1&quot;
 <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 不切换到root超级用户，但是通过该命令执行useradd命令添加user1用户
 <br>补充：root超级用户切换到普通用户不需要密码，普通用户切换到root用户需要密码
-<br><br><font color=black size = 5>用户组管理命令</font>
+<br>
+<br><font color=black size = 5><a name="bc3" class="aaa1">用户组管理命令</a></font>
 <br>(1) 添加用户组
 <br>&nbsp;&nbsp;&nbsp;&nbsp; groupadd [选项] 组名
 <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -g GID  指定组ID
