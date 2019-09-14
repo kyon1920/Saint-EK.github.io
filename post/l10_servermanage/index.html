@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Bruce Cheung"/>
+
+  
+  <meta name="description" content="Windows的服务启动类型分为三种：自动、手动、禁用，同样，Linux的服务启动也被分为三种：启动、自启动、关闭，在Linux中，有独立的服务、基于xinetd服务，以及源码包安装的服务，下面我们来一起去探个Linux服务管理究竟。
+"/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, simple, dream"/>
+  
+
+  
+  <link rel="canonical" href="https://oubc.github.io/post/l10_servermanage/"/>
+
+  
+
+  <title>Linux服务管理 &middot; Love, or death</title>
+
+  <link rel="shortcut icon" href="https://oubc.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/post/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://oubc.github.io/">
+          <span>Love, or death</span>
+          <img src="https://oubc.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">For you, a thousand times over.</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/oubc" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=uYGOjo6OiIuLivnIyJfa1tQ" title="mail" target="_blank"><i class="remixicon-mail-fill"></i></a>
+        
+        
+        
+        <a href="http://sighttp.qq.com/msgrd?v=1&amp;uin=877771223" title="qq" target="_blank"><i class="remixicon-qq-fill"></i></a>
+        
+        
+        
+        <a href="https://github.com/oubc/oubc.github.io/blob/master/images/wx.jpg?raw=true" title="wechat" target="_blank"><i class="remixicon-wechat-fill"></i></a>
+        
+        
+        
+        <a href="https://weibo.com/u/6993631995?topnav=1&amp;wvr=6&amp;topsug=1" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://oubc.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/post/l10_servermanage/'>Linux服务管理</a></h2>
+          <span class="date">2019.09.14</span>
+        </div>
+        <div class="post_content markdown"><p>Windows的服务启动类型分为三种：自动、手动、禁用，同样，Linux的服务启动也被分为三种：启动、自启动、关闭，在Linux中，有独立的服务、基于xinetd服务，以及源码包安装的服务，下面我们来一起去探个Linux服务管理究竟。</p>
+
+<p><br><font color=black size = 4>索引</font> (点击跳转)
+<br><font color=black size = 4>0.<a href="#bc0" class="aaa">服务简介与分类</a></font>
+<br><font color=black size = 4>1.<a href="#bc1" class="aaa">RPM包安装服务的管理</a></font>
+<br><font color=black size = 4>2.<a href="#bc2" class="aaa">源码包安装服务的管理</a></font>
+<br><font color=black size = 4>3.<a href="#bc3" class="aaa">服务管理总结</a></font>
+<br>
+<br>
+<br>
+<br><font color=black size = 5><a name="bc0" class="aaa1">服务简介与分类</a></font>
+<br><font color=black size = 4>1、服务的分类</font>
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L10_ServerManage0.png?raw=true" width="800" height="450" />
+<br>其中：xinetd被翻译为 超级守护进程，且xinetd服务本身是独立的
+<br>补：其中xinetd服务已经在被逐步淘汰
+<br><font color=black size = 4>2、什么是启动与自启动</font>
+<br> ◆ 服务启动：就是在当前系统中让服务运行，并提供功能
+<br> ◆ 服务自启动：自启动是指让服务在系统开机或重启之后，随着系统的启动而自动启动服务
+<br><font color=black size = 4>3、查询已安装的服务</font>
+<br> ◆ RPM包安装的服务
+<br>&nbsp;&nbsp;&nbsp;&nbsp; chkconfig --list
+<br>查看服务自启动状态，可以看到所有RPM包安装的服务，不能看源码包安装的服务
+<br> ◆ 源码包安装的服务
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 查看服务安装位置，一般是 /usr/local/下
+<br>示例：
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L10_ServerManage1.png?raw=true" width="800" height="450" />
+<br>其中的数字代表的含义为Linux运行级别
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L10_ServerManage2.png?raw=true" width="800" height="450" />
+<br> ◆ 查看系统中所有已经运行的进程，可以使用管道符
+<br>&nbsp;&nbsp;&nbsp;&nbsp; ps aux
+<br> ◆ 查看系统中所有已经运行的服务所占端口号
+<br>&nbsp;&nbsp;&nbsp;&nbsp; netstat -tlun
+<br><font color=black size = 4>4、RPM安装服务和源码包安装服务的区别</font>
+<br>RPM安装服务和源码包安装服务的区别在于安装位置的不同
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 源码包安装在指定位置，一般是/usr/local/
+<br>&nbsp;&nbsp;&nbsp;&nbsp; RPM包安装在默认位置中、
+<br>补：RPM包删除需要用 -e 选项，因为RPM包没有被放在一个文件中，而源码包不需要该选项
+<br>
+<br><font color=black size = 5><a name="bc1" class="aaa1">RPM包安装服务的管理</a></font>
+<br><font color=black size = 4>1、独立服务的管理</font>
+<br>前面提到RPM包安装的默认位置如下：
+<br> ▫ /etc/init.d  所有的独立服务的启动脚本的位置
+<br> ▫ /etc/sysconfig/  初始化环境配置文件位置
+<br> ▫ /etc/  配置文件位置
+<br> ▫ /etc/xinetd.conf  xinted自身配置文件
+<br> ▫ /etc/xinetd.d/  基于xinted服务的启动脚本
+<br> ▫ /var/lib/  服务产生的数据存放在这里
+<br> ▫ /var/log/  日志
+<br>独立服务的启动
+<br>&nbsp;&nbsp;&nbsp;&nbsp; /etc/init.d/独立服务名 start|stop|status|restart|
+<br>&nbsp;&nbsp;&nbsp;&nbsp; service 独立服务名 start|stop|status|restart|
+<br>实例：查看所有的已经安装的RPM包服务的运行状态
+<br>&nbsp;&nbsp;&nbsp;&nbsp; service --status-all
+<br>独立服务的自启动
+<br> ▫ chkconfig [--level 运行级别][独立服务名][on|off]
+<br> ▫ 修改/etc/rc.d/rc.local文件  推荐使用该方法
+<br> ▫ 使用ntsysv命令管理自启动 (红帽专有命令)
+<br>补：ntsysv命令退出需先按Tab进入选择模式，选择确定或者取消后退出
+<br><font color=black size = 4>2、基于xinetd服务的管理</font>
+<br>安装xinted与telnet
+<br>&nbsp;&nbsp;&nbsp;&nbsp; yum -y install xinted
+<br>&nbsp;&nbsp;&nbsp;&nbsp; yum -y install telnet-server
+<br>xinted服务的启动
+<br>&nbsp;&nbsp;&nbsp;&nbsp; vi /etc/xinetd.d/telnet
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L10_ServerManage3.png?raw=true" width="800" height="450" />
+<br>
+<br><font color=black size = 5><a name="bc2" class="aaa1">源码包安装服务的管理</a></font>
+<br><font color=black size = 4>1、源码包安装服务的启动</font>
+<br>使用绝对路径，调用启动脚本来启动，不同的源码包的启动脚本不同，可以查看源码包的安装说明，查看启动脚本的方法。
+<br>以下都以apache为例
+<br>&nbsp;&nbsp;&nbsp;&nbsp; /usr/local/apache2/bin/apachectl start|stop
+<br>查看安装说明的方法：安装源码包后，会在安装目录下看见一个叫做INSTALL的文件，打开查看就好，安装说明就在这个文件当中
+<br><font color=black size = 4>2、源码包服务的自启动</font>
+<br>&nbsp;&nbsp;&nbsp;&nbsp; vi /etc/rc.d/rc.local
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 加入  /usr/local/apache2/bin/apachectl start
+<br><font color=black size = 4>3、让源码包服务被服务管理命令识别</font>
+<br>让源码包的apache服务能被service命令管理启动方法
+<br>&nbsp;&nbsp;&nbsp;&nbsp; ln -s /usr/local/apache2/bin/apachectl /etc/init.d/apache
+<br>让源码包的apache服务能被chkconfig与ntsysv命令管理自启动
+<br>&nbsp;&nbsp;&nbsp;&nbsp; vi /etc/init.d/apache
+<br>&nbsp;&nbsp;&nbsp;&nbsp; # chkconfig:35 86 76
+<br>&nbsp;&nbsp;&nbsp;&nbsp; # 指定httpd脚本可以被chkconfig命令管理，格式为 chkconfig: 运行级别 启动顺序 关闭顺序
+<br>&nbsp;&nbsp;&nbsp;&nbsp; # description:source package apache
+<br>&nbsp;&nbsp;&nbsp;&nbsp; # 说明，内容随意
+<br>
+<br><font color=black size = 5><a name="bc3" class="aaa1">服务管理总结</a></font>
+<br><font color=black size = 4>正则表达式和通配符概念</font>
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L10_ServerManage4.png?raw=true" width="800" height="450" />
+<br><font color=black size = 4>常见服务的作用和建议</font>
+<table>
+<thead>
+<tr class="header">
+<th>服务名称</th>
+<th>功能简介</th>
+<th>建议</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>acpid</td>
+<td>电源管理接口。如果是笔记本电脑用户，则建议开启，可以监听内核层的相关电源事件</td>
+<td>开启</td>
+</tr>
+<tr class="even">
+<td>anacron</td>
+<td>系统的定时任务程序。是 cron 的一个子系统，如果定时任务错过了执行时间，则可以通过 anacron 继续唤醒执行</td>
+<td>关闭</td>
+</tr>
+<tr class="odd">
+<td>alsasound</td>
+<td>alsa 声卡驱动。如果使用 alsa 声卡，则开启</td>
+<td>关闭</td>
+</tr>
+<tr class="even">
+<td>apmd</td>
+<td>电源管理模块。如果支持 acpid，就不需要 apmd，可以关闭</td>
+<td>关闭</td>
+</tr>
+<tr class="odd">
+<td>atd</td>
+<td>指定系统在特定时间执行某个任务，只能执行一次。如果需要则开启，但我们一般使用 crond 来执行循环定时任务</td>
+<td>关闭</td>
+</tr>
+<tr class="even">
+<td>auditd</td>
+<td>审核子系统。如果开启了此服务，那么 SELinux 的审核信息会写入 /var/log/audit/ audit.log 文件；如果不开启，那么审核信息会记录在 syslog 中</td>
+<td>开启</td>
+</tr>
+<tr class="odd">
+<td>autofs</td>
+<td>让服务器可以自动挂载网络中其他服务器的共享数据,一般用来自动挂载 NFS 服务。如果没有 NFS 服务，则建议关闭</td>
+<td>关闭</td>
+</tr>
+<tr class="even">
+<td>avahi-daemon</td>
+<td>avahi 是 zeroconf 协议的实现，它可以在没有 DNS 服务的局域网里发现基于 zeroconf 协议的设备和服务。除非有兼容设备或使用 zeroconf 协议，否则关闭</td>
+<td>关闭</td>
+</tr>
+<tr class="odd">
+<td>bluetooth</td>
+<td>蓝牙设备支持。一般不会在服务器上启用蓝牙设备，关闭它</td>
+<td>关闭</td>
+</tr>
+<tr class="even">
+<td>capi</td>
+<td>仅对使用 ISND 设备的用户有用</td>
+<td>关闭</td>
+</tr>
+<tr class="odd">
+<td>chargen-dgram</td>
+<td>使用 UDP 协议的 chargen server。其主要提供类似远程打字的功能</td>
+<td>关闭</td>
+</tr>
+<tr class="even">
+<td>chargen-stream</td>
+<td>同上</td>
+<td>关闭</td>
+</tr>
+<tr class="odd">
+<td>cpuspeed</td>
+<td>可以用来调整 CPU 的频率。当闲置时，可以自动降低 CPU 频率来节省电量</td>
+<td>开启</td>
+</tr>
+<tr class="even">
+<td>crond</td>
+<td>系统的定时任务，一般的 Linux 服务器都需要定时任务来协助系统维护。建议开启</td>
+<td>开启</td>
+</tr>
+<tr class="odd">
+<td>cvs</td>
+<td>一个版本控制系统</td>
+<td>关闭</td>
+</tr>
+<tr class="even">
+<td>daytime-dgram</td>
+<td>使用 TCP 协议的 daytime 守护进程，该协议为客户机实现从远程服务器获取日期和时间的功能</td>
+<td>关闭</td>
+</tr>
+<tr class="odd">
+<td>daytime-slream</td>
+<td>同上</td>
+<td>关闭</td>
+</tr>
+<tr class="even">
+<td>dovecot</td>
+<td>邮件服务中 POP3/IMAP 服务的守护进程，主要用来接收信件。如果启动了邮件服务则开启：否则关闭</td>
+<td>关闭</td>
+</tr>
+<tr class="odd">
+<td>echo-dgram</td>
+<td>服务器回显客户服务的进程</td>
+<td>关闭</td>
+</tr>
+<tr class="even">
+<td>echo-stream</td>
+<td>同上</td>
+<td>关闭</td>
+</tr>
+<tr class="odd">
+<td>firstboot</td>
+<td>系统安装完成后，有一个欢迎界面，需要对系统进行初始设定，这就是这个服务的作用。既然不是第一次启动了，则建议关闭</td>
+<td>关闭</td>
+</tr>
+<tr class="even">
+<td>gpm</td>
+<td>在字符终端 (ttyl~tty6) 中可以使用鼠标复制和粘贴，这就是这个服务的功能</td>
+<td>开启</td>
+</tr>
+<tr class="odd">
+<td>haldaemon</td>
+<td>检测和支持 USB 设备。如果是服务器则可以关闭，个人机则建议开启</td>
+<td>关闭</td>
+</tr>
+<tr class="even">
+<td>hidd</td>
+<td>蓝牙鼠标、键盘等蓝牙设备检测。必须启动 bluetooth 服务</td>
+<td>关闭</td>
+</tr>
+<tr class="odd">
+<td>hplip</td>
+<td>HP 打印机支持，如果没有 HP 打印机则关闭</td>
+<td>关闭</td>
+</tr>
+<tr class="even">
+<td>httpd</td>
+<td>apache 服务的守护进程。如果需要启动 apache，就开启</td>
+<td>开启</td>
+</tr>
+<tr class="odd">
+<td>ip6tables</td>
+<td>IPv6 的防火墙。目前 IPv6 协议并没有使用，可以关闭</td>
+<td>关闭</td>
+</tr>
+<tr class="even">
+<td>iptables</td>
+<td>防火墙功能。Linux 中的防火墙是内核支持功能。这是服务器的主要防护手段，必须开启</td>
+<td>开启</td>
+</tr>
+<tr class="odd">
+<td>irda</td>
+<td>IrDA 提供红外线设备（笔记本电脑、PDA’s、手机、计算器等）间的通信支持。建议关闭</td>
+<td>关闭</td>
+</tr>
+<tr class="even">
+<td>irqbalance</td>
+<td>支持多核处理器，让 CPU 可以自动分配系统中断（IRQ)，提高系统性能。目前服务器多是多核 CPU，请开启</td>
+<td>开启</td>
+</tr>
+<tr class="odd">
+<td>isdn</td>
+<td>使用 ISDN 设备连接网络。目前主流的联网方式是光纤接入和 ADSL，ISDN 己经非常少见，请关闭</td>
+<td>关闭</td>
+</tr>
+<tr class="even">
+<td>kudzu</td>
+<td>该服务可以在开机时进行硬件检测，并会调用相关的设置软件。建议关闭，仅在需要时开启</td>
+<td>关闭</td>
+</tr>
+<tr class="odd">
+<td>lvm2-monitor</td>
+<td>该服务可以让系统支持LVM逻辑卷组，如果分区采用的是LVM方式，那么应该开启。建议开启</td>
+<td>开启</td>
+</tr>
+<tr class="even">
+<td>mcstrans</td>
+<td>SELinux 的支持服务。建议开启</td>
+<td>开启</td>
+</tr>
+<tr class="odd">
+<td>mdmonitor</td>
+<td>该服务用来监测 Software RAID 或 LVM 的信息。不是必需服务，建议关闭</td>
+<td>关闭</td>
+</tr>
+<tr class="even">
+<td>mdmpd</td>
+<td>该服务用来监测 Multi-Path 设备。不是必需服务，建议关闭</td>
+<td>关闭</td>
+</tr>
+<tr class="odd">
+<td>messagebus</td>
+<td>这是 Linux 的 IPC (Interprocess Communication，进程间通信）服务，用来在各个软件中交换信息。建议关闭</td>
+<td>关闭</td>
+</tr>
+<tr class="even">
+<td>microcode _ctl</td>
+<td>Intel 系列的 CPU 可以通过这个服务支持额外的微指令集。建议关闭</td>
+<td>关闭</td>
+</tr>
+<tr class="odd">
+<td>mysqld</td>
+<td><a href="http://c.biancheng.net/mysql/">MySQL</a> 数据库服务器。如果需要就开启；否则关闭</td>
+<td>开启</td>
+</tr>
+<tr class="even">
+<td>named</td>
+<td>DNS 服务的守护进程，用来进行域名解析。如果是 DNS 服务器则开启；否则关闭</td>
+<td>关闭</td>
+</tr>
+<tr class="odd">
+<td>netfs</td>
+<td>该服务用于在系统启动时自动挂载网络中的共享文件空间，比如 NFS、Samba 等。 需要就开启，否则关闭</td>
+<td>关闭</td>
+</tr>
+<tr class="even">
+<td>network</td>
+<td>提供网络设罝功能。通过这个服务来管理网络，建议开启</td>
+<td>开启</td>
+</tr>
+<tr class="odd">
+<td>nfs</td>
+<td>NFS (Network File System) 服务，Linux 与 Linux 之间的文件共享服务。需要就开启，否则关闭</td>
+<td>关闭</td>
+</tr>
+<tr class="even">
+<td>nfslock</td>
+<td>在 Linux 中如果使用了 NFS 服务，那么，为了避免同一个文件被不同的用户同时编辑，所以有这个锁服务。有 NFS 时开启，否则关闭</td>
+<td>关闭</td>
+</tr>
+<tr class="odd">
+<td>ntpd</td>
+<td>该服务可以通过互联网自动更新系统时间.使系统时间永远准确。需要则开启，但不是必需服务</td>
+<td>关闭</td>
+</tr>
+<tr class="even">
+<td>pcscd</td>
+<td>智能卡检测服务，可以关闭</td>
+<td>关闭</td>
+</tr>
+<tr class="odd">
+<td>portmap</td>
+<td>用在远程过程调用 (RPC) 的服务，如果没有任何 RPC 服务，则可以关闭。主要是 NFS 和 NIS 服务需要</td>
+<td>关闭</td>
+</tr>
+<tr class="even">
+<td>psacct</td>
+<td>该守护进程支持几个监控进程活动的工具</td>
+<td>关闭</td>
+</tr>
+<tr class="odd">
+<td>rdisc</td>
+<td>客户端 ICMP 路由协议</td>
+<td>关闭</td>
+</tr>
+<tr class="even">
+<td>readahead_early</td>
+<td>在系统开启的时候，先将某些进程加载入内存整理，可以加快启动速度</td>
+<td>关闭</td>
+</tr>
+<tr class="odd">
+<td>readahead_later</td>
+<td>同上</td>
+<td>关闭</td>
+</tr>
+<tr class="even">
+<td>restorecond</td>
+<td>用于给 SELinux 监测和重新加载正确的文件上下文。如果开启 SELinux，则需要开启</td>
+<td>关闭</td>
+</tr>
+<tr class="odd">
+<td>rpcgssd</td>
+<td>与 NFS 有关的客户端功能。如果没有 NFS 就关闭</td>
+<td>关闭</td>
+</tr>
+<tr class="even">
+<td>rpcidmapd</td>
+<td>同上</td>
+<td>关闭</td>
+</tr>
+<tr class="odd">
+<td>rsync</td>
+<td>远程数据备份守护进程</td>
+<td>关闭</td>
+</tr>
+<tr class="even">
+<td>sendmail</td>
+<td>sendmail 邮件服务的守护进程。如果有邮件服务就开启；否则关闭</td>
+<td>关闭</td>
+</tr>
+<tr class="odd">
+<td>setroubleshoot</td>
+<td>该服务用于将 SELinux 相关信息记录在日志 /var/log/messages 中。建议开启</td>
+<td>开启</td>
+</tr>
+<tr class="even">
+<td>smartd</td>
+<td>该服务用于自动检测硬盘状态。建议开启</td>
+<td>开启</td>
+</tr>
+<tr class="odd">
+<td>smb</td>
+<td>网络服务 samba 的守护进程。可以让 Linux 和 Windows 之间共享数据。如果需要则开启</td>
+<td>关闭</td>
+</tr>
+<tr class="even">
+<td>squid</td>
+<td>代理服务的守护进程。如果需要则开启：否则关闭</td>
+<td>关闭</td>
+</tr>
+<tr class="odd">
+<td>sshd</td>
+<td>ssh 加密远程登录管理的服务。服务器的远程管理必须使用此服务，不要关闭</td>
+<td>开启</td>
+</tr>
+<tr class="even">
+<td>syslog</td>
+<td>日志的守护进程</td>
+<td>开启</td>
+</tr>
+<tr class="odd">
+<td>vsftpd</td>
+<td>vsftp 服务的守护进程。如果需要 FTP 服务则开启；否则关闭</td>
+<td>关闭</td>
+</tr>
+<tr class="even">
+<td>xfs</td>
+<td>这是 X Window 的字体守护进程，为图形界面提供字体服务。如果不启动图形界面，就不用开启</td>
+<td>关闭</td>
+</tr>
+<tr class="odd">
+<td>xinetd</td>
+<td>超级守护进程。如果有依赖 xinetd 的服务，就必须开启</td>
+<td>开启</td>
+</tr>
+<tr class="even">
+<td>ypbind</td>
+<td>为 NIS (网络信息系统）客户机激活 ypbind 服务进程</td>
+<td>关闭</td>
+</tr>
+<tr class="odd">
+<td>yum-updatesd</td>
+<td>yum 的在线升级服务</td>
+<td>关闭</td>
+</tr>
+</tbody>
+</table></p>
+
+<p><br><br><br>
+<font color = gray size = 3>如有错误，欢迎指正！</font></p></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://oubc.github.io/tags/linux/">Linux</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmg4aog3074074gnf.gif?tags=%5B%5D">I </a>
+	<a href="">love</a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmfm2eg306o06o74u.gif?tags=%5B%5D"> you </a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx4tpcj30fn0bq3zg.jpg?tags=%5B%5D">three </a>
+	<a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx64ctg307s07swfy.gif?tags=%5B%5D">thousand</a>
+    <a href="https://www.kugou.com/song/#hash=96426C78381DE98DC31A5846FC274CBF&album_id=646623"> times.</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>家庭、梦想、内心的平静</span>
+  </div>
+</footer>
+
+
+
+<script src="https://oubc.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://oubc.github.io/js/zozo.js"></script>
+<script src="https://oubc.github.io/js/highlight.pack.js"></script>
+<link  href="https://oubc.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://oubc.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>
