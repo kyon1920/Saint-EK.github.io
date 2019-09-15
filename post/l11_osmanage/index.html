@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Bruce Cheung"/>
+
+  
+  <meta name="description" content="我们都了解到，Linux是一套免费使用和自由传播的类Unix操作系统，是一个基于POSIX和UNIX的多用户、多任务、支持多线程和多CPU的操作系统，这篇博客就是对这些特性进行管理，学习相关的命令，最终目的就是时刻观测系统状况，服务器相关检查。
+"/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, simple, dream"/>
+  
+
+  
+  <link rel="canonical" href="https://oubc.github.io/post/l11_osmanage/"/>
+
+  
+
+  <title>Linux系统管理 &middot; Love, or death</title>
+
+  <link rel="shortcut icon" href="https://oubc.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/post/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://oubc.github.io/">
+          <span>Love, or death</span>
+          <img src="https://oubc.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">For you, a thousand times over.</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/oubc" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=uYGOjo6OiIuLivnIyJfa1tQ" title="mail" target="_blank"><i class="remixicon-mail-fill"></i></a>
+        
+        
+        
+        <a href="http://sighttp.qq.com/msgrd?v=1&amp;uin=877771223" title="qq" target="_blank"><i class="remixicon-qq-fill"></i></a>
+        
+        
+        
+        <a href="https://github.com/oubc/oubc.github.io/blob/master/images/wx.jpg?raw=true" title="wechat" target="_blank"><i class="remixicon-wechat-fill"></i></a>
+        
+        
+        
+        <a href="https://weibo.com/u/6993631995?topnav=1&amp;wvr=6&amp;topsug=1" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://oubc.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/post/l11_osmanage/'>Linux系统管理</a></h2>
+          <span class="date">2019.09.15</span>
+        </div>
+        <div class="post_content markdown"><p>我们都了解到，Linux是一套免费使用和自由传播的类Unix操作系统，是一个基于POSIX和UNIX的多用户、多任务、支持多线程和多CPU的操作系统，这篇博客就是对这些特性进行管理，学习相关的命令，最终目的就是时刻观测系统状况，服务器相关检查。</p>
+
+<p><br><font color=black size = 4>索引</font> (点击跳转)
+<br><font color=black size = 4>0.<a href="#bc0" class="aaa">进程管理</a></font>
+<br><font color=black size = 4>1.<a href="#bc1" class="aaa">工作管理</a></font>
+<br><font color=black size = 4>2.<a href="#bc2" class="aaa">系统资源查看</a></font>
+<br><font color=black size = 4>3.<a href="#bc3" class="aaa">系统定时任务</a></font>
+<br>
+<br>
+<br>
+<br><font color=black size = 5><a name="bc0" class="aaa1">进程管理</a></font>
+<br><font color=black size = 4>1、进程查看</font>
+<br> (1) 进程简介
+<br>进程是正在执行的一个程序或命令，每一个进程都是一个运行的实体，都有自己的地址空间，并占用一定的系统资源。
+<br> (2) 进程管理的作用
+<br> ◆ 判断服务器健康状态  (常用)
+<br> ◆ 查看系统中所有进程
+<br> ◆ 杀死进程  (最不应该常用)
+<br> (3) 查看系统中所有进程
+<br> ◆ 查看系统中所有进程，使用BSD操作系统格式
+<br>&nbsp;&nbsp;&nbsp;&nbsp; ps aux
+<br> ◆ 查看系统中所有进程，使用Linux标准命令格式
+<br>&nbsp;&nbsp;&nbsp;&nbsp; ps -le
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -l  显示详细信息
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -e  显示所有进程
+<br>以下是查看进程的相关参数解释：
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L11_OsManage0.png?raw=true" width="800" height="450" />
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L11_OsManage1.png?raw=true" width="800" height="450" />
+<br> (4) 查看系统健康状态
+<br>&nbsp;&nbsp;&nbsp;&nbsp; top [选项]
+<br>选项：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -d 秒数  指定top命令每隔几秒更新，默认为3秒
+<br>在top命令的交互模式当中可以执行的命令：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; ? 或 h  显示交互模式的帮助
+<br>&nbsp;&nbsp;&nbsp;&nbsp; P  以CPU使用率排序，默认就是此选项
+<br>&nbsp;&nbsp;&nbsp;&nbsp; M  以内存的使用率排序
+<br>&nbsp;&nbsp;&nbsp;&nbsp; N  以PID排序
+<br>&nbsp;&nbsp;&nbsp;&nbsp; q  退出top交互
+<br>补：top命令这玩意本身就是比较耗费资源的，没必要一直开着
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L11_OsManage2.png?raw=true" width="800" height="450" />
+<br>第一行信息为任务队列信息
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L11_OsManage3.png?raw=true" width="800" height="450" />
+<br>第二行信息为进程信息
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L11_OsManage4.png?raw=true" width="800" height="450" />
+<br>第三行信息为CPU信息
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L11_OsManage5.png?raw=true" width="800" height="450" />
+<br>第四行信息为物理内存信息
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L11_OsManage6.png?raw=true" width="800" height="450" />
+<br>第五行信息为交换分区(swap)信息
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L11_OsManage7.png?raw=true" width="800" height="450" />
+<br> (5) 查看进程树
+<br>&nbsp;&nbsp;&nbsp;&nbsp; pstree [选项]
+<br>选项：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -p  显示进程的PID
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -u  显示进程的所属用户
+<br><font color=black size = 4>2、进程终止</font>
+<br> (1) kill命令
+<br>&nbsp;&nbsp;&nbsp;&nbsp; kill [选项][信号] [进程号]
+<br>查看可用的进程信号
+<br>&nbsp;&nbsp;&nbsp;&nbsp; kill -l
+<br>以下列出了常用信号
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L11_OsManage8.png?raw=true" width="800" height="450" />
+<br>实例：
+<br>重启进程
+<br>&nbsp;&nbsp;&nbsp;&nbsp; kill -1 22354
+<br>强制杀死进程
+<br>&nbsp;&nbsp;&nbsp;&nbsp; kill -9 22368
+<br> (2) killall命令
+<br>按照进程名杀死进程
+<br>&nbsp;&nbsp;&nbsp;&nbsp; killall [选项][信号] 进程名
+<br>选项：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -i  交互式，询问是否要杀死某个进程
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -I  忽略进程名的大小写
+<br> (3) pkill命令
+<br>按照进程名终止进程
+<br>&nbsp;&nbsp;&nbsp;&nbsp; pkill [选项][信号] 进程名
+<br>选项：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -t 终端号  按照终端号踢出用户
+<br>实例：按照终端号踢出用户
+<br>第一步：使用w命令查询本机已经登录的用户
+<br>&nbsp;&nbsp;&nbsp;&nbsp; w
+<br>第二步：强制杀死从pts/1虚拟机终端登录的进程
+<br>&nbsp;&nbsp;&nbsp;&nbsp; pkill -t -9 pts/1
+<br><font color=black size = 5><a name="bc1" class="aaa1">工作管理</a></font>
+<br>工作管理就是允许将某一个进程放入后台运行
+<br><font color=black size = 4>1、把进程放入后台</font>
+<br>&nbsp;&nbsp;&nbsp;&nbsp; tar -acf etc.tar.gz /etc &amp;
+<br>&nbsp;&nbsp;&nbsp;&nbsp; top 在top命令执行的过程中，按下ctrl+z快捷键
+<br>说明：上面的两个命令都是将进程放入后台运行，但是有区别，第一个命令放入后台依旧运行，而第二个命令放入后台就处于暂停状态
+<br><font color=black size = 4>2、查看后台的工作</font>
+<br>&nbsp;&nbsp;&nbsp;&nbsp; jobs [-l]
+<br>选项：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -l  显示工作的PID
+<br>补：“+”号代表最近一个放入后台的工作，也就是恢复时，默认恢复的工作，“-”号代表倒数第二个放入后台的工作，其余无符号
+<br><font color=black size = 4>3、将后台暂停的工作恢复到前台执行</font>
+<br>&nbsp;&nbsp;&nbsp;&nbsp; fg %工作号
+<br>参数：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; %工作号  %可以省略，但是注意工作号和PID的区别
+<br><font color=black size = 4>4、将后台暂停的工作恢复到后台执行</font>
+<br>&nbsp;&nbsp;&nbsp;&nbsp; bg %工作号
+<br>注：有一些命令放在后台运行利用jobs命令还是会显示Stopped状态，是因为这一部分命令放在后台运行是完全没有意义的，必须跟用户有交互才有意义，所有放入后台就会是暂停状态，例如：top、vi等命令
+<br>补：后台恢复执行的命令，是不能和前台有交互的，否则不能恢复到后台执行
+<br><font color=black size = 5><a name="bc2" class="aaa1">系统资源查看</a></font>
+<br><font color=black size = 4>1、vmstat命令监控系统资源</font>
+<br>&nbsp;&nbsp;&nbsp;&nbsp; vmstat [刷新延时 刷新次数]
+<br>实例：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; vmstat 1 3 代表刷新2次，每次延时1秒钟
+<br><font color=black size = 4>2、dmesg开机时内核检测信息</font>
+<br>&nbsp;&nbsp;&nbsp;&nbsp; dmesg
+<br>&nbsp;&nbsp;&nbsp;&nbsp; dmesg | grep CPU
+<br><font color=black size = 4>3、free命令查看内存使用状态</font>
+<br>&nbsp;&nbsp;&nbsp;&nbsp; free [-b|-k|-m|-g]
+<br>选项：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -b  以字节为单位显示
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -k  以KB为单位显示，默认为此选项
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -m  以MB为单位显示
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -g  以GB为单位显示
+<br>补：缓存和缓冲的区别
+<br>简单来说缓存(cache)是用来加速数据从硬盘中“读取”的，而缓冲(buffer)是用来加速数据“写入”硬盘的
+<br><font color=black size = 4>4、查看CPU信息</font>
+<br>&nbsp;&nbsp;&nbsp;&nbsp; cat /proc/cpuinfo
+<br><font color=black size = 4>5、uptime命令</font>
+<br>显示系统的启动时间和平均负载，也就是top命令的第一行，w命令也可以看到这个数据
+<br>&nbsp;&nbsp;&nbsp;&nbsp; uptime
+<br><font color=black size = 4>6、查看系统与内核相关信息</font>
+<br>&nbsp;&nbsp;&nbsp;&nbsp; uname [选项]
+<br>选项：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -a  查看系统所有相关信息
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -r  查看内核版本
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -s  查看内核名称
+<br>补：
+<br>判断当前系统的位数
+<br>&nbsp;&nbsp;&nbsp;&nbsp; file /bin/ls
+<br>查看当前Linux系统的发行版本
+<br>&nbsp;&nbsp;&nbsp;&nbsp; lsb_release -a
+<br><font color=black size = 4>7、列出进程打开或使用的文件信息</font>
+<br>列出进程调用或打开的文件的信息
+<br>&nbsp;&nbsp;&nbsp;&nbsp; lsof [选项]
+<br>选项：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -c 字符串  只列出以字符串开头的进程打开的文件
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -u 用户名  只列出某个用户的进程打开的文件
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -p pid  列出某个PID进程打开的文件
+<br><font color=black size = 5><a name="bc3" class="aaa1">系统定时任务</a></font>
+<br><font color=black size = 4>1、crond(d表示守护进程)服务管理与访问控制</font>
+<br>要想让定时任务生效，就需要启动该服务，一般不需要手工启动，系统会开机自启动
+<br>&nbsp;&nbsp;&nbsp;&nbsp; service crond restart
+<br>&nbsp;&nbsp;&nbsp;&nbsp; chkconfig crond on
+<br><font color=black size = 4>2、用户的crontab设置</font>
+<br>&nbsp;&nbsp;&nbsp;&nbsp; crontab [选项]
+<br>选项：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -e  编辑crontab定时任务
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -l  查询crontab任务
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -r  删除当前用户所有的crontab任务
+<br>实例：进入crontab编辑界面，会打开vim编辑你的工作
+<br>&nbsp;&nbsp;&nbsp;&nbsp; crontab -e
+<br>&nbsp;&nbsp;&nbsp;&nbsp; * * * * * * 执行的任务
+<br>&nbsp;&nbsp;&nbsp;&nbsp; * 代表任意时间
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L11_OsManage9.png?raw=true" width="800" height="450" />
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L11_OsManage10.png?raw=true" width="800" height="450" />
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L11_OsManage11.png?raw=true" width="800" height="450" />
+<br>举例：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; */5 * * * * /bin/echo &quot;ll&quot; &gt;&gt; /tmp/test
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 5 5 * * 2 /sbin/shutdown -r now
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 0 5 1,10,15 * * /root/sh/autobak.sh</p>
+
+<p><br><br><br>
+<font color = gray size = 3>如有错误，欢迎指正！</font></p></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://oubc.github.io/tags/linux/">Linux</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmg4aog3074074gnf.gif?tags=%5B%5D">I </a>
+	<a href="">love</a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmfm2eg306o06o74u.gif?tags=%5B%5D"> you </a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx4tpcj30fn0bq3zg.jpg?tags=%5B%5D">three </a>
+	<a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx64ctg307s07swfy.gif?tags=%5B%5D">thousand</a>
+    <a href="https://www.kugou.com/song/#hash=96426C78381DE98DC31A5846FC274CBF&album_id=646623"> times.</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>家庭、梦想、内心的平静</span>
+  </div>
+</footer>
+
+
+
+<script src="https://oubc.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://oubc.github.io/js/zozo.js"></script>
+<script src="https://oubc.github.io/js/highlight.pack.js"></script>
+<link  href="https://oubc.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://oubc.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>
