@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Bruce Cheung"/>
+
+  
+  <meta name="description" content="系统日志是一个十分重要的功能，因为它记录了我们对于系统进行的相关操作，这对于当出现错误时去检查并排除错误是有很大帮助的。
+"/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, simple, dream"/>
+  
+
+  
+  <link rel="canonical" href="https://oubc.github.io/post/l12_logmanage/"/>
+
+  
+
+  <title>Linux日志管理 &middot; Love, or death</title>
+
+  <link rel="shortcut icon" href="https://oubc.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/post/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://oubc.github.io/">
+          <span>Love, or death</span>
+          <img src="https://oubc.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">For you, a thousand times over.</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/oubc" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=uYGOjo6OiIuLivnIyJfa1tQ" title="mail" target="_blank"><i class="remixicon-mail-fill"></i></a>
+        
+        
+        
+        <a href="http://sighttp.qq.com/msgrd?v=1&amp;uin=877771223" title="qq" target="_blank"><i class="remixicon-qq-fill"></i></a>
+        
+        
+        
+        <a href="https://github.com/oubc/oubc.github.io/blob/master/images/wx.jpg?raw=true" title="wechat" target="_blank"><i class="remixicon-wechat-fill"></i></a>
+        
+        
+        
+        <a href="https://weibo.com/u/6993631995?topnav=1&amp;wvr=6&amp;topsug=1" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://oubc.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/post/l12_logmanage/'>Linux日志管理</a></h2>
+          <span class="date">2019.09.16</span>
+        </div>
+        <div class="post_content markdown"><p>系统日志是一个十分重要的功能，因为它记录了我们对于系统进行的相关操作，这对于当出现错误时去检查并排除错误是有很大帮助的。</p>
+
+<p><br><font color=black size = 4>索引</font> (点击跳转)
+<br><font color=black size = 4>0.<a href="#bc0" class="aaa">日志管理简介</a></font>
+<br><font color=black size = 4>1.<a href="#bc1" class="aaa">rsyslogd日志服务</a></font>
+<br><font color=black size = 4>2.<a href="#bc2" class="aaa">日志轮替</a></font>
+<br>
+<br>
+<br>
+<br><font color=black size = 5><a name="bc0" class="aaa1">日志管理简介</a></font>
+<br><font color=black size = 4>1、日志服务</font>
+<br>在CentOS 6.x中日志服务已经由rsyslogd取代了原先的syslogd服务，rsyslogd日志服务更加先进，功能更多，但是不论该服务的使用，还是日志文件的格式其实都是和syslogd服务相兼容的。
+<br>rsyslogd的新特点：
+<br> ● 基于TCP网络协议传输日志信息
+<br> ● 更安全的网络传输方式
+<br> ● 有日志消息的及时分析框架
+<br> ● 后台数据库
+<br> ● 配置文件中可以写简单的逻辑判断
+<br> ● 与syslogd配置文件相兼容
+<br>确定服务启动，一般来说，都会是开机自启动的
+<br>查看服务是否启动
+<br>&nbsp;&nbsp;&nbsp;&nbsp; ps aux | grep rsyslogd
+<br>查看服务是否自启动
+<br>&nbsp;&nbsp;&nbsp;&nbsp; chkconfig --list | grep rsyslogd
+<br><font color=black size = 4>2、常见日志的作用</font>
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L12_LogManage0.png?raw=true" width="800" height="450" />
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L12_LogManage1.png?raw=true" width="800" height="450" />
+<br>除了系统默认的日志以外，采用RPM方式安装的系统服务也会默认把日志记录在 /var/log/ 目录中(源码包安装的服务日志是在源码包指定目录中)，不过这些日志不是由rsyslogd服务来记录和管理的，而是各个服务使用自己的日志管理文档来记录自身日志。
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L12_LogManage2.png?raw=true" width="800" height="450" />
+<br>
+<br><font color=black size = 5><a name="bc1" class="aaa1">rsyslogd日志服务</a></font>
+<br><font color=black size = 4>1、日志文件格式</font>
+<br>基本日志格式包含以下四列：
+<br> ● 时间产生的时间
+<br> ● 发生事件的服务器的主机名
+<br> ● 产生事件的服务名或程序名
+<br> ● 事件的具体信息
+<br><font color=black size = 4>2、/etc/rsyslogd.conf配置文件</font>
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 服务名称[连接符号]日志等级  日志记录位置
+<br>&nbsp;&nbsp;&nbsp;&nbsp; authpriv.*  /var/log/secure
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 认证相关服务.所有日志等级  记录在/var/log/secure日志中
+<br>服务名称
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L12_LogManage3.png?raw=true" width="800" height="450" />
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L12_LogManage4.png?raw=true" width="800" height="450" />
+<br>连接符号
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L12_LogManage5.png?raw=true" width="800" height="450" />
+<br>日志等级
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L12_LogManage6.png?raw=true" width="800" height="450" />
+<br>日志记录位置
+<br> ● 日志文件的绝对路径，如 “/var/log/secure”
+<br> ● 系统设备文件，如 “/dev/lp0”
+<br> ● 转发给远程主机，如 “@192.168.0.125:8888”
+<br> ● 用户名，如 “root”
+<br> ● 忽略或丢弃日志，如 “~”
+<br>
+<br><font color=black size = 5><a name="bc2" class="aaa1">日志轮替</a></font>
+<br>日志一般做两个事情：切割、轮换
+<br>轮换：保留最近一段时间的，以往的删除或者转移到其它日志中
+<br><font color=black size = 4>1、日志文件的命名规则</font>
+<br>如果配置文件中拥有 “dateext” 参数，那么日志会用日期来作为日志的后缀，例如 “secure-20190916”，这样的日志文件名不会重叠，所以也就不需要日志文件的改名，只需要保存指定的日志个数，删除多余的日志文件即可。
+<br>如果配置文件中没有 “dateext” 参数，那么日志文件就需要进行改名了，当第一次进行日志轮替时，当前的 “secure” 日志会自动改名为 “secure.1” ，然后新建 “secure” 日志，用来保存新的日志，当第二次进行日志轮替时，当前的 “secure” 日志会自动改名为 “secure.1” ，然后也会新建 “secure” 日志，用来保存新的日志，以此类推。
+<br><font color=black size = 4>2、logrotate(日志轮替工具)配置文件</font>
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L12_LogManage7.png?raw=true" width="800" height="450" />
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L12_LogManage8.png?raw=true" width="800" height="450" />
+<br><font color=black size = 4>3、把apache日志加入轮替</font>
+<br>&nbsp;&nbsp;&nbsp;&nbsp; vi /etc/logrotate.conf
+<br>&nbsp;&nbsp;&nbsp;&nbsp; /usr/local/apache2/logs/access_log {
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; daily
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; create
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; rotate 30
+<br>&nbsp;&nbsp;&nbsp;&nbsp; }
+<br><font color=black size = 4>4、logrotate命令</font>
+<br>&nbsp;&nbsp;&nbsp;&nbsp; logrotate [选项] 配置文件名
+<br>如果此命令没有选项，则会按照配置文件中的条件进行日志轮替
+<br>选项：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -v  显示日志轮替过程
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -f  不管是否已经符合日志轮替的条件，强制配置文件中所有的日志进行轮替</p>
+
+<p><br><br><br>
+<font color = gray size = 3>如有错误，欢迎指正！</font></p></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://oubc.github.io/tags/linux/">Linux</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmg4aog3074074gnf.gif?tags=%5B%5D">I </a>
+	<a href="">love</a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmfm2eg306o06o74u.gif?tags=%5B%5D"> you </a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx4tpcj30fn0bq3zg.jpg?tags=%5B%5D">three </a>
+	<a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx64ctg307s07swfy.gif?tags=%5B%5D">thousand</a>
+    <a href="https://www.kugou.com/song/#hash=96426C78381DE98DC31A5846FC274CBF&album_id=646623"> times.</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>家庭、梦想、内心的平静</span>
+  </div>
+</footer>
+
+
+
+<script src="https://oubc.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://oubc.github.io/js/zozo.js"></script>
+<script src="https://oubc.github.io/js/highlight.pack.js"></script>
+<link  href="https://oubc.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://oubc.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>

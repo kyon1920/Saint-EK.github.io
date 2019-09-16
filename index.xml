@@ -6,10 +6,19 @@
     <description>Recent content on Love, or death</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Sun, 15 Sep 2019 11:02:03 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 16 Sep 2019 09:59:18 +0800</lastBuildDate>
     
 	<atom:link href="https://oubc.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Linux日志管理</title>
+      <link>https://oubc.github.io/post/l12_logmanage/</link>
+      <pubDate>Mon, 16 Sep 2019 09:59:18 +0800</pubDate>
+      
+      <guid>https://oubc.github.io/post/l12_logmanage/</guid>
+      <description>&lt;p&gt;系统日志是一个十分重要的功能，因为它记录了我们对于系统进行的相关操作，这对于当出现错误时去检查并排除错误是有很大帮助的。&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Linux系统管理</title>
