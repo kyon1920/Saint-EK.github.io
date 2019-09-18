@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Bruce Cheung"/>
+
+  
+  <meta name="description" content="Linux以安全为著称，但当我告诉你，root密码可以通过单用户模式修改，grub保护可以通过BIOS修改，BIOS密码也可以通过光盘修改，你是否也和我一样怀疑它的安全性能呢？别急，我们通过这篇博客来探究Linux的启动过程以及相关密码管理吧
+"/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, simple, dream"/>
+  
+
+  
+  <link rel="canonical" href="https://oubc.github.io/post/l13_startmanagement/"/>
+
+  
+
+  <title>Linux启动管理 &middot; Love, or death</title>
+
+  <link rel="shortcut icon" href="https://oubc.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/post/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://oubc.github.io/">
+          <span>Love, or death</span>
+          <img src="https://oubc.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">For you, a thousand times over.</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/oubc" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=uYGOjo6OiIuLivnIyJfa1tQ" title="mail" target="_blank"><i class="remixicon-mail-fill"></i></a>
+        
+        
+        
+        <a href="http://sighttp.qq.com/msgrd?v=1&amp;uin=877771223" title="qq" target="_blank"><i class="remixicon-qq-fill"></i></a>
+        
+        
+        
+        <a href="https://github.com/oubc/oubc.github.io/blob/master/images/wx.jpg?raw=true" title="wechat" target="_blank"><i class="remixicon-wechat-fill"></i></a>
+        
+        
+        
+        <a href="https://weibo.com/u/6993631995?topnav=1&amp;wvr=6&amp;topsug=1" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://oubc.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/post/l13_startmanagement/'>Linux启动管理</a></h2>
+          <span class="date">2019.09.17</span>
+        </div>
+        <div class="post_content markdown"><p>Linux以安全为著称，但当我告诉你，root密码可以通过单用户模式修改，grub保护可以通过BIOS修改，BIOS密码也可以通过光盘修改，你是否也和我一样怀疑它的安全性能呢？别急，我们通过这篇博客来探究Linux的启动过程以及相关密码管理吧</p>
+
+<p><br><font color=black size = 4>索引</font> (点击跳转)
+<br><font color=black size = 4>0.<a href="#bc0" class="aaa">CentOS 6.x启动管理</a></font>
+<br><font color=black size = 4>1.<a href="#bc1" class="aaa">启动引导程序grub</a></font>
+<br><font color=black size = 4>2.<a href="#bc2" class="aaa">系统修复模式</a></font>
+<br>
+<br>
+<br>
+<br><font color=black size = 5><a name="bc0" class="aaa1">CentOS 6.x启动管理</a></font>
+<br><font color=black size = 4>1、系统运行级别</font>
+<br> ▪ 运行级别
+<br>我们在前面已经涉及到了系统运行级别，还是这张图，一起再来看看吧
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L13_StartManagement0.png?raw=true" width="800" height="450" />
+<br> ▪ 运行级别命令
+<br>查看运行级别命令
+<br>&nbsp;&nbsp;&nbsp;&nbsp; runlevel
+<br>改变运行级别命令
+<br>&nbsp;&nbsp;&nbsp;&nbsp; init 运行级别
+<br> ▪ 系统默认运行级别
+<br>系统开机后直接进入的运行级别
+<br>&nbsp;&nbsp;&nbsp;&nbsp; vim /etc/inittab
+<br>&nbsp;&nbsp;&nbsp;&nbsp; id:3:initdefault:
+<br><font color=black size = 4>2、系统启动过程</font>
+<br>启动流程图
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L13_StartManagement1.png?raw=true" width="800" height="450" />
+<br> ▪ initramfs内存文件系统
+<br>CentOS 6.x中使用initramfs内存文件系统取代了CentOS5.x中的initrd RAM Disk，它们的作用类似，可以通过启动引导程序加载到内存中，然后加载启动过程中所需要的内核模块，比如USB、SATA、SCSI硬盘的驱动和LVM、RAID文件系统的驱动。
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L13_StartManagement2.png?raw=true" width="800" height="450" />
+<br> ▪ 调用 /etc/init/rcS.conf配置文件
+<br>主要功能是两个：
+<br> ✧ 先调用 /etc/rc.d/rc.sysinit，然后由 /etc/rc.d/rc.sysinit配置文件进行Linux系统初始化
+<br> ✧ 然后再调用 /etc/inittab，然后由 /etc/inittab 配置文件确定系统的默认运行级别
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L13_StartManagement3.png?raw=true" width="800" height="450" />
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L13_StartManagement4.png?raw=true" width="800" height="450" />
+<br> ▪ 调用 /etc/rc.d/rc 文件
+<br>运行级别参数传入 /etc/rc.d/rc 这个脚本之后，由这个脚本文件按照不同的运行级别启动 /etc/rc[0-6].d/ 目录中的相应的程序
+<br> ✧ /etc/rc3.d??开头的文件(??是数字)，会按照数字顺序依次关闭
+<br> ✧ /etc/rc3.S??开头的文件(??是数字)，会按照数字顺序依次启动
+<br>
+<br><font color=black size = 5><a name="bc1" class="aaa1">启动引导程序grub</a></font>
+<br><font color=black size = 4>1、grub 中分区表示</font>
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L13_StartManagement5.png?raw=true" width="800" height="450" />
+<br><font color=black size = 4>2、grub 配置文件</font>
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L13_StartManagement6.png?raw=true" width="800" height="450" />
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L13_StartManagement7.png?raw=true" width="800" height="450" />
+<br><font color=black size = 4>3、grub 加密</font>
+<br> ▪ grub 加密
+<br>生成加密密码串
+<br>&nbsp;&nbsp;&nbsp;&nbsp; grub-md5-crypt
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L13_StartManagement8.png?raw=true" width="800" height="450" />
+<br> ▪ grub 加密
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L13_StartManagement9.png?raw=true" width="800" height="450" />
+<br>
+<br><font color=black size = 5><a name="bc2" class="aaa1">系统修复模式</a></font>
+<br><font color=black size = 4>1、单用户模式</font>
+<br>单用户模式常见的错误修复
+<br> ✧ 遗忘root密码修复
+<br> ✧ 修改系统默认运行级别
+<br><font color=black size = 4>2、光盘修复模式</font>
+<br>重要文件丢失，导致系统无法启动时使用
+<br> ✧ 改变主目录
+<br>&nbsp;&nbsp;&nbsp;&nbsp; chroot /mnt/sysimage
+<br> ✧ 查询 /etc/initab 文件属于哪个包
+<br>&nbsp;&nbsp;&nbsp;&nbsp; cd /root
+<br>&nbsp;&nbsp;&nbsp;&nbsp; rpm -qf /etc/inittab
+<br> ✧ 建立挂载点
+<br>&nbsp;&nbsp;&nbsp;&nbsp; mkdir /mnt/cdrom
+<br> ✧ 挂载光盘
+<br>&nbsp;&nbsp;&nbsp;&nbsp; mount /dev/sr0 /mnt/cdrom
+<br> ✧ 提取 inittab 文件到当前目录
+<br>&nbsp;&nbsp;&nbsp;&nbsp; mount rpm2cpio /mnt/cdrom/Packages/initscripts-8.45.3-1.i386.rpm | cpio -idv ./etc/inittab
+<br> ✧ 复制inittab文件到指定位置
+<br>&nbsp;&nbsp;&nbsp;&nbsp; cp etc/inittab /etc/inittab
+<br><font color=black size = 4>3、Linux的安全性</font>
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L13_StartManagement10.png?raw=true" width="800" height="450" /></p>
+
+<p><br><br><br>
+<font color = gray size = 3>如有错误，欢迎指正！</font></p></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://oubc.github.io/tags/linux/">Linux</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmg4aog3074074gnf.gif?tags=%5B%5D">I </a>
+	<a href="">love</a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmfm2eg306o06o74u.gif?tags=%5B%5D"> you </a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx4tpcj30fn0bq3zg.jpg?tags=%5B%5D">three </a>
+	<a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx64ctg307s07swfy.gif?tags=%5B%5D">thousand</a>
+    <a href="https://www.kugou.com/song/#hash=96426C78381DE98DC31A5846FC274CBF&album_id=646623"> times.</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>家庭、梦想、内心的平静</span>
+  </div>
+</footer>
+
+
+
+<script src="https://oubc.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://oubc.github.io/js/zozo.js"></script>
+<script src="https://oubc.github.io/js/highlight.pack.js"></script>
+<link  href="https://oubc.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://oubc.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>
