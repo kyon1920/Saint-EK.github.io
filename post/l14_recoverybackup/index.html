@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Bruce Cheung"/>
+
+  
+  <meta name="description" content="安全感！预防！不要把鸡蛋放在同一个篮子里！
+"/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, simple, dream"/>
+  
+
+  
+  <link rel="canonical" href="https://oubc.github.io/post/l14_recoverybackup/"/>
+
+  
+
+  <title>Linux备份与恢复 &middot; Love, or death</title>
+
+  <link rel="shortcut icon" href="https://oubc.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/post/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://oubc.github.io/">
+          <span>Love, or death</span>
+          <img src="https://oubc.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">For you, a thousand times over.</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/oubc" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=uYGOjo6OiIuLivnIyJfa1tQ" title="mail" target="_blank"><i class="remixicon-mail-fill"></i></a>
+        
+        
+        
+        <a href="http://sighttp.qq.com/msgrd?v=1&amp;uin=877771223" title="qq" target="_blank"><i class="remixicon-qq-fill"></i></a>
+        
+        
+        
+        <a href="https://github.com/oubc/oubc.github.io/blob/master/images/wx.jpg?raw=true" title="wechat" target="_blank"><i class="remixicon-wechat-fill"></i></a>
+        
+        
+        
+        <a href="https://weibo.com/u/6993631995?topnav=1&amp;wvr=6&amp;topsug=1" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://oubc.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/post/l14_recoverybackup/'>Linux备份与恢复</a></h2>
+          <span class="date">2019.09.18</span>
+        </div>
+        <div class="post_content markdown"><p>安全感！预防！不要把鸡蛋放在同一个篮子里！</p>
+
+<p><br>
+<br><font color=black size = 5>备份概述</font>
+<br>备份就是把数据拷出来，放在其它位置，如果原始数据丢失了，就可以利用拷出来的数据
+<br><font color=black size = 4>1、Linux系统需要备份的数据文件</font>
+<br> ✧ /root/ 目录
+<br> ✧ /home/ 目录
+<br> ✧ /var/spool/mail/ 目录
+<br> ✧ /etc/ 目录
+<br> ✧ 其它目录：
+<br> 安装服务的数据
+<br>&nbsp;&nbsp;&nbsp;&nbsp; apache需要备份的数据
+<br> ✧ 配置文件
+<br> ✧ 网页主目录
+<br> ✧ 日志文件
+<br>&nbsp;&nbsp;&nbsp;&nbsp; MySQL需要备份的数据
+<br> ✧ 源码包安装的mysql：/usr/local/mysql/data/
+<br> ✧ RPM包安装的mysql：/var/lib/mysql/
+<br><font color=black size = 4>2、备份策略</font>
+<br> ✧ 完全备份：指把所有需要备份的数据全部备份，例如备份整块硬盘、整个分区或者某个具体的目录
+<br>好处：恢复方便
+<br>坏处：备份占用空间较大、速度慢
+<br> ✧ 增量备份
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L15_RecoveryBackup0.png?raw=true" width="800" height="450" />
+<br>好处：备份的数据较少、占用存储空间最少
+<br>坏处：恢复麻烦
+<br> ✧ 差异备份
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L15_RecoveryBackup1.png?raw=true" width="800" height="450" />
+<br>算是一种以上两种备份的折中办法
+<br>
+<br><font color=black size = 5>dump和restore命令</font>
+<br><font color=black size = 4>1、dump命令</font>
+<br>&nbsp;&nbsp;&nbsp;&nbsp; dump [选项] 备份之后的文件名 源文件或目录
+<br>选项：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -level  就是我们说的0-9是个备份级别
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -f文件名  指定备份之后的文件名
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -u  备份成功之后，把备份时间记录再 /etc/dumpdates 文件
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -v  显示备份过程中更多的输出信息
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -j  调用 bzlib 库压缩备份文件，其实就是把备份文件压缩为 .bz2 格式
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -W  显示允许备份dump的分区的备份等级及备份时间
+<br> ✧ 备份分区
+<br>备份命令，先执行一次完全备份并压缩和更新备份时间
+<br>&nbsp;&nbsp;&nbsp;&nbsp; dump -0uj -f /root/boot.bak.bz /boot/
+<br>查看备份时间文件
+<br>&nbsp;&nbsp;&nbsp;&nbsp; cat /etc/dumpdates
+<br>复制日志文件到 /boot 分区
+<br>&nbsp;&nbsp;&nbsp;&nbsp; cp install.log /boot/
+<br>增量备份 /boot 分区并压缩
+<br>&nbsp;&nbsp;&nbsp;&nbsp; dump -1uj -f /root/boot.bak1.bz2 /boot/
+<br>查询分区的备份时间及备份级别
+<br>&nbsp;&nbsp;&nbsp;&nbsp; dump -W
+<br> ✧ 备份文件或目录
+<br>完全备份 /etc/ 目录，只能使用0级别进行完全备份，而不再支持增量备份
+<br>&nbsp;&nbsp;&nbsp;&nbsp; dump -0j -f /root/etc.dump.bz2/ /etc/
+<br><font color=black size = 4>2、restore命令</font>
+<br>&nbsp;&nbsp;&nbsp;&nbsp; restore [模式选项] [选项]
+<br>模式选项：restore命令常用的模式有以下四种，这四个模式不能混用
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -C  比较备份数据和实际数据的变化
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -i  进入交互模式，手工选择需要恢复的文件
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -t  查看模式，用于查看备份文件中拥有哪些数据
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -r  还原模式，用于数据还原
+<br>&nbsp;&nbsp;&nbsp;&nbsp; -f  指定备份文件的文件名
+<br> ✧ 比较备份数据和实际数据的变化
+<br>把 /root 目录中内核镜像文件改个名字
+<br>&nbsp;&nbsp;&nbsp;&nbsp; mv /boot/vmlinuz-2.6.32-279.el6.i686 /boot/vmlinuz-2.6.32-279.el6.i686.bak
+<br>restore 发现内核镜像文件丢失
+<br>&nbsp;&nbsp;&nbsp;&nbsp; restore -C -f /root/boot.bak.bz2
+<br> ✧ 查看模式
+<br>&nbsp;&nbsp;&nbsp;&nbsp; restore -t -f boot.bak.bz2
+<br> ✧ 还原模式：还原 boot.bak.bz2 分区备份
+<br>先还原完全备份的数据
+<br>&nbsp;&nbsp;&nbsp;&nbsp; mkdir boot.test
+<br>&nbsp;&nbsp;&nbsp;&nbsp; cd boot.test/
+<br>解压缩
+<br>&nbsp;&nbsp;&nbsp;&nbsp; restore -r -f /root/boot.bak.bz2
+<br>恢复增量备份数据
+<br>&nbsp;&nbsp;&nbsp;&nbsp; restore -r -f /root/boot.bak1.bz2
+<br>还原 /etc/ 目录的备份 etc.dump.bz2
+<br>还原 etc.dump.bz2 备份
+<br>&nbsp;&nbsp;&nbsp;&nbsp; restore -r -f etc.dump.bz2</p>
+
+<p><br><br><br>
+<font color = gray size = 3>如有错误，欢迎指正！</font></p></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://oubc.github.io/tags/linux/">Linux</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmg4aog3074074gnf.gif?tags=%5B%5D">I </a>
+	<a href="">love</a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmfm2eg306o06o74u.gif?tags=%5B%5D"> you </a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx4tpcj30fn0bq3zg.jpg?tags=%5B%5D">three </a>
+	<a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx64ctg307s07swfy.gif?tags=%5B%5D">thousand</a>
+    <a href="https://www.kugou.com/song/#hash=96426C78381DE98DC31A5846FC274CBF&album_id=646623"> times.</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>家庭、梦想、内心的平静</span>
+  </div>
+</footer>
+
+
+
+<script src="https://oubc.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://oubc.github.io/js/zozo.js"></script>
+<script src="https://oubc.github.io/js/highlight.pack.js"></script>
+<link  href="https://oubc.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://oubc.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>
