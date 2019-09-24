@@ -6,13 +6,22 @@
     <description>Recent content on Love, or death</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Sat, 21 Sep 2019 12:49:04 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 24 Sep 2019 17:14:07 +0800</lastBuildDate>
     
 	<atom:link href="https://oubc.github.io/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>Linux系统编程(No.1)</title>
+      <title>Linux系统编程 (进程间通信:IPC)</title>
+      <link>https://oubc.github.io/post/l16_oscode1/</link>
+      <pubDate>Tue, 24 Sep 2019 17:14:07 +0800</pubDate>
+      
+      <guid>https://oubc.github.io/post/l16_oscode1/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Linux系统编程 (进程概念与创建)</title>
       <link>https://oubc.github.io/post/l15_oscode0/</link>
       <pubDate>Sat, 21 Sep 2019 12:49:04 +0800</pubDate>
       
