@@ -185,7 +185,7 @@
 <br>
 <br> 😊 进程间通信 (IPC)
 <br>IPC方法：Linux环境下，进程地址空间相互独立，每个进程各自有不同的用户地址空间，任何一个进程的全局变量在另一个进程中都看不到，所以进程和进程之间不能相互访问，要交换数据必须通过内核，在内核中开辟一块缓冲区，进程1把数据从用户空间拷贝到内核缓冲区，进程2再从内核缓冲区把数据读走，内核提供的这种机制称为进程间通信(IPC InterProcess Communication)。
-<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L16\_OScode0.png?raw=true" width="800" height="450" />
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L16_OScode0.png?raw=true" width="800" height="450" />
 <br>
 <br><font color=black size = 5><a name="bc0">管道</a></font>
 <br>管道是一种基本的IPC机制，作用于有血缘关系的进程之间，完成数据传递，调用pipe系统函数即可创建一个管道，有如下特质：
@@ -345,7 +345,7 @@
 <br><font color=black size = 5><a name="bc6">存储映射 I/O</a></font>
 <br>存储映射I/O (Memory-mapped I/O)使一个磁盘文件与存储空间中的一个缓冲区相映射，于是从缓冲区中取数据，就相当于读文件中的相应字节，与此类似，将数据存入缓冲区，则相应的字节就自动写入文件，这样，就可以在不使用read和write函数的情况下，使用地址(指针)完成I/O操作
 <br>使用这种方法，首先应该通知内核，将一个指定文件映射到存储区域中，这个映射工作可以通过mmap函数来实现
-<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L16\_OScode1.png?raw=true" width="800" height="450" />
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L16_OScode1.png?raw=true" width="800" height="450" />
 <br>
 <br><font color=black size = 5><a name="bc7">mmap() 函数</a></font>
 <br> 😊 void *mmap(void *addr, size_t length, int prot, int flags, int fd, off_t offset);
