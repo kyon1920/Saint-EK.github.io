@@ -6,10 +6,19 @@
     <description>Recent content in 学习 on Love, or death</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Mon, 30 Sep 2019 20:11:31 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 04 Oct 2019 21:07:24 +0800</lastBuildDate>
     
 	<atom:link href="https://oubc.github.io/categories/%E5%AD%A6%E4%B9%A0/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Linux系统编程 (线程概念与创建)</title>
+      <link>https://oubc.github.io/post/l20_oscode5/</link>
+      <pubDate>Fri, 04 Oct 2019 21:07:24 +0800</pubDate>
+      
+      <guid>https://oubc.github.io/post/l20_oscode5/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>Linux系统编程 (终端&amp;守护进程)</title>

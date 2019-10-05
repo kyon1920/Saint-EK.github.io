@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Bruce Cheung"/>
+
+  
+  <meta name="description" content=""/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, simple, dream"/>
+  
+
+  
+  <link rel="canonical" href="https://oubc.github.io/post/l20_oscode5/"/>
+
+  
+
+  <title>Linux系统编程 (线程概念与创建) &middot; Love, or death</title>
+
+  <link rel="shortcut icon" href="https://oubc.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/post/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://oubc.github.io/">
+          <span>Love, or death</span>
+          <img src="https://oubc.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">For you, a thousand times over.</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/oubc" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=uYGOjo6OiIuLivnIyJfa1tQ" title="mail" target="_blank"><i class="remixicon-mail-fill"></i></a>
+        
+        
+        
+        <a href="http://sighttp.qq.com/msgrd?v=1&amp;uin=877771223" title="qq" target="_blank"><i class="remixicon-qq-fill"></i></a>
+        
+        
+        
+        <a href="https://github.com/oubc/oubc.github.io/blob/master/images/wx.jpg?raw=true" title="wechat" target="_blank"><i class="remixicon-wechat-fill"></i></a>
+        
+        
+        
+        <a href="https://weibo.com/u/6993631995?topnav=1&amp;wvr=6&amp;topsug=1" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://oubc.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/post/l20_oscode5/'>Linux系统编程 (线程概念与创建)</a></h2>
+          <span class="date">2019.10.04</span>
+        </div>
+        <div class="post_content markdown"><p><br>
+<br>
+<font color = gray size = 2>列表，展开点击跳转</font>
+<br>
+<details class="menu" close>
+      <summary><font color=blue size = 4>线程概念</font></summary>
+      <ul>
+          <li><a href="#bc0">什么是线程</a></li>
+          <li><a href="#bc1">Linux内核线程实现原理</a></li>
+          <li><a href="#bc2">三级映射再探究</a></li>
+          <li><a href="#bc3">线程共享资源</a></li>
+          <li><a href="#bc4">线程非共享资源</a></li>
+          <li><a href="#bc5">线程优缺点</a></li>
+      </ul>
+</details>
+<details class="menu" close>
+      <summary><font color=blue size = 4>线程控制原语</font></summary>
+      <ul>
+          <li><a href="#bc6">pthread_self() 函数/a&gt;</li>
+          <li><a href="#bc7">pthread_create() 函数</a></li>
+          <li><a href="#bc8">线程间共享全局变量</a></li>
+          <li><a href="#bc9">pthread_exit() 函数/a&gt;</li>
+          <li><a href="#bc10">pthread_join() 函数</a></li>
+          <li><a href="#bc11">pthread_detach() 函数</a></li>
+          <li><a href="#bc12">pthread_cancel() 函数</a></li>
+          <li><a href="#bc13">pthread_equal() 函数</a></li>
+          <li><a href="#bc14">进程&amp;线程 控制原语对比</a></li>
+      </ul>
+</details>
+<details class="menu" close>
+      <summary><font color=blue size = 4>线程属性</font></summary>
+      <ul>
+          <li><a href="#bc15">线程属性简介</a></li>
+          <li><a href="#bc16">线程属性初始化</a></li>
+          <li><a href="#bc17">线程的分离状态</a></li>
+          <li><a href="#bc18">线程分离状态的函数</a></li>
+          <li><a href="#bc19">线程的栈地址</a></li>
+          <li><a href="#bc20">线程的栈大小</a></li>
+          <li><a href="#bc21">线程属性控制示例</a></li>
+      </ul>
+</details>
+<details class="menu" close>
+      <summary><font color=blue size = 4>线程使用注意事项</font></summary>
+      <ul>
+          <li><a href="#bc22">NPTL(线程库版本号)</a></li>
+          <li><a href="#bc23">使用时注意事项</a></li>
+      </ul>
+</details>
+<br>
+<br>
+<br>
+<br>
+<br><font color=black size = 5><a name="bc0">什么是线程</a></font>
+<br> ● LWP：light weight process 轻量级的进程，本质仍是进程 (在Linux环境下)
+<br> ● 进程：独立地址空间，拥有PCB
+<br> ● 线程：也有PCB，但没有独立的地址空间(共享)
+<br> 🤭 区别：在于是否共享地址空间，独居(进程)，合租(线程)
+<br> 🤭 Linux下：线程是最小的执行单位、进程是最小分配资源的单位(不管有多少线程，都只有进程的一个0-3G地址空间)，可看成是只有一个线程的进程
+<br>
+<br><font color=black size = 5><a name="bc1">Linux内核线程实现原理</a></font>
+<br> 🤭 在类Unix系统中，早期是没有“线程”概念的，80年代才引入，借助进程机制实现出了线程的概念，因此在这类系统中，进程和线程关系密切
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0、轻量级进程，也有PCB，创建线程使用的底层函数和进程一样，都是clone
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1、从内核来看进程和线程是一样的，都有各自不同的PCB，但是线程PCB所指向内存资源的三级页表是相同的
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2、进程可以蜕变成为线程
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 3、线程可看做寄存器和栈的集合
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 4、在Linux下，线程是最小的执行单位，进程是最小的分配资源单位
+<br> ● 查看LWP号：ps -Lf pid    查看指定线程的 lwp号 (线程号，并不是线程ID)
+<br> ● LWP号：是CPU分配时间轮片的依据
+<br> ● 线程ID：进程内部区分线程的
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L20_OScode0.png?raw=true" width="800" height="600" />
+<br>
+<br><font color=black size = 5><a name="bc2">三级映射再探究</a></font>
+<br> ● 三级映射：进程PCB → 页目录(首地址在PCB中，可看为数组) → 页表 → 物理页面 → 内存单元
+<br> 🤭 对于进程来说，相同的地址(同一个虚拟地址)在不同的进程中，反复使用而不冲突，原因是它们虽虚拟地址一样，但是页目录、页表、物理页面各不相同，相同的虚拟地址，映射到了不同的物理页内存单元，最终访问到了不同的物理页面。但是，线程不同，两个线程具有各自独立的PCB，但共享同一个页目录，也就共享同一个个页表和物理页面，所以，两个PCB共享一个地址空间。实际上，无论是创建进程的fork，还是创建线程的pthread_create，底层都是调用同一个内核函数clone。
+<br>  如果复制对方的地址空间，那么就产生一个“进程”；如果共享对方的地址空间，就产生了一个“线程”。
+<br>  因此，Linux内核是不区分进程和线程的，只有在用户层面上进行区分，所以，线程所有操作函数 pthread_* 是库函数，而非系统调用。
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L20_OScode1.png?raw=true" width="800" height="450" />
+<br>
+<br><font color=black size = 5><a name="bc3">线程共享资源</a></font>
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 0、文件描述符表
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 1、每种信号的处理方式
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 2、当前工作目录
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 3、用户ID和组ID
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 4、内存地址空间 (.text/.data/.heap/共享库) [0-3G共享内存地址空间除了栈空间]
+<br>
+<br><font color=black size = 5><a name="bc4">线程非共享资源</a></font>
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 0、线程ID
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 1、处理现场和栈指针 (内核栈)
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 2、独立的栈空间 (用户空间栈)
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 3、errno变量
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 4、信号屏蔽字
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 5、调度优先级
+<br> 🤭 补充：线程和信号尽量不要一起使用，因为一起使用会变得十分复杂和麻烦，还可能出现一些意想不到的错误，但是在不得不使用的时候也可以使用
+<br>
+<br><font color=black size = 5><a name="bc5">线程优缺点</a></font>
+<br> ● 优点：提高了程序的并发性、开销小、数据通信，共享数据方便
+<br> ● 缺点：库函数不稳定、调试，编写困难、gdb不支持、对信号支持不好
+<br> 🤭 优点相对突出，确定均不是硬伤，Linux下由于实现方法导致进程、线程差别不是很大
+<br>
+<br><font color=black size = 5><a name="bc6">pthread_self() 函数</a></font>
+<br> ● 获取线程ID，其作用对应进程中 getpid() 函数
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; pthread_t pthread_self(void);        成功返回线程ID，失败无返回值
+<br> ● 线程ID：pthread_t 类型，本质：在Linux下为无符号整数(%lu)，其它系统中可能是结构体实现
+<br> ● 线程ID是进程内部识别标志(两个进程间，允许线程ID相同)
+<br> 🤭 注：不应使用全局变量 pthread_t 和在子线程中通过 pthread_create 传出参数来获取线程ID，而应使用pthread_self。
+<br>
+<br><font color=black size = 5><a name="bc7">pthread_create() 函数</a></font>
+<br> ● 创建一个新线程，其作用对应于进程中fork() 函数
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*start_routine) (void *), void *arg);  成功返回0，失败返回错误号
+<br> 🤭 补：在Linux环境下，所有线程特点，失败均之间返回错误号
+<br> ● 参数：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; pthread_t ：当前Linux中可理解为 typedef unsigned long int pthread_t ;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 参数1：传出参数，保存系统为我们分配好的线程ID
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 参数2：通常传NULL，表示使用线程默认属性，若想要使用具体属性，也可以修改该参数
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 参数3：函数指针，指向线程主函数(函数体)，该函数运行结束，则线程结束
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 参数4：线程主函数执行期间所调用的参数
+<br> 🤭 在一个线程中调用pthread_create()创建新的线程后，当前线程从pthread_create()返回继续往下执行，而新的线程所执行的代码由我们传给pthread_create的函数指针start_routine决定。start_routine函数接收一个参数，是通过pthread_create的arg参数传递给它的，该参数的类型为void *，这个指针按什么类型解释由调用者自己定义。start_routine的返回值类型也是void *，这个指针的含义同样由调用者自己定义。start_routine返回时，这个线程就退出了，其它线程可以调用pthread_join得到start_routine的返回值，类似于父进程调用wait(2)得到子进程的退出状态。
+<br> 🤭 pthread_create成功返回后，新创建的线程的id被填写到thread参数所指向的内存单元。我们知道进程id的类型是pid_t，每个进程的id在整个系统中是唯一的，调用getpid(2)可以获得当前进程的id，是一个正整数值。线程id的类型是thread_t，它只在当前进程中保证是唯一的，在不同的系统中thread_t这个类型有不同的实现，它可能是一个整数值，也可能是一个结构体，也可能是一个地址，所以不能简单地当成整数用printf打印，调用pthread_self(3)可以获得当前线程的id。
+<br> 🤭 attr参数 表示线程属性，本节不深入讨论线程属性，所有代码例子都传NULL给attr参数，表示线程属性取缺省值。
+<br> 🤭 编程实战：创建一个新线程，打印线程ID。注意：链接线程库 -lpthread/-pthread
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;iostream&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;unistd.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;pthread.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;stdlib.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;string.h&gt;<BR>
+</span><span style="color:#0000ff;">using</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">namespace</span><span style="color:#000000;">&nbsp;std;<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;*thrd_fun(</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;*arg)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;In&nbsp;thread:&nbsp;process&nbsp;id&nbsp;is&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;getpid()&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;In&nbsp;thread:&nbsp;thread&nbsp;id&nbsp;is&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;pthread_self()&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">;<BR>
+}<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;main()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pthread_t&nbsp;tid;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;In&nbsp;main1:&nbsp;process&nbsp;id&nbsp;is&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;getpid()&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;In&nbsp;main1:&nbsp;thread&nbsp;id&nbsp;is&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;pthread_self()&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;ret&nbsp;=&nbsp;pthread_create(&amp;tid,&nbsp;</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">,&nbsp;thrd_fun,&nbsp;</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(ret&nbsp;!=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cerr&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;pthread_create&nbsp;error!&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cerr&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;and&nbsp;the&nbsp;error&nbsp;number&nbsp;is&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;strerror(ret)&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;In&nbsp;main2:&nbsp;process&nbsp;id&nbsp;is&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;getpid()&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;In&nbsp;main2:&nbsp;thread&nbsp;id&nbsp;is&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;pthread_self()&nbsp;&lt;&lt;&nbsp;endl;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}</span></div></td></tr></table></div>
+<br> 🤭 由于pthread_create的错误码不保存在errno中，因此不能直接用perror(3)打印错误信息，可以先用strerror(3)把错误码转换成错误信息再打印。如果任意一个线程调用了exit或_exit，则整个进程的所有线程都终止，由于从main函数return也相当于调用exit，为了防止新创建的线程还没有得到执行就终止，我们在main函数return之前延时1秒，这只是一种权宜之计，即使主线程等待1秒，内核也不一定会调度新创建的线程执行
+<br> 🤭 补：查看线程LWP号，使用命令ps aux + ps -Lf PID
+<br> 🤭 编程实战：循环创建多个线程，每个线程打印自己是第几个被创建的线程。(类似于进程循环创建子进程)
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;iostream&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;unistd.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;pthread.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;stdlib.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;string.h&gt;<BR>
+</span><span style="color:#0000ff;">using</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">namespace</span><span style="color:#000000;">&nbsp;std;<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;*thrd_fun(</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;*arg)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">)arg;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;In&nbsp;thread:&nbsp;the&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;i&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;th&nbsp;thread&nbsp;id&nbsp;is&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;pthread_self()&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">;<BR>
+}<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;main()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;ret,&nbsp;i;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pthread_t&nbsp;tid;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;In&nbsp;main1:&nbsp;process&nbsp;id&nbsp;is&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;getpid()&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;In&nbsp;main1:&nbsp;thread&nbsp;id&nbsp;is&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;pthread_self()&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">5</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ret&nbsp;=&nbsp;pthread_create(&amp;tid,&nbsp;</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">,&nbsp;thrd_fun,&nbsp;(</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;*)i);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(ret&nbsp;!=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cerr&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;pthread_create&nbsp;error!&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cerr&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;and&nbsp;the&nbsp;error&nbsp;number&nbsp;is&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;strerror(ret)&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sleep(i);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;In&nbsp;main2:&nbsp;process&nbsp;id&nbsp;is&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;getpid()&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;In&nbsp;main2:&nbsp;thread&nbsp;id&nbsp;is&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;pthread_self()&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}</span></div></td></tr></table></div>
+<br> 🤭 思考：将pthread_create函数参4修改为(void *)&amp;i, 将线程主函数内改为 i=*((int *)arg) 是否可以？
+<br> ● 该方法并不可取
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;iostream&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;unistd.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;pthread.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;stdlib.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;string.h&gt;<BR>
+</span><span style="color:#0000ff;">using</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">namespace</span><span style="color:#000000;">&nbsp;std;<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;*thrd_fun(</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;*arg)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;*th&nbsp;=&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;*)arg;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;In&nbsp;thread:&nbsp;the&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;*(th)&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;th&nbsp;thread&nbsp;id&nbsp;is&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;pthread_self()&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">;<BR>
+}<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;main()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;ret,&nbsp;i;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pthread_t&nbsp;tid;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;In&nbsp;main1:&nbsp;process&nbsp;id&nbsp;is&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;getpid()&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;In&nbsp;main1:&nbsp;thread&nbsp;id&nbsp;is&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;pthread_self()&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">5</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ret&nbsp;=&nbsp;pthread_create(&amp;tid,&nbsp;</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">,&nbsp;thrd_fun,&nbsp;(</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;*)&amp;i);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(ret&nbsp;!=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cerr&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;pthread_create&nbsp;error!&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cerr&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;and&nbsp;the&nbsp;error&nbsp;number&nbsp;is&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;strerror(ret)&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sleep(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sleep(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;In&nbsp;main2:&nbsp;process&nbsp;id&nbsp;is&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;getpid()&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;In&nbsp;main2:&nbsp;thread&nbsp;id&nbsp;is&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;pthread_self()&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}</span></div></td></tr></table></div>
+<br>
+<br><font color=black size = 5><a name="bc8">线程间共享全局变量</a></font>
+<br> ● 线程默认共享数据段、代码段等地址空间，常用的是全局变量，而进程不共享全局变量，只能借助 mmap。
+<br> 🤭 编程实战：设计程序，验证线程之间共享全局变量
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;iostream&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;pthread.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;stdlib.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;unistd.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;string.h&gt;<BR>
+</span><span style="color:#0000ff;">using</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">namespace</span><span style="color:#000000;">&nbsp;std;<BR>
+<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;var&nbsp;=&nbsp;</span><span style="color:#ff0000;">100</span><span style="color:#000000;">;<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;*thrd_fun(</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;*arg)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var&nbsp;=&nbsp;</span><span style="color:#ff0000;">200</span><span style="color:#000000;">;<BR>
+}<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;main()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pthread_t&nbsp;tid;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;Before,&nbsp;the&nbsp;var&nbsp;equal&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;var&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;ret&nbsp;=&nbsp;pthread_create(&amp;tid,&nbsp;</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">,&nbsp;thrd_fun,&nbsp;</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(ret&nbsp;!=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cerr&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;pthread_create&nbsp;error!&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cerr&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;and&nbsp;the&nbsp;error&nbsp;number&nbsp;is&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;strerror(ret)&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sleep(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;Then,&nbsp;the&nbsp;var&nbsp;equal&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;var&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}</span></div></td></tr></table></div>
+<br>
+<br><font color=black size = 5><a name="bc9">pthread_exit() 函数</a></font>
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 将单个线程退出
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void pthread_exit(void *retval); 无返回值
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 参数：retval 表示线程退出状态，通常传NULL
+<br> 🤭 思考：使用exit将指定线程退出，可以吗？
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 线程中，禁止使用exit() 函数，会导致进程内所有线程全部退出
+<br> ● 在不添加 sleep 控制输出顺序的情况下，pthread_create 在循环中，几乎瞬间创建了5个线程，但只有一个线程有机会输出 (或者第2个也有机会，但也有可能没有，取决于内核调度)，如果第三个线程执行了 exit() 函数，将整个进程退出了，所以全部线程都退出了
+<br> ● 所以，多线程环境下，应尽量少用或者不用 exit() 函数，取而代之的是pthread_exit() 函数，将单个线程退出，任何线程里exit导致进程退出，其它线程工作未结束，主控线程退出时不能 return 或 exit。
+<br> 🤭 注：pthread_exit或者return返回的指针所指向的内存单元必须是全局的或者是用malloc分配的，不能在线程函数的栈上分配，因为当其它线程得到这个返回指针时线程函数已经退出了。
+<br> ● 在多线程程序中，exit、return、pthread_exit各自退出效果：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return：返回到调用者那里去。
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; pthread_exit()：将调用该函数的线程<br />
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; exit: 将进程退出。
+<br>
+<br><font color=black size = 5><a name="bc10">pthread_join() 函数</a></font>
+<br> ● 阻塞等待线程退出，获取线程退出状态，其作用对应于进程中 waitpid() 函数
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int pthread_join(pthread_t thread, void **retval);     成功返回0，失败返回错误号
+<br> ● 参数：thread为线程ID (注：不是指针)、retval存储线程结束状态
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 对比记忆：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 进程中，main返回值、exit参数 → int；等待子进程结束 wait 函数参数 → int*
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 线程中，线程主函数返回值、pthread_exit → void* ；等待线程结束 pthread_join 函数参数 → void**
+<br> 🤭 编程实战：参数retval非空使用
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;iostream&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;stdlib.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;pthread.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;unistd.h&gt;<BR>
+</span><span style="color:#0000ff;">using</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">namespace</span><span style="color:#000000;">&nbsp;std;<BR>
+<BR>
+</span><span style="color:#0000ff;">typedef</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">struct</span><span style="color:#000000;"><BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;a;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;b;<BR>
+}exit_t;<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;*thrd_fun(</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;*arg)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit_t&nbsp;*rval&nbsp;=&nbsp;(exit_t&nbsp;*)arg;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rval&nbsp;-&gt;&nbsp;a&nbsp;=&nbsp;</span><span style="color:#ff0000;">100</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rval&nbsp;-&gt;&nbsp;b&nbsp;=&nbsp;</span><span style="color:#ff0000;">200</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pthread_exit((</span><span style="color:#8000ff;">void</span><span style="color:#000000;">*)rval);<BR>
+}<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;main()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit_t&nbsp;*retval&nbsp;=&nbsp;</span><span style="color:#0000ff;">new</span><span style="color:#000000;">&nbsp;exit_t;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pthread_t&nbsp;tid;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;ret&nbsp;=&nbsp;pthread_create(&amp;tid,&nbsp;</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">,&nbsp;thrd_fun,&nbsp;(</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;*)retval);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(ret&nbsp;!=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cerr&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;create&nbsp;failed!&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pthread_join(tid,&nbsp;(</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;**)&amp;retval);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;return&nbsp;value:&nbsp;a&nbsp;=&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;retval&nbsp;-&gt;&nbsp;a&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;&nbsp;b&nbsp;=&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;retval&nbsp;-&gt;&nbsp;b&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">delete</span><span style="color:#000000;">&nbsp;retval;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}</span></div></td></tr></table></div>
+<br> ● 调用该函数的线程将挂起等待，直到id为thread的线程终止，thread线程以不同的方法终止，通过pthread_join得到的终止状态是不同的，总结如下：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0、如果thread线程通过 return 返回，retval所指向的单元里存放的是thread线程函数的返回值
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1、如果thread线程被别的线程调用 pthread_cancel 异常终止时，retval所指向的单元里存放的是常数 PTHREAD_CANCELED
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2、如果thread线程是自己调用 pthread_exit 终止的，retval 所指向的单元存放的是传给 pthread_exit 的参数
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 3、如果对thread线程的终止状态不感兴趣，可以传NULL给retval参数
+<br> 🤭 编程实战：使用 pthread_join 函数将循环创建的多个子线程回收
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47<br>48<br>49<br>50<br>51<br>52<br>53<br>54<br>55<br>56<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;iostream&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;unistd.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;pthread.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;stdlib.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;string.h&gt;<BR>
+</span><span style="color:#0000ff;">using</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">namespace</span><span style="color:#000000;">&nbsp;std;<BR>
+<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;var&nbsp;=&nbsp;</span><span style="color:#ff0000;">100</span><span style="color:#000000;">;<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;*thrd_fun(</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;*arg)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">long</span><span style="color:#000000;">&nbsp;th&nbsp;=&nbsp;(</span><span style="color:#8000ff;">long</span><span style="color:#000000;">)arg;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sleep(th);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;In&nbsp;thread:&nbsp;the&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;th&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;th&nbsp;thread&nbsp;id&nbsp;is&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;pthread_self()&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(th&nbsp;==&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var&nbsp;=&nbsp;</span><span style="color:#ff0000;">300</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pthread_exit((</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;*)var);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">(th&nbsp;==&nbsp;</span><span style="color:#ff0000;">4</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var&nbsp;=&nbsp;</span><span style="color:#ff0000;">400</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pthread_exit((</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;*)var);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pthread_exit((</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;*)var);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+}<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;main()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;ret,&nbsp;i;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pthread_t&nbsp;tid[</span><span style="color:#ff0000;">5</span><span style="color:#000000;">];<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;*retval[</span><span style="color:#ff0000;">5</span><span style="color:#000000;">];<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;In&nbsp;main1:&nbsp;process&nbsp;id&nbsp;is&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;getpid()&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;In&nbsp;main1:&nbsp;thread&nbsp;id&nbsp;is&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;pthread_self()&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">5</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ret&nbsp;=&nbsp;pthread_create(&amp;tid[i],&nbsp;</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">,&nbsp;thrd_fun,&nbsp;(</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;*)i);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(ret&nbsp;!=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cerr&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;pthread_create&nbsp;error!&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cerr&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;and&nbsp;the&nbsp;error&nbsp;number&nbsp;is&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;strerror(ret)&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;j&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;j&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">5</span><span style="color:#000000;">;&nbsp;++j)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pthread_join(tid[j],&nbsp;(</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;**)&amp;retval[j]);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;Termination,&nbsp;return&nbsp;value:&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;(</span><span style="color:#8000ff;">long</span><span style="color:#000000;">)retval[j]&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sleep(i);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;In&nbsp;main2:&nbsp;process&nbsp;id&nbsp;is&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;getpid()&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;In&nbsp;main2:&nbsp;thread&nbsp;id&nbsp;is&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;pthread_self()&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}</span></div></td></tr></table></div>
+<br>
+<br><font color=black size = 5><a name="bc11">pthread_detach() 函数</a></font>
+<br> ● 实现线程分离：分离后的线程退出后无系统残留资源
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int pthread_detach(pthread_t thread);    成功返回0，失败返回错误号
+<br> ● 线程分离状态，指定该状态，线程主动与主线程断开联系，线程结束后，其退出状态不由其它线程获取，而直接自己主动释放，在网络和多线程服务器中常用。
+<br> ● 进程若有该机制，将不会产生僵尸进程，僵尸进程的产生主要是由于进程死后，大部分资源被释放，一点残留资源仍存在于系统中，导致内核认为该进程仍然存在。
+<br> ● 也可以使用 pthread_create() 函数 的参数2(线程属性) 来设置线程分离。
+<br> ● 一般情况下，线程终止后，其终止状态一直保留到其它线程调用pthread_join获取它的状态为止。但是线程也可以被置为detach状态，这样的线程一旦终止就立刻回收它占用的所有资源，而不保留终止状态。
+<br> ● 不能对一个已经处于detach状态的线程调用pthread_join，这样的调用将返回EINVAL错误。也就是说，如果已经对一个线程调用了pthread_detach就不能再调用pthread_join了。
+<br>
+<br><font color=black size = 5><a name="bc12">pthread_cancel() 函数</a></font>
+<br> ● 杀死(取消)线程，其作用对应于进程中的 kill() 函数
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int pthread_cancel(pthread_t thread);    成功返回0，失败返回错误号。
+<br> 🤭 注：线程的取消并不是实时的，而有一定的延时，需要等待线程到达某个取消点(检查点)。
+<br> ● 类似于游戏存档，必须到达指定的场所(存档点，如：客栈、仓库等)才能存储进度，杀死线程也不是立刻就能完成，必须先到达某个取消点(检查点)。
+<br> ● 取消点(检查点)：是线程检查是否取消，并按请求进行动作的一个位置，通常是一些系统调用creat、open、pause、close、read、write等，执行命令 man 7 pthreads 可以查看具备这些取消点的系统调用列表。
+<br> ● 可粗略认为一个系统调用(进入内核)即为一个取消点，如线程中没有取消点，可以通过 pthread_testcancel() 函数 自行设置一个取消点。
+<br> ● 被取消的线程，退出值定义在Linux的pthread库中，常数 PTHREAD_CANCELED 的值为-1，可在头文件pthread.h中找到它的定义：#define PTHREAD_CANCELED ((void *) -1)。因此当我们对一个已经被取消的线程使用pthread_join回收时，得到的返回值为-1。
+<br> 🤭 编程实战：终止线程的三种方法，注意“取消点”的概念
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47<br>48<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;iostream&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;pthread.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;stdlib.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;unistd.h&gt;<BR>
+</span><span style="color:#0000ff;">using</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">namespace</span><span style="color:#000000;">&nbsp;std;<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;*cancelfun1(</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;*arg)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;1th&nbsp;thread&nbsp;returning\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;((</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;*)</span><span style="color:#ff0000;">111</span><span style="color:#000000;">);<BR>
+}<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;*cancelfun2(</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;*arg)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;2th&nbsp;thread&nbsp;exiting\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pthread_exit((</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;*)</span><span style="color:#ff0000;">222</span><span style="color:#000000;">);<BR>
+}<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;*cancelfun3(</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;*arg)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;die&nbsp;=&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">while</span><span style="color:#000000;">(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;3th&nbsp;thread:&nbsp;I'm&nbsp;going&nbsp;die&nbsp;in&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;die&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;seconds&nbsp;...\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sleep(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;die--;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//pthread_testcancel();&nbsp;//&nbsp;为自己添加取消点<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+}<BR>
+<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;main()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pthread_t&nbsp;tid;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;*ret&nbsp;=&nbsp;</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pthread_create(&amp;tid,&nbsp;</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">,&nbsp;cancelfun1,&nbsp;</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pthread_join(tid,&nbsp;&amp;ret);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;The&nbsp;first&nbsp;thread&nbsp;exit&nbsp;code&nbsp;return&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;(</span><span style="color:#8000ff;">long</span><span style="color:#000000;">)ret&nbsp;&lt;&lt;&nbsp;endl;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pthread_create(&amp;tid,&nbsp;</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">,&nbsp;cancelfun2,&nbsp;</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pthread_join(tid,&nbsp;&amp;ret);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;The&nbsp;second&nbsp;thread&nbsp;exit&nbsp;code&nbsp;return&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;(</span><span style="color:#8000ff;">long</span><span style="color:#000000;">)ret&nbsp;&lt;&lt;&nbsp;endl;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pthread_create(&amp;tid,&nbsp;</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">,&nbsp;cancelfun3,&nbsp;</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sleep(</span><span style="color:#ff0000;">3</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pthread_cancel(tid);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pthread_join(tid,&nbsp;&amp;ret);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;The&nbsp;third&nbsp;thread&nbsp;exit&nbsp;code&nbsp;return&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;(</span><span style="color:#8000ff;">long</span><span style="color:#000000;">)ret&nbsp;&lt;&lt;&nbsp;endl;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}</span></div></td></tr></table></div>
+<br> ● 终止线程方式总结：终止某个线程而不终止整个进程，有三种方法：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0、从线程主函数return。这种方法对主控线程不适用，从main函数return相当于调用exit。
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1、一个线程可以调用pthread_cancel终止同一进程中的另一个线程。
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2、线程可以调用pthread_exit终止自己。
+<br>
+<br><font color=black size = 5><a name="bc13">pthread_equal() 函数</a></font>
+<br> ● 比较两个线程ID号是否相等
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int pthread_equal(pthread_t t1, pthread_t t2);
+<br> ● 有可能Linux在未来线程ID pthread_t 类型被修改为结构体实现
+<br>
+<br><font color=black size = 5><a name="bc14">进程&amp;线程 控制原语对比</a></font>
+<hr>
+<br><table border="20">
+  <tr align="center">
+    <th>进程</th>
+    <th>线程</th>
+    <th>备注</th>
+  </tr>
+  <tr align="center">
+    <td>fork</td>
+    <td>pthread_create</td>
+  </tr>
+  <tr align="center">
+    <td>getpid</td>
+    <td>pthread_self</td>
+  </tr>
+  <tr align="center">
+    <td>exit(1)</td>
+    <td>pthread_exit(vod *)</td>
+    <td>都为阻塞等待</td>
+  </tr>
+  <tr align="center">
+    <td>kill</td>
+    <td>pthread_cancel</td>
+    <td>取消点(检查点)，系统调用</td>
+  </tr>
+</table>
+<hr>
+命令 man 7 pthreads查看取消点
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 取消点设置：pthread_testcancel();
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; pthread_detach()  分离，自动清理PCB，结束不用调用pthread_join进行回收
+<br>
+<br><font color=black size = 5><a name="bc15">线程属性简介</a></font>
+<br> ● Linux下线程的属性是可以根据实际项目需求进行设置的，之前我们使用的都是线程的默认属性，默认属性已经可以解决绝大多数开发时遇到的问题，如我们对程序的性能提出更高的要求，那么就需要设置线程属性，比如可以通过设置线程栈的大小来降低内存的使用，增加最大线程个数。
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">typedef</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">struct</span><span style="color:#000000;"><BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;etachstate;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//线程的分离状态<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;schedpolicy;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//线程调度策略<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;sched_param&nbsp;&nbsp;schedparam;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//线程的调度参数<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;inheritsched;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//线程的继承性<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;scope;&nbsp;&nbsp;</span><span style="color:#008000;">//线程的作用域<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;size_t&nbsp;guardsize;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//线程栈末尾的警戒缓冲区大小<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;stackaddr_set;&nbsp;&nbsp;</span><span style="color:#008000;">//线程的栈设置<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">void</span><span style="color:#000000;">*&nbsp;stackaddr;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//线程栈的位置<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;size_t&nbsp;stacksize;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//线程栈的大小<BR>
+</span><span style="color:#000000;">}&nbsp;pthread_attr_t;</span></div></td></tr></table></div>
+<br> ● 主要结构体成员：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0、线程分离状态
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1、线程栈的大小 (默认平均分配进程空间(一般为8M))
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2、线程栈警戒缓冲区大小 (位于栈末尾，防止溢出)
+<br> ● 属性值不能直接设置，必须使用相关函数进行操作，初始化的函数为 pthread_attr_init() 函数，这个函数必须在 pthread_create() 函数之前调用，之后必须使用 pthread_attr_destroy() 函数来释放资源。
+<br> ● 线程属性主要包括：作用域(scope)、栈尺寸(stack size)、栈地址(stack address)、优先级(priority)、分类的状态(detached status)、调度策略和参数(scheduling policy and parameters)，默认的属性为非绑定、非分离、缺省的堆栈、与父进程同样级别的优先级。
+<br>
+<br><font color=black size = 5><a name="bc16">线程属性初始化</a></font>
+<br> 🤭 注意：应先初始化线程属性，再pthread_create创建线程
+<br> ● 初始化线程属性
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int pthread_attr_init(pthread_attr_t *attr);  成功返回0，失败返回错误号
+<br> ● 销毁线程属性所占用的资源
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int pthread_attr_destroy(pthread_attr_t *attr);   成功返回0，失败返回错误号
+<br>
+<br><font color=black size = 5><a name="bc17">线程的分离状态</a></font>
+<br> ● 线程的分离状态决定一个线程以什么样的方式来终止自己。
+<br> ● 非分离状态：线程的默认属性是非分离状态，这种情况下，原有的线程等待创建的线程结束。只有当pthread_join()函数返回时，创建的线程才算终止，才能释放自己占用的系统资源。
+<br> ● 分离状态：分离线程没有被其他的线程所等待，自己运行结束了，线程也就终止了，马上释放系统资源。应该根据自己的需要，选择适当的分离状态。
+<br>
+<br><font color=black size = 5><a name="bc18">线程分离状态的函数</a></font>
+<br> ● 设置线程属性，分离or非分离
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int pthread_attr_setdetachstate(pthread_attr_t *attr, int detachstate);
+<br> ● 获取程属性，分离or非分离
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int pthread_attr_getdetachstate(pthread_attr_t *attr, int *detachstate);
+<br> ● 参数：  attr：已初始化的线程属性
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; detachstate：PTHREAD_CREATE_DETACHED (分离线程)、PTHREAD _CREATE_JOINABLE (非分离线程)
+<br> ● 这里要注意的一点是，如果设置一个线程为分离线程，而这个线程运行又非常快，它很可能在pthread_create函数返回之前就终止了，它终止以后就可能将线程号和系统资源移交给其他的线程使用，这样调用pthread_create的线程就得到了错误的线程号。要避免这种情况可以采取一定的同步措施，最简单的方法之一是可以在被创建的线程里调用pthread_cond_timedwait函数，让这个线程等待一会儿，留出足够的时间让函数pthread_create返回。设置一段等待时间，是在多线程编程里常用的方法。但是注意不要使用诸如wait()之类的函数，它们是使整个进程睡眠，并不能解决线程同步的问题。
+<br>
+<br><font color=black size = 5><a name="bc19">进线程的栈地址</a></font>
+<br> ● POSIX.1定义了两个常量_POSIX_THREAD_ATTR_STACKADDR 和_POSIX_THREAD_ATTR_STACKSIZE检测系统是否支持栈属性。也可以给 sysconf() 函数传递_SC_THREAD_ATTR_STACKADDR或 _SC_THREAD_ATTR_STACKSIZE来进行检测。
+<br> ● 当进程栈地址空间不够用时，指定新建线程使用由malloc分配的空间作为自己的栈空间。通过pthread_attr_setstack和pthread_attr_getstack两个函数分别设置和获取线程的栈地址。
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int pthread_attr_setstack(pthread_attr_t *attr, void *stackaddr, size_t stacksize);     成功返回0，失败返回错误号
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int pthread_attr_getstack(pthread_attr_t *attr, void **stackaddr, size_t *stacksize);     成功返回0，失败返回错误号
+<br> ● 参数：attr：指向一个线程属性的指针
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; stackaddr：返回获取的栈地址
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; stacksize：返回获取的栈大小
+<br>
+<br><font color=black size = 5><a name="bc20">线程的栈大小</a></font>
+<br> ● 当系统中有很多线程时，可能需要减小每个线程栈的默认大小，防止进程的地址空间不够用，当线程调用的函数会分配很大的局部变量或者函数调用层次很深时，可能需要增大线程栈的默认大小。
+<br> ● 函数pthread_attr_getstacksize和 pthread_attr_setstacksize提供设置。
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int pthread_attr_setstacksize(pthread_attr_t *attr, size_t stacksize);   成功返回0，失败返回错误号
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int pthread_attr_getstacksize(pthread_attr_t *attr, size_t *stacksize);     成功返回0，失败返回错误号
+<br> ● 参数： attr：指向一个线程属性的指针
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; stacksize：返回线程的堆栈大小
+<br>
+<br><font color=black size = 5><a name="bc21">线程属性控制示例</a></font>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47<br>48<br>49<br>50<br>51<br>52<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;pthread.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;stdio.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;stdlib.h&gt;<BR>
+<BR>
+</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;SIZE&nbsp;0x100000&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;每个线程大小<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;*th_fun(</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;*arg)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">while</span><span style="color:#000000;">&nbsp;(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sleep(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+}<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;main(</span><span style="color:#8000ff;">void</span><span style="color:#000000;">)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;pthread_t&nbsp;tid;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;err,&nbsp;detachstate,&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;pthread_attr_t&nbsp;attr;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;size_t&nbsp;stacksize;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;*stackaddr;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;pthread_attr_init(&amp;attr);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;pthread_attr_getstack(&amp;attr,&nbsp;&amp;stackaddr,&nbsp;&amp;stacksize);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;pthread_attr_getdetachstate(&amp;attr,&nbsp;&amp;detachstate);<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(detachstate&nbsp;==&nbsp;PTHREAD_CREATE_DETACHED)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;printf(</span><span style="color:#800000;">&quot;thread&nbsp;detached\n&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(detachstate&nbsp;==&nbsp;PTHREAD_CREATE_JOINABLE)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;printf(</span><span style="color:#800000;">&quot;thread&nbsp;join\n&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;printf(</span><span style="color:#800000;">&quot;thread&nbsp;unknown\n&quot;</span><span style="color:#000000;">);<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;pthread_attr_setdetachstate(&amp;attr,&nbsp;PTHREAD_CREATE_DETACHED);<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">while</span><span style="color:#000000;">&nbsp;(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stackaddr&nbsp;=&nbsp;malloc(SIZE);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(stackaddr&nbsp;==&nbsp;</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">)&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;perror(</span><span style="color:#800000;">&quot;malloc&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stacksize&nbsp;=&nbsp;SIZE;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pthread_attr_setstack(&amp;attr,&nbsp;stackaddr,&nbsp;stacksize);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;err&nbsp;=&nbsp;pthread_create(&amp;tid,&nbsp;&amp;attr,&nbsp;th_fun,&nbsp;</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(err&nbsp;!=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">)&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;printf(</span><span style="color:#800000;">&quot;%s\n&quot;</span><span style="color:#000000;">,&nbsp;strerror(err));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;printf(</span><span style="color:#800000;">&quot;%d\n&quot;</span><span style="color:#000000;">,&nbsp;i++);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;pthread_attr_destroy(&amp;attr);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}</span></div></td></tr></table></div>
+<br>
+<br><font color=black size = 5><a name="bc22">NPTL (在使用时注意线程库的版本)</a></font>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0、察看当前pthread库版本getconf GNU_LIBPTHREAD_VERSION
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1、NPTL(线程库版本号)实现机制(POSIX)，Native POSIX Thread Library
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2、使用线程库时gcc指定 –lpthread
+<br>
+<br><font color=black size = 5><a name="bc23">线程使用注意事项</a></font>
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 0、主线程退出其他线程不退出，主线程应调用pthread_exit
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 1、避免僵尸线程
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; pthread_join()
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; pthread_detach()
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; pthread_create() 指定分离属性
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 被join线程可能在join函数返回前就释放完自己的所有内存资源，所以不应当返回被回收线程栈中的值;
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 2、malloc和mmap申请的内存可以被其他线程释放
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 3、应避免在多线程模型中调用fork，除非马上exec，子进程中只有调用fork的线程存在，其他线程在子进程中均被pthread_exit
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 4、信号的复杂语义很难和多线程共存，应避免在多线程引入信号机制</p>
+
+<p><br><br><br>
+<font color = gray size = 3>如有错误，欢迎指正！</font></p></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://oubc.github.io/tags/linux/">Linux</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmg4aog3074074gnf.gif?tags=%5B%5D">I </a>
+	<a href="">love</a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmfm2eg306o06o74u.gif?tags=%5B%5D"> you </a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx4tpcj30fn0bq3zg.jpg?tags=%5B%5D">three </a>
+	<a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx64ctg307s07swfy.gif?tags=%5B%5D">thousand</a>
+    <a href="https://www.kugou.com/song/#hash=96426C78381DE98DC31A5846FC274CBF&album_id=646623"> times.</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>家庭、梦想、内心的平静</span>
+  </div>
+</footer>
+
+
+
+<script src="https://oubc.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://oubc.github.io/js/zozo.js"></script>
+<script src="https://oubc.github.io/js/highlight.pack.js"></script>
+<link  href="https://oubc.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://oubc.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>
