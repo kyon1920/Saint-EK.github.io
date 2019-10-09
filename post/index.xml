@@ -6,10 +6,19 @@
     <description>Recent content in Posts on Love, or death</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Mon, 07 Oct 2019 18:55:39 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 09 Oct 2019 20:01:13 +0800</lastBuildDate>
     
 	<atom:link href="https://oubc.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Linux网络编程 ( 网络基础 )</title>
+      <link>https://oubc.github.io/post/l23_socketcode0/</link>
+      <pubDate>Wed, 09 Oct 2019 20:01:13 +0800</pubDate>
+      
+      <guid>https://oubc.github.io/post/l23_socketcode0/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>Linux系统编程 ( 两类经典模型 )</title>
