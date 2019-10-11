@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Bruce Cheung"/>
+
+  
+  <meta name="description" content=""/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, simple, dream"/>
+  
+
+  
+  <link rel="canonical" href="https://oubc.github.io/post/l24_socketcode1/"/>
+
+  
+
+  <title>Linux网络编程 ( Socket编程 ) &middot; Love, or death</title>
+
+  <link rel="shortcut icon" href="https://oubc.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/post/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://oubc.github.io/">
+          <span>Love, or death</span>
+          <img src="https://oubc.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">For you, a thousand times over.</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/oubc" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=uYGOjo6OiIuLivnIyJfa1tQ" title="mail" target="_blank"><i class="remixicon-mail-fill"></i></a>
+        
+        
+        
+        <a href="http://sighttp.qq.com/msgrd?v=1&amp;uin=877771223" title="qq" target="_blank"><i class="remixicon-qq-fill"></i></a>
+        
+        
+        
+        <a href="https://github.com/oubc/oubc.github.io/blob/master/images/wx.jpg?raw=true" title="wechat" target="_blank"><i class="remixicon-wechat-fill"></i></a>
+        
+        
+        
+        <a href="https://weibo.com/u/6993631995?topnav=1&amp;wvr=6&amp;topsug=1" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://oubc.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/post/l24_socketcode1/'>Linux网络编程 ( Socket编程 )</a></h2>
+          <span class="date">2019.10.11</span>
+        </div>
+        <div class="post_content markdown"><p><br>
+<br>
+<font color = gray size = 2>列表，展开点击跳转</font>
+<br>
+<details class="menu" close>
+      <summary><font color=blue size = 4>Socket编程相关概念</font></summary>
+      <ul>
+          <li><a href="#bc0">套接字概念</a></li>
+          <li><a href="#bc1">网络字节序</a></li>
+          <li><a href="#bc2">IP地址转换函数</a></li>
+          <li><a href="#bc3">可重入函数</a></li>
+          <li><a href="#bc4">sockaddr 数据结构</a></li>
+      </ul>
+</details>
+<details class="menu" close>
+      <summary><font color=blue size = 4>网络套接字函数</font></summary>
+      <ul>
+          <li><a href="#bc5">Socket模型创建</a></li>
+          <li><a href="#bc6">socket() 函数</a></li>
+          <li><a href="#bc7">bind() 函数</a></li>
+          <li><a href="#bc8">listen() 函数</a></li>
+          <li><a href="#bc9">accept() 函数</a></li>
+          <li><a href="#bc10">connect() 函数</a></li>
+      </ul>
+</details>
+<details class="menu" close>
+      <summary><font color=blue size = 4>C/S-TCP</font></summary>
+      <ul>
+          <li><a href="#bc11">Socket编程流程</a></li>
+          <li><a href="#bc12">服务器端实现</a></li>
+          <li><a href="#bc13">客户端实现</a></li>
+          <li><a href="#bc14">出错处理封装函数</a></li>
+          <li><a href="#bc15">read返回值总结</a></li>
+      </ul>
+</details>
+<br>
+<br>
+<br>
+<br>
+<br><font color=black size = 5>文件</font>
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L24_SocketCode0.png?raw=true" width="800" height="600" />
+<br>
+<br><font color=black size = 5><a name="bc0">套接字概念</a></font>
+<br> ✦ 在Linux环境下，Socket用于表示进程间网络通信的特殊文件类型。本质为内核借助缓冲区形成的伪文件。
+<br> ✦ 既然是文件，那么理所当然的，我们可以使用文件描述符引用套接字。与管道类似的，Linux系统将其封装成文件的目的是为了统一接口，使得读写套接字和读写文件的操作一致。区别是管道主要应用于本地进程间通信，而套接字多应用于网络进程间数据的传递。
+<br> ✦ 在TCP/IP协议中，“IP地址 + TCP或UDP端口号”唯一标识网络通讯中的一个进程。“IP地址+端口号”就对应一个socket。欲建立连接的两个进程各自有一个socket来标识，那么这两个socket组成的socket pair就唯一标识一个连接。因此可以用Socket来描述网络连接的一对一关系。
+<br> 🤠 套接字通信原理如下图所示：
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L24_SocketCode1.png?raw=true" width="800" height="450" />
+<br> ✦ 套接字总是成对出现的、在使用的时候必须绑定IP和端口、一个文件描述符指向两个缓冲区(内核实现)，一个读一个写，文件描述符只有一个。
+<br> ♚ IP地址：在网络环境中唯一标示一台主机
+<br> ♚ 端口号：在主机中唯一标示一个进程
+<br> ♚ IP + Port：在网络环境中标示一个进程 (Socket)
+<br> ✦ 在网络通信中，套接字一定是成对出现的。一端的发送缓冲区对应对端的接收缓冲区。我们使用同一个文件描述符索发送缓冲区和接收缓冲区。
+<br> ✦ TCP/IP协议最早在BSD UNIX上实现，为TCP/IP协议设计的应用层编程接口称为socket API。
+<br> 🤠 网络编程接口：
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L24_SocketCode2.png?raw=true" width="800" height="900" />
+<br>
+<br><font color=black size = 5><a name="bc1">网络字节序</a></font>
+<br> ✦ 内存中的多字节数据相对于内存地址有大端和小端之分，磁盘文件中的多字节数据相对于文件中的偏移地址也有大端小端之分。网络数据流同样有大端小端之分，那么如何定义网络数据流的地址呢？发送主机通常将发送缓冲区中的数据按内存地址从低到高的顺序发出，接收主机把从网络上接到的字节依次保存在接收缓冲区中，也是按内存地址从低到高的顺序保存，因此，网络数据流的地址应这样规定：先发出的数据是低地址，后发出的数据是高地址。
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L24_SocketCode3.png?raw=true" width="800" height="700" />
+<br> ✦ TCP/IP协议规定，网络数据流应采用大端字节序，即低地址高字节。例如上一节的UDP段格式，地址0-1是16位的源端口号，如果这个端口号是1000（0x3e8），则地址0是0x03，地址1是0xe8，也就是先发0x03，再发0xe8，这16位在发送主机的缓冲区中也应该是低地址存0x03，高地址存0xe8。但是，如果发送主机是小端字节序的，这16位被解释成0xe803，而不是1000。因此，发送主机把1000填到发送缓冲区之前需要做字节序的转换。同样地，接收主机如果是小端字节序的，接到16位的源端口号也要做字节序的转换。如果主机是大端字节序的，发送和接收都不需要做转换。同理，32位的IP地址也要考虑网络字节序和主机字节序的问题。
+<br> ✦ 为使网络程序具有可移植性，使同样的C代码在大端和小端计算机上编译后都能正常运行，可以调用以下库函数做 <b>网络字节序和主机字节序</b> 的转换：
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;arpa/inet.h&gt;<BR>
+uint32_t&nbsp;htonl(uint32_t&nbsp;hostlong);&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;IP地址转换<BR>
+</span><span style="color:#000000;">uint16_t&nbsp;htons(uint16_t&nbsp;hostshort);&nbsp;</span><span style="color:#008000;">//&nbsp;端口号转换<BR>
+</span><span style="color:#000000;">uint32_t&nbsp;ntohl(uint32_t&nbsp;netlong);<BR>
+uint16_t&nbsp;ntohs(uint16_t&nbsp;netshort);</span></div></td></tr></table></div>
+<br> ♚ h表示host，n表示network，l表示32位长整数，s表示16位短整数。
+<br> ✦ 如果主机是小端字节序，这些函数将参数做相应的大小端转换然后返回，如果主机是大端字节序，这些函数不做转换，将参数原封不动地返回。
+<br>
+<br><font color=black size = 5><a name="bc2">IP地址转换函数</a></font>
+<br> ♚ 早期(已废弃)：
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;sys/socket.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;netinet/in.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;arpa/inet.h&gt;<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;inet_aton(</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;*cp,&nbsp;</span><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;in_addr&nbsp;*inp);<BR>
+in_addr_t&nbsp;inet_addr(</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;*cp);<BR>
+</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;*inet_ntoa(</span><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;in_addr&nbsp;in);</span></div></td></tr></table></div>
+<br> ✦ 只能处理IPv4的ip地址
+<br> ✦ 不可重入函数
+<br> ✦ 注意参数是struct in_addr
+<br> ♚ 现在：
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;arpa/inet.h&gt;<BR>
+</span><span style="color:#008000;">//&nbsp;字符串&nbsp;→&nbsp;网络字节序<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;inet_pton(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;af,&nbsp;</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;*src,&nbsp;</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;*dst);<BR>
+</span><span style="color:#008000;">//&nbsp;网络字节序&nbsp;→&nbsp;点分十进制字符串<BR>
+</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;*inet_ntop(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;af,&nbsp;</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;*src,&nbsp;</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;*dst,&nbsp;socklen_t&nbsp;size);</span></div></td></tr></table></div>
+<br> ♚ 参数 af：指定IPv4 (AF_INET) 或者IPv6 (AF_INET6)
+<br> ♚ 参数src：点分十进制的IP字符串
+<br> ♚ 参数dst：传出参数，转换成什么样形式的数值
+<br> ♚ 参数size：dst 字符串的大小
+<br> ♚ 支持IPv4和IPv6
+<br>
+<br><font color=black size = 5><a name="bc3">可重入函数</a></font>
+<br> ✦ 其中inet_pton和inet_ntop不仅可以转换IPv4的in_addr，还可以转换IPv6的in6_addr。
+<br> ✦ 因此函数接口是void *addrptr。
+<br>
+<br><font color=black size = 5><a name="bc4">sockaddr 数据结构</a></font>
+<br> ✦ strcut sockaddr 很多网络编程函数诞生早于IPv4协议，那时候都使用的是sockaddr结构体,为了向前兼容，现在sockaddr退化成了（void *）的作用，传递一个地址给函数，至于这个函数是sockaddr_in还是sockaddr_in6，由地址族确定，然后函数内部再强制类型转化为所需的地址类型。
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L24_SocketCode4.png?raw=true" width="800" height="900" />
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;sockaddr<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;sa_family_t&nbsp;sa_family;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">/*&nbsp;address&nbsp;family,&nbsp;AF_xxx&nbsp;*/</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;sa_data[</span><span style="color:#ff0000;">14</span><span style="color:#000000;">];&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">/*&nbsp;14&nbsp;bytes&nbsp;of&nbsp;protocol&nbsp;address&nbsp;*/</span><span style="color:#000000;"><BR>
+};<BR>
+<BR>
+</span><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;sockaddr_in<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">/*&nbsp;Address&nbsp;family&nbsp;地址结构类型AF_INET/AF_INET6*/</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;__kernel_sa_family_t&nbsp;sin_family;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;__be16&nbsp;sin_port;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">/*&nbsp;Port&nbsp;number&nbsp;端口号*/</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;in_addr&nbsp;sin_addr;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">/*&nbsp;Internet&nbsp;address&nbsp;&nbsp;IP地址*/</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">/*&nbsp;Pad&nbsp;to&nbsp;size&nbsp;of&nbsp;`struct&nbsp;sockaddr'.&nbsp;*/</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">unsigned</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;__pad[__SOCK_SIZE__&nbsp;-&nbsp;</span><span style="color:#0000ff;">sizeof</span><span style="color:#000000;">(</span><span style="color:#8000ff;">short</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">)&nbsp;-<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">sizeof</span><span style="color:#000000;">(</span><span style="color:#8000ff;">unsigned</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">short</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">)&nbsp;-&nbsp;</span><span style="color:#0000ff;">sizeof</span><span style="color:#000000;">(</span><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;in_addr)];<BR>
+};</span></div></td></tr></table></div>
+<br> ♚ 使用 sudo grep -r &quot;struct sockaddr_in {&quot;  /usr 命令可查看到struct sockaddr_in结构体的定义。一般其默认的存储位置：/usr/include/linux/in.h 文件中。
+<br> ♚ 重要的就三个成员：sin_family、sin_port、sin_addr；
+<br> 🤠 注：sin_addr 也是一个结构体类型，在定义 struct sockaddr_in 类型时需要.sin_addr.s_addr=ntosl、inet_pton、inet_ntop转换函数，才能给该成员传值，在使用bind、accept、connect函数传参时应该将此变量强制转换 (struct sockaddr *)&amp;变量
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;in_addr<BR>
+{&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">/*&nbsp;Internet&nbsp;address.&nbsp;*/</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;__be32&nbsp;&nbsp;s_addr;<BR>
+};<BR>
+<BR>
+</span><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;sockaddr_in6<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">unsigned</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">short</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;sin6_family;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">/*&nbsp;AF_INET6&nbsp;*/</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;__be16&nbsp;sin6_port;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">/*&nbsp;Transport&nbsp;layer&nbsp;port&nbsp;#&nbsp;*/</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;__be32&nbsp;sin6_flowinfo;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">/*&nbsp;IPv6&nbsp;flow&nbsp;information&nbsp;*/</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;in6_addr&nbsp;sin6_addr;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">/*&nbsp;IPv6&nbsp;address&nbsp;*/</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;__u32&nbsp;sin6_scope_id;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">/*&nbsp;scope&nbsp;id&nbsp;(new&nbsp;in&nbsp;RFC2553)&nbsp;*/</span><span style="color:#000000;"><BR>
+};<BR>
+<BR>
+</span><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;in6_addr<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">union</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;__u8&nbsp;u6_addr8[</span><span style="color:#ff0000;">16</span><span style="color:#000000;">];<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;__be16&nbsp;u6_addr16[</span><span style="color:#ff0000;">8</span><span style="color:#000000;">];<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;__be32&nbsp;u6_addr32[</span><span style="color:#ff0000;">4</span><span style="color:#000000;">];<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;in6_u;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;s6_addr&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;in6_u.u6_addr8<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;s6_addr16&nbsp;&nbsp;&nbsp;in6_u.u6_addr16<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;s6_addr32&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;in6_u.u6_addr32<BR>
+};<BR>
+<BR>
+</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;UNIX_PATH_MAX&nbsp;</span><span style="color:#ff0000;">108</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;sockaddr_un<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;__kernel_sa_family_t&nbsp;sun_family;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">/*&nbsp;AF_UNIX&nbsp;*/</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;sun_path[UNIX_PATH_MAX];&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">/*&nbsp;pathname&nbsp;*/</span><span style="color:#000000;"><BR>
+};</span></div></td></tr></table></div>
+<br> ✦ IPv4和IPv6的地址格式定义在netinet/in.h中，IPv4地址用sockaddr_in结构体表示，包括16位端口号和32位IP地址，IPv6地址用sockaddr_in6结构体表示，包括16位端口号、128位IP地址和一些控制字段。UNIX Domain Socket的地址格式定义在sys/un.h中，用sock-addr_un结构体表示。各种socket地址结构体的开头都是相同的，前16位表示整个结构体的长度（并不是所有UNIX的实现都有长度字段，如Linux就没有），后16位表示地址类型。IPv4、IPv6和Unix Domain Socket的地址类型分别定义为常数AF_INET、AF_INET6、AF_UNIX。这样，只要取得某种sockaddr结构体的首地址，不需要知道具体是哪种类型的sockaddr结构体，就可以根据地址类型字段确定结构体中的内容。因此，socket API可以接受各种类型的sockaddr结构体指针做参数，例如bind、accept、connect等函数，这些函数的参数应该设计成void *类型以便接受各种类型的指针，但是sock API的实现早于ANSI C标准化，那时还没有void *类型，因此这些函数的参数都用struct sockaddr *类型表示，在传递参数之前要强制类型转换一下，例如：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; struct sockaddr_in servaddr;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bind(listen_fd, (struct sockaddr *)&amp;servaddr, sizeof(servaddr));     /* initialize servaddr */
+<br>
+<br><font color=black size = 5><a name="bc5">socket模型创建</a></font>
+<br> 🤠 socket模型创建流程图
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L24_SocketCode5.png?raw=true" width="800" height="1000" />
+<br>
+<br><font color=black size = 5><a name="bc6">socket() 函数</a></font>
+<br> 🤠 创建一个套接字
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;sys/types.h&gt;&nbsp;</span><span style="color:#008000;">/*&nbsp;See&nbsp;NOTES&nbsp;*/</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;sys/socket.h&gt;<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;socket(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;domain,&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;type,&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;protocol);</span></div></td></tr></table></div>
+<br> ♚ domain:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AF_INET 这是大多数用来产生socket的协议，使用TCP或UDP来传输，用IPv4的地址
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AF_INET6 与上面类似，不过是来用IPv6的地址
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AF_UNIX(本地套接字) 本地协议，使用在Unix和Linux系统上，一般都是当客户端和服务器在同一台及其上的时候使用
+<br> ♚ type：采用的Socket的内部选用的通信协议
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SOCK_STREAM(流式协议)  这个协议是按照顺序的、可靠的、数据完整的基于字节流的连接。这是一个使用最多的socket类型，这个socket是使用TCP来进行传输。
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SOCK_DGRAM(报式协议)  这个协议是无连接的、固定长度的传输调用。该协议是不可靠的，使用UDP来进行它的连接。
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SOCK_SEQPACKET该协议是双线路的、可靠的连接，发送固定长度的数据包进行传输。必须把这个包完整的接受才能进行读取。
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SOCK_RAW socket类型提供单一的网络访问，这个socket类型使用ICMP公共协议。（ping、traceroute使用该协议）
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SOCK_RDM 这个类型是很少使用的，在大部分的操作系统上没有实现，它是提供给数据链路层使用，不保证数据包的顺序
+<br> ♚ protocol:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 传0 表示使用默认协议。
+<br> ♚ 返回值：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 成功：返回指向新创建的socket的文件描述符，失败：返回-1，设置errno
+<br> ✦ socket()打开一个网络通讯端口，如果成功的话，就像open()一样返回一个文件描述符，应用程序可以像读写文件一样用read/write在网络上收发数据，如果socket()调用出错则返回-1。对于IPv4，domain参数指定为AF_INET。对于TCP协议，type参数指定为SOCK_STREAM，表示面向流的传输协议。如果是UDP协议，则type参数指定为SOCK_DGRAM，表示面向数据报的传输协议。protocol参数的介绍从略，指定为0即可。
+<br>
+<br><font color=black size = 5><a name="bc7">bind() 函数</a></font>
+<br> 🤠 绑定端口号和IP
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;sys/types.h&gt;&nbsp;</span><span style="color:#008000;">/*&nbsp;See&nbsp;NOTES&nbsp;*/</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;sys/socket.h&gt;<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;bind(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;sockfd,&nbsp;</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;sockaddr&nbsp;*addr,&nbsp;socklen_t&nbsp;addrlen);</span></div></td></tr></table></div>
+<br> ♚ sockfd(socket函数返回值)：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; socket文件描述符
+<br> ♚ addr:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 构造出IP地址加端口号
+<br> ♚ addrlen:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sizeof(addr)长度
+<br> ♚ 返回值：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 成功返回0，失败返回-1, 设置errno
+<br> ✦ 服务器程序所监听的网络地址和端口号通常是固定不变的，客户端程序得知服务器程序的地址和端口号后就可以向服务器发起连接，因此服务器需要调用bind绑定一个固定的网络地址和端口号。
+<br> ✦ bind()的作用是将参数sockfd和addr绑定在一起，使sockfd这个用于网络通讯的文件描述符监听addr所描述的地址和端口号。前面讲过，struct sockaddr *是一个通用指针类型，addr参数实际上可以接受多种协议的sockaddr结构体，而它们的长度各不相同，所以需要第三个参数addrlen指定结构体的长度。如：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; struct sockaddr_in servaddr;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bzero(&amp;servaddr, sizeof(servaddr));
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; servaddr.sin_family = AF_INET;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; servaddr.sin_port = htons(6666);
+<br> ✦ 首先将整个结构体清零，然后设置地址类型为AF_INET，网络地址为INADDR_ANY，这个宏表示本地的任意IP地址，因为服务器可能有多个网卡，每个网卡也可能绑定多个IP地址，这样设置可以在所有的IP地址上监听，直到与某个客户端建立了连接时才确定下来到底用哪个IP地址，端口号为6666。
+<br>
+<br><font color=black size = 5><a name="bc8">listen() 函数</a></font>
+<br> 🤠 指定监听上限数，仅仅是指定一个数值，无其它作用
+<br> ✦ 同时 允许 多少个客户端同时与服务器建立连接(处于三次握手的数量应该是多少个)，超出客户端会阻塞等待 (不是一共能支持多少客户端建立连接)
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;sys/types.h&gt;&nbsp;</span><span style="color:#008000;">/*&nbsp;See&nbsp;NOTES&nbsp;*/</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;sys/socket.h&gt;<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;listen(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;sockfd,&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;backlog);</span></div></td></tr></table></div>
+<br> ♚ sockfd:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; socket文件描述符
+<br> ♚ backlog:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 排队建立3次握手队列和刚刚建立3次握手队列的链接数和
+<br> ♚ 查看系统默认backlog
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cat /proc/sys/net/ipv4/tcp_max_syn_backlog
+<br> ✦ 典型的服务器程序可以同时服务于多个客户端，当有客户端发起连接时，服务器调用的accept()返回并接受这个连接，如果有大量的客户端发起连接而服务器来不及处理，尚未accept的客户端就处于连接等待状态，listen()声明sockfd处于监听状态，并且最多允许有backlog个客户端处于连接待状态，如果接收到更多的连接请求就忽略。listen()成功返回0，失败返回-1。
+<br>
+<br><font color=black size = 5><a name="bc9">accept() 函数</a></font>
+<br> 🤠 接受客户端的连接请求
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;sys/types.h&gt;&nbsp;&nbsp;</span><span style="color:#008000;">/*&nbsp;See&nbsp;NOTES&nbsp;*/</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;sys/socket.h&gt;<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;accept(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;sockfd,&nbsp;</span><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;sockaddr&nbsp;*addr,&nbsp;socklen_t&nbsp;*addrlen);</span></div></td></tr></table></div>
+<br> ♚ sockdf:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; socket文件描述符
+<br> ♚ addr:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 传出参数，返回链接 客户端 地址信息，含IP地址和端口号
+<br> ♚ addrlen:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 传入传出参数 (值-结果)，传入sizeof(addr)大小，函数返回时返回真正接收到地址结构体的大小
+<br> ♚ 返回值：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 成功返回一个 新的socket文件描述符，用于和客户端通信，失败返回-1，设置errno
+<br> ✦ 三次握手完成后，服务器调用accept()接受连接，如果服务器调用accept()时还没有客户端的连接请求，就阻塞等待直到有客户端连接上来。addr是一个传出参数，accept()返回时传出客户端的地址和端口号。addrlen参数是一个传入传出参数（value-result argument），传入的是调用者提供的缓冲区addr的长度以避免缓冲区溢出问题，传出的是客户端地址结构体的实际长度（有可能没有占满调用者提供的缓冲区）。如果给addr参数传NULL，表示不关心客户端的地址。
+<br> ✦ 我们的服务器程序结构是这样的：
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">while</span><span style="color:#000000;">&nbsp;(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cliaddr_len&nbsp;=&nbsp;</span><span style="color:#0000ff;">sizeof</span><span style="color:#000000;">(cliaddr);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;connfd&nbsp;=&nbsp;accept(listenfd,&nbsp;(</span><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;sockaddr&nbsp;*)&amp;cliaddr,&nbsp;&amp;cliaddr_len);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;n&nbsp;=&nbsp;read(connfd,&nbsp;buf,&nbsp;MAXLINE);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;......<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;close(connfd);<BR>
+}</span></div></td></tr></table></div>
+<br> ✦ 整个是一个while死循环，每次循环处理一个客户端连接。由于cliaddr_len是传入传出参数，每次调用accept()之前应该重新赋初值。accept()的参数listenfd是先前的监听文件描述符，而accept()的返回值是另外一个文件描述符connfd，之后与客户端之间就通过这个connfd通讯，最后关闭connfd断开连接，而不关闭listenfd，再次回到循环开头listenfd仍然用作accept的参数。accept()成功返回一个文件描述符，出错返回-1。
+<br>
+<br><font color=black size = 5><a name="bc10">connect() 函数</a></font>
+<br> 🤠 客户端调用，与服务器建立连接
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;sys/types.h&gt;&nbsp;&nbsp;</span><span style="color:#008000;">/*&nbsp;See&nbsp;NOTES&nbsp;*/</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;sys/socket.h&gt;<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;connect(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;sockfd,&nbsp;</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;sockaddr&nbsp;*addr,&nbsp;socklen_t&nbsp;addrlen);</span></div></td></tr></table></div>
+<br> ♚ sockdf:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; socket文件描述符，在之前需要调用socket函数得到socket文件描述符
+<br> ♚ addr:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 传入参数，指定服务器端地址信息，含IP地址和端口号
+<br> ♚ addrlen:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 传入参数,传入sizeof(addr)大小
+<br> ♚ 返回值：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 成功返回0，失败返回-1，设置errno
+<br> ✦ 客户端需要调用connect()连接服务器，connect和bind的参数形式一致，区别在于bind的参数是自己的地址，而connect的参数是对方的地址。connect()成功返回0，出错返回-1。
+<br>
+<br><font color=black size = 5><a name="bc11">C/S模型-TCP</a></font>
+<br> 🤠 下图是基于TCP协议的客户端/服务器程序的一般流程：
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L24_SocketCode6.png?raw=true" width="800" height="800" />
+<br> ✦ 服务器调用socket()、bind()、listen()完成初始化后，调用accept()阻塞等待，处于监听端口的状态，客户端调用socket()初始化后，调用connect()发出SYN段并阻塞等待服务器应答，服务器应答一个SYN-ACK段，客户端收到后从connect()返回，同时应答一个ACK段，服务器收到后从accept()返回。
+<br> ✦ 数据传输的过程：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 建立连接后，TCP协议提供全双工的通信服务，但是一般的客户端/服务器程序的流程是由客户端主动发起请求，服务器被动处理请求，一问一答的方式。因此，服务器从accept()返回后立刻调用read()，读socket就像读管道一样，如果没有数据到达就阻塞等待，这时客户端调用write()发送请求给服务器，服务器收到后从read()返回，对客户端的请求进行处理，在此期间客户端调用read()阻塞等待服务器的应答，服务器调用write()将处理结果发回给客户端，再次调用read()阻塞等待下一条请求，客户端收到后从read()返回，发送下一条请求，如此循环下去。
+<br> ✦ 如果客户端没有更多的请求了，就调用close()关闭连接，就像写端关闭的管道一样，服务器的read()返回0，这样服务器就知道客户端关闭了连接，也调用close()关闭连接。注意，任何一方调用close()后，连接的两个传输方向都关闭，不能再发送数据了。如果一方调用shutdown()则连接处于半关闭状态，仍可接收对方发来的数据。
+<br> ✦ 应用程序调用某个socket函数时TCP协议层完成什么动作，比如调用connect()会发出SYN段 应用程序如何知道TCP协议层的状态变化，比如从某个阻塞的socket函数返回就表明TCP协议收到了某些段，再比如read()返回0就表明收到了FIN段
+<br>
+<br><font color=black size = 5><a name="bc12">服务器端</a></font>
+<br> 程序功能：将客户端发送过来的字符串转换为大写然后发送给客户端
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47<br>48<br>49<br>50<br>51<br>52<br>53<br>54<br>55<br>56<br>57<br>58<br>59<br>60<br>61<br>62<br>63<br>64<br>65<br>66<br>67<br>68<br>69<br>70<br>71<br>72<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;iostream&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;stdio.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;sys/socket.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;arpa/inet.h&gt;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;包含struct&nbsp;sockaddr&nbsp;结构体<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;unistd.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;stdlib.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;ctype.h&gt;<BR>
+</span><span style="color:#0000ff;">using</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">namespace</span><span style="color:#000000;">&nbsp;std;<BR>
+<BR>
+</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;SERV_PORT&nbsp;=&nbsp;</span><span style="color:#ff0000;">6666</span><span style="color:#000000;">;<BR>
+</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;string&nbsp;SERV_IP&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;127.0.0.1&quot;</span><span style="color:#000000;">;<BR>
+<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;main()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;lfd,&nbsp;cfd;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;ret;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;sockaddr_in&nbsp;addr,&nbsp;clientaddr;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;addr.sin_family&nbsp;=&nbsp;AF_INET;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;addr.sin_port&nbsp;=&nbsp;htons(SERV_PORT);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;本地的有效的任意IP<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;addr.sin_addr.s_addr&nbsp;=&nbsp;INADDR_ANY;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;addr.sin_addr.s_addr&nbsp;=&nbsp;inet_pton(SERV_IP);<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;buf[BUFSIZ],&nbsp;cIP[BUFSIZ];<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;n;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lfd&nbsp;=&nbsp;socket(AF_INET,&nbsp;SOCK_STREAM,&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(lfd&nbsp;==&nbsp;-</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cerr&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;Create&nbsp;socket&nbsp;failed!&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;create&nbsp;socket&nbsp;success&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ret&nbsp;=&nbsp;bind(lfd,&nbsp;(</span><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;sockaddr&nbsp;*)&amp;addr,&nbsp;</span><span style="color:#0000ff;">sizeof</span><span style="color:#000000;">(addr));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(ret&nbsp;==&nbsp;-</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cerr&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;bind&nbsp;failed!&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;bind&nbsp;success&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ret&nbsp;=&nbsp;listen(lfd,&nbsp;</span><span style="color:#ff0000;">32</span><span style="color:#000000;">);&nbsp;&nbsp;</span><span style="color:#008000;">//默认值为128，为最大上限<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(ret&nbsp;==&nbsp;-</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cerr&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;listen&nbsp;failed!&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;listen&nbsp;success&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;socklen_t&nbsp;clientaddr_len,&nbsp;IP_len;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clientaddr_len&nbsp;=&nbsp;</span><span style="color:#0000ff;">sizeof</span><span style="color:#000000;">(clientaddr);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;ready&nbsp;accept&nbsp;client&nbsp;......&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cfd&nbsp;=&nbsp;accept(lfd,&nbsp;(</span><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;sockaddr&nbsp;*)&amp;clientaddr,&nbsp;&amp;clientaddr_len);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(cfd&nbsp;==&nbsp;-</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cerr&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;accept&nbsp;failed!&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inet_ntop(AF_INET,&nbsp;&amp;clientaddr.sin_addr.s_addr,&nbsp;cIP,&nbsp;</span><span style="color:#0000ff;">sizeof</span><span style="color:#000000;">(cIP));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;accept&nbsp;success!&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;client&nbsp;IP:&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;cIP&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;client&nbsp;Port:&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;ntohs(clientaddr.sin_port)&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">while</span><span style="color:#000000;">&nbsp;(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;n&nbsp;=&nbsp;read(cfd,&nbsp;buf,&nbsp;</span><span style="color:#0000ff;">sizeof</span><span style="color:#000000;">(buf));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;n;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;buf[i]&nbsp;=&nbsp;toupper(buf[i]);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;转换为大写&nbsp;函数<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;tolower&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;转换为小写&nbsp;函数<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;write(cfd,&nbsp;buf,&nbsp;n);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;close(lfd);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;close(cfd);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}</span></div></td></tr></table></div>
+<br>
+<br><font color=black size = 5><a name="bc13">客户端</a></font>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47<br>48<br>49<br>50<br>51<br>52<br>53<br>54<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;stdio.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;iostream&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;stdlib.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;string.h&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;memset头<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;strings.h&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;bzero头<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;sys/socket.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;unistd.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;arpa/inet.h&gt;<BR>
+</span><span style="color:#0000ff;">using</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">namespace</span><span style="color:#000000;">&nbsp;std;<BR>
+</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;SERV_PORT&nbsp;=&nbsp;</span><span style="color:#ff0000;">6666</span><span style="color:#000000;">;<BR>
+</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">char</span><span style="color:#000000;">*&nbsp;SERV_IP&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;127.0.0.1&quot;</span><span style="color:#000000;">;<BR>
+<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;main()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;cfd;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;ret;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;n;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;buf[BUFSIZ];<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;sockaddr_in&nbsp;saddr;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;socklen_t&nbsp;saddr_len;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cfd&nbsp;=&nbsp;socket(AF_INET,&nbsp;SOCK_STREAM,&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(cfd&nbsp;==&nbsp;-</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cerr&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;create&nbsp;socket&nbsp;failed!&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;将一段内存空间清成任意值&nbsp;&nbsp;&nbsp;&nbsp;bzero()&nbsp;函数为清0<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;bzero(&amp;saddr,&nbsp;sizeof(saddr));<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;memset(&amp;saddr,&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;</span><span style="color:#0000ff;">sizeof</span><span style="color:#000000;">(saddr));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;saddr.sin_family&nbsp;=&nbsp;AF_INET;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;saddr.sin_port&nbsp;=&nbsp;htons(SERV_PORT);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ret&nbsp;=&nbsp;inet_pton(AF_INET,&nbsp;SERV_IP,&nbsp;&amp;saddr.sin_addr.s_addr);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(ret&nbsp;==&nbsp;-</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cerr&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;inet_pton&nbsp;error!&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ret&nbsp;=&nbsp;connect(cfd,&nbsp;(</span><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;sockaddr&nbsp;*)&amp;saddr,&nbsp;</span><span style="color:#0000ff;">sizeof</span><span style="color:#000000;">(saddr));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(ret&nbsp;==&nbsp;-</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cerr&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;connect&nbsp;failed!&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;connect&nbsp;success!&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">while</span><span style="color:#000000;">(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fgets(buf,&nbsp;</span><span style="color:#0000ff;">sizeof</span><span style="color:#000000;">(buf),&nbsp;stdin);&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;fget会在字串后边加&nbsp;'\0'<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;write(cfd,&nbsp;buf,&nbsp;strlen(buf));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;n&nbsp;=&nbsp;read(cfd,&nbsp;buf,&nbsp;</span><span style="color:#0000ff;">sizeof</span><span style="color:#000000;">(buf));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;write(STDOUT_FILENO,&nbsp;buf,&nbsp;n);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;close&nbsp;(cfd);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}</span></div></td></tr></table></div>
+<br> ✦ 由于客户端不需要固定的端口号，因此不必调用bind()，客户端的端口号由内核自动分配。注意，客户端不是不允许调用bind()，只是没有必要调用bind()固定一个端口号，服务器也不是必须调用bind()，但如果服务器不调用bind()，内核会自动给服务器分配监听端口，每次启动服务器时端口号都不一样，客户端要连接服务器就会遇到麻烦。
+<br> 🤠 客户端和服务器启动后可以使用netstat命令查看链接情况： netstat -apn|grep 6666
+<br>
+<br><font color=black size = 5><a name="bc14">出错处理封装函数</a></font>
+<br> ✦ 上面的例子不仅功能简单，而且简单到几乎没有什么错误处理，我们知道，系统调用不能保证每次都成功，必须进行出错处理，这样一方面可以保证程序逻辑正常，另一方面可以迅速得到故障信息。
+<br> ✦ 为使错误处理的代码不影响主程序的可读性，我们把与socket相关的一些系统函数加上错误处理代码包装成新的函数，做成一个模块wrap.c：
+<br> ♚ wrap.cpp
+<br>div style=&quot;width:100%;border:1px #e3e3e3 solid;&quot;&gt;<div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47<br>48<br>49<br>50<br>51<br>52<br>53<br>54<br>55<br>56<br>57<br>58<br>59<br>60<br>61<br>62<br>63<br>64<br>65<br>66<br>67<br>68<br>69<br>70<br>71<br>72<br>73<br>74<br>75<br>76<br>77<br>78<br>79<br>80<br>81<br>82<br>83<br>84<br>85<br>86<br>87<br>88<br>89<br>90<br>91<br>92<br>93<br>94<br>95<br>96<br>97<br>98<br>99<br>100<br>101<br>102<br>103<br>104<br>105<br>106<br>107<br>108<br>109<br>110<br>111<br>112<br>113<br>114<br>115<br>116<br>117<br>118<br>119<br>120<br>121<br>122<br>123<br>124<br>125<br>126<br>127<br>128<br>129<br>130<br>131<br>132<br>133<br>134<br>135<br>136<br>137<br>138<br>139<br>140<br>141<br>142<br>143<br>144<br>145<br>146<br>147<br>148<br>149<br>150<br>151<br>152<br>153<br>154<br>155<br>156<br>157<br>158<br>159<br>160<br>161<br>162<br>163<br>164<br>165<br>166<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;stdlib.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;errno.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;sys/socket.h&gt;<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;perr_exit(</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;*s)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;perror(s);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;exit(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">);<BR>
+}<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;Accept(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;fd,&nbsp;</span><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;sockaddr&nbsp;*sa,&nbsp;socklen_t&nbsp;*salenptr)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;n;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;again:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(&nbsp;(n&nbsp;=&nbsp;accept(fd,&nbsp;sa,&nbsp;salenptr))&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">)&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;((errno&nbsp;==&nbsp;ECONNABORTED)&nbsp;||&nbsp;(errno&nbsp;==&nbsp;EINTR))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">goto</span><span style="color:#000000;">&nbsp;again;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;perr_exit(</span><span style="color:#800000;">&quot;accept&nbsp;error&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;n;<BR>
+}<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;Bind(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;fd,&nbsp;</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;sockaddr&nbsp;*sa,&nbsp;socklen_t&nbsp;salen)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;n;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;((n&nbsp;=&nbsp;bind(fd,&nbsp;sa,&nbsp;salen))&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;perr_exit(</span><span style="color:#800000;">&quot;bind&nbsp;error&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;n;<BR>
+}<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;Connect(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;fd,&nbsp;</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;sockaddr&nbsp;*sa,&nbsp;socklen_t&nbsp;salen)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;n;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;((n&nbsp;=&nbsp;connect(fd,&nbsp;sa,&nbsp;salen))&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;perr_exit(</span><span style="color:#800000;">&quot;connect&nbsp;error&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;n;<BR>
+}<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;Listen(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;fd,&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;backlog)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;n;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;((n&nbsp;=&nbsp;listen(fd,&nbsp;backlog))&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;perr_exit(</span><span style="color:#800000;">&quot;listen&nbsp;error&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;n;<BR>
+}<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;Socket(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;family,&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;type,&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;protocol)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;n;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(&nbsp;(n&nbsp;=&nbsp;socket(family,&nbsp;type,&nbsp;protocol))&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;perr_exit(</span><span style="color:#800000;">&quot;socket&nbsp;error&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;n;<BR>
+}<BR>
+ssize_t&nbsp;Read(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;fd,&nbsp;</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;*ptr,&nbsp;size_t&nbsp;nbytes)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;ssize_t&nbsp;n;<BR>
+again:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(&nbsp;(n&nbsp;=&nbsp;read(fd,&nbsp;ptr,&nbsp;nbytes))&nbsp;==&nbsp;-</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(errno&nbsp;==&nbsp;EINTR)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">goto</span><span style="color:#000000;">&nbsp;again;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;-</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;n;<BR>
+}<BR>
+ssize_t&nbsp;Write(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;fd,&nbsp;</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;*ptr,&nbsp;size_t&nbsp;nbytes)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;ssize_t&nbsp;n;<BR>
+again:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(&nbsp;(n&nbsp;=&nbsp;write(fd,&nbsp;ptr,&nbsp;nbytes))&nbsp;==&nbsp;-</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(errno&nbsp;==&nbsp;EINTR)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">goto</span><span style="color:#000000;">&nbsp;again;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;-</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;n;<BR>
+}<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;Close(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;fd)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;n;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;((n&nbsp;=&nbsp;close(fd))&nbsp;==&nbsp;-</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;perr_exit(</span><span style="color:#800000;">&quot;close&nbsp;error&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;n;<BR>
+}<BR>
+</span><span style="color:#008000;">/*&nbsp;参数三：应该读取的字节数&nbsp;*/</span><span style="color:#000000;"><BR>
+ssize_t&nbsp;Readn(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;fd,&nbsp;</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;*vptr,&nbsp;size_t&nbsp;n)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;size_t&nbsp;nleft;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;unsigned&nbsp;int&nbsp;剩余未读取的字节数<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;ssize_t&nbsp;nread;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;int&nbsp;实际读到的字节数<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;*ptr;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;ptr&nbsp;=&nbsp;vptr;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;nleft&nbsp;=&nbsp;n;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;n&nbsp;未读取字节数<BR>
+</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">while</span><span style="color:#000000;">&nbsp;(nleft&nbsp;&gt;&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">)&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(&nbsp;(nread&nbsp;=&nbsp;read(fd,&nbsp;ptr,&nbsp;nleft))&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">)&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(errno&nbsp;==&nbsp;EINTR)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;nread&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;-</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(nread&nbsp;==&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;nleft&nbsp;-=&nbsp;nread;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ptr&nbsp;+=&nbsp;nread;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;n&nbsp;-&nbsp;nleft;<BR>
+}<BR>
+<BR>
+ssize_t&nbsp;Writen(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;fd,&nbsp;</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;*vptr,&nbsp;size_t&nbsp;n)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;size_t&nbsp;nleft;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;ssize_t&nbsp;nwritten;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;*ptr;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;ptr&nbsp;=&nbsp;vptr;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;nleft&nbsp;=&nbsp;n;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">while</span><span style="color:#000000;">&nbsp;(nleft&nbsp;&gt;&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">)&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(&nbsp;(nwritten&nbsp;=&nbsp;write(fd,&nbsp;ptr,&nbsp;nleft))&nbsp;&lt;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">)&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(nwritten&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">&nbsp;&amp;&amp;&nbsp;errno&nbsp;==&nbsp;EINTR)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;nwritten&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;-</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;nleft&nbsp;-=&nbsp;nwritten;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ptr&nbsp;+=&nbsp;nwritten;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;n;<BR>
+}<BR>
+<BR>
+</span><span style="color:#0000ff;">static</span><span style="color:#000000;">&nbsp;ssize_t&nbsp;my_read(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;fd,&nbsp;</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;*ptr)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">static</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;read_cnt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">static</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;*read_ptr;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">static</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;read_buf[</span><span style="color:#ff0000;">100</span><span style="color:#000000;">];<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(read_cnt&nbsp;&lt;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">)&nbsp;{<BR>
+again:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;((read_cnt&nbsp;=&nbsp;read(fd,&nbsp;read_buf,&nbsp;</span><span style="color:#0000ff;">sizeof</span><span style="color:#000000;">(read_buf)))&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">)&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(errno&nbsp;==&nbsp;EINTR)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">goto</span><span style="color:#000000;">&nbsp;again;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;-</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(read_cnt&nbsp;==&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;read_ptr&nbsp;=&nbsp;read_buf;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;read_cnt--;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;*ptr&nbsp;=&nbsp;*read_ptr++;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;<BR>
+}<BR>
+<BR>
+ssize_t&nbsp;Readline(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;fd,&nbsp;</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;*vptr,&nbsp;size_t&nbsp;maxlen)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;ssize_t&nbsp;n,&nbsp;rc;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;c,&nbsp;*ptr;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;ptr&nbsp;=&nbsp;vptr;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(n&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;&nbsp;n&nbsp;&lt;&nbsp;maxlen;&nbsp;n++)&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(&nbsp;(rc&nbsp;=&nbsp;my_read(fd,&nbsp;&amp;c))&nbsp;==&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*ptr++&nbsp;=&nbsp;c;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(c&nbsp;==&nbsp;</span><span style="color:#800000;">'\n'</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(rc&nbsp;==&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">)&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*ptr&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;n&nbsp;-&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;-</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;*ptr&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;n;<BR>
+}</span></div></td></tr></table></div>
+<br> ♚ wrap.h
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#ifndef</span><span style="color:#000000;">&nbsp;__WRAP_H_<BR>
+</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;__WRAP_H_<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;perr_exit(</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;*s);<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;Accept(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;fd,&nbsp;</span><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;sockaddr&nbsp;*sa,&nbsp;socklen_t&nbsp;*salenptr);<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;Bind(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;fd,&nbsp;</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;sockaddr&nbsp;*sa,&nbsp;socklen_t&nbsp;salen);<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;Connect(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;fd,&nbsp;</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;sockaddr&nbsp;*sa,&nbsp;socklen_t&nbsp;salen);<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;Listen(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;fd,&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;backlog);<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;Socket(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;family,&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;type,&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;protocol);<BR>
+ssize_t&nbsp;Read(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;fd,&nbsp;</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;*ptr,&nbsp;size_t&nbsp;nbytes);<BR>
+ssize_t&nbsp;Write(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;fd,&nbsp;</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;*ptr,&nbsp;size_t&nbsp;nbytes);<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;Close(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;fd);<BR>
+ssize_t&nbsp;Readn(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;fd,&nbsp;</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;*vptr,&nbsp;size_t&nbsp;n);<BR>
+ssize_t&nbsp;Writen(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;fd,&nbsp;</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;*vptr,&nbsp;size_t&nbsp;n);<BR>
+ssize_t&nbsp;my_read(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;fd,&nbsp;</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;*ptr);<BR>
+ssize_t&nbsp;Readline(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;fd,&nbsp;</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;*vptr,&nbsp;size_t&nbsp;maxlen);<BR>
+</span><span style="color:#0000ff;">#endif</span></div></td></tr></table></div>
+<br>
+<br><font color=red size = 5><a name="bc15">read返回值总结</a></font>
+<br> ♚ 正常情况：&gt; 0，实际读到的字节数
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0、实际返回1024：buf = 1024字节
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1、读到文件结尾：&lt; buf    50
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2、返回退出(读到文件末尾、管道、socket)，末尾-对端关闭 = 0
+<br> ♚ 返回 -1：出现异常
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 通过 errno 进行进一步细分
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0、errno = EINTR    被信号中断
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1、errno = EAGAIN / EWOULDBLOCK    以非阻塞方式读并且无数据
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2、errno = 其它值    真正错误，cerr → exit(1)</p>
+
+<p><br><br><br>
+<font color = gray size = 3>如有错误，欢迎指正！</font></p></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://oubc.github.io/tags/linux/">Linux</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmg4aog3074074gnf.gif?tags=%5B%5D">I </a>
+	<a href="">love</a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmfm2eg306o06o74u.gif?tags=%5B%5D"> you </a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx4tpcj30fn0bq3zg.jpg?tags=%5B%5D">three </a>
+	<a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx64ctg307s07swfy.gif?tags=%5B%5D">thousand</a>
+    <a href="https://www.kugou.com/song/#hash=96426C78381DE98DC31A5846FC274CBF&album_id=646623"> times.</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>家庭、梦想、内心的平静</span>
+  </div>
+</footer>
+
+
+
+<script src="https://oubc.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://oubc.github.io/js/zozo.js"></script>
+<script src="https://oubc.github.io/js/highlight.pack.js"></script>
+<link  href="https://oubc.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://oubc.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>

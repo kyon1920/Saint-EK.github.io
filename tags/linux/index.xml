@@ -6,10 +6,19 @@
     <description>Recent content in Linux on Love, or death</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Wed, 09 Oct 2019 20:01:13 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 11 Oct 2019 15:10:36 +0800</lastBuildDate>
     
 	<atom:link href="https://oubc.github.io/tags/linux/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Linux网络编程 ( Socket编程 )</title>
+      <link>https://oubc.github.io/post/l24_socketcode1/</link>
+      <pubDate>Fri, 11 Oct 2019 15:10:36 +0800</pubDate>
+      
+      <guid>https://oubc.github.io/post/l24_socketcode1/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>Linux网络编程 ( 网络基础 )</title>

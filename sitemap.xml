@@ -4,43 +4,48 @@
   
   <url>
     <loc>https://oubc.github.io/categories/</loc>
-    <lastmod>2019-10-09T20:01:13+08:00</lastmod>
+    <lastmod>2019-10-11T15:10:36+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://oubc.github.io/tags/linux/</loc>
-    <lastmod>2019-10-09T20:01:13+08:00</lastmod>
+    <lastmod>2019-10-11T15:10:36+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://oubc.github.io/post/l24_socketcode1/</loc>
+    <lastmod>2019-10-11T15:10:36+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://oubc.github.io/</loc>
+    <lastmod>2019-10-11T15:10:36+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://oubc.github.io/post/</loc>
+    <lastmod>2019-10-11T15:10:36+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://oubc.github.io/tags/</loc>
+    <lastmod>2019-10-11T15:10:36+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://oubc.github.io/categories/%E5%AD%A6%E4%B9%A0/</loc>
+    <lastmod>2019-10-11T15:10:36+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://oubc.github.io/post/l23_socketcode0/</loc>
     <lastmod>2019-10-09T20:01:13+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://oubc.github.io/</loc>
-    <lastmod>2019-10-09T20:01:13+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://oubc.github.io/post/</loc>
-    <lastmod>2019-10-09T20:01:13+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://oubc.github.io/tags/</loc>
-    <lastmod>2019-10-09T20:01:13+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://oubc.github.io/categories/%E5%AD%A6%E4%B9%A0/</loc>
-    <lastmod>2019-10-09T20:01:13+08:00</lastmod>
-    <priority>0</priority>
   </url>
   
   <url>
