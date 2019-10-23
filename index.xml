@@ -6,10 +6,19 @@
     <description>Recent content on Love, or death</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Mon, 21 Oct 2019 17:25:54 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 23 Oct 2019 16:52:42 +0800</lastBuildDate>
     
 	<atom:link href="https://oubc.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Linux网络编程 ( UDP服务器 )</title>
+      <link>https://oubc.github.io/post/l28_socketcode5/</link>
+      <pubDate>Wed, 23 Oct 2019 16:52:42 +0800</pubDate>
+      
+      <guid>https://oubc.github.io/post/l28_socketcode5/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>Linux网络编程 ( 线程池 )</title>
