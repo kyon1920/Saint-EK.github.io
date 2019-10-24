@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Bruce Cheung"/>
+
+  
+  <meta name="description" content=""/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, simple, dream"/>
+  
+
+  
+  <link rel="canonical" href="https://oubc.github.io/post/l29_socketcode6/"/>
+
+  
+
+  <title>Linux网络编程 ( 本地套接字 ) &middot; Love, or death</title>
+
+  <link rel="shortcut icon" href="https://oubc.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/post/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://oubc.github.io/">
+          <span>Love, or death</span>
+          <img src="https://oubc.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">For you, a thousand times over.</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/oubc" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=uYGOjo6OiIuLivnIyJfa1tQ" title="mail" target="_blank"><i class="remixicon-mail-fill"></i></a>
+        
+        
+        
+        <a href="http://sighttp.qq.com/msgrd?v=1&amp;uin=877771223" title="qq" target="_blank"><i class="remixicon-qq-fill"></i></a>
+        
+        
+        
+        <a href="https://github.com/oubc/oubc.github.io/blob/master/images/wx.jpg?raw=true" title="wechat" target="_blank"><i class="remixicon-wechat-fill"></i></a>
+        
+        
+        
+        <a href="https://weibo.com/u/6993631995?topnav=1&amp;wvr=6&amp;topsug=1" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://oubc.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/post/l29_socketcode6/'>Linux网络编程 ( 本地套接字 )</a></h2>
+          <span class="date">2019.10.24</span>
+        </div>
+        <div class="post_content markdown"><p><br>
+<br>
+<font color = gray size = 2>列表，展开点击跳转</font>
+<br>
+<details class="menu" close>
+      <summary><font color=blue size = 4>IPC方式总结</font></summary>
+      <ul>
+          <li><a href="#bc0">IPC 的四种方法</a></li>
+          <li><a href="#bc1">本地套接字 domain</a></li>
+      </ul>
+</details>
+<details class="menu" close>
+      <summary><font color=blue size = 4>本地套 实现</font></summary>
+      <ul>
+          <li><a href="#bc2">server端实现</a></li>
+          <li><a href="#bc3">client端实现</a></li>
+      </ul>
+</details>
+<details class="menu" close>
+      <summary><font color=blue size = 4>其它常用函数</font></summary>
+      <ul>
+          <li><a href="#bc4">名字与地址转换函数</a></li>
+          <li><a href="#bc5">套接口和地址关联函数</a></li>
+      </ul>
+</details>
+<details class="menu" close>
+      <summary><font color=blue size = 4>常用的开源库</font></summary>
+      <ul>
+          <li><a href="#bc6">开源库的一般使用方式</a></li>
+          <li><a href="#bc7">开源库</a></li>
+      </ul>
+</details>
+<br>
+<br>
+<br>
+<br>
+<br><font color=black size = 5><a name="bc0">进程间通信 (IPC) 的四种方法</a></font>
+<br> • 管道 (pipe fifo)：实现最简单
+<br> • 信号：开销小
+<br> • 共享内存 (mmap)：非血缘关系进程间
+<br> • 本地套 (domain)：稳定性最好
+<br>
+<br><font color=black size = 5><a name="bc1">socket IPC（本地套接字domain）</a></font>
+<br> ◆ socket API原本是为网络通讯设计的，但后来在socket的框架上发展出一种IPC机制，就是UNIX Domain Socket。虽然网络socket也可用于同一台主机的进程间通讯（通过loopback地址127.0.0.1），但是UNIX Domain Socket用于IPC更有效率：不需要经过网络协议栈，不需要打包拆包、计算校验和、维护序号和应答等，只是将应用层数据从一个进程拷贝到另一个进程。这是因为，IPC机制本质上是可靠的通讯，而网络协议是为不可靠的通讯设计的。UNIX Domain Socket也提供面向流和面向数据包两种API接口，类似于TCP和UDP，但是面向消息的UNIX Domain Socket也是可靠的，消息既不会丢失也不会顺序错乱。
+<br> ◆ UNIX Domain Socket是全双工的，API接口语义丰富，相比其它IPC机制有明显的优越性，目前已成为使用最广泛的IPC机制，比如X Window服务器和GUI程序之间就是通过UNIXDomain Socket通讯的。
+<br> ◆ 使用UNIX Domain Socket的过程和网络socket十分相似，也要先调用socket()创建一个socket文件描述符，address family指定为AF_UNIX，type可以选择SOCK_DGRAM或SOCK_STREAM，protocol参数仍然指定为0即可。
+<br> ◆ UNIX Domain Socket与网络socket编程最明显的不同在于地址格式不同，用结构体sockaddr_un表示，网络编程的socket地址是IP地址加端口号，而UNIX Domain Socket的地址是一个socket类型的文件在文件系统中的路径，这个socket文件由bind()调用创建，如果调用bind()时该文件已存在，则bind()错误返回。
+<br> 🍕 对比网络套接字地址结构和本地套接字地址结构：
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;sockaddr_in&nbsp;{<BR>
+__kernel_sa_family_t&nbsp;sin_family;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">/*&nbsp;Address&nbsp;family&nbsp;*/</span><span style="color:#000000;">&nbsp;地址结构类型<BR>
+__be16&nbsp;sin_port;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">/*&nbsp;Port&nbsp;number&nbsp;*/</span><span style="color:#000000;">&nbsp;端口号<BR>
+</span><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;in_addr&nbsp;sin_addr;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">/*&nbsp;Internet&nbsp;address&nbsp;*/</span><span style="color:#000000;">&nbsp;IP地址<BR>
+};<BR>
+</span><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;sockaddr_un&nbsp;{<BR>
+__kernel_sa_family_t&nbsp;sun_family;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">/*&nbsp;AF_UNIX&nbsp;*/</span><span style="color:#000000;">&nbsp;地址结构类型<BR>
+</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;sun_path[UNIX_PATH_MAX];&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">/*&nbsp;pathname&nbsp;*/</span><span style="color:#000000;">&nbsp;socket文件名(含路径)<BR>
+};<BR>
+<BR>
+以下程序将UNIX&nbsp;Domain&nbsp;socket绑定到一个地址：<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;size&nbsp;=&nbsp;offsetof(</span><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;sockaddr_un,&nbsp;sun_path)&nbsp;+&nbsp;strlen(un.sun_path);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;offsetof(type,&nbsp;member)&nbsp;((</span><span style="color:#8000ff;">int</span><span style="color:#000000;">)&amp;((type&nbsp;*)</span><span style="color:#ff0000;">0</span><span style="color:#000000;">)-&gt;MEMBER)</span></div></td></tr></table></div>
+<br>
+<br><font color=black size = 5><a name="bc2">server端实现</a></font>
+<br> 🍕 server
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47<br>48<br>49<br>50<br>51<br>52<br>53<br>54<br>55<br>56<br>57<br>58<br>59<br>60<br>61<br>62<br>63<br>64<br>65<br>66<br>67<br>68<br>69<br>70<br>71<br>72<br>73<br>74<br>75<br>76<br>77<br>78<br>79<br>80<br>81<br>82<br>83<br>84<br>85<br>86<br>87<br>88<br>89<br>90<br>91<br>92<br>93<br>94<br>95<br>96<br>97<br>98<br>99<br>100<br>101<br>102<br>103<br>104<br>105<br>106<br>107<br>108<br>109<br>110<br>111<br>112<br>113<br>114<br>115<br>116<br>117<br>118<br>119<br>120<br>121<br>122<br>123<br>124<br>125<br>126<br>127<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;stdlib.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;stdio.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;stddef.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;sys/socket.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;sys/un.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;sys/types.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;sys/stat.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;unistd.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;errno.h&gt;<BR>
+<BR>
+</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;QLEN&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">/*<BR>
+*&nbsp;Create&nbsp;a&nbsp;server&nbsp;endpoint&nbsp;of&nbsp;a&nbsp;connection.<BR>
+*&nbsp;Returns&nbsp;fd&nbsp;if&nbsp;all&nbsp;OK,&nbsp;&lt;0&nbsp;on&nbsp;error.<BR>
+*/</span><span style="color:#000000;"><BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;serv_listen(</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;*name)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;fd,&nbsp;len,&nbsp;err,&nbsp;rval;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;sockaddr_un&nbsp;un;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">/*&nbsp;create&nbsp;a&nbsp;UNIX&nbsp;domain&nbsp;stream&nbsp;socket&nbsp;*/</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;((fd&nbsp;=&nbsp;socket(AF_UNIX,&nbsp;SOCK_STREAM,&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">))&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">(-</span><span style="color:#ff0000;">1</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">/*&nbsp;in&nbsp;case&nbsp;it&nbsp;already&nbsp;exists&nbsp;*/</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;unlink(name);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">/*&nbsp;fill&nbsp;in&nbsp;socket&nbsp;address&nbsp;structure&nbsp;*/</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;memset(&amp;un,&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;</span><span style="color:#0000ff;">sizeof</span><span style="color:#000000;">(un));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;un.sun_family&nbsp;=&nbsp;AF_UNIX;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;strcpy(un.sun_path,&nbsp;name);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;len&nbsp;=&nbsp;offsetof(</span><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;sockaddr_un,&nbsp;sun_path)&nbsp;+&nbsp;strlen(name);<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">/*&nbsp;bind&nbsp;the&nbsp;name&nbsp;to&nbsp;the&nbsp;descriptor&nbsp;*/</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(bind(fd,&nbsp;(</span><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;sockaddr&nbsp;*)&amp;un,&nbsp;len)&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">)&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rval&nbsp;=&nbsp;-</span><span style="color:#ff0000;">2</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">goto</span><span style="color:#000000;">&nbsp;errout;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(listen(fd,&nbsp;QLEN)&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">)&nbsp;{&nbsp;</span><span style="color:#008000;">/*&nbsp;tell&nbsp;kernel&nbsp;we're&nbsp;a&nbsp;server&nbsp;*/</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rval&nbsp;=&nbsp;-</span><span style="color:#ff0000;">3</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">goto</span><span style="color:#000000;">&nbsp;errout;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">(fd);<BR>
+<BR>
+errout:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;err&nbsp;=&nbsp;errno;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;close(fd);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;errno&nbsp;=&nbsp;err;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">(rval);<BR>
+}<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;serv_accept(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;listenfd,&nbsp;uid_t&nbsp;*uidptr)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;clifd,&nbsp;len,&nbsp;err,&nbsp;rval;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;time_t&nbsp;staletime;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;sockaddr_un&nbsp;un;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;stat&nbsp;statbuf;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;len&nbsp;=&nbsp;</span><span style="color:#0000ff;">sizeof</span><span style="color:#000000;">(un);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;((clifd&nbsp;=&nbsp;accept(listenfd,&nbsp;(</span><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;sockaddr&nbsp;*)&amp;un,&nbsp;&amp;len))&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">(-</span><span style="color:#ff0000;">1</span><span style="color:#000000;">);&nbsp;</span><span style="color:#008000;">/*&nbsp;often&nbsp;errno=EINTR,&nbsp;if&nbsp;signal&nbsp;caught&nbsp;*/</span><span style="color:#000000;"><BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">/*&nbsp;obtain&nbsp;the&nbsp;client's&nbsp;uid&nbsp;from&nbsp;its&nbsp;calling&nbsp;address&nbsp;*/</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;len&nbsp;-=&nbsp;offsetof(</span><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;sockaddr_un,&nbsp;sun_path);&nbsp;</span><span style="color:#008000;">/*&nbsp;len&nbsp;of&nbsp;pathname&nbsp;*/</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;un.sun_path[len]&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;</span><span style="color:#008000;">/*&nbsp;null&nbsp;terminate&nbsp;*/</span><span style="color:#000000;"><BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(stat(un.sun_path,&nbsp;&amp;statbuf)&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">)&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rval&nbsp;=&nbsp;-</span><span style="color:#ff0000;">2</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">goto</span><span style="color:#000000;">&nbsp;errout;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(S_ISSOCK(statbuf.st_mode)&nbsp;==&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">)&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rval&nbsp;=&nbsp;-</span><span style="color:#ff0000;">3</span><span style="color:#000000;">;&nbsp;</span><span style="color:#008000;">/*&nbsp;not&nbsp;a&nbsp;socket&nbsp;*/</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">goto</span><span style="color:#000000;">&nbsp;errout;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(uidptr&nbsp;!=&nbsp;</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*uidptr&nbsp;=&nbsp;statbuf.st_uid;&nbsp;</span><span style="color:#008000;">/*&nbsp;return&nbsp;uid&nbsp;of&nbsp;caller&nbsp;*/</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">/*&nbsp;we're&nbsp;done&nbsp;with&nbsp;pathname&nbsp;now&nbsp;*/</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;unlink(un.sun_path);&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">(clifd);<BR>
+<BR>
+errout:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;err&nbsp;=&nbsp;errno;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;close(clifd);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;errno&nbsp;=&nbsp;err;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">(rval);<BR>
+}<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;main(</span><span style="color:#8000ff;">void</span><span style="color:#000000;">)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;lfd,&nbsp;cfd,&nbsp;n,&nbsp;i;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;uid_t&nbsp;cuid;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;buf[</span><span style="color:#ff0000;">1024</span><span style="color:#000000;">];<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;lfd&nbsp;=&nbsp;serv_listen(</span><span style="color:#800000;">&quot;foo.socket&quot;</span><span style="color:#000000;">);<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(lfd&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">)&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">switch</span><span style="color:#000000;">&nbsp;(lfd)&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;-</span><span style="color:#ff0000;">3</span><span style="color:#000000;">:perror(</span><span style="color:#800000;">&quot;listen&quot;</span><span style="color:#000000;">);&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;-</span><span style="color:#ff0000;">2</span><span style="color:#000000;">:perror(</span><span style="color:#800000;">&quot;bind&quot;</span><span style="color:#000000;">);&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;-</span><span style="color:#ff0000;">1</span><span style="color:#000000;">:perror(</span><span style="color:#800000;">&quot;socket&quot;</span><span style="color:#000000;">);&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit(-</span><span style="color:#ff0000;">1</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cfd&nbsp;=&nbsp;serv_accept(lfd,&nbsp;&amp;cuid);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(cfd&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">)&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">switch</span><span style="color:#000000;">&nbsp;(cfd)&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;-</span><span style="color:#ff0000;">3</span><span style="color:#000000;">:perror(</span><span style="color:#800000;">&quot;not&nbsp;a&nbsp;socket&quot;</span><span style="color:#000000;">);&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;-</span><span style="color:#ff0000;">2</span><span style="color:#000000;">:perror(</span><span style="color:#800000;">&quot;a&nbsp;bad&nbsp;filename&quot;</span><span style="color:#000000;">);&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;-</span><span style="color:#ff0000;">1</span><span style="color:#000000;">:perror(</span><span style="color:#800000;">&quot;accept&quot;</span><span style="color:#000000;">);&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit(-</span><span style="color:#ff0000;">1</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">while</span><span style="color:#000000;">&nbsp;(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)&nbsp;{<BR>
+r_again:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;n&nbsp;=&nbsp;read(cfd,&nbsp;buf,&nbsp;</span><span style="color:#ff0000;">1024</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(n&nbsp;==&nbsp;-</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(errno&nbsp;==&nbsp;EINTR)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">goto</span><span style="color:#000000;">&nbsp;r_again;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(n&nbsp;==&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">)&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;printf(</span><span style="color:#800000;">&quot;the&nbsp;other&nbsp;side&nbsp;has&nbsp;been&nbsp;closed.\n&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;n;&nbsp;i++)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;buf[i]&nbsp;=&nbsp;toupper(buf[i]);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;write(cfd,&nbsp;buf,&nbsp;n);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;close(cfd);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;close(lfd);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}</span></div></td></tr></table></div>
+<br>
+<br><font color=black size = 5><a name="bc3">client端实现</a></font>
+<br> 🍕 client
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47<br>48<br>49<br>50<br>51<br>52<br>53<br>54<br>55<br>56<br>57<br>58<br>59<br>60<br>61<br>62<br>63<br>64<br>65<br>66<br>67<br>68<br>69<br>70<br>71<br>72<br>73<br>74<br>75<br>76<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;stdio.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;stdlib.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;stddef.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;sys/stat.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;fcntl.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;unistd.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;sys/socket.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;sys/un.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;errno.h&gt;<BR>
+<BR>
+</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;CLI_PATH&nbsp;</span><span style="color:#800000;">&quot;/var/tmp/&quot;</span><span style="color:#000000;">&nbsp;</span><span style="color:#008000;">/*&nbsp;+5&nbsp;for&nbsp;pid&nbsp;=&nbsp;14&nbsp;chars&nbsp;*/</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">/*<BR>
+*&nbsp;Create&nbsp;a&nbsp;client&nbsp;endpoint&nbsp;and&nbsp;connect&nbsp;to&nbsp;a&nbsp;server.<BR>
+*&nbsp;Returns&nbsp;fd&nbsp;if&nbsp;all&nbsp;OK,&nbsp;&lt;0&nbsp;on&nbsp;error.<BR>
+*/</span><span style="color:#000000;"><BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;cli_conn(</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;*name)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;fd,&nbsp;len,&nbsp;err,&nbsp;rval;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;sockaddr_un&nbsp;un;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">/*&nbsp;create&nbsp;a&nbsp;UNIX&nbsp;domain&nbsp;stream&nbsp;socket&nbsp;*/</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;((fd&nbsp;=&nbsp;socket(AF_UNIX,&nbsp;SOCK_STREAM,&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">))&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">(-</span><span style="color:#ff0000;">1</span><span style="color:#000000;">);<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">/*&nbsp;fill&nbsp;socket&nbsp;address&nbsp;structure&nbsp;with&nbsp;our&nbsp;address&nbsp;*/</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;memset(&amp;un,&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;</span><span style="color:#0000ff;">sizeof</span><span style="color:#000000;">(un));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;un.sun_family&nbsp;=&nbsp;AF_UNIX;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;sprintf(un.sun_path,&nbsp;</span><span style="color:#800000;">&quot;%s%05d&quot;</span><span style="color:#000000;">,&nbsp;CLI_PATH,&nbsp;getpid());<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;len&nbsp;=&nbsp;offsetof(</span><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;sockaddr_un,&nbsp;sun_path)&nbsp;+&nbsp;strlen(un.sun_path);<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">/*&nbsp;in&nbsp;case&nbsp;it&nbsp;already&nbsp;exists&nbsp;*/</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;unlink(un.sun_path);&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(bind(fd,&nbsp;(</span><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;sockaddr&nbsp;*)&amp;un,&nbsp;len)&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">)&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rval&nbsp;=&nbsp;-</span><span style="color:#ff0000;">2</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">goto</span><span style="color:#000000;">&nbsp;errout;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">/*&nbsp;fill&nbsp;socket&nbsp;address&nbsp;structure&nbsp;with&nbsp;server's&nbsp;address&nbsp;*/</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;memset(&amp;un,&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;</span><span style="color:#0000ff;">sizeof</span><span style="color:#000000;">(un));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;un.sun_family&nbsp;=&nbsp;AF_UNIX;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;strcpy(un.sun_path,&nbsp;name);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;len&nbsp;=&nbsp;offsetof(</span><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;sockaddr_un,&nbsp;sun_path)&nbsp;+&nbsp;strlen(name);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(connect(fd,&nbsp;(</span><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;sockaddr&nbsp;*)&amp;un,&nbsp;len)&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">)&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rval&nbsp;=&nbsp;-</span><span style="color:#ff0000;">4</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">goto</span><span style="color:#000000;">&nbsp;errout;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+</span><span style="color:#0000ff;">return</span><span style="color:#000000;">(fd);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;errout:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;err&nbsp;=&nbsp;errno;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;close(fd);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;errno&nbsp;=&nbsp;err;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">(rval);<BR>
+}<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;main(</span><span style="color:#8000ff;">void</span><span style="color:#000000;">)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;fd,&nbsp;n;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;buf[</span><span style="color:#ff0000;">1024</span><span style="color:#000000;">];<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;fd&nbsp;=&nbsp;cli_conn(</span><span style="color:#800000;">&quot;foo.socket&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(fd&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">)&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">switch</span><span style="color:#000000;">&nbsp;(fd)&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;-</span><span style="color:#ff0000;">4</span><span style="color:#000000;">:perror(</span><span style="color:#800000;">&quot;connect&quot;</span><span style="color:#000000;">);&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;-</span><span style="color:#ff0000;">3</span><span style="color:#000000;">:perror(</span><span style="color:#800000;">&quot;listen&quot;</span><span style="color:#000000;">);&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;-</span><span style="color:#ff0000;">2</span><span style="color:#000000;">:perror(</span><span style="color:#800000;">&quot;bind&quot;</span><span style="color:#000000;">);&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;-</span><span style="color:#ff0000;">1</span><span style="color:#000000;">:perror(</span><span style="color:#800000;">&quot;socket&quot;</span><span style="color:#000000;">);&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit(-</span><span style="color:#ff0000;">1</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">while</span><span style="color:#000000;">&nbsp;(fgets(buf,&nbsp;</span><span style="color:#0000ff;">sizeof</span><span style="color:#000000;">(buf),&nbsp;stdin)&nbsp;!=&nbsp;</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">)&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;write(fd,&nbsp;buf,&nbsp;strlen(buf));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;n&nbsp;=&nbsp;read(fd,&nbsp;buf,&nbsp;</span><span style="color:#0000ff;">sizeof</span><span style="color:#000000;">(buf));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;write(STDOUT_FILENO,&nbsp;buf,&nbsp;n);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;close(fd);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}</span></div></td></tr></table></div>
+<br>
+<br><font color=black size = 5><a name="bc4">名字与地址转换函数</a></font>
+<br> 🍟 gethostbyname() 函数
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 根据给定的主机名，获取主机信息
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 过时，仅用于IPv4，且线程不安全
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;stdio.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;netdb.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;arpa/inet.h&gt;<BR>
+<BR>
+</span><span style="color:#0000ff;">extern</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;h_errno;<BR>
+<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;main(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;argc,&nbsp;</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;*argv[])<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;hostent&nbsp;*host;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;str[</span><span style="color:#ff0000;">128</span><span style="color:#000000;">];<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;host&nbsp;=&nbsp;gethostbyname(argv[</span><span style="color:#ff0000;">1</span><span style="color:#000000;">]);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;printf(</span><span style="color:#800000;">&quot;%s\n&quot;</span><span style="color:#000000;">,&nbsp;host-&gt;h_name);<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">while</span><span style="color:#000000;">&nbsp;(*(host-&gt;h_aliases)&nbsp;!=&nbsp;</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;printf(</span><span style="color:#800000;">&quot;%s\n&quot;</span><span style="color:#000000;">,&nbsp;*host-&gt;h_aliases++);<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">switch</span><span style="color:#000000;">&nbsp;(host-&gt;h_addrtype)&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;AF_INET:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">while</span><span style="color:#000000;">&nbsp;(*(host-&gt;h_addr_list)&nbsp;!=&nbsp;</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;printf(</span><span style="color:#800000;">&quot;%s\n&quot;</span><span style="color:#000000;">,&nbsp;inet_ntop(AF_INET,&nbsp;(*host-&gt;h_addr_list++),&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;str,&nbsp;</span><span style="color:#0000ff;">sizeof</span><span style="color:#000000;">(str)));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">default</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;printf(</span><span style="color:#800000;">&quot;unknown&nbsp;address&nbsp;type\n&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}</span></div></td></tr></table></div>
+<br> 🍟 gethostbyaddr() 函数
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 此函数只能获取域名解析服务器的url和/etc/hosts里登记的IP对应的域名
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;stdio.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;netdb.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;arpa/inet.h&gt;<BR>
+<BR>
+</span><span style="color:#0000ff;">extern</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;h_errno;<BR>
+<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;main(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;argc,&nbsp;</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;*argv[])<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;hostent&nbsp;*host;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;str[</span><span style="color:#ff0000;">128</span><span style="color:#000000;">];<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;in_addr&nbsp;addr;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;inet_pton(AF_INET,&nbsp;argv[</span><span style="color:#ff0000;">1</span><span style="color:#000000;">],&nbsp;&amp;addr);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;host&nbsp;=&nbsp;gethostbyaddr((</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;*)&amp;addr,&nbsp;</span><span style="color:#ff0000;">4</span><span style="color:#000000;">,&nbsp;AF_INET);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;printf(</span><span style="color:#800000;">&quot;%s\n&quot;</span><span style="color:#000000;">,&nbsp;host-&gt;h_name);<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">while</span><span style="color:#000000;">&nbsp;(*(host-&gt;h_aliases)&nbsp;!=&nbsp;</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;printf(</span><span style="color:#800000;">&quot;%s\n&quot;</span><span style="color:#000000;">,&nbsp;*host-&gt;h_aliases++);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">switch</span><span style="color:#000000;">&nbsp;(host-&gt;h_addrtype)&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">case</span><span style="color:#000000;">&nbsp;AF_INET:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">while</span><span style="color:#000000;">&nbsp;(*(host-&gt;h_addr_list)&nbsp;!=&nbsp;</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;printf(</span><span style="color:#800000;">&quot;%s\n&quot;</span><span style="color:#000000;">,&nbsp;inet_ntop(AF_INET,&nbsp;(*host-&gt;h_addr_list++),&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;str,&nbsp;</span><span style="color:#0000ff;">sizeof</span><span style="color:#000000;">(str)));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">default</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;printf(</span><span style="color:#800000;">&quot;unknown&nbsp;address&nbsp;type\n&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}</span></div></td></tr></table></div>
+<br>&nbsp;&nbsp;&nbsp; getservbyname()
+<br>&nbsp;&nbsp;&nbsp; getservbyport()
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 根据服务程序名字或端口号获取信息，使用频率不高
+<br>&nbsp;&nbsp;&nbsp; getaddrinfo()
+<br>&nbsp;&nbsp;&nbsp; getnameinfo()
+<br>&nbsp;&nbsp;&nbsp; freeaddrinfo()
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 可同时处理IPv4和IPv6，线程安全的
+<br>
+<br><font color=black size = 5><a name="bc5">套接口和地址关联函数</a></font>
+<br> 🍟 getsockname() 函数
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 根据accpet返回的sockfd，得到临时端口号
+<br> 🍟 getpeername() 函数
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 根据accpet返回的sockfd，得到远端链接的端口号，在exec后可以获取客户端信息
+<br>
+<br><font color=black size = 5><a name="bc6">开源库的一般使用方式</a></font>
+<br> 0、./configura → check 检查当前主机环境是否适合安装开源库
+<br> 1、生成 makefile 文件，需要我们进行 make
+<br> 2、使用 sudo make install 命令安装开源库
+<br> 如果没有以上文件，该开源库至少有 README 或者 README.md 文件，打开 README 查看安装步骤
+<br>
+<br><font color=black size = 5><a name="bc7">开源库</a></font>
+<br> 🤫 libevent库、libv库、压力测试库、其它库</p>
+
+<p><br><br><br>
+<font color = gray size = 3>如有错误，欢迎指正！</font></p></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://oubc.github.io/tags/linux/">Linux</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmg4aog3074074gnf.gif?tags=%5B%5D">I </a>
+	<a href="">love</a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmfm2eg306o06o74u.gif?tags=%5B%5D"> you </a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx4tpcj30fn0bq3zg.jpg?tags=%5B%5D">three </a>
+	<a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx64ctg307s07swfy.gif?tags=%5B%5D">thousand</a>
+    <a href="https://www.kugou.com/song/#hash=96426C78381DE98DC31A5846FC274CBF&album_id=646623"> times.</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>家庭、梦想、内心的平静</span>
+  </div>
+</footer>
+
+
+
+<script src="https://oubc.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://oubc.github.io/js/zozo.js"></script>
+<script src="https://oubc.github.io/js/highlight.pack.js"></script>
+<link  href="https://oubc.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://oubc.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>
