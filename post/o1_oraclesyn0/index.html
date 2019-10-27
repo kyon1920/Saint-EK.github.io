@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Bruce Cheung"/>
+
+  
+  <meta name="description" content=""/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, simple, dream"/>
+  
+
+  
+  <link rel="canonical" href="https://oubc.github.io/post/o1_oraclesyn0/"/>
+
+  
+
+  <title>Oracle数据库基础语法 &middot; Love, or death</title>
+
+  <link rel="shortcut icon" href="https://oubc.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/post/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://oubc.github.io/">
+          <span>Love, or death</span>
+          <img src="https://oubc.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">For you, a thousand times over.</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/oubc" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=uYGOjo6OiIuLivnIyJfa1tQ" title="mail" target="_blank"><i class="remixicon-mail-fill"></i></a>
+        
+        
+        
+        <a href="http://sighttp.qq.com/msgrd?v=1&amp;uin=877771223" title="qq" target="_blank"><i class="remixicon-qq-fill"></i></a>
+        
+        
+        
+        <a href="https://github.com/oubc/oubc.github.io/blob/master/images/wx.jpg?raw=true" title="wechat" target="_blank"><i class="remixicon-wechat-fill"></i></a>
+        
+        
+        
+        <a href="https://weibo.com/u/6993631995?topnav=1&amp;wvr=6&amp;topsug=1" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://oubc.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/post/o1_oraclesyn0/'>Oracle数据库基础语法</a></h2>
+          <span class="date">2019.10.27</span>
+        </div>
+        <div class="post_content markdown"><p><br>
+<br>
+<br><font color=green size = 4>sqlplus基本命令</font>
+<br>&nbsp;&nbsp;&nbsp; set linesize 140; &nbsp;&nbsp;&nbsp; 每一行显示140个字节
+<br>&nbsp;&nbsp;&nbsp; set pagesize 140; &nbsp;&nbsp;&nbsp; 每一页显示140行
+<br>&nbsp;&nbsp;&nbsp; host cls; &nbsp;&nbsp;&nbsp; 清零
+<br>&nbsp;&nbsp;&nbsp; col ename for a20; &nbsp;&nbsp;&nbsp; 设置列间距为a20，ename代表字符串列
+<br>&nbsp;&nbsp;&nbsp; col ename for 999999; &nbsp;&nbsp;&nbsp; 设置数字列列间距，有几个9代表列宽为几个数字
+<br>
+<br><font color=green size = 4>sql语句</font>
+<br>&nbsp;&nbsp;&nbsp; select * from tab;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tab：数据字典，超级用户管理员分配给普通用户的资源
+<hr>
+<br><table border="8">
+<tr align="center">
+<th>TNAME</th>
+<th>TABTYPE CLUSTERID</th>
+</tr>
+<tr align="center">
+<td>DEPT(部门表)</td>
+<td>TABLE</td>
+</tr>
+<tr align="center">
+<td>BOMUS</td>
+<td>TABLE</td>
+</tr>
+<tr align="center">
+<td>EMP</td>
+<td>TABLE</td>
+</tr>
+<tr align="center">
+<td>SALGRADE</td>
+<td>TABLE</td>
+</tr>
+</table>
+<br>&nbsp;&nbsp;&nbsp; desc TNAME (表名)   &nbsp;&nbsp;&nbsp; 查看表的每一个字段
+<hr>
+<br><table border="8">
+<tr align="center">
+<th>TNAME</th>
+<th>TABTYPE CLUSTERID</th>
+</tr>
+<tr align="center">
+<td>DEPTNO (编号)</td>
+<td>NOT NULL MUMBER(2)</td>
+</tr>
+<tr align="center">
+<td>DNAME (名称)</td>
+<td>VARCHAR2(14)</td>
+</tr>
+<tr align="center">
+<td>LOC (位置)</td>
+<td>VARCHAR2(13)</td>
+</tr>
+</table>
+<br>&nbsp;&nbsp;&nbsp; select * from dept;      查询表，显示表数据
+<hr>
+<br><table border="8">
+<tr align="center">
+<th>DEPTNO</th>
+<th>DNAME</th>
+<th>LOC</th>
+</tr>
+<tr align="center">
+<td>10</td>
+<td>ACCOUNTING</td>
+<td>NEW YORK</td>
+</tr>
+<tr align="center">
+<td>20</td>
+<td>RISEARCN</td>
+<td>DALIAS</td>
+</tr>
+<tr align="center">
+<td>30</td>
+<td>SALES</td>
+<td>CHICOAGO</td>
+</tr>
+</table>
+<br>
+<br><font color=green size = 4>select 基本语法</font>
+<br>&nbsp;&nbsp;&nbsp; 功能：查询表中的数据 (所有列、部分列、列中取别名、去掉重复行)
+<br>&nbsp;&nbsp;&nbsp; 语法：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SELECT * | {[DISTINCT] column | expression [alias], . . .}
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FROM table
+<br>&nbsp;&nbsp;&nbsp; SELECT：标识，选择哪些列
+<br>&nbsp;&nbsp;&nbsp; FROM：标识从哪个表中选择
+<br>&nbsp;&nbsp;&nbsp; 👽 查询所有列：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select * from [表名];
+<br>&nbsp;&nbsp;&nbsp; 👽 查询部分列：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select 列名, 列名, . . .
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; from 表名;
+<br>&nbsp;&nbsp;&nbsp; 👽 别名：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select 列名 as &quot;别名&quot;, 列明 &quot;别名&quot;, 列名 别名, . . . as 可以省略，没有双引号时 别名 中不能有空格
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; from 表名;
+<br>&nbsp;&nbsp;&nbsp; 👽 在键入命令出错时，可以键入 ed 对上次命令进行修改，再使用 / 重复执行上一次命令
+<br>&nbsp;&nbsp;&nbsp; 👽 跟表达式：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select 列名 * 10 as &quot;别名&quot;, 列明 / 2 &quot;别名&quot;, 列名 + 10 别名, . . .
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; from 表名;
+<br>&nbsp;&nbsp;&nbsp; 👽 去掉重复行：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select distinct 列明,
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; from 表名;
+<br>&nbsp;&nbsp;&nbsp; select语句的 检索列 可以来自任何地方
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select '111' || '222' &quot;连接&quot;, sal, bouns from Wages;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 结果为：原查询语句加一列连接列，且值都是111222
+<br>&nbsp;&nbsp;&nbsp; 👽 虚表：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 虚表也是一个数据字典，是超级管理员分配给我们普通用户的资源
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 和任何表没有关系
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 例：虚表示例，查系统时间
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select 'aaa' || '123' from dual;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select sysdate from dual;
+<br>
+<br><font color=green size = 4>定义空值</font>
+<br> null  捣蛋鬼：
+<br>&nbsp;&nbsp;&nbsp; 👽 空值是无效的、未指定的、未知的或不可预知的值
+<br>&nbsp;&nbsp;&nbsp; 👽 空值不是空格或者0
+<br>&nbsp;&nbsp;&nbsp; 👽 任何表达式和空值进行运算都为空
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 例：select sal(底薪)+bouns(奖金) 月薪 from Wages;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 如果某行奖金为null，则运算的结果表对应的行也为空
+<br>&nbsp;&nbsp;&nbsp; 👽 null != null
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 例：查询奖金为空的员工
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select * from Wages
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where bouns is null;
+<br>
+<br><font color=green size = 4>滤空修正</font>
+<br>&nbsp;&nbsp;&nbsp; 例：select sal(底薪)+bouns(奖金) 月薪, (sal*12+nvl(bouns*12, 0)) &quot;年薪&quot; from Wages;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 如果某行奖金为null，会被转换为0，则运算的结果表对应的行则不会为空
+<br>
+<br><font color=green size = 4>SQL 和 SQL * Plus 的区别</font>
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/O1_OracleSyn.png?raw=true" width="800" height="600" />
+<br>&nbsp;&nbsp;&nbsp; Oracle的sql*plus是与oracle数据库进行交互的客户端工具，借助sql*plus可以查看、修改数据库记录，在sql*plus中，可以运行sql*plus命令与sql语句。
+<br>&nbsp;&nbsp;&nbsp; 👽 SQL：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 是一种语言
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ANSI标准SQL99
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 关键字不能缩写 (select、update、delete . . .)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 使用语句控制数据库中的表的定义信息和表中的数据
+<br>&nbsp;&nbsp;&nbsp; 👽 SQL *Plus：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 一种环境
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Oracle 的特性之一
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 工具的命令，关键字可以缩写 (ed、col、set . . .)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 命令不能改变数据库中的数据的值
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 集中运行
+<br>
+<br><font color=green size = 4>SQL *Plus 命令帮助文档</font>
+<br>&nbsp;&nbsp;&nbsp; help topic命令 可以查看有哪些SQL *Plus命令
+<br>&nbsp;&nbsp;&nbsp; help命令 可以查看帮助文档使用方法
+<br>&nbsp;&nbsp;&nbsp; ? [topic] 或者 help 命令 形式可以查看具体命令使用方法
+<br>
+<br><font color=green size = 4>创建表</font>
+<br>&nbsp;&nbsp;&nbsp; create table 表名(
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 列名 列属性,
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 列名 列属性,
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 列名 列属性,
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; . . . . . .
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );
+<br>
+<br><font color=green size = 4>插入数据</font>
+<br>&nbsp;&nbsp;&nbsp; insert into 表名 values( 各列数据 );
+<br>
+<br><font color=green size = 4>条件过滤(where)</font>
+<br>&nbsp;&nbsp;&nbsp; 利用 where 关键字 + 条件进行过滤
+<br>&nbsp;&nbsp;&nbsp; 例：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select . . . . . .
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; from tab
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where 列名 between 值a and 值b;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where 列名 in (值1， 值2);
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where 列名 not in (值1， 值2);
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where 列名 [ = &gt;  &lt; &lt;= &gt;= ] 值;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where 列名 [ = &gt;  &lt; &lt;= &gt;= ] 值1 and 列名 [ = &gt;  &lt; &lt;= &gt;= ] 值2;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 同 between . . . and . . .，但有区别，上between语句大小顺序不能变，且是闭区间
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 如果为 where 1&gt;2; 无结果，where 2&gt;1; 恒成立，相当于select . . . from tab;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where 列名 is [not] null;
+<br>&nbsp;&nbsp;&nbsp; 实例：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select * from emp
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where deptno in (10, 20, null);
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 理解为：查询员工编号在10号部门、在20号部门、不在任何部门
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (deptno==10 || deptno==20 || deptno==null)，成立
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select * from emp
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where deptno not in (10, 20, null);
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 理解为：查询员工编号不在10号部门、不在20号部门、不在任何部门
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (deptno!=10 &amp;&amp; deptno!=20 &amp;&amp; deptno!=null)，成立
+<br>&nbsp;&nbsp;&nbsp; null总结：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 在条件语句中，如果关键字是 in 则 null 是可能的，而 not in 中 null 是不可能满足的
+<br>
+<br><font color=green size = 4>like模糊查询</font>
+<br>&nbsp;&nbsp;&nbsp; % 代表0个或多个字符 (任意个字符)
+<br>&nbsp;&nbsp;&nbsp; _ 代表一个字符
+<br>&nbsp;&nbsp;&nbsp; 例：查询名字s开头的员工信息
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select *
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; from dept
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where ename LIKE 'S%';
+<br>&nbsp;&nbsp;&nbsp; 例：查询名字含有4个字母的员工
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select *
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; from dept
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where ename LIKE '____';
+<br>&nbsp;&nbsp;&nbsp; 例：查询名字含有下划线的员工 (查询的内容含有转义字符)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select *
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; from dept
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where ename LIKE '%_%' ESCAPE '\';
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 关键字 ESCAPE 指明转义字符，语法如上
+<br>
+<br><font color=green size = 4>事务回滚 (回退)</font>
+<br>&nbsp;&nbsp;&nbsp; 回退 会取消上一次提交，为 SQL&gt; 之后直接键入 rollback
+<br>
+<br><font color=green size = 4>逻辑运算符 SQL优化</font>
+<br>&nbsp;&nbsp;&nbsp; where condition1 and condition2;
+<br>&nbsp;&nbsp;&nbsp; oracle 解析 where 条件时，从右向左，如果右边已经是假，左边就不需要解析了，以此来实现SQL优化
+<br>&nbsp;&nbsp;&nbsp; SQL语句的字符串写在 ' ' 单引号里面，而且大小写敏感
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where condition1 or condition2;</p>
+
+<p><br><br><br>
+<font color = gray size = 3>如有错误，欢迎指正！</font></p></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://oubc.github.io/tags/oracle%E6%95%B0%E6%8D%AE%E5%BA%93/">Oracle数据库</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmg4aog3074074gnf.gif?tags=%5B%5D">I </a>
+	<a href="">love</a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmfm2eg306o06o74u.gif?tags=%5B%5D"> you </a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx4tpcj30fn0bq3zg.jpg?tags=%5B%5D">three </a>
+	<a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx64ctg307s07swfy.gif?tags=%5B%5D">thousand</a>
+    <a href="https://www.kugou.com/song/#hash=96426C78381DE98DC31A5846FC274CBF&album_id=646623"> times.</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>家庭、梦想、内心的平静</span>
+  </div>
+</footer>
+
+
+
+<script src="https://oubc.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://oubc.github.io/js/zozo.js"></script>
+<script src="https://oubc.github.io/js/highlight.pack.js"></script>
+<link  href="https://oubc.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://oubc.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>

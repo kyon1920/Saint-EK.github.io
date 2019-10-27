@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Bruce Cheung"/>
+
+  
+  <meta name="description" content=""/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, simple, dream"/>
+  
+
+  
+  <link rel="canonical" href="https://oubc.github.io/post/o0_1storacle/"/>
+
+  
+
+  <title>Oracle安装及使用方法 &middot; Love, or death</title>
+
+  <link rel="shortcut icon" href="https://oubc.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/post/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://oubc.github.io/">
+          <span>Love, or death</span>
+          <img src="https://oubc.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">For you, a thousand times over.</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/oubc" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=uYGOjo6OiIuLivnIyJfa1tQ" title="mail" target="_blank"><i class="remixicon-mail-fill"></i></a>
+        
+        
+        
+        <a href="http://sighttp.qq.com/msgrd?v=1&amp;uin=877771223" title="qq" target="_blank"><i class="remixicon-qq-fill"></i></a>
+        
+        
+        
+        <a href="https://github.com/oubc/oubc.github.io/blob/master/images/wx.jpg?raw=true" title="wechat" target="_blank"><i class="remixicon-wechat-fill"></i></a>
+        
+        
+        
+        <a href="https://weibo.com/u/6993631995?topnav=1&amp;wvr=6&amp;topsug=1" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://oubc.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/post/o0_1storacle/'>Oracle安装及使用方法</a></h2>
+          <span class="date">2019.10.25</span>
+        </div>
+        <div class="post_content markdown"><p><br>
+<br>
+<br><font color=green size = 4>Oracle 版本</font>
+<br> 🤩 Oracle 10g ( 10.21 经典版本)
+<br> 官方文档：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 支持：xp
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 不支持：win7、win8、Visa、Linux-Ubuntu
+<br> 🤩 Oracle 11g （ 11.2 ）+ Linux-RHDS Advs6(32 64)
+<br> 官方文档：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 都支持
+<br>
+<br><font color=green size = 4>安装注意点</font>
+<br> 路径千万不要带中文和空格
+<br>
+<br><font color=green size = 4>Oracle历史</font>
+<br> 1977年，Oracle成立，总部位于美国加州
+<br> 2008.1.16，收购BEA
+<br> 2008.1.16，收购MySQL
+<br> 2009.4.20，收购Sun(java)公司，SQL api
+<br> 更多：百度百科
+<br>
+<br><font color=green size = 4>Oracle开发的基本概念</font>
+<br> Oracle服务器：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 数据管理系统(RDBMS)，它提供开放的、全面的、近乎完整的信息管理
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 由 Oracle 数据库(物理的文件的集合) 和 Oracle实例(内存映像[内存数据结构]) 组成
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 🤩 Oracle数据库：位于硬盘上实际存放数据的文件，这些文件组织在一起，成为一个逻辑整体，即为Oracle数据库，因此在Oracle看来，“数据库”是指硬盘上文件的逻辑集合，必须要与内存里面的实例合作才能对外提供数据管理服务。
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 🤩 Oracle实例：位于物理内存里的数据结构，它由一个共享的内存池和多个后台进程所组成，共享的内存池可以被所有进程访问，用户如果要存取数据库（也就是硬盘上的文件）里的数据，必须通过实例才能实现，不能直接读取硬盘上的文件。
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 🤩 区别与联系：实例可以操作数据库，在任何时候一个实例只能与一个数据库相关联，大多数情况下，一个数据库上只有一个实例对其进行操作。
+<br> 🤩 Oracle数据库的结构：
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/O0_1stOracle0.png?raw=true" width="800" height="600" />
+<br> 🤩 Oracle数据库的逻辑结构：
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/O0_1stOracle1.png?raw=true" width="800" height="600" />
+<br> 🤩 Oracle工作方式和两阶段提交原理：
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/O0_1stOracle2.png?raw=true" width="800" height="600" />
+<br> 🤩 Oracle数据库相关目录：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; C:/oracle/product/10.2.0/db_1/BIN sqlplus.exe  PATH路径
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; C:/oracle/product/10.2.0/oradata/orc1      存放物理的表文件 SYSAUX01.DBF
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; C:/oracle/product/10.2.0/db_1/precomp/LIB  编程开发的 头文件、库资源文件
+<br>
+<br><font color=green size = 4>Oracle服务器和客户端的安装过程</font>
+<br> 🤩 系统需求：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 内存需求：至少 1GB
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 磁盘空间需求：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; swap 区需要1.5BG
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /tmp 目录需要400MB的磁盘空间
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Oracle软件 需要1.5GB 到 3.5GB
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 准备 1.2GB 用来重装数据库 (可选)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 为快速恢复区准备 2.4GB (可选)
+<br> 🤩 安装步骤 略 (百度、CSDN)
+<br>
+<br><font color=green size = 4>SQL语言</font>
+<br> SQL语句属于脚本语言：为功能而生
+<br> SQL语言对大小写不敏感
+<br> SQL语言可以写在一行或者多行
+<br> 关键字不能被缩写也不能分行
+<br> 各子句一般要分行写
+<br> 使用缩进提高语句的可读性
+<br> 可以使用算术运算：+、-、*、/，可以用括号改变优先级
+<br>
+<br><font color=green size = 4>用户登录</font>
+<br> 🤩 普通用户登录
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sqlplus命令  输入用户名和密码
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sqlplus 用户名/密码
+<br> 🤩 超级用户登录
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sqlplus /nolog
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SQL*Plus: Release 11.2.0.1.0 Production on Sat Oct 26 14:47:27 2019
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Copyright (c) 1982, 2009, Oracle.  All rights reserved.
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SQL&gt; connect /as sysdba
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Connected.
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 安装时已经将system用户添加到 操作系统用户组 中——不需要密码登录
+<br> 🤩 退出
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; quit
+<br>
+<br><font color=green size = 4>Oracle的使用</font>
+<br> 🤩 oracle数据库的权限系统分为系统权限与对象权限。系统权限( database system privilege )可以让用户执行特定的命令集。例如，create table权限允许用户创建表，grant any privilege 权限允许用户授予任何系统权限。对象权限( database object privilege )可以让用户能够对各个对象进行某些操作。例如delete权限允许用户删除表或视图的行，select权限允许用户通过select从表、视图、序列(sequences)或快照(snapshots)中查询信息。
+<br> 🤩 每个oracle用户都有一个名字和口令,并拥有一些由其创建的表、视图和其他资源。oracle角色(role)就是一组权限(privilege)(或者是每个用户根据其状态和条件所需的访问类型)。用户可以给角色授予或赋予指定的权限，然后将角色赋给相应的用户。一个用户也可以直接给其他用户授权。
+<br><font color=blue size = 3>一、创建用户</font>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; oracle内部有两个建好的用户：system和sys。用户可直接登录到system用户以创建其他用户，因为system具有创建别 的用户的 权限。 在安装oracle时，用户或系统管理员首先可以为自己建立一个用户。
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 语法[创建用户]： create user 用户名 identified by 口令[即密码]；
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 例子： create user test identified by test;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 语法[更改用户]: alter user 用户名 identified by 口令[改变的口令];
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 例子： alter user test identified by 123456;
+<br><font color=blue size = 3>二、删除用户</font>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 语法：drop user 用户名;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 例子：drop user test;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 若用户拥有对象，则不能直接删除，否则将返回一个错误值。指定关键字cascade,可删除用户所有的对象，然后再删除用户。
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 语法： drop user 用户名 cascade;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 例子： drop user test cascade;
+<br><font color=blue size = 3>三、授权角色</font>
+<br>&nbsp;&nbsp;&nbsp; oracle为兼容以前版本，提供三种标准角色（role）:connect/resource和dba.
+<br>&nbsp;&nbsp;&nbsp; （1）三种标准角色：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1、 connect role(连接角色)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; --临时用户，特指不需要建表的用户，通常只赋予他们connect role.
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; --connect是使用oracle简单权限，这种权限只对其他用户的表有访问权限，包括select/insert/update和delete等。
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; --拥有connect role 的用户还能够创建表、视图、序列（sequence）、簇（cluster）、同义词(synonym)、回话（session）和其他  数据的链（link）
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2、resource role(资源角色)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; --更可靠和正式的数据库用户可以授予resource role。
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; --resource提供给用户另外的权限以创建他们自己的表、序列、过程(procedure)、触发器(trigger)、索引(index)和簇(cluster)。
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 3、dba role(数据库管理员角色)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; --dba role拥有所有的系统权限
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; --包括无限制的空间限额和给其他用户授予各种权限的能力。system由dba用户拥有
+<br>&nbsp;&nbsp;&nbsp; （2）授权命令
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 语法： grant connect, resource to 用户名;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 例子： grant connect, resource to test;
+<br>&nbsp;&nbsp;&nbsp; （3）撤销权限
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 语法： revoke connect, resource from 用户名;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 例子： revoke connect, resource from test;
+<br><font color=blue size = 3>四、创建/授权/删除角色</font>
+<br>&nbsp;&nbsp;&nbsp; 除了前面讲到的三种系统角色----connect、resource和dba，用户还可以在oracle创建自己的role。用户创建的role可以由表或系统权限或两者的组合构成。为了创建role，用户必须具有create role系统权限。
+<br>&nbsp;&nbsp;&nbsp; 1、创建角色
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 语法： create role 角色名;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 例子： create role testRole;
+<br>&nbsp;&nbsp;&nbsp; 2、授权角色
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 语法： grant select on class to 角色名;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 例子： grant select on class to testRole;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 注：现在，拥有testRole角色的所有用户都具有对class表的select查询权限
+<br>&nbsp;&nbsp;&nbsp; 3、删除角色
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 语法： drop role 角色名;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 例子： drop role testRole;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 注：与testRole角色相关的权限将从数据库全部删除
+<br>
+<br><font color=green size = 4>数据库开启</font>
+<br>&nbsp;&nbsp;&nbsp; sqlplus /nolog
+<br>&nbsp;&nbsp;&nbsp; conn system/manager as sysdba
+<br>&nbsp;&nbsp;&nbsp; startup
+<br>&nbsp;&nbsp;&nbsp; 只有在开启数据库之后才能登录普通用户
+<br>
+<br><font color=green size = 4>如何获取日期的格式，设置日期参数</font>
+<br>&nbsp;&nbsp;&nbsp; select sysdate from dual;    获取日期
+<br>&nbsp;&nbsp;&nbsp; 获取系统配置参数：select * from v$nls_parameters;
+<br><table border="5">
+<tr align="center">
+<th>PARAMETER </th>
+<th>VALUE</th>
+<th>注释</th>
+</tr>
+<tr align="center">
+<td>NLS_LANGUAGE</td>
+<td>AMERICAN</td>
+<td>语言</td>
+</tr>
+<tr align="center">
+<td>NLS_TERRITORY</td>
+<td>AMERICA</td>
+</tr>
+<tr align="center">
+<td>NLS_CURRENCY</td>
+<td>$</td>
+<td>货币符号</td>
+</tr>
+<tr align="center">
+<td>NLS_ISO_CURRENCY</td>
+<td>AMERICA</td>
+</tr>
+<tr align="center">
+<td>NLS_CALENDAR</td>
+<td>GREGORIAN</td>
+</tr>
+<tr align="center">
+<td>NLS_CURRENCY</td>
+<td>DD-MON-RR</td>
+<td>日期格式</td>
+</tr>
+<tr align="center">
+<td>NLS_DATE_FORMAT</td>
+<td>AMERICAN</td>
+</tr>
+<tr align="center">
+<td>NLS_DATE_LANGUAGE</td>
+<td>AL32UTF8</td>
+</tr>
+<tr align="center">
+<td>NLS_CHARACTERSET</td>
+<td>AL32UTF8</td>
+<td>字符集</td>
+</tr>
+<tr align="center">
+<td>NLS_SORT</td>
+<td>BINARY</td>
+</tr>
+<tr align="center">
+<td>NLS_TIME_FORMAT</td>
+<td>BINARY</td>
+</tr>
+<tr align="center">
+<td>NLS_TIMESTAMP_FORMAT</td>
+<td>DD-MON-RR HH.MI.SSXF F AM</td>
+</tr>
+<tr align="center">
+<td>NLS_TIME_TZ_FORMAT</td>
+<td>HH.MI.SSXFF AM TZR</td>
+</tr>
+<tr align="center">
+<td>. . .</td>
+<td>. . .</td>
+<td>. . .</td>
+</tr>
+</table>
+<br>&nbsp;&nbsp; 修改显示属性：
+<br>&nbsp;&nbsp;&nbsp; alter session set [PARAMETER]='[VALUE]';
+<br>&nbsp;&nbsp; 例：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; alter session set NLS_DATE_FORMAT='yyyy-mm-dd';
+<br>&nbsp;&nbsp; 日期是格式敏感的：得按照系统格式来定义字符串
+<br>&nbsp;&nbsp; 例：查询比1981年1月1日晚的时间
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select * from year
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where date &gt; '1981-1-1';
+<br>&nbsp;&nbsp; 日期和字符串比较，是oracle内部的数据类型转换，在MySQL中却不支持
+<br>&nbsp;&nbsp; sql语言中字符串用 ' '(单引号)，不要和select中的别名 &quot; &quot;(双引号) 混淆</p>
+
+<p><br><br><br>
+<font color = gray size = 3>如有错误，欢迎指正！</font></p></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://oubc.github.io/tags/oracle%E6%95%B0%E6%8D%AE%E5%BA%93/">Oracle数据库</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmg4aog3074074gnf.gif?tags=%5B%5D">I </a>
+	<a href="">love</a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmfm2eg306o06o74u.gif?tags=%5B%5D"> you </a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx4tpcj30fn0bq3zg.jpg?tags=%5B%5D">three </a>
+	<a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx64ctg307s07swfy.gif?tags=%5B%5D">thousand</a>
+    <a href="https://www.kugou.com/song/#hash=96426C78381DE98DC31A5846FC274CBF&album_id=646623"> times.</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>家庭、梦想、内心的平静</span>
+  </div>
+</footer>
+
+
+
+<script src="https://oubc.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://oubc.github.io/js/zozo.js"></script>
+<script src="https://oubc.github.io/js/highlight.pack.js"></script>
+<link  href="https://oubc.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://oubc.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>

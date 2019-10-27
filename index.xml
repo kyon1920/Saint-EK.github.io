@@ -6,10 +6,28 @@
     <description>Recent content on Love, or death</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Thu, 24 Oct 2019 17:25:24 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 27 Oct 2019 13:26:07 +0800</lastBuildDate>
     
 	<atom:link href="https://oubc.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Oracle数据库基础语法</title>
+      <link>https://oubc.github.io/post/o1_oraclesyn0/</link>
+      <pubDate>Sun, 27 Oct 2019 13:26:07 +0800</pubDate>
+      
+      <guid>https://oubc.github.io/post/o1_oraclesyn0/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Oracle安装及使用方法</title>
+      <link>https://oubc.github.io/post/o0_1storacle/</link>
+      <pubDate>Fri, 25 Oct 2019 13:00:00 +0800</pubDate>
+      
+      <guid>https://oubc.github.io/post/o0_1storacle/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>Linux网络编程 ( 本地套接字 )</title>
