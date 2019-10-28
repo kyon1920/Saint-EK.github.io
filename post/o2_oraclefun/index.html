@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Bruce Cheung"/>
+
+  
+  <meta name="description" content=""/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, simple, dream"/>
+  
+
+  
+  <link rel="canonical" href="https://oubc.github.io/post/o2_oraclefun/"/>
+
+  
+
+  <title>Oracle排序单/多行函数 &middot; Love, or death</title>
+
+  <link rel="shortcut icon" href="https://oubc.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/post/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://oubc.github.io/">
+          <span>Love, or death</span>
+          <img src="https://oubc.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">For you, a thousand times over.</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/oubc" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=uYGOjo6OiIuLivnIyJfa1tQ" title="mail" target="_blank"><i class="remixicon-mail-fill"></i></a>
+        
+        
+        
+        <a href="http://sighttp.qq.com/msgrd?v=1&amp;uin=877771223" title="qq" target="_blank"><i class="remixicon-qq-fill"></i></a>
+        
+        
+        
+        <a href="https://github.com/oubc/oubc.github.io/blob/master/images/wx.jpg?raw=true" title="wechat" target="_blank"><i class="remixicon-wechat-fill"></i></a>
+        
+        
+        
+        <a href="https://weibo.com/u/6993631995?topnav=1&amp;wvr=6&amp;topsug=1" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://oubc.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/post/o2_oraclefun/'>Oracle排序单/多行函数</a></h2>
+          <span class="date">2019.10.28</span>
+        </div>
+        <div class="post_content markdown"><p><br>
+<br>
+<br><font color=green size = 4>数据排序</font>
+<br> 🐾 排序方式：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;在使用排序语言关键字时，sqlplus工具会在服务器进行排序后通过实例呈现到屏幕上
+<br>&nbsp;&nbsp;&nbsp;&nbsp;select . . .
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;from . . .
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;where . . .
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;order by . . .
+<br>&nbsp;&nbsp;&nbsp;&nbsp;where子句的 order by 就是对检索出来的结果进行排序的关键字
+<br>&nbsp;&nbsp;&nbsp;&nbsp;0、order by 默认按照升序排序，order by 列名, 列名, . . . DESC 为降序
+<br>&nbsp;&nbsp;&nbsp;&nbsp;1、order by 后面 + 别名、表达式、别名、序号
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;select 列明, 列明*12
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;from . . .
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;order by 列明*12; 通过表达式进行排序</p>
+
+<p><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;select 列明, 列明*12 别名
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;from . . .
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;order by 别名;    通过别名进行排序</p>
+
+<p><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;select 列明, 列明*12
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;from . . .
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;order by 2 (序号);    表示以第二列进行排序
+<br>&nbsp;&nbsp;&nbsp;&nbsp;2、order by 后面跟多个列
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;从左向右进行生效，先对第一列进行排序，再在第一列中相同的值进行第二列排序
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如果多个列中，有 desc 修饰，只作用于最近的那一列
+<br>&nbsp;&nbsp;&nbsp;&nbsp;3、空值 null 的第四点补充：排序的时候如何将 null 排在最后
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;默认为 升序null值排在下方，降序null值排在上方
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;在order by 语句下面一行或者后面 + nulls last 就会把 null值 放在下面(不论任何排序)
+<br>
+<br><font color=green size = 4>函数</font>
+<br> 🐾 函数被分为单行函数和多行函数</p>
+
+<p>单行函数
+<br> 🐾 输入一行输出一行 (例：把空值转换为0)
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/O2_OracleFun0.png?raw=true" width="800" height="600" />
+<br>
+<br><font color=green size = 4>字符类单行函数</font>
+<br> 🐾 字符函数：处理字符串
+<br>&nbsp;&nbsp;&nbsp;&nbsp;大小写控制函数
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LOWER：把字符串变为小写
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;UPPER：把字符串变成大写
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;INITCAP：对字符串进行首字母大写操作
+<br>&nbsp;&nbsp;&nbsp;&nbsp;例：select LOWER('hello world') LOWER, UPPER('hello world') UPPER, INITCAP('hello world') INITCAP from dual;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;字符控制函数：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CONCAT：字符串连接，功能同前面的 select '111' || '222' test from dual;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;例：select CONCAT('aaa', 'BBB') test from dual;   只能连接两个字符串
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;函数嵌套可以连接多个字符
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;例：select CONCAT('aaa', CONCAT('BBB', 'ccc')) test from dual;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SUBSTR：substr(a, b)从字符串a中第b位往后取字串
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;例：select substr('AAABBBccc', 2) test from dual;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;substr(a, b, c)从字符串a中第b位往后取c位字串
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LENGTH (字符数) /LENGTHB(字节数)：求字符串长度
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;例：select length('中国abc') 字符数, lengthb('中国abc') 字节数 from dual;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;结果为 5，7 (一个中文两个字节)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;INSTR：instr('母串', '子串') 查找子串在母串中的位置
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;例：select instr('aaabbb', 'ab') test from dual; → 3
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LPAD | RPAD：字符串自动填充，L在左边补、R在右边补
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;例：select rpad('abcd', 10, '*') test from dual;   在右边补 10 - length('abcd')个 *
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TRIM：去掉前面和后面指定的字符，字符可以是空格，也可以是其它字符
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;例：select trim('H' from 'Hello woHrld HHHH') test from dual;    结果为：ello woHrld
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;REPLACE：替换
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;例：select replace('abcd', 'b', 'm') test from dual;
+<br>
+<br><font color=green size = 4>数值类单行函数</font>
+<br> 🐾 数字函数：处理数字
+<br>&nbsp;&nbsp;&nbsp;&nbsp;ROUND：round(数值, 保留位数)，保留位数默认为0，四舍五入
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;例：select round(45.926) AA, round(45.926, 1) BB, round(45.926, 2) CC,
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;round(45.926, -1) DD, round(45.926, -2) EE from dual;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;结果为：46       45.9      45.93      50      0
+<br>&nbsp;&nbsp;&nbsp;&nbsp;TRUNC：截断
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;例：select trunc(45.926, 2) test from dual;    结果为：45.92
+<br>&nbsp;&nbsp;&nbsp;&nbsp;MOD：求余
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;例：select trunc(1600, 300) test from dual;    结果为：100
+<br> 🐾 有关日期和时间的单行函数
+<br>&nbsp;&nbsp;&nbsp;&nbsp;显示时间：select sysdate from dual;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;date：包含日期和时间
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;例：select to_char(sysdate, 'yyyy-mm-dd hh24:mi:ss') from dual;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;MySQL的日期类型：date (年月日)、datetime (时分秒)、select now from dual;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;日期的数学运算：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;两个日期相减返回日期之间相差的天数，粗算
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;计算 入职 多少年、多少月、多少日
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;例：select ename, (sysdate - hiredate) 天, (sysdate - hiredate)/7 周, (sysdate - hiredate)/30 月,
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(sysdate - hiredate)/365 年
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;from 表名;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;例：计算昨天、今天、明天
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;select sysdate-1 昨天, sysdate 今天, sysdate+1 明天 from dual;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;select to_char(sysdate-1, 'yyyy-mm-dd hh24:mi:ss') 昨天,  to_char(sysdate, 'yyyy-mm-dd hh24:mi:ss') 今天,
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;to_char(sysdate+1, 'yyyy-mm-dd hh24:mi:ss') 明天 from dual;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;可以用数字除以24来向日期中加上或减去小时
+<br>&nbsp;&nbsp;&nbsp;&nbsp;MONTHS_BETWEEN：精确的计算两个日期相差的月数
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;例：select months_between('01-SEP-95', '11-JAN-94') test from dual;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;例：select months_between(sysdate, birthdate) test from emp;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;ADD_MONTHS：add_months('11-JAN-94', 6)，在指定日期上加上6个月
+<br>&nbsp;&nbsp;&nbsp;&nbsp;NEXT_DAY：next_day('01-SEP-95', 'FRIDAY')，下一个指定的工作日，此例即下一个周五，结果为 '08-SEP-95'
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;例：select next_day(sysdate, 'FRIDAY') test from dual;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;LAST_DAY：last_day('01-FEB-95')，查询当前月份最后一天
+<br>&nbsp;&nbsp;&nbsp;&nbsp;日期的四舍五入：假设 SYSDATE = '25-JUL-95'
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;日期：当前日期不变、月份：上半月为当月，下半月为下月、年份：上半年为当前年，下半年为下一年
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ROUND(SYSDATE, 'DAY') → 25-JUL-95
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ROUND(SYSDATE, 'MONTH') → 01-AUG-95
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ROUND(SYSDATE, 'YEAR') → 01-JAN-96
+<br>&nbsp;&nbsp;&nbsp;&nbsp;日期的截断：月份截断为当前月的1日，年份截断为当前年1月1日
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TRUNC(SYSDATE, 'MONTH') → 01-JUL-95
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TRUNC(SYSDATE, 'YEAR') → 01-JAN-95
+<br>
+<br><font color=green size = 4>转换函数(重点)</font>
+<br> 🐾 转换函数被分为隐性转换和显性转换
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;像日期与字符串之间利用 &gt;  &lt; &lt;= 进行大小比较称为隐性转换
+<br> 🐾 显式数据类型转换
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/O2_OracleFun1.png?raw=true" width="800" height="600" />
+<br> 🐾 日期格式的元素
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/O2_OracleFun2.png?raw=true" width="800" height="600" />
+<br>&nbsp;&nbsp;&nbsp;&nbsp;案例：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;字符串 → 数字
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;隐式：select '111'+'222' test from dual; 结果为  333
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;数字 → 字符串
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;隐式：select '111' || '222' test from dual; 结果为  字符串 111222
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;字符串 → 日期
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;查找比给定日期晚的入职人员
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;显式：select * from emp where hiredate &gt; to_date('1999-01-01', 'yyyy-mm-dd');
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;隐式：select * from emp where hiredate &gt; '28-OCT-19';
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注：隐式日期进行转换时必须符合Oracle表示日期的规则
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;日期 → 字符串
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;查找比给定日期晚的入职人员
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;显式：select * from emp where to_char(hiredate, 'yyyy-mm-dd') &gt; '1999-01-01';
+<br> 🐾 TO_CHAR(数字, 模式) 对数字的转换
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/O2_OracleFun3.png?raw=true" width="800" height="600" />
+<br>&nbsp;&nbsp;&nbsp;&nbsp;实例：select to_char(sal, 'L9,999.99')，L 代表本地货币符号，9,999 逗号分隔表示千位符，.99代表小数点后两位
+<br> 🐾 反向转换：将上述格式字符串转换成为数字
+<br>&nbsp;&nbsp;&nbsp;&nbsp;TO_NUMBER(数字, 模式)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;实例：select to_number(sal, 'L9,999.99')，将模式为 L9,999.99 模式形式的字符串转换成为数字
+<br>
+<br><font color=green size = 4>通用函数</font>
+<br> 🐾 适用于任何数据类型，同时也适用于空值   expr 为列名
+<br>&nbsp;&nbsp;&nbsp;&nbsp;NVL (expr1, expr2) ：当expr1为空时，用expr2代替该值
+<br>&nbsp;&nbsp;&nbsp;&nbsp;NVL2 (expr1, expr2, expr3) ：当expr1为空时，返回expr3，否则返回expr2
+<br>&nbsp;&nbsp;&nbsp;&nbsp;NULLIF (expr1, expr2) ：当expr1 = expr2时，返回null，否则返回expr1
+<br>&nbsp;&nbsp;&nbsp;&nbsp;COALESCE (expr1, expr2, . . . , exprn) ：从左往右，返回第一个不为空的值
+<br>
+<br><font color=green size = 4>报表与表达式</font>
+<br> 🐾 CASE表达式：在需要使用 IF-THEN-ELSE逻辑时
+<br>&nbsp;&nbsp;&nbsp;&nbsp;SQL99语法：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CASE expr(列名) WHEN comparison_expr1(列的值) THEN return_expr1(值或表达式)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[WHEN comparison_expr2 THEN return_expr2
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WHEN comparison_exprn THEN return_exprn
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ELSE else_expr]
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;END
+<br>&nbsp;&nbsp;&nbsp;&nbsp;Oracle语法：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DECODE函数
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DECODE(col | expression(列名或表达式), search1, result1
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ , search2, result2, . . . ,]
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ , default])
+<br>
+<br><font color=green size = 4>多行函数 / 分组函数</font>
+<br> 🐾 输入多行输出一行 (例：求全班成绩的平均成绩、最大值、最小值、分组数据)
+<br> 🐾 使用 GROUP BY 子句进行数据分组
+<br> 🐾 使用 HAVING 子句过滤分组结果集
+<br>
+<br><font color=green size = 4>组函数类型</font>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;AVG：求指定列的平均值
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;select avg(列名) avg from emp;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;COUNT：列计数，不包括 null 值，自动滤空
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;若要记录 null 值，这样写 select count(nvl(列名, 0)) cot from emp;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;MAX：求出指定列中的最大值
+<br>&nbsp;&nbsp;&nbsp;&nbsp;MIN：求出指定列中的最小值
+<br>&nbsp;&nbsp;&nbsp;&nbsp;SUM：求出指定列之和
+<br>
+<br><font color=green size = 4>分组数据</font>
+<br> 🐾 可以使用 GROUP BY 子句将表中的数据分成若干组
+<br> 🐾 语法：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;select . . .
+<br>&nbsp;&nbsp;&nbsp;&nbsp;from . . .
+<br>&nbsp;&nbsp;&nbsp;&nbsp;where condition(where条件)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;[GROUP BY group_by_expression(group by 表达式)]
+<br>&nbsp;&nbsp;&nbsp;&nbsp;[GROUP BY column]
+<br>&nbsp;&nbsp;&nbsp;&nbsp;例：求出各部门平均工资
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;select deptno, avg(sal)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;from emp
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;group by deptno;    默认以相同值为一组
+<br> 🐾 理论抽象，分组函数的设计理念
+<br>&nbsp;&nbsp;&nbsp;&nbsp;select a, b, c
+<br>&nbsp;&nbsp;&nbsp;&nbsp;from emp
+<br>&nbsp;&nbsp;&nbsp;&nbsp;group by a, b, c, d; → 正确
+<br>&nbsp;&nbsp;&nbsp;&nbsp;select a, b, c
+<br>&nbsp;&nbsp;&nbsp;&nbsp;from emp
+<br>&nbsp;&nbsp;&nbsp;&nbsp;group by a, c, d, e; → 错误
+<br>&nbsp;&nbsp;&nbsp;&nbsp;所有数据的检索必须是在分组的基础之上：ERROR: not a GROUP BY expression
+<br>&nbsp;&nbsp;&nbsp;&nbsp;例：不同部门相同职位的平均工资
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;select deptno, job, avg(sal)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;from emp
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;group by deptno, job;
+<br>
+<br><font color=green size = 4>分组过滤</font>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;select 列名, 列名 . . .
+<br>&nbsp;&nbsp;&nbsp;&nbsp;from 表
+<br>&nbsp;&nbsp;&nbsp;&nbsp;group by 列名, 列名 . . .
+<br>&nbsp;&nbsp;&nbsp;&nbsp;having 表达式
+<br>&nbsp;&nbsp;&nbsp;&nbsp;例：求分组后平均工资大于2000的组
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;select deptno, avg(sal)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;from emp
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;group by deptno
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;having avg(sal) &gt; 2000;
+<br> 🐾 where子句和having子句都可以条件过滤
+<br>&nbsp;&nbsp;&nbsp;&nbsp;区别：在 where 子句中不能有组函数
+<br>&nbsp;&nbsp;&nbsp;&nbsp;求某一号部门的平均工资，有两种思想实现，先过滤在分组，先分组再过滤
+<br> 🐾 先分组再过滤：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;select deptno, avg(sal)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;from emp
+<br>&nbsp;&nbsp;&nbsp;&nbsp;group by deptno
+<br>&nbsp;&nbsp;&nbsp;&nbsp;having deptno = 10;
+<br> 🐾 先过滤再分组 → 性能更优，因为分组开销比较大，应当先过滤再进行分组以减小开销
+<br>&nbsp;&nbsp;&nbsp;&nbsp;select deptno, avg(sal)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;from emp
+<br>&nbsp;&nbsp;&nbsp;&nbsp;where deptno = 10
+<br>&nbsp;&nbsp;&nbsp;&nbsp;group by deptno;</p>
+
+<p><br><br><br>
+<font color = gray size = 3>如有错误，欢迎指正！</font></p></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://oubc.github.io/tags/oracle%E6%95%B0%E6%8D%AE%E5%BA%93/">Oracle数据库</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmg4aog3074074gnf.gif?tags=%5B%5D">I </a>
+	<a href="">love</a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmfm2eg306o06o74u.gif?tags=%5B%5D"> you </a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx4tpcj30fn0bq3zg.jpg?tags=%5B%5D">three </a>
+	<a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx64ctg307s07swfy.gif?tags=%5B%5D">thousand</a>
+    <a href="https://www.kugou.com/song/#hash=96426C78381DE98DC31A5846FC274CBF&album_id=646623"> times.</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>家庭、梦想、内心的平静</span>
+  </div>
+</footer>
+
+
+
+<script src="https://oubc.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://oubc.github.io/js/zozo.js"></script>
+<script src="https://oubc.github.io/js/highlight.pack.js"></script>
+<link  href="https://oubc.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://oubc.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>
