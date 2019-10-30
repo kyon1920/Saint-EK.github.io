@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Bruce Cheung"/>
+
+  
+  <meta name="description" content=""/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, simple, dream"/>
+  
+
+  
+  <link rel="canonical" href="https://oubc.github.io/post/o3_oracleseek/"/>
+
+  
+
+  <title>Oracle查询 &middot; Love, or death</title>
+
+  <link rel="shortcut icon" href="https://oubc.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/post/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://oubc.github.io/">
+          <span>Love, or death</span>
+          <img src="https://oubc.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">For you, a thousand times over.</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/oubc" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=uYGOjo6OiIuLivnIyJfa1tQ" title="mail" target="_blank"><i class="remixicon-mail-fill"></i></a>
+        
+        
+        
+        <a href="http://sighttp.qq.com/msgrd?v=1&amp;uin=877771223" title="qq" target="_blank"><i class="remixicon-qq-fill"></i></a>
+        
+        
+        
+        <a href="https://github.com/oubc/oubc.github.io/blob/master/images/wx.jpg?raw=true" title="wechat" target="_blank"><i class="remixicon-wechat-fill"></i></a>
+        
+        
+        
+        <a href="https://weibo.com/u/6993631995?topnav=1&amp;wvr=6&amp;topsug=1" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://oubc.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/post/o3_oracleseek/'>Oracle查询</a></h2>
+          <span class="date">2019.10.30</span>
+        </div>
+        <div class="post_content markdown"><p><br>
+<br>
+<br><font color=green size = 4>笛卡尔积</font>
+<br>&nbsp;&nbsp;&nbsp; 产生结果：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 行数：两个表相乘
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 列数：两个表相加
+<br>&nbsp;&nbsp;&nbsp; 原因：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 条件等值连接
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select . . .
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; from tab1, tab2
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where tab1.a = tab2.a;
+<br>
+<br><font color=green size = 4>连接</font>
+<br>&nbsp;&nbsp;&nbsp; 等值连接：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 过滤条件为两个表中某一属性相等时的连接
+<br>&nbsp;&nbsp;&nbsp; 非等值连接
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 过滤条件可以为 &gt; &lt; &lt;= &gt;= 等条件符
+<br>&nbsp;&nbsp;&nbsp; 自然连接：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 自然连接是一种特殊的等值连接，它将两表相同属性且值相等的列合并成为了一列
+<br>&nbsp;&nbsp;&nbsp; 外连接
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 把自然连接中舍弃的元组也保持在结果中，而在其它属性上填NULL值
+<br>&nbsp;&nbsp;&nbsp; 左外连接
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 只保留左边关系中的未被自然连接舍弃的元组，在其它属性上填NULL值
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 在等号的对等方加上 (+) 符号实现外连接
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where tab1.a = tab2.a (+);
+<br>&nbsp;&nbsp;&nbsp; 右外连接
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where tab1.a(+) = tab2.a;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 只保留右边关系中的未被自然连接舍弃的元组，在其它属性上填NULL值
+<br>&nbsp;&nbsp;&nbsp; 自连接
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 把一张表看成两张表，自己和自己进行连接
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select . . .
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; from 表名 别名1, 表名 别名2
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where 别名1.列名 = 别名2.列名
+<br>
+<br><font color=green size = 4>子查询</font>
+<br> 😇 为什么要用子查询
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 对于一个问题，一步不能求解，需要多步时就需要用到子查询
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 通过子查询求解，子查询的本质就是 select 语句的嵌套
+<br> 😇 子查询的知识架构
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0、合理的书写风格
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1、子查询的 () 不要丢掉
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2、子查询和主查询可以不是同一张表，只要子查询返回的结果，主查询能用就行 . . .
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 3、可以在主查询的什么地方放一个子查询
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select . . . 可以放置子查询 (必须要放单行子查询)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; from . . . 可以放置子查询
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select * from (select ename, empno from emp) 查询员工姓名和编号
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where . . . 可以放置子查询
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; group by . . . 不能放置子查询
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; having . . . 可以放置子查询
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; order by . . . 不能放置子查询
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 4、子查询的分类
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 按照子查询返回的条目数：单行子查询和多行子查询
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where 单行子查询只能用于单行比较操作符 ( = &lt; &gt; &gt;= &lt;= &lt;&gt; )
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where 多行子查询只能用多行比较操作符 ( in any all )
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where in  等于列表中任意一个
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where eg：查询部门号不等于20或30的员工信息
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where select deptno, ename, empno, sal from emp where deptno not in
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (select deptno from emp where deptno=10 or deptno=20);
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where ANY  和子查询返回的任意一个值比较
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where eg：查询薪水比30号部门任意一个员工薪水要低的员工信息 (小于集合的最大值)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select deptno, ename, empno, sal from emp where sal &lt; ANY
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (select sal from emp where deptno=10 or deptno=20);
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where ALL  和子查询返回的所有值比较
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where eg：查询薪水比30号部门所有员工薪水都要高的员工信息 (大于集合的最大值)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select deptno, ename, empno, sal from emp where sal &gt; ALL
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (select sal from emp where deptno=10 or deptno=20);
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 按照子查询和主查询的执行顺序来分：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 一般子查询，子查询把结果返回给主查询
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 相关子查询，主查询把 select 列中的参数传递给子查询
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 5、子查询返回空值的问题
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 6、子查询中一般不适用 order by，但是 Top-N 问题，子查询要用 order by
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; eg：求工资的前三名，分页
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; eg：查询各部门中最低工资并且该最低工资要比30号部门最低工资要高
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select deptno, MIN(sal) from emp group by deptno having MIN(sal) &gt;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (select MIN(sal) from emp where deptno=30);
+<br>
+<br><font color=green size = 4>SQL 优化</font>
+<br>&nbsp;&nbsp; select *
+<br>&nbsp;&nbsp; select a, b, c 效率更高
+<br> 😇 使用子查询(速度换内存)、多表查询(内存换速度，效率更高)
+<br>
+<br><font color=green size = 4>eg：求出员工工资的前三名</font>
+<br>
+<br><font color=green size = 4>rownum</font>
+<br> 😇 select rownum, 列名, 列名 . . .
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/O3_OracleSeek0.png?raw=true" width="600" height="700" />
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 0、rownum属于服务器返回的结果的固有属性，创建表时就设定好了的
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 1、只能在where子句中只能使用 &lt;  &lt;=，不能使用 &gt;  &gt;=
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 生成结果集是一行一行地生成的，没有第一行就没有第二行 . . .
+<br>
+<br><font color=green size = 4>top-N</font>
+<br>&nbsp;&nbsp; 解 eg 思路，先利用子查询对表进行排序，在利用 rownum 实现前三名的查找
+<br>&nbsp;&nbsp; 解：
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/O3_OracleSeek1.png?raw=true" width="800" height="600" />
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/O3_OracleSeek2.png?raw=true" width="800" height="300" />
+<br>
+<br><font color=green size = 4>分页</font>
+<br> 😇 eg：每四行数据为一页进行分页，查询其中第二页
+<br>&nbsp;&nbsp;&nbsp; 思路：查询其中第二页即是 5=&lt; row &lt;= 8，由于 rownum 不能使用 &gt;= 符号，固可以将由子查询生成 rownum列，在主查询中就可以对这一列进行 &gt;= 条件过滤，这样一来就需要三层嵌套查询
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select r, ename, sal
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; from (select rownum r, ename, sal
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; from (select * from emp
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; order by sal)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where rownum &lt;= 8)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where r &gt;= 5;
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/O3_OracleSeek3.png?raw=true" width="800" height="500" />
+<br> 😇 解决分页的思路
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 总的原则：内层排序，中层别名，外层选，需要三层嵌套查询
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 内：排序
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 中：使用 rownum 选择前 n 行，并给 rownum 指定一个别名，以供最外层过滤使用
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 外：去掉前 n 条结果
+<br>
+<br><font color=green size = 4>eg：找到员工表 薪水 大于 本部门平均薪水的员工</font>
+<br> 😇 解决方法一：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 分析0：要分组10、20、30；
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 分析1：可以把部门平均薪水看成一个表，部门表为一个表，利用多表连接实现
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 分析2：组函数、连接条件、别名
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select EMP.ENAME, emp.deptno, emp.sal
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; from (
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select AVG(sal) avgsal, deptno dept
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; from emp
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; group by deptno), emp
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where (avgsal &lt; emp.sal) and (emp.deptno=dept);
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/O3_OracleSeek4.png?raw=true" width="800" height="500" />
+<br> 😇 解决方法二：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 利用 相关子查询，把主查询的运算结果传入到子查询之中
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 分析0：找到员工表中薪水大于本部门平均薪水的员工
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 分析1：查询员工所在部门的平均工资
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select e.empno, e.ename, e.sal
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; from emp e
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where sal &gt; (
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select avg(sal) avgsal
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; from emp
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where deptno=e.deptno);
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/O3_OracleSeek5.png?raw=true" width="800" height="600" />
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 相关子查询总结：主查询通过别名把主查询的值传递给子查询进行使用成为相关子查询</p>
+
+<p><br><br><br>
+<font color = gray size = 3>如有错误，欢迎指正！</font></p></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://oubc.github.io/tags/oracle%E6%95%B0%E6%8D%AE%E5%BA%93/">Oracle数据库</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmg4aog3074074gnf.gif?tags=%5B%5D">I </a>
+	<a href="">love</a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmfm2eg306o06o74u.gif?tags=%5B%5D"> you </a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx4tpcj30fn0bq3zg.jpg?tags=%5B%5D">three </a>
+	<a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx64ctg307s07swfy.gif?tags=%5B%5D">thousand</a>
+    <a href="https://www.kugou.com/song/#hash=96426C78381DE98DC31A5846FC274CBF&album_id=646623"> times.</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>家庭、梦想、内心的平静</span>
+  </div>
+</footer>
+
+
+
+<script src="https://oubc.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://oubc.github.io/js/zozo.js"></script>
+<script src="https://oubc.github.io/js/highlight.pack.js"></script>
+<link  href="https://oubc.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://oubc.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>
