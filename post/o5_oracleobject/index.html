@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Bruce Cheung"/>
+
+  
+  <meta name="description" content=""/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, simple, dream"/>
+  
+
+  
+  <link rel="canonical" href="https://oubc.github.io/post/o5_oracleobject/"/>
+
+  
+
+  <title>Oracle数据库对象 &middot; Love, or death</title>
+
+  <link rel="shortcut icon" href="https://oubc.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/post/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://oubc.github.io/">
+          <span>Love, or death</span>
+          <img src="https://oubc.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">For you, a thousand times over.</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/oubc" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=uYGOjo6OiIuLivnIyJfa1tQ" title="mail" target="_blank"><i class="remixicon-mail-fill"></i></a>
+        
+        
+        
+        <a href="http://sighttp.qq.com/msgrd?v=1&amp;uin=877771223" title="qq" target="_blank"><i class="remixicon-qq-fill"></i></a>
+        
+        
+        
+        <a href="https://github.com/oubc/oubc.github.io/blob/master/images/wx.jpg?raw=true" title="wechat" target="_blank"><i class="remixicon-wechat-fill"></i></a>
+        
+        
+        
+        <a href="https://weibo.com/u/6993631995?topnav=1&amp;wvr=6&amp;topsug=1" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://oubc.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/post/o5_oracleobject/'>Oracle数据库对象</a></h2>
+          <span class="date">2019.11.01</span>
+        </div>
+        <div class="post_content markdown"><p><br>
+<br>
+<br><font color=green size = 4>数据库对象</font>
+<br> 表、视图、序列、索引、同义词 这些都是常见的数据库对象
+<br>&nbsp;&nbsp; ✦ 表：基本的数据存储集合
+<br>&nbsp;&nbsp; ✦ 视图：从表中抽出的逻辑上相关的数据集合
+<br>&nbsp;&nbsp; ✦ 序列：提供有规律的数值
+<br>&nbsp;&nbsp; ✦ 索引：提高查询的效率
+<br>&nbsp;&nbsp; ✦  同义词：给对象起别名
+<br>
+<br><font color=green size = 4>约束</font>
+<br>&nbsp;&nbsp; ✦ 约束是强加在表上的规则或条件，分为主键约束、外键约束、非空约束、一般性约束、唯一约束
+<br>&nbsp;&nbsp; ✦ 建表时添加约束：. . . 列名 类型 CONSTRAINT 约束名 约束类型
+<br>&nbsp;&nbsp; ✦ 建表后添加约束：alter table 表名 add constraint 约束名 约束关键字(列名);
+<br>&nbsp;&nbsp; ✦ 建表后删除约束：alter table 表名 drop constraint 约束名;
+<br>&nbsp;&nbsp; ✦ 约束失效：alter table 表名 disable constraint 约束名 cascade;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 使用CASCADE选项可以同时使有依赖关系的选项失效
+<br>&nbsp;&nbsp; ✦ 约束生效：alter table 表名 enable constraint 约束名;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 一个唯一索引，或者主键索引在激活唯一键或主键时自动产生
+<br> 👻 注：定义约束时没有给出约束的名字，ORACLE系统将为该约束自动生成一个名字，其格式为SYS_Cn，其中n为自然数。( 强烈建议加名字 )
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 在一个表中的一列可以加多个约束
+<br>
+<br><font color=green size = 4>主键约束</font>
+<br> 👻 被约束列非空且唯一
+<br>&nbsp;&nbsp; ✦ 加主键：alter table 表名 add constraint 约束名 primary key(列名);
+<br>&nbsp;&nbsp; ✦ 删除主键：alter table 表名 drop constraint 约束名;
+<br>&nbsp;&nbsp; ✦ 查询表的主键：表名要大写，否则为空
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select cu.* from user_cons_columns cu, user_constraints au
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where cu.constraint_name = au.constraint_name and au.constraint_type = 'P'
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; and au.table_name = 'EMP';
+<br>
+<br><font color=green size = 4>外键约束</font>
+<br>&nbsp;&nbsp; ✦ 加外键：alter table 表名 add constraint 约束名 foreign key(列名) references 外表名(外列名);
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; alter table 表名 add constraint 约束名 foreign key(列名) references 外表名(外列名) on delete cascade;
+<br> 👻 补：级联删除，在末尾加上 on delete cascade 后，删除外表会使得子表中列名与外键关联的表也一同删除
+<br> 👻 注：列名一定要大写，否则会有意想不到的结果
+<br>&nbsp;&nbsp; ✦ 删除外键：alter table 表名 drop constraint 约束名；
+<br>&nbsp;&nbsp; ✦ 查询表的外键：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select constraint_name &quot;外键名&quot;,  table_name &quot;表名&quot;,R_constraint_name &quot;参考约束名&quot;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; from user_constraints c
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where c.constraint_type= 'R' and c.table_name=表名;
+<br>&nbsp;&nbsp; ✦ REFERENCES：指定表和父表中的列
+<br>&nbsp;&nbsp; ✦ ON DELETE CASCADE：级联删除，当删除父表时，级联删除子表记录
+<br>&nbsp;&nbsp; ✦ ON DELETE SET NULL：将子表的相关依赖记录的外键值置为NULL
+<br>
+<br><font color=green size = 4>检查约束</font>
+<br>&nbsp;&nbsp; ✦ 建表时添加 check 约束
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; create table 表名
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 列名0       number,
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 列名1     varchar2(50) constraint 约束名 check (列名 条件),
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 列名2      varchar2(60) constraint 约束名 check (列名2 in('hello', 'world')),
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // 定义CHECK约束，该约束在字段supplier_id被插入或者更新时验证，当条件不满足时触发
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CONSTRAINT check_tb_列名 CHECK (列名 BETWEEN 100 and 9999)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );
+<br>&nbsp;&nbsp; ✦ 建表后添加 check 约束：alter table 表名 add constraint 约束名 CHECK (列名 条件);
+<br> 👻 注：必须保证表中数据符合即将添加的check条件，否则创建check约束失败
+<br>
+<br><font color=green size = 4>非空约束</font>
+<br>&nbsp;&nbsp; ✦ 加非空：alter table 表名 add constraint 约束名 not null(列名);
+<br>&nbsp;&nbsp; ✦ 删除非空：alter table 表名 drop constraint 约束名 not null(列名);
+<br>&nbsp;&nbsp; ✦ 建表时添加：. . . 列名 类型 constraint 约束名 not null(列名);
+<br>
+<br><font color=green size = 4>唯一性约束</font>
+<br>&nbsp;&nbsp; ✦ 加非空：alter table 表名 add constraint 约束名 unique(列名);
+<br>&nbsp;&nbsp; ✦ 删除非空：alter table 表名 drop constraint 约束名 unique(列名);
+<br>&nbsp;&nbsp; ✦ 建表时添加：. . . 列名 类型 constraint 约束名 unique(列名);
+<br>
+<br><font color=green size = 4>视图</font>
+<br>&nbsp;&nbsp; ✦ 视图的概念：虚表，建立在基表之上的一个逻辑的抽象，本身没有数据，但是来源于表
+<br>&nbsp;&nbsp; ✦ 视图的优点：简化复杂查询、限制数据访问、提供数据的相对独立、同样的数据，可以有不同的显示方式，但是不能提高性能
+<br>&nbsp;&nbsp; ✦ 视图关联的表比较少就是简单视图，关联的表比较多就是复杂视图
+<br> 👻 注：不建议通过视图对表数据进行修改，也不可以对视图进行修改
+<br>&nbsp;&nbsp; ✦ 视图中使用DML的规定
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; • 可以在简单视图中执行DML操作
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; • 当视图定义中包含以下元素之一时不能使用 delete：组函数、GROUP BY  子句、DISTINCT 关键字、ROWNUM 伪列
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; • 当视图定义中包含以下元素之一时不能使用 update：组函数、GROUP BY  子句、DISTINCT 关键字、ROWNUM 伪列、列的定义表达式
+<br>&nbsp;&nbsp; ✦ 屏蔽DML操作
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; • 可以使用 WITH READ ONLY 选项屏蔽对视图的DML操作
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; • 任何DML操作都会返回一个 Oracle server 错误
+<br>
+<br><font color=green size = 4>创建视图</font>
+<br> create [ or replace ] [ force ] view [schema.]view_name
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ (column1,column2,...) ]
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; as
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select . . .
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ with check option ] [ constraint constraint_name ]
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ with read only ];
+<br> 👻 tips:
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 0 or replace： 如果存在同名的视图，则使用新视图&quot;替代&quot;已有的视图
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 1 force：&quot;强制&quot;创建视图，不考虑基表是否存在，也不考虑是否具有使用基表的权限
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 2 column1, column2, . . .：视图的列名，列名的个数必须与select查询中列的个数相同，如果select查询包含函数或表达式，则必须为其定义列名，此时，既可以用column1, column2指定列名，也可以在select查询中指定列名
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 3 with check option：指定对视图执行的dml操作必须满足“视图子查询”的条件，即，对通过视图进行的增删改操作进行&quot;检查&quot;，要求增删改操作的数据，必须是select查询所能查询到的数据，否则不允许操作并返回错误提示，默认情况下，在增删改之前&quot;并不会检查&quot;这些行是否能被select查询检索到
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 4 with read only：创建的视图只能用于查询数据，而不能用于更改数据
+<br> 👻 权限不够时超级数据库用户登录使用
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; connect /as sysdba;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; grant create view to 用户名;
+<br> 👻 为用户分配创建视图的权限
+<br>
+<br><font color=green size = 4>删除视图</font>
+<br>&nbsp;&nbsp; 删除视图只是删除视图的定义，并不会删除其表的数据
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DROP VIEW view_name;
+<br>
+<br><font color=green size = 4>序列</font>
+<br>&nbsp;&nbsp; ✦ 序列概念：可供多个用户来产生唯一数值的数据库对象
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 自动提供唯一的数值
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 共享对象
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 主要用于提供主键值
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 将序列值装入内存可以提高访问效率
+<br>&nbsp;&nbsp; ✦ 定义序列
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CREATE SEQUENCE sequence
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [INCREMENT BY n]&nbsp;&nbsp;&nbsp;&nbsp;// 每一次递增多少
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [START WITH n]&nbsp;&nbsp;&nbsp;&nbsp;// 开始值
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [{MAXVALUE n | NOMAXVALUE}]&nbsp;&nbsp;&nbsp;&nbsp;// 指定最大值
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [{MINVALUE n | NOMINVALUE}]&nbsp;&nbsp;&nbsp;&nbsp;// 指定最小值
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [{CYCLE | NOCYCLE}]    // 是否循环，不循环到最大值会报错，循环最大值后一个是最小值
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [{CACHE n | NOCACHE}];&nbsp;&nbsp;&nbsp;&nbsp;// 初始化序列空间，满了之后增加的空间
+<br>
+<br><font color=green size = 4>序列的两个属性</font>
+<br> NEXTVAL
+<br> CURRVAL：CURRVAL应该在NEXTVAL之后使用
+<br>
+<br><font color=green size = 4>序列使用实战</font>
+<br>&nbsp;&nbsp; ✦ 创建序列：create sequence 序列名;
+<br>&nbsp;&nbsp; ✦ 从序列中取nextval，产生table的主键值：insert into 表名 values(myseq.nextval, 'aa');
+<br>&nbsp;&nbsp; ✦ 获取当前的序列值：先使用select 序列名.nextval from dual;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 再使用select 序列名.currval from dual;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 相当于指针操作，使用next使得序列指向下一个值，首地址没有值
+<br>
+<br><font color=green size = 4>使用序列需要注意的问题</font>
+<br>&nbsp;&nbsp; ✦ 多个表共用一个序列可能造成序列不连续
+<br>&nbsp;&nbsp; ✦ 回滚会造成序列不连续
+<br>&nbsp;&nbsp; ✦ 系统异常、内存序列丢失 也会造成序列不连续
+<br>
+<br><font color=green size = 4>索引概念</font>
+<br>&nbsp;&nbsp; ✦ 一种独立于表的模式对象，可以存储在与表不同的磁盘或表空间中
+<br>&nbsp;&nbsp; ✦ 索引被删除或损坏，不会对表产生影响，其影响的只是查询的速度
+<br>&nbsp;&nbsp; ✦ 索引一旦建立，Oracle 管理系统会对其进行自动维护，而且由Oracle管理系统决定何时使用索引，用户不用在查询语句中指定使用哪个索引
+<br>&nbsp;&nbsp; ✦ 在删除一个表时，所有基于该表的索引会自动被删除
+<br>&nbsp;&nbsp; ✦ 通过指针加速Oracle服务器的查询速度
+<br>&nbsp;&nbsp; ✦ 通过快速定位数据的方法，减少磁盘 I/O
+<br>
+<br><font color=green size = 4>索引原始知识</font>
+<br>&nbsp;&nbsp; ✦ 索引和表单独存放
+<br>&nbsp;&nbsp; ✦ 索引对DBA和开发人员是透明的，我们只需要创建索引就行了
+<br>&nbsp;&nbsp; ✦ select rowid, 列名, 列名 form 表名;   可以得到指定列的 rowid 值，即存储地址，索引就是存储的这个值
+<br>
+<br><font color=green size = 4>什么时候使用索引</font>
+<br>&nbsp;&nbsp; ✦ 列中数据值分布范围很广
+<br>&nbsp;&nbsp; ✦ 经常在 WHERE 子句或连接条件中出现
+<br>&nbsp;&nbsp; ✦ 表经常被访问而且数据量很大，访问的数据大概占数据总量的 2%到4%
+<br>
+<br><font color=green size = 4>建立索引</font>
+<br>&nbsp;&nbsp; ✦ 自动创建：在定义 PRIMARY KEY 或 UNIQUE 约束后系统自动在相应的列上创建唯一性索引
+<br>&nbsp;&nbsp; ✦ 手动创建：create index 索引名 on 表名(列名0, 列名1, . . . );  以加速查询
+<br>
+<br><font color=green size = 4>索引说明</font>
+<br>&nbsp;&nbsp; ✦ 主键本身就是索引
+<br>&nbsp;&nbsp; ✦ 唯一约束也是自动索引
+<br>
+<br><font color=green size = 4>查询索引</font>
+<br>&nbsp;&nbsp;&nbsp;&nbsp; SELECT ic.index_name, ic.column_name, ic.column_position col_pos, ix.uniqueness
+<br>&nbsp;&nbsp;&nbsp;&nbsp; FROM user indexes ix, user ind columns ic
+<br>&nbsp;&nbsp;&nbsp;&nbsp; WHERE ic.index_name = ix.index_name
+<br>&nbsp;&nbsp;&nbsp;&nbsp; AND ic.table_name = 'EMPLOYEES';
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; or select * from user_indexes;
+<br>&nbsp;&nbsp; ✦ 查询一张表里面索引 ：select * from user_indexes where table_name=upper('bills');
+<br>&nbsp;&nbsp; ✦ 查询被索引字段 ：select * from user_ind_columns where index_name=('in_bills');
+<br>&nbsp;&nbsp; ✦ 给某一字段创建索引 ：create index in_bills on bills(account_id);
+<br>
+<br><font color=green size = 4>删除索引</font>
+<br>&nbsp;&nbsp; ✦ 使用 DROP INDEX 命令删除索引
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DROP INDEX index;
+<br>&nbsp;&nbsp; ✦ 删除索引 UPPER_LAST_NAME_IDX
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DROP INDEX upper_last_name_idx;
+<br> 👻 只有索引的拥有者或拥有 DROP ANY INDEX 权限的用户才可以删除索引
+<br>
+<br><font color=green size = 4>同义词</font>
+<br> 使用同义词访问相同的对象，相当于给一个表创建别名
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 方便访问其它用户的对象
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 缩短对象名字的长度
+<br>
+<br><font color=green size = 4>创建同义词</font>
+<br> 👻 需要给用户分配权限：grant create [any] synonym to 用户名
+<br>&nbsp;&nbsp; create synonym 同义词名 for 表名;
+<br>
+<br><font color=green size = 4>删除同义词</font>
+<br> drop synonym 同义词名;</p>
+
+<p><br><br><br>
+<font color = gray size = 3>如有错误，欢迎指正！</font></p></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://oubc.github.io/tags/oracle%E6%95%B0%E6%8D%AE%E5%BA%93/">Oracle数据库</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmg4aog3074074gnf.gif?tags=%5B%5D">I </a>
+	<a href="">love</a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmfm2eg306o06o74u.gif?tags=%5B%5D"> you </a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx4tpcj30fn0bq3zg.jpg?tags=%5B%5D">three </a>
+	<a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx64ctg307s07swfy.gif?tags=%5B%5D">thousand</a>
+    <a href="https://www.kugou.com/song/#hash=96426C78381DE98DC31A5846FC274CBF&album_id=646623"> times.</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>家庭、梦想、内心的平静</span>
+  </div>
+</footer>
+
+
+
+<script src="https://oubc.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://oubc.github.io/js/zozo.js"></script>
+<script src="https://oubc.github.io/js/highlight.pack.js"></script>
+<link  href="https://oubc.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://oubc.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>
