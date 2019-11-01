@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Bruce Cheung"/>
+
+  
+  <meta name="description" content=""/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, simple, dream"/>
+  
+
+  
+  <link rel="canonical" href="https://oubc.github.io/post/o4_ordahandle/"/>
+
+  
+
+  <title>Oracle数据处理 &middot; Love, or death</title>
+
+  <link rel="shortcut icon" href="https://oubc.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/post/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://oubc.github.io/">
+          <span>Love, or death</span>
+          <img src="https://oubc.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">For you, a thousand times over.</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/oubc" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=uYGOjo6OiIuLivnIyJfa1tQ" title="mail" target="_blank"><i class="remixicon-mail-fill"></i></a>
+        
+        
+        
+        <a href="http://sighttp.qq.com/msgrd?v=1&amp;uin=877771223" title="qq" target="_blank"><i class="remixicon-qq-fill"></i></a>
+        
+        
+        
+        <a href="https://github.com/oubc/oubc.github.io/blob/master/images/wx.jpg?raw=true" title="wechat" target="_blank"><i class="remixicon-wechat-fill"></i></a>
+        
+        
+        
+        <a href="https://weibo.com/u/6993631995?topnav=1&amp;wvr=6&amp;topsug=1" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://oubc.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/post/o4_ordahandle/'>Oracle数据处理</a></h2>
+          <span class="date">2019.11.01</span>
+        </div>
+        <div class="post_content markdown"><p><br>
+<br>
+<br><font color=green size = 4>集合</font>
+<br>&nbsp;&nbsp; ✦ 并集：UNION/UNION ALL 如果集合A中有一个1，B中也有一个1，结果会有两个1
+<br>&nbsp;&nbsp; ✦ 交集：INTERSECT
+<br>&nbsp;&nbsp; ✦ 差集：MINUS
+<br> 🐷 集合运算需注意：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 参与运算各个集合必须列数相同，且类型一样
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 采用第一个集合运算的表头作为最后的表头
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 必须在每一个集合后 使用相同的 order by
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 使用括号
+<br>
+<br><font color=green size = 4>数据处理</font>
+<br>
+<br><font color=green size = 4>sql语言的类型</font>
+<br>&nbsp;&nbsp; ✦ DML语句 ( Data Manipulation Language )  数据库操作语言
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 完成数据的增删改查
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; insert、update、delete、select
+<br>&nbsp;&nbsp; ✦ DOL语言 ( Data Definition Language )  数据库定义语言
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 完成数据库对象操作
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; create table
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; create view、index、sequence、synonyn同义词
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; truncate table
+<br>&nbsp;&nbsp; ✦ DCL语言 ( Data Control Language )  数据库控制语言
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 控制sql语句
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; commit、rollback、savepoint
+<br>
+<br><font color=green size = 4>INSERT 语法</font>
+<br>&nbsp;&nbsp; 0、向表中插入数据
+<br>&nbsp;&nbsp; 1、向表中插入所有列
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; INSERT INTO table VALUES(, , , , );    table后面指定列可省略
+<br>&nbsp;&nbsp; 2、向表中插入部分列
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; INSERT INTO table [(column [, column . . .])]
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; VALUES (value [, value . . .]);
+<br>&nbsp;&nbsp; 3、隐式插入空值：没有写出的列，默认为 null 值
+<br>&nbsp;&nbsp; 4、显式插入空值
+<br>&nbsp;&nbsp; 5、sql插入语句的地址符 &amp; 取地址符后面为一个变量
+<br>&nbsp;&nbsp; 6、&amp;地址符，可以在任何语言中使用，在 select 语句中也可以使用
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/O4_OrDaHandle0.png?raw=true" width="800" height="500" />
+<br>&nbsp;&nbsp; 7、一次只能向表中插入一条数据
+<br>
+<br><font color=green size = 4>INSERT 批量插入数据</font>
+<br>&nbsp;&nbsp; ✦ 先建一张空表：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; create table emp10
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; as
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select *
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; from emp
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where 1=2;   // 1=2恒不成立，不会检索出数据，故创建的表只含表头
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/O4_OrDaHandle1.png?raw=true" width="600" height="250" />
+<br> 🐷 批量插入数据：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; insert into emp10
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select * from emp where deptno=10;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 这样就将emp表中 deptno = 10 的数据都插入到emp10表中了
+<br> 🐷 所以，INSERT语句中也可以使用子查询，子查询不光用在查询套查询，也可用在DML语句套select语句
+<br>
+<br><font color=green size = 4>UPDATE 更新数据</font>
+<br>&nbsp;&nbsp; UPDATE table
+<br>&nbsp;&nbsp; SET column=value [, column=value, . . .]
+<br>&nbsp;&nbsp; [WHERE comdition];
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/O4_OrDaHandle2.png?raw=true" width="800" height="600" />
+<br> 🐷 可以一次更新多条数据
+<br> 🐷 UPDATE 会有主外键约束
+<br>
+<br><font color=green size = 4>DELETE 删除数据</font>
+<br>&nbsp;&nbsp; DELETE [FROM] table
+<br>&nbsp;&nbsp; WHERE condition
+<br>&nbsp;&nbsp; delete table 只是对表清空，并没有删除表
+<br>&nbsp;&nbsp; delete 也可以使用子查询
+<br> 🐷 删除数据的时候也需要注意数据的完整性
+<br>
+<br><font color=green size = 4>TRUNCATE 和 DELETE的区别</font>
+<br>&nbsp;&nbsp; 0、truncate也可以删除表数据，delete是逐条删除表数据，truncate是先摧毁表然后重建
+<br>&nbsp;&nbsp; 1、delete 是DML语言，truncate是DDL语言
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DML语言可以闪回 (flashback)，出错并且提交了的可以通过闪回撤销操作
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DDL语言不可以闪回
+<br>&nbsp;&nbsp; 2、delete是逐条删除，会产生碎片，truncate不会产生碎片
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 要使用闪回功能，必须先开启 行移动功能
+<br>&nbsp;&nbsp; 3、delete不会释放空间，truncate会
+<br>&nbsp;&nbsp; 4、delete可以回滚，truncate不可
+<br>&nbsp;&nbsp; 5、oracle delete快，mysql truncate快 (一般来说truncate会更快，但是Oracle对delete做了优化)
+<br>
+<br><font color=green size = 4>set timing off/on    关闭/开启 执行时间显示</font>
+<br><font color=green size = 4>set feedback off/on    关闭/开启 操作反馈</font>
+<br>
+<br><font color=green size = 4>从文件中导入数据</font>
+<br>&nbsp;&nbsp; ✦ @路径 即可导入文件(必须以 .sql 为后缀的文件)
+<br>
+<br><font color=green size = 4>DROP 删除表</font>
+<br> DROP table;
+<br>
+<br><font color=green size = 4>数据库事务的组成部分</font>
+<br>&nbsp;&nbsp; ✦ 一个或多个DML语句
+<br>&nbsp;&nbsp; ✦ 一个DDL语句
+<br>&nbsp;&nbsp; ✦ 一个DCL语句
+<br>
+<br><font color=green size = 4>事务的通用性概念：infomix、db2、mysql、sqlserver</font>
+<br>&nbsp;&nbsp; ✦ 概念：一个或多个 DML 语句
+<br>&nbsp;&nbsp; ✦ 特点：要么都成功，要么都失败
+<br>&nbsp;&nbsp; ✦ 特性：原子性、一致性、隔离性、持久性
+<br>&nbsp;&nbsp; ✦ 事务的隔离性：是指多个客户端同时操作数据库时，要对它们进行隔离，否则就会出现脏读、不可重复读、幻读
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 通过设置不同的搁置级别来解决
+<br>
+<br><font color=green size = 4>Oracle中的事务</font>
+<br>&nbsp;&nbsp; ✦ 事务的起始标志：DML语言 (Oracle 默认事务是打开的)
+<br>&nbsp;&nbsp; ✦ 事务的结束标志：
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 提交：显式条件  commit
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 隐式提交：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1) 执行 DDL 语言
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; eg：create table 语言
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2) 正常退出
+<br>&nbsp;&nbsp;&nbsp;&nbsp; 回滚：显式  rollback
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 隐式：断电/当机/非正常退出，系统出错
+<br>&nbsp;&nbsp; ✦ Oracle 默认情况下事务是打开的
+<br>&nbsp;&nbsp; ✦ MySQL 默认情况下事务是没有打开的，必须手工设置它，但它自动提交，即一步操作完成后自动提交
+<br>
+<br><font color=green size = 4>事务的控制</font>
+<br> 🐷 利用保存点来实现事务的控制
+<br>&nbsp;&nbsp; ✦ 语法：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; savepoint a;   创建一个保存点
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; . . . 操作
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; rollback/commit to savepoint a;    提交/回滚到保存点位置
+<br> 🐷 注：回退到 savepoint a 前面所操作的sql语句并没有提交，仍然在一个事务里面
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 让事务结束的方法还是需要用到上面的显式或者隐式提交或回滚
+<br>
+<br><font color=green size = 4>数据库的隔离级别</font>
+<br>&nbsp;&nbsp; ✦ 对于同时运行的多个事务，当这些事务访问数据库中相同的数据时，如果没有采取必要的隔离机制，就会导致各种并发问题
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; • 脏读：对于两个事务 T1、T2，T1 读取了已经被 T2 更新但还没有被提交的字段之后，若 T2 回滚，T1 读取的内容就是临时且无效的
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; • 不可重复读：对于两个事务 T1、T2，T1 读取了一个字段，然后 T2 更新了该字段，之后 T1 再次读取同一字段，值就不同了
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; • 幻读：对于两个事务 T1、T2，T1 从一个表中读取了一个字段，然后 T2 在该表中插入了一些新的行，之后如果 T1 再次读取同一个表，就会多出几行
+<br>&nbsp;&nbsp; ✦ 数据库事务的隔离性：数据库系统必须具有隔离并发运行各个事务的能力，使它们不会相互影响，避免各种并发问题
+<br>&nbsp;&nbsp; ✦ 一个事务与其它事务隔离的程度成为隔离等级，数据库规定了多种事务隔离级别，不同隔离级别对应于不同的干扰程度，隔离级别越高，数据一致性就越好，但并发度越弱
+<br> 🐷 数据库提供4种事务隔离级别：sql99
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/O4_OrDaHandle3.png?raw=true" width="400" height="200" />
+<br>&nbsp;&nbsp; ✦ Oracle 支持的2种事务隔离级别：READ COMMITED、SERIALIZABLE，默认为 READ COMMITED
+<br>&nbsp;&nbsp; ✦ MySQL 支持4种事务隔离级别，默认为 REPEATABLE READ
+<br>&nbsp;&nbsp; ✦ Oracle几乎不做串行化操作，增加了 READ ONLY
+<br>
+<br><font color=green size = 4>事务相关实验</font>
+<br>&nbsp;&nbsp; ✦ 可以开两个终端对同一个表进行操作查看相关状态
+<br>
+<br><font color=green size = 4>表名和列名</font>
+<br>&nbsp;&nbsp; ✦ 必须以字母开头
+<br>&nbsp;&nbsp; ✦ 必须在 1~30 个字符之间
+<br>&nbsp;&nbsp; ✦ 只能包含 A-Z、a-z、0-9、_、$ 和 #
+<br>&nbsp;&nbsp; ✦ 不能和用户定义的其它对象重名
+<br>&nbsp;&nbsp; ✦ 不能是 Oracle的保留字
+<br>&nbsp;&nbsp; ✦ Oracle默认存储是存为大写
+<br>&nbsp;&nbsp; ✦ 数据库名只能是1~8位，datalink可以是128位，和其它一些特殊字符
+<br>
+<br><font color=green size = 4>Oracle的数据类型</font>
+<br>&nbsp;&nbsp; ✦ rownum  前面介绍，表的固有属性值，在表创建完成时就已经确定
+<br>&nbsp;&nbsp; ✦ rowid  行地址( 指针 )，伪列，存储表的地方
+<br>
+<br><font color=green size = 4>创建表/修改表/删除表</font>
+<br>&nbsp;&nbsp;&nbsp; 新创建一个用户时，需要考虑用户有没有 create table 权限 和 表的存储空间(表空间)
+<br>
+<br><font color=green size = 4>创建表</font>
+<br>&nbsp;&nbsp;&nbsp; CREATE TABLE [schema.]table
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (column datatype, [DEFAVLT expr][, . . .]);
+<br> 🐷 eg：create table test
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (tid number, hiredate date default sysdate);
+<br>
+<br><font color=green size = 4>创建表的同时拷贝copy数据</font>
+<br>&nbsp;&nbsp; ✦ 利用 as 保留字，可以建表的同时把子查询中的数据插入新建表种
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; create table table
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; as
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 子查询 . . .
+<br>
+<br><font color=green size = 4>插入数据</font>
+<br> INSERT INTO table(column， . . .) VALUES(value, value, . . .);
+<br>
+<br><font color=green size = 4>查询数据</font>
+<br> SELECT * FROM table;
+<br>&nbsp;&nbsp; ✦ 两个用户之间表查询需要有查询权限
+<br>
+<br><font color=green size = 4>查看表结构</font>
+<br> desc 表名;
+<br>
+<br><font color=green size = 4>表字段的增删改查</font>
+<br>&nbsp;&nbsp; ✦ 增加一列：ALTER table 表名 ADD 列名 类型;
+<br>&nbsp;&nbsp; ✦ 修改一列：ALTER table 表名 MODIFY 列名 类型;
+<br>&nbsp;&nbsp; ✦ 重命名一列：ALTER table 表名 RENAME column 列名 to 修改后列名;
+<br>&nbsp;&nbsp; ✦ 删除一列：ALTER table 表名 DROP column 列名
+<br>
+<br><font color=green size = 4>Oracle表的管理机制 — 回收站</font>
+<br>&nbsp;&nbsp; ✦ 当使用 drop 删除一个表之后，此表会被放入回收站
+<br> 🐷 注：超级管理员、sys、dba没有回收站，只有普通用户才有
+<br>&nbsp;&nbsp; ✦ 查看回收站：show recyclebin;
+<br>&nbsp;&nbsp; ✦ 查看回收站表的内容：select * from &quot;表名&quot;，需要双引号
+<br>&nbsp;&nbsp; ✦ 清空回收站：purge recyclebin;
+<br>&nbsp;&nbsp; ✦ 彻底删除一张表
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; drop table 表名 purge — 直接删除，不通过回收站
+<br> 🐷 还原表，从回收站中还原原表
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 闪回的内容</p>
+
+<p><br><br><br>
+<font color = gray size = 3>如有错误，欢迎指正！</font></p></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://oubc.github.io/tags/oracle%E6%95%B0%E6%8D%AE%E5%BA%93/">Oracle数据库</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmg4aog3074074gnf.gif?tags=%5B%5D">I </a>
+	<a href="">love</a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmfm2eg306o06o74u.gif?tags=%5B%5D"> you </a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx4tpcj30fn0bq3zg.jpg?tags=%5B%5D">three </a>
+	<a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx64ctg307s07swfy.gif?tags=%5B%5D">thousand</a>
+    <a href="https://www.kugou.com/song/#hash=96426C78381DE98DC31A5846FC274CBF&album_id=646623"> times.</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>家庭、梦想、内心的平静</span>
+  </div>
+</footer>
+
+
+
+<script src="https://oubc.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://oubc.github.io/js/zozo.js"></script>
+<script src="https://oubc.github.io/js/highlight.pack.js"></script>
+<link  href="https://oubc.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://oubc.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>

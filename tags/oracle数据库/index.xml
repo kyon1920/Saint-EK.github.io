@@ -6,10 +6,19 @@
     <description>Recent content in Oracle数据库 on Love, or death</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Wed, 30 Oct 2019 19:39:54 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 01 Nov 2019 07:43:47 +0800</lastBuildDate>
     
 	<atom:link href="https://oubc.github.io/tags/oracle%E6%95%B0%E6%8D%AE%E5%BA%93/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Oracle数据处理</title>
+      <link>https://oubc.github.io/post/o4_ordahandle/</link>
+      <pubDate>Fri, 01 Nov 2019 07:43:47 +0800</pubDate>
+      
+      <guid>https://oubc.github.io/post/o4_ordahandle/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>Oracle查询</title>
