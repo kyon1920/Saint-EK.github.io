@@ -6,10 +6,19 @@
     <description>Recent content in Oracle数据库 on Love, or death</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Fri, 01 Nov 2019 18:57:34 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 03 Nov 2019 20:10:58 +0800</lastBuildDate>
     
 	<atom:link href="https://oubc.github.io/tags/oracle%E6%95%B0%E6%8D%AE%E5%BA%93/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>初识Pro * C/C&#43;&#43;</title>
+      <link>https://oubc.github.io/post/o6_oracleproc0/</link>
+      <pubDate>Sun, 03 Nov 2019 20:10:58 +0800</pubDate>
+      
+      <guid>https://oubc.github.io/post/o6_oracleproc0/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>Oracle数据库对象</title>
@@ -49,10 +58,10 @@
     
     <item>
       <title>Oracle数据库基础语法</title>
-      <link>https://oubc.github.io/post/o1_oraclesyn0/</link>
+      <link>https://oubc.github.io/post/o1_oraclesyn/</link>
       <pubDate>Sun, 27 Oct 2019 13:26:07 +0800</pubDate>
       
-      <guid>https://oubc.github.io/post/o1_oraclesyn0/</guid>
+      <guid>https://oubc.github.io/post/o1_oraclesyn/</guid>
       <description></description>
     </item>
     

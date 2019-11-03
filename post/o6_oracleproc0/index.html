@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Bruce Cheung"/>
+
+  
+  <meta name="description" content=""/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, simple, dream"/>
+  
+
+  
+  <link rel="canonical" href="https://oubc.github.io/post/o6_oracleproc0/"/>
+
+  
+
+  <title>初识Pro * C/C&#43;&#43; &middot; Love, or death</title>
+
+  <link rel="shortcut icon" href="https://oubc.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/post/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://oubc.github.io/">
+          <span>Love, or death</span>
+          <img src="https://oubc.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">For you, a thousand times over.</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/oubc" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=uYGOjo6OiIuLivnIyJfa1tQ" title="mail" target="_blank"><i class="remixicon-mail-fill"></i></a>
+        
+        
+        
+        <a href="http://sighttp.qq.com/msgrd?v=1&amp;uin=877771223" title="qq" target="_blank"><i class="remixicon-qq-fill"></i></a>
+        
+        
+        
+        <a href="https://github.com/oubc/oubc.github.io/blob/master/images/wx.jpg?raw=true" title="wechat" target="_blank"><i class="remixicon-wechat-fill"></i></a>
+        
+        
+        
+        <a href="https://weibo.com/u/6993631995?topnav=1&amp;wvr=6&amp;topsug=1" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://oubc.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/post/o6_oracleproc0/'>初识Pro * C/C&#43;&#43;</a></h2>
+          <span class="date">2019.11.03</span>
+        </div>
+        <div class="post_content markdown"><p><br>
+<br>
+<br><font color=green size = 4>SQL监听服务 (在终端中)</font>
+<br> ⚽ 启动监听：lsnrctl start
+<br> ⚽ 查询监听状态：lsnrctl status
+<br> ⚽ 关闭监听：lsnrctl stop
+<br>
+<br><font color=green size = 4>什么是 Pro * C/C++</font>
+<br> ⚽ 通过在过程化编程语言或面向对象语言 C/C++ 中嵌入 SQL 语句而开发出的应用程序
+<br>
+<br><font color=green size = 4>什么是嵌入式 SQL</font>
+<br> ⚽ 在通过用编程语言中的 SQL 称为 嵌入式SQL
+<br> ⚽ 在 SQL 标准中定义了多种语言的 嵌入式SQL
+<br> ⚽ 各个厂商对 嵌入式SQL 的具体实现不同
+<br>
+<br><font color=green size = 4>什么是 Pro * C/C++ 程序</font>
+<br> ⚽ 在 C/C++ 语言中嵌入SQL语句而开发的应用程序称为 Pro * C/C++ 程序
+<br> ⚽ 目的是使 C/C++ 这种高效率的语言称为访问数据库的工具
+<br>
+<br><font color=green size = 4>什么是宿主语言</font>
+<br> ⚽ 嵌入式SQL 的载体是宿主语言
+<br><table border="5">
+<tr align="center">
+<th>宿主语言</th>
+<th>Pro程序</th>
+</tr>
+<tr align="center">
+<td>C/C++</td>
+<td>Pro * C/C++</td>
+</tr>
+<tr align="center">
+<td>FORTRAN</td>
+<td>Pro * FORTRAN</td>
+</tr>
+<tr align="center">
+<td>PASCAL</td>
+<td>Pro * PASCAL</td>
+</tr>
+<tr align="center">
+<td>COBOL</td>
+<td>Pro * COBOL</td>
+</tr>
+<tr align="center">
+<td>PL/1</td>
+<td>Pro * PL/1</td>
+</tr>
+<tr align="center">
+<td>Ada</td>
+<td>Pro * Ada</td>
+</tr>
+</table>
+<br><font color=green size = 4>访问数据库的方法</font>
+<br> ⚽ 用 SQL * Plus，它有 SQL 命令以交互的应用程序访问数据库
+<br> ⚽ 用第四代语言应用开发工具开发的应用程序访问数据库，这些工具有 SQL * Froms、SQL * Reportwriter、SQL * Menu 等
+<br> ⚽ 利用在第三代语言内嵌入的SQL语言或ORACLE库函数调用来访问
+<br>
+<br><font color=green size = 4>访问 Oracle数据库 的方法</font>
+<br> ✦ SQLPLUS：Oracle 自带访问数据库的工具
+<br> ✦ JDBC：Java DataBase Connectivity standard
+<br> ✦ ODBC：Open DataBase Connectivity 开放数据库互连
+<br> ✦ OCI：Oracle Call Interface
+<br> ✦ OCCI：Oracle C++ Call Interface
+<br> ✦ Pro * X：Pro * C/C++、Pro * COBOL、Pro * FORTRAN、Pro * Ada
+<br>
+<br><font color=green size = 4>Pro * C/C++程序结构</font>
+<br> ⚽ include 头文件 ( C/C++ and pro*c/c++ )
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #include &quot;sqlca.h&quot;
+<br> ⚽ 定义变量
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EXEC SQL BEGIN DECLARE SECTION;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 变量 . . .
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EXEC SQL END DECLARE SECTION;
+<br> ⚽ 定义函数
+<br>&nbsp;&nbsp;&nbsp;&nbsp; main
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 连接数据库：connect
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SQL 操作语句：EXEC SQL . . .
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; exception handler
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 断开连接
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EXEC SQL COMMIT / ROLLBACK WORL release
+<br>
+<br><font color=green size = 4>Pro * C/C++ 的开发流程</font>
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/O6_OracleProc0.png?raw=true" width="600" height="450" />
+<br>
+<br><font color=green size = 4>预编译工具 PROC 和编译选项</font>
+<br> ⚽ 该工具在什么地方
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cd $ORACLE_HOME，cd bin目录下
+<br> ⚽ 功能：proc预编译器，把 .pc 文件 编译成为 .c 文件
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; proc默认编译为c文件，而不是C++文件
+<br> ⚽ 基本命令格式
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; proc iname=filename [OptionName1=value1] . . . [OptionNameN=valueN]
+<br> ⚽ 常用编译选项
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ﹢ INAME=path and filename (name of the input file)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ﹢ ONAME=path and filename (name of the ouput file)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ﹢ INCLUDE=path (头文件所在路径)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ﹢ ...INCLUDE=路径名 或 INCLUDE=(路径名1, 路径名2)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ﹢ PARSE=FULL | PARTIA | NONE (default FULL for C, Others for C++)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ﹢ CODE=ANSI_C | CPP (default ANSI_C)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ﹢ USERID=username/password
+<br> ⚽ eg：proc INAME=demo_hello.pc ONAME=demo_hello.cpp PARSE=NONE CODE=CPP
+<br>
+<br><font color=green size = 4>环境配置</font>
+<br>&nbsp;&nbsp;&nbsp; [oracle@localhost /]\$ cd $ORACLE_HOME
+<br>&nbsp;&nbsp;&nbsp; [oracle@localhost db_1]\$ cd precomp/
+<br>&nbsp;&nbsp;&nbsp; [oracle@localhost precomp]\$ cd admin/
+<br>&nbsp;&nbsp;&nbsp; [oracle@localhost admin]\$ ls<br />
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ottcfg.cfg  pcscfg.cfg  shrept.lst
+<br>&nbsp;&nbsp;&nbsp; [oracle@localhost admin]\$ vim pcscfg.cfg
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 将文件中的 4.1.1 改为 系统的gcc版本号就OK
+<br>
+<br><font color=green size = 4>第一次连接数据库</font>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;iostream&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;stdlib.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;</span><span style="color:#800000;">&quot;sqlca.h&quot;</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">using</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">namespace</span><span style="color:#000000;">&nbsp;std;<BR>
+<BR>
+</span><span style="color:#008000;">//&nbsp;数据库变量定义区<BR>
+</span><span style="color:#000000;">EXEC&nbsp;SQL&nbsp;BEGIN&nbsp;DECLARE&nbsp;SECTION;<BR>
+</span><span style="color:#8000ff;">char</span><span style="color:#000000;">*&nbsp;serversid&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;oubc/oubc&quot;</span><span style="color:#000000;">;<BR>
+EXEC&nbsp;SQL&nbsp;END&nbsp;DECLARE&nbsp;SECTION;<BR>
+<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;main()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;在C++语言中直接使用宿主变量<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;serversid:&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;serversid&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;连接Oracle，在嵌入式SQL语言中，使用宿主变量&nbsp;:<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;EXEC&nbsp;SQL&nbsp;connect&nbsp;:serversid;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(sqlca.sqlcode&nbsp;!=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;connect&nbsp;SQL&nbsp;failed!&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;errno:&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;sqlca.sqlcode&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit(sqlca.sqlcode);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;connect&nbsp;SQL&nbsp;success!&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;EXEC&nbsp;SQL&nbsp;commit&nbsp;release;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}</span></div></td></tr></table></div>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0、利用 proc iname=demo.pc oname=demo.cpp parse=none code=cpp 进行生成.cpp文件
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1、利用g++工具对生成的.cpp文件进行编译
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2、会报错无法找到 &quot;sqlca.h&quot; 文件，需要将 Oracle 的头文件和动态库添加进来
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 3、Oracle 的动态库为 lclntsh ( liblclntsh )
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 头文件路径：/data/oracle/product/11.2.0/db_1/precomp/public/
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 动态库路径：/data/oracle/product/11.2.0/db_1/lib/ -lclntsh
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 链接数据库时需要将liblclntsh中的lib去掉
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 4、编译.cpp 文件 g++ demo.cpp -o demo -I /data/oracle/product/11.2.0/db_1/precomp/public/ -L /data/oracle/product/11.2.0/db_1/lib/ -lclntsh
+<br> ⚽ 补：运行连接数据库出错：利用命令 oerr ora 错误码
+<br> ⚽ eg：
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/O6_OracleProc1.png?raw=true" width="600" height="100" />
+<br>
+<br><font color=green size = 4>proc的makefile的编写</font>
+<br> all:demo_0 demo_1
+<br> demo_0:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; @echo '========proc make demo_0========'
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; proc demo_0.pc
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; gcc demo_0.c -o demo_0 -I \${ORACLE_HOME}/precomp/public/ -L \${ORACLE_HOME}/lib -lclntsh
+<br>
+<br> demo_1:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; @echo '========proc make demo_1========'
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; proc iname=demo_1.pc parse=none code=cpp oname=demo_1.cpp
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; g++ demo_1.cpp -o demo_1 -I \${ORACLE_HOME}/precomp/public/ -L \${ORACLE_HOME}/lib -lclntsh
+<br>
+<br> clean:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; @rm -rf demo_0
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; @rm -rf demo_1</p>
+
+<p><br><br><br>
+<font color = gray size = 3>如有错误，欢迎指正！</font></p></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://oubc.github.io/tags/oracle%E6%95%B0%E6%8D%AE%E5%BA%93/">Oracle数据库</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmg4aog3074074gnf.gif?tags=%5B%5D">I </a>
+	<a href="">love</a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmfm2eg306o06o74u.gif?tags=%5B%5D"> you </a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx4tpcj30fn0bq3zg.jpg?tags=%5B%5D">three </a>
+	<a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx64ctg307s07swfy.gif?tags=%5B%5D">thousand</a>
+    <a href="https://www.kugou.com/song/#hash=96426C78381DE98DC31A5846FC274CBF&album_id=646623"> times.</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>家庭、梦想、内心的平静</span>
+  </div>
+</footer>
+
+
+
+<script src="https://oubc.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://oubc.github.io/js/zozo.js"></script>
+<script src="https://oubc.github.io/js/highlight.pack.js"></script>
+<link  href="https://oubc.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://oubc.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>
