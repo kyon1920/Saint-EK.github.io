@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Bruce Cheung"/>
+
+  
+  <meta name="description" content=""/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, simple, dream"/>
+  
+
+  
+  <link rel="canonical" href="https://oubc.github.io/post/l30_gcc/"/>
+
+  
+
+  <title>gcc 和 库 &middot; Love, or death</title>
+
+  <link rel="shortcut icon" href="https://oubc.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/post/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://oubc.github.io/">
+          <span>Love, or death</span>
+          <img src="https://oubc.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">For you, a thousand times over.</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/oubc" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=uYGOjo6OiIuLivnIyJfa1tQ" title="mail" target="_blank"><i class="remixicon-mail-fill"></i></a>
+        
+        
+        
+        <a href="http://sighttp.qq.com/msgrd?v=1&amp;uin=877771223" title="qq" target="_blank"><i class="remixicon-qq-fill"></i></a>
+        
+        
+        
+        <a href="https://github.com/oubc/oubc.github.io/blob/master/images/wx.jpg?raw=true" title="wechat" target="_blank"><i class="remixicon-wechat-fill"></i></a>
+        
+        
+        
+        <a href="https://weibo.com/u/6993631995?topnav=1&amp;wvr=6&amp;topsug=1" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://oubc.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/post/l30_gcc/'>gcc 和 库</a></h2>
+          <span class="date">2019.06.14</span>
+        </div>
+        <div class="post_content markdown"><p><br>
+<br>
+<br>
+<br><font color=green size = 4>gcc 的编译过程</font>
+&nbsp;&nbsp;&nbsp; <demo.c>
+<br>&nbsp;&nbsp;&nbsp; →{ 预处理器(cpp)，gcc -E }→ [c文件]<demo.i>
+<br>&nbsp;&nbsp;&nbsp; →{ 编译器(gcc)，gcc -S }→ [汇编文件]<demo.s>
+<br>&nbsp;&nbsp;&nbsp; →{ 汇编器(gcc)，gcc -c }→ [二进制文件]<demo.o>
+<br>&nbsp;&nbsp;&nbsp; →{ 链接器(ld)，gcc }→ [可执行文件]<a.out>
+<br>&nbsp;&nbsp;&nbsp; 图 编译过程
+<br><img src="https://github.com/oubc/oubc.github.io/blob/master/images/L30_GCC.png?raw=true" width="600" height="180" />
+<br>
+<br><font color=green size = 4>gcc的一些参数</font>
+<br>&nbsp;&nbsp;&nbsp; 不加任何参数：gcc 源文件 → 生成 a.out可执行文件
+<br>&nbsp;&nbsp;&nbsp; -x 关掉上一个选项，也就是让gcc根据文件名后缀，自动识别文件类型
+<br>&nbsp;&nbsp;&nbsp; -c 只激活预处理,编译,和汇编,也就是他只把程序做成obj文件
+<br>&nbsp;&nbsp;&nbsp; -S 只激活预处理和编译，就是指把文件编译成为汇编代码
+<br>&nbsp;&nbsp;&nbsp; -E 只激活预处理,这个不生成文件, 你需要把它重定向到一个输出文件里面
+<br>&nbsp;&nbsp;&nbsp; -o 制定目标名称, 默认的时候, gcc 编译出来的文件是 a.out
+<br>&nbsp;&nbsp;&nbsp; -pipe 使用管道代替编译中临时文件, 在使用非 gnu 汇编工具的时候, 可能有些问题
+<br>&nbsp;&nbsp;&nbsp; -ansi 关闭 gnu c中与 ansi c 不兼容的特性, 激活 ansi c 的专有特性 (包括禁止一些 asm inline typeof 关键字, 以及 UNIX,vax 等预处理宏)
+<br>&nbsp;&nbsp;&nbsp; -I dir 找寻头文件的目录
+<br>&nbsp;&nbsp;&nbsp; -L dir 制定编译的时候，搜索库的路径
+<br>&nbsp;&nbsp;&nbsp; -l 库名称 在 -L 的基础上，搜寻库
+<br>&nbsp;&nbsp;&nbsp; -g 只是编译器，在编译的时候，产生调试信息
+<br>&nbsp;&nbsp;&nbsp; -O0 、-O1 、-O2 、-O3 编译器的优化选项的 4 个级别，-O0 表示没有优化, -O1 为默认值，-O3 优化级别最高
+<br>&nbsp;&nbsp;&nbsp; -share 此选项将尽量使用动态库，所以生成文件比较小，但是需要系统由动态库
+<br>&nbsp;&nbsp;&nbsp; -w 不生成任何警告信息
+<br>&nbsp;&nbsp;&nbsp; -Wall 生成所有警告信息，eg：未使用的变量
+<br>
+<br><font color=green size = 4>静态库</font>
+<br>&nbsp;&nbsp;&nbsp; 1&gt;. 命名规则
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1). lib + 库名字 + .a
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2). eg：libdemo.a
+<br>&nbsp;&nbsp;&nbsp; 2&gt;. 制作静态库步骤
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1). 由 .c / .cc / .cpp 生成对应的 .o 文件
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; gcc demo.c -c demo.o / gcc -c *.c [-I 头文件路径]
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2). 将生成的 .o 文件打包 ar rcs + 静态库的名字(libdemo.a) + 生成的所有 .o 文件
+<br>&nbsp;&nbsp;&nbsp; 3&gt;. 发布和使用静态库
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1). 发布静态库
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2). 头文件
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 3). 使用静态库
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; gcc 源文件 -o 生成目标文件 [-I 头文件路径] -L 静态库路径 -l 静态库名称(去掉lib头和.o后缀)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; gcc 源文件 -o 生成目标文件 [-I 头文件路径] -L 静态库路径/静态库名称(去掉lib头和.o后缀)
+<br>&nbsp;&nbsp;&nbsp; 4&gt;. 优缺点
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 优点：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1). 发布程序的时候不需要提供对应的库
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2). 加载库的速度快
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 缺点：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1). 库被打包到应用程序中，导致应用程序的体积很大
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2). 库发生了改变(升级)，需要重新编译程序
+<br>
+<br><font color=green size = 4>动态库 (共享库)</font>
+<br>&nbsp;&nbsp;&nbsp; 1&gt;. 命名规则
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lib + 库名字 + .so
+<br>&nbsp;&nbsp;&nbsp; 2&gt;. 制作步骤
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1). 生成与位置无关的 .o 文件
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; gcc -fPIC -c *.c [-I 头文件路径]
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2). 将 .o 文件打包成共享库 (动态库)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; gcc -shared -o libdemo.so *.o [-I 头文件路径]
+<br>&nbsp;&nbsp;&nbsp; 3&gt;. 发布和使用共享库
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1). 发布
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2). 使用
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; gcc 源文件 动态库路径/名称 -o 生成目标文件 [-I 头文件路径]
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; gcc 源文件 -o 生成目标文件 [-I 头文件路径] -L 动态库路径/动态库名称(去掉lib头和.so后缀)
+<br>&nbsp;&nbsp;&nbsp; 4&gt;. 命令 lbb 生成目标文件
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 查看可执行文件依赖的库以及详细信息
+<br>&nbsp;&nbsp;&nbsp; 5&gt;. 解决程序执行时动态库无法被加载的问题
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1). 将动态库路径放入库目录中，即 /lib 目录下，及其不推荐，容易覆盖系统库
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2). 临时测试
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 设置环境变量值：LD_LIBRARY_PATH=动态库的路径
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 将设置的值导入到系统环境变量中：export LD_LIBRARY_PATH
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 当终端关闭，设置就会失效
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 3). 不常用的方法 (永久设置)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 在家目录的 .bashrc 文件中添加：export LD_LIBRARY_PATH=动态库的路径
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .bashrc 修改完成，需要重新启动终端
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 4).
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <1>需要找到动态链接器的配置文件：/etc/ld.so.conf
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <2>动态库的 绝对路径 写到配置文件中
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <3>更新：命令 sudo ldconfig -v
+<br>&nbsp;&nbsp;&nbsp; 6&gt;. 优缺点
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 优点：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1). 执行程序体积小
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2). 更新方便，不需要重新编译程序 (不是绝对的，函数接口不能变)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 缺点：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1). 发布程序的时候，需要将动态库提供给用户
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2). 动态库没有被打包到应用程序中，加载速度相对较慢</p>
+
+<p><br><br><br>
+<font color = gray size = 3>如有错误，欢迎指正！</font></p></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://oubc.github.io/tags/linux/">Linux</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmg4aog3074074gnf.gif?tags=%5B%5D">I </a>
+	<a href="">love</a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmfm2eg306o06o74u.gif?tags=%5B%5D"> you </a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx4tpcj30fn0bq3zg.jpg?tags=%5B%5D">three </a>
+	<a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx64ctg307s07swfy.gif?tags=%5B%5D">thousand</a>
+    <a href="https://www.kugou.com/song/#hash=96426C78381DE98DC31A5846FC274CBF&album_id=646623"> times.</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>家庭、梦想、内心的平静</span>
+  </div>
+</footer>
+
+
+
+<script src="https://oubc.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://oubc.github.io/js/zozo.js"></script>
+<script src="https://oubc.github.io/js/highlight.pack.js"></script>
+<link  href="https://oubc.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://oubc.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>

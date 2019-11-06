@@ -480,6 +480,24 @@
     </item>
     
     <item>
+      <title>gdb 和 Makefile</title>
+      <link>https://oubc.github.io/post/l31_makefile/</link>
+      <pubDate>Sat, 15 Jun 2019 11:30:48 +0800</pubDate>
+      
+      <guid>https://oubc.github.io/post/l31_makefile/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>gcc 和 库</title>
+      <link>https://oubc.github.io/post/l30_gcc/</link>
+      <pubDate>Fri, 14 Jun 2019 10:30:48 +0800</pubDate>
+      
+      <guid>https://oubc.github.io/post/l30_gcc/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Vim使用技巧</title>
       <link>https://oubc.github.io/post/l3_useofvim/</link>
       <pubDate>Mon, 10 Jun 2019 16:36:22 +0800</pubDate>
