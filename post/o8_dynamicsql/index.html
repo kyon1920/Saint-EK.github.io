@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Bruce Cheung"/>
+
+  
+  <meta name="description" content=""/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, simple, dream"/>
+  
+
+  
+  <link rel="canonical" href="https://oubc.github.io/post/o8_dynamicsql/"/>
+
+  
+
+  <title>动态SQL &middot; Love, or death</title>
+
+  <link rel="shortcut icon" href="https://oubc.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/post/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://oubc.github.io/">
+          <span>Love, or death</span>
+          <img src="https://oubc.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">For you, a thousand times over.</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/oubc" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=uYGOjo6OiIuLivnIyJfa1tQ" title="mail" target="_blank"><i class="remixicon-mail-fill"></i></a>
+        
+        
+        
+        <a href="http://sighttp.qq.com/msgrd?v=1&amp;uin=877771223" title="qq" target="_blank"><i class="remixicon-qq-fill"></i></a>
+        
+        
+        
+        <a href="https://github.com/oubc/oubc.github.io/blob/master/images/wx.jpg?raw=true" title="wechat" target="_blank"><i class="remixicon-wechat-fill"></i></a>
+        
+        
+        
+        <a href="https://weibo.com/u/6993631995?topnav=1&amp;wvr=6&amp;topsug=1" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://oubc.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/post/o8_dynamicsql/'>动态SQL</a></h2>
+          <span class="date">2019.11.10</span>
+        </div>
+        <div class="post_content markdown"><p><br>
+<br>
+<br><font color=green size = 4>动态SQL相关概念</font>
+<br> 🏃‍ 动态SQL是指在运行 Pro * C/C++ 应用程序时，动态输入的 SQL语句
+<br> 🏃‍ 目的：加强应用程序的功能和灵活性
+<br> 🏃‍ 比较静态SQL和动态SQL
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 🎈 静态SQL：在编写应用程序时，使用 EXEC SQL 关键字之间嵌入的SQL语句，在 proc编译器 应用程序生成C语言时，就已经确定
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 🎈 动态SQL：在运行应用程序时，由用户动态输入的SQL语句 (像在sqlplus工具中输入sql命令，理解生成动态sql)
+<br> 🏃‍ 什么时候使用动态SQL语句
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 🎈 SQL语句的文本 (命令、子句) 不确定
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 🎈 宿主变量个数不确定
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 🎈 宿主变量的数据类型不确定
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 🎈 引用的数据库对象 (列、表等) 不确定
+<br>
+<br><font color=green size = 4>动态SQL被分为4种</font>
+<br>
+<br><font color=green size = 4>第一种动态SQL语法</font>
+<br> 🏃‍ 执行非 select语句，无宿主变量：insert、update、delete . . . 没有结果集合
+<br> 🏃‍ 循环处理sql语句
+<br> 🎈 eg：
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;mysql[</span><span style="color:#ff0000;">1024</span><span style="color:#000000;">];&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;存放sql语句的数组<BR>
+</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(&nbsp;;&nbsp;;&nbsp;)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;Please&nbsp;input&nbsp;sql(not&nbsp;select):&nbsp;&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;gets(mysql);&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;不能使用scanf或者cin，因为它们遇到空格会结束<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;任意键继续&nbsp;.&nbsp;.&nbsp;.&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;EXEC&nbsp;SQL&nbsp;EXECUTE&nbsp;IMMEDIATE&nbsp;:mysql;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;EXEC&nbsp;SQL&nbsp;WHENEVER&nbsp;SQLERROR&nbsp;DO&nbsp;sqlerr_1();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;EXEC&nbsp;SQL&nbsp;commit;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;And&nbsp;continue?&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cin&nbsp;&gt;&gt;&nbsp;ch;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(ch&nbsp;!=&nbsp;</span><span style="color:#800000;">'y'</span><span style="color:#000000;">&nbsp;||&nbsp;ch&nbsp;!=&nbsp;</span><span style="color:#800000;">'Y'</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+}</span></div></td></tr></table></div>
+<br>
+<br><font color=green size = 4>第二种动态SQL语法</font>
+<br> 🏃‍ 执行非查询语句，带固定数量的宿主变量
+<br> 🏃‍ 使用内嵌的 PREPARE 命令准备SQL语句
+<br> 🏃‍ 可绑定变量，利用占位符
+<br> 🎈 PREPARE子句 (准备SQL子句)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EXEC SQL PREPARE statement_id FROM {:host_string | :string_literal};
+<br> 🎈 USING子句
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EXEC SQL EXECUTE statement_id [USING :host_variable1[:indicator1], :host_variable2[:indicator2] . . .];
+<br> 🎈 eg：
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;mysql[</span><span style="color:#ff0000;">1024</span><span style="color:#000000;">];&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;存放sql语句的数组<BR>
+</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;var_id[</span><span style="color:#ff0000;">10</span><span style="color:#000000;">],&nbsp;var_name[</span><span style="color:#ff0000;">10</span><span style="color:#000000;">];<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;var_age;<BR>
+</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(&nbsp;;&nbsp;;&nbsp;)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;请输入需要更新的学生ID：&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cin&nbsp;&gt;&gt;&nbsp;var_id;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;请输入更新学生的姓名：&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cin&nbsp;&gt;&gt;&nbsp;var_name;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;请输入更新学生的年龄：&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cin&nbsp;&gt;&gt;&nbsp;var_age;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;EXEC&nbsp;SQL&nbsp;PREPARE&nbsp;mysql&nbsp;FROM&nbsp;</span><span style="color:#800000;">&quot;update&nbsp;student&nbsp;set&nbsp;name=_var_name,&nbsp;<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;age=:var_age&nbsp;where&nbsp;id=:var_id</span><span style="color:#800000;">&quot;;<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;EXEC&nbsp;SQL&nbsp;EXECUETE&nbsp;mysql&nbsp;USING&nbsp;:var_id,&nbsp;:var_name,&nbsp;:var_age;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;EXEC&nbsp;SQL&nbsp;commit;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;And&nbsp;continue?&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cin&nbsp;&gt;&gt;&nbsp;ch;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(ch&nbsp;!=&nbsp;</span><span style="color:#800000;">'y'</span><span style="color:#000000;">&nbsp;||&nbsp;ch&nbsp;!=&nbsp;</span><span style="color:#800000;">'Y'</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+}</span></div></td></tr></table></div>
+<br>
+<br><font color=green size = 4>第三种动态SQL语法</font>
+<br> 🏃‍ 输入宿主变量个数固定，查询条件固定
+<br> 🏃‍ 输出宿主变量个数固定，返回结果固定，结合游标一起使用
+<br> 🎈 eg：
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;mysql[</span><span style="color:#ff0000;">1024</span><span style="color:#000000;">];&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;存放sql语句的数组<BR>
+</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;var_id[</span><span style="color:#ff0000;">10</span><span style="color:#000000;">],&nbsp;var_name[</span><span style="color:#ff0000;">10</span><span style="color:#000000;">];<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;var_age;<BR>
+</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(&nbsp;;&nbsp;;&nbsp;)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;请输入学生的年龄：&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cin&nbsp;&gt;&gt;&nbsp;var_age;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;EXEC&nbsp;SQL&nbsp;PREPARE&nbsp;mysql&nbsp;FROM&nbsp;</span><span style="color:#800000;">&quot;select&nbsp;id,&nbsp;name,&nbsp;<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;age&nbsp;from&nbsp;student&nbsp;where&nbsp;age&nbsp;&gt;&nbsp;:varage</span><span style="color:#800000;">&quot;;<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;EXEC&nbsp;SQL&nbsp;DECLARE&nbsp;cursor&nbsp;CURSOR&nbsp;FOR&nbsp;mysql;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;定义游标<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;EXEC&nbsp;SQL&nbsp;OPEN&nbsp;cursor&nbsp;USING&nbsp;:var_age;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;打开游标<BR>
+</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//提取数据<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;EXEC&nbsp;SQL&nbsp;WHENEVER&nbsp;NOT&nbsp;FOUND&nbsp;DO&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(&nbsp;;&nbsp;;&nbsp;)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EXEC&nbsp;SQL&nbsp;FETCH&nbsp;cursor&nbsp;INTO&nbsp;:var_id,&nbsp;:var_name,&nbsp;:var_age;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;var_id&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\t&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;var_name&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\t&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;var_age&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;EXEC&nbsp;SQL&nbsp;CLOSE&nbsp;cursor;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;EXEC&nbsp;SQL&nbsp;COMMIT;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;And&nbsp;continue?&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cin&nbsp;&gt;&gt;&nbsp;ch;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(ch&nbsp;!=&nbsp;</span><span style="color:#800000;">'y'</span><span style="color:#000000;">&nbsp;||&nbsp;ch&nbsp;!=&nbsp;</span><span style="color:#800000;">'Y'</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+}</span></div></td></tr></table></div>
+<br>
+<br><font color=green size = 4>第四种动态SQL的重要疑难点</font>
+<br> 🏃‍ 两种实现方式：ANSI方式、Oracle方式
+<br> 🏃‍ ANSI方式实现
+<br>&nbsp;&nbsp; 1 如何处理 select 和 非select 语句：select 和 非select 能否处理实例返回的结果集
+<br>&nbsp;&nbsp; 2 输入和输出缓冲区
+<br>&nbsp;&nbsp; 3 如何处理输入缓冲区，定义在什么位置
+<br>&nbsp;&nbsp; 4 如何处理输出缓冲区
+<br>&nbsp;&nbsp; output type12 → table 14=1:ANSI SQL Datatypes
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 设置输出缓冲区的属
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 打印表头
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 处理select结果集数据
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 一行一行的打印数据 (按照什么数据类型打印数据)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 一列一列的打印数据
+<br> 🏃‍ Oracle方式实现
+<br>&nbsp;&nbsp; 1 自己打造输入缓冲区和输出缓冲区
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SQLDA* bind_dp;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SQLDA* select_dp;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SQLDA结构体套用一级和二级指针
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 难点：输入缓冲区和输出缓冲区分配内存是两个不同的实现，指针所指向的内存空间是一维的还是二维的，关键还是得看内存结构
+<br>&nbsp;&nbsp; 2 Oracle 数据类型的转换</p>
+
+<p><br><br><br>
+<font color = gray size = 3>如有错误，欢迎指正！</font></p></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://oubc.github.io/tags/database/">DataBase</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmg4aog3074074gnf.gif?tags=%5B%5D">I </a>
+	<a href="">love</a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmfm2eg306o06o74u.gif?tags=%5B%5D"> you </a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx4tpcj30fn0bq3zg.jpg?tags=%5B%5D">three </a>
+	<a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx64ctg307s07swfy.gif?tags=%5B%5D">thousand</a>
+    <a href="https://www.kugou.com/song/#hash=96426C78381DE98DC31A5846FC274CBF&album_id=646623"> times.</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>家庭、梦想、内心的平静</span>
+  </div>
+</footer>
+
+
+
+<script src="https://oubc.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://oubc.github.io/js/zozo.js"></script>
+<script src="https://oubc.github.io/js/highlight.pack.js"></script>
+<link  href="https://oubc.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://oubc.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>
