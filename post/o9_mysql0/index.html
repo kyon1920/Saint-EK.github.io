@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Bruce Cheung"/>
+
+  
+  <meta name="description" content=""/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, simple, dream"/>
+  
+
+  
+  <link rel="canonical" href="https://oubc.github.io/post/o9_mysql0/"/>
+
+  
+
+  <title>MySQL相关操作 &middot; Love, or death</title>
+
+  <link rel="shortcut icon" href="https://oubc.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/post/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://oubc.github.io/">
+          <span>Love, or death</span>
+          <img src="https://oubc.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">For you, a thousand times over.</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/oubc" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=uYGOjo6OiIuLivnIyJfa1tQ" title="mail" target="_blank"><i class="remixicon-mail-fill"></i></a>
+        
+        
+        
+        <a href="http://sighttp.qq.com/msgrd?v=1&amp;uin=877771223" title="qq" target="_blank"><i class="remixicon-qq-fill"></i></a>
+        
+        
+        
+        <a href="https://github.com/oubc/oubc.github.io/blob/master/images/wx.jpg?raw=true" title="wechat" target="_blank"><i class="remixicon-wechat-fill"></i></a>
+        
+        
+        
+        <a href="https://weibo.com/u/6993631995?topnav=1&amp;wvr=6&amp;topsug=1" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://oubc.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/post/o9_mysql0/'>MySQL相关操作</a></h2>
+          <span class="date">2019.11.14</span>
+        </div>
+        <div class="post_content markdown"><p><br>
+<br>
+<br><font color=green size = 4>MySQL的使用</font>
+<br><font color=green size = 4>修改密码</font>
+<br> 1&gt;. 查看文件寻找密码
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; vi /root/.mysql_secret
+<br> 2&gt;. 登录MySQL
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MySQL 服务启动和关闭
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; service mysql start
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; service mysql stop
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 登录服务器
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mysql -u root -p密码
+<br> 3&gt;. 修改密码
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mysql&gt; set password=password(&quot;123456&quot;);
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 也可以使用脚本 /usr/bin/mysql_secure_installation 交互方式的修改mysql的root密码
+<br> 4&gt;. 退出
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; quit
+<br>
+<br><font color=green size = 4>备份数据</font>
+<br> mysqldump -u用户名 -p 数据库名&gt;文件名.sql
+<br>
+<br><font color=green size = 4>恢复数据</font>
+<br> mysql -u用户名 -p 数据库名&lt;文件名.sql 或 Source 文件名.sql
+<br>
+<br><font color=green size = 4>和Oracle数据库的第一个区别</font>
+<br> 虚表 (以查询时间为例)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Oracle：select sysdate from dual;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MySQL：select now() from dual; / select now();
+<br>
+<br><font color=green size = 4>如果在某一天客户端登录不上服务器了，可以手动关闭守护进程，守护进程自动重启之后就可以正常登录了</font>
+<br> 命令：ps -u mysql
+<br> 关闭守护进程：kill -9 mysqld的进程号
+<br>
+<br><font color=green size = 4>MySQL与Oracle的简介与区别</font>
+<br> Oracle是基于用户的数据库管理系统，为一个信息系统创建用户，在这个用户之上创建表空间、表
+<br> MySQL是基于数据库的管理模型，为一个信息系统建立数据库，一个数据库基本就一个信息，在一个数据库之下有n个表
+<br> MySQL更加符合我们常规的理念
+<br>
+<br><font color=green size = 4>MySQL中几个常用的概念</font>
+<br> • SQL(Structed Query Language)：结构化的查询语言
+<br> • DDL(Data Definition Language)：数据定义语言
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 命令：CREATE、DROP、ALTER 等
+<br> • DML(Data Manipulation Language)：数据操纵语言
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 命令：INSERT、UPDATE、DELETE
+<br> • DQL(Data Query Language)：数据查询语言
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 命令：SELECT
+<br> • CRUD操作：指在做计算处理时的增加(CREATE)、查询(RETRIEVE)、更新(UPDATE)和删除(DELETE)
+<br> 补：DDL是针对数据库和表结构的，其它的是针对表中的数据的
+<br>
+<br><font color=green size = 4>数据库和表的操作</font>
+<br> 数据库的操作：创建、查看、修改、删除
+<br> 表的操作：创建、查看、修改、删除、表数据的CRUD
+<br>
+<br><font color=green size = 4>创建数据库</font>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;SQL Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">CREATE</span><span style="color:#000000;">&nbsp;DATABASE&nbsp;[</span><span style="color:#0000ff;">IF</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">NOT</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">EXISTS</span><span style="color:#000000;">]&nbsp;</span><span style="color:#0000ff;">db_name</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;[create_specification[,&nbsp;create_specification]&nbsp;.&nbsp;.&nbsp;.]<BR>
+<BR>
+create_specification:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;[</span><span style="color:#0000ff;">DEFAULT</span><span style="color:#000000;">]&nbsp;</span><span style="color:#8000ff;">CHARACTER</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">SET</span><span style="color:#000000;">&nbsp;charset_name<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;[</span><span style="color:#0000ff;">DEFAULT</span><span style="color:#000000;">]&nbsp;</span><span style="color:#0000ff;">COLLATE</span><span style="color:#000000;">&nbsp;collation_name</span></div></td></tr></table></div>
+<br> CHARACTER SET：指定数据库采用的字符集
+<br> CILLATE：指定数据库字符集的比较方式
+<br> eg：
+<br> • 创建一个名称为 mydb_1 的数据库
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; create database mydb_1;
+<br> • 创建一个使用 utf-8 字符集的 mydb_2 的数据库
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; create database mydb_2 character set utf8;
+<br> • 创建一个使用 utf-8 字符集，并带校对规则的 mydb_3 数据库
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; create database mydb_3 character set utf8 collate utf8_general_ci;
+<br>
+<br><font color=green size = 4>查看、修改、删除数据库</font>
+<br> • 显示数据库语句：SHOW DATABASES
+<br> • 显示数据库的创建语句：SHOW CREATE DATABASE db_name
+<br> • 修改数据库：ALTER DATABASE db_name character set utf-8
+<br> • 数据库删除语句：DROP DATABASE [IF EXISTS] db_name
+<br> eg：
+<br> • 查看当前数据库服务器中的所有数据库
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; show databases;
+<br> • 查看数据库创建时使用的语句
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; show create database mydb_2;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 用 ~ ~ 符号括起来数据库名表示区分大小写的
+<br> • 查看前面创建的 mydb_2 数据库的定义信息
+<br> • 修改 mydb_2 的字符集为 gb2312
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; alter database mydb_2 character set gb2312;
+<br> • 修改数据库名称
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; rename database old_name to new_name;
+<br> • 删除创建的 mydb_1 数据库
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; drop database mydb_1;
+<br>
+<br><font color=green size = 4>表的操作：创建、查看、修改、删除</font>
+<br> • 创建表：
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;SQL Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">create</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">table</span><span style="color:#000000;">&nbsp;football(<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;id&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;name&nbsp;</span><span style="color:#8000ff;">varchar</span><span style="color:#000000;">(</span><span style="color:#ff0000;">20</span><span style="color:#000000;">),<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;sex&nbsp;</span><span style="color:#8000ff;">bit</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;birthday&nbsp;</span><span style="color:#8000ff;">date</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;salary&nbsp;</span><span style="color:#0000ff;">double</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;entry_date&nbsp;</span><span style="color:#8000ff;">date</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;resume&nbsp;</span><span style="color:#8000ff;">text</span><span style="color:#000000;"><BR>
+);</span></div></td></tr></table></div>
+<br> • 查看表：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 显示数据库中所有的表：show tables;
+<br> • 查询表数据：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 同oracle数据库一样，用 select 语句
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select 列名/表达式, 列名/表达式 as &quot;别名&quot; from 表名 where 条件
+<br> • 插入数据：
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;SQL Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47<br>48<br>49<br>50<br>51<br>52<br>53<br>54<br>55<br>56<br>57<br>58<br>59<br>60<br>61<br>62<br>63<br>64<br>65<br>66<br>67<br>68<br>69<br>70<br>71<br>72<br>73<br>74<br>75<br>76<br>77<br>78<br>79<br>80<br>81<br>82<br>83<br>84<br>85<br>86<br>87<br>88<br>89<br>90<br>91<br>92<br>93<br>94<br>95<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">insert</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">into</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;football&nbsp;</span><span style="color:#0000ff;">values</span><span style="color:#000000;">&nbsp;<BR>
+&nbsp;&nbsp;(<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'梅西'</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'1983-09-21'</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">15000</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'2012-06-24'</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'大牛'</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;)<BR>
+&nbsp;&nbsp;;<BR>
+</span><span style="color:#0000ff;">insert</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">into</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;football&nbsp;</span><span style="color:#0000ff;">values</span><span style="color:#000000;">&nbsp;<BR>
+&nbsp;&nbsp;(<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'C罗'</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'1989-08-29'</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">12000</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'2015-01-12'</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'中牛'</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;)<BR>
+&nbsp;&nbsp;;<BR>
+</span><span style="color:#0000ff;">insert</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">into</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;football&nbsp;</span><span style="color:#0000ff;">values</span><span style="color:#000000;">&nbsp;<BR>
+&nbsp;&nbsp;(<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'内马尔'</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'1999-02-15'</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">10000</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'2019-11-01'</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'小牛'</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;)<BR>
+&nbsp;&nbsp;;<BR>
+</span><span style="color:#0000ff;">insert</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">into</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;football&nbsp;</span><span style="color:#0000ff;">values</span><span style="color:#000000;">&nbsp;<BR>
+&nbsp;&nbsp;(<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">4</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'姆巴佩'</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'1998-10-02'</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">9000</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'2018-12-14'</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'小小牛'</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;)<BR>
+&nbsp;&nbsp;;<BR>
+</span><span style="color:#0000ff;">insert</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">into</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;football&nbsp;</span><span style="color:#0000ff;">values</span><span style="color:#000000;">&nbsp;<BR>
+&nbsp;&nbsp;(<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">5</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'范戴克'</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'1978-08-21'</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">9000</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'2018-06-29'</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'世一位'</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;)<BR>
+&nbsp;&nbsp;;<BR>
+</span><span style="color:#0000ff;">insert</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">into</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;football&nbsp;</span><span style="color:#0000ff;">values</span><span style="color:#000000;">&nbsp;<BR>
+&nbsp;&nbsp;(<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">6</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'德荣'</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'1999-10-28'</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">9500</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'2019-11-14'</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'中场大佬'</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;)<BR>
+&nbsp;&nbsp;;<BR>
+</span><span style="color:#0000ff;">insert</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">into</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;football&nbsp;</span><span style="color:#0000ff;">values</span><span style="color:#000000;">&nbsp;<BR>
+&nbsp;&nbsp;(<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">7</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'格列兹曼'</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'1990-02-18'</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">10000</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'2019-12-01'</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'人气王子'</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;)<BR>
+&nbsp;&nbsp;;<BR>
+</span><span style="color:#0000ff;">insert</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">into</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;football&nbsp;</span><span style="color:#0000ff;">values</span><span style="color:#000000;">&nbsp;<BR>
+&nbsp;&nbsp;(<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">8</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'阿扎尔'</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'1985-11-12'</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">8500</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'2015-01-31'</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'扎球王'</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;)</span></div></td></tr></table></div><br />
+<br> • 修改表名：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; rename table old_name to new_name;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 或：ALTER TABLE &lt;旧表名&gt; RENAME [TO] &lt;新表名&gt;；
+<br> • 修改数据：
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;SQL Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">UPDATE</span><span style="color:#000000;">&nbsp;&lt;表名&gt;&nbsp;</span><span style="color:#0000ff;">SET</span><span style="color:#000000;">&nbsp;字段1=值1&nbsp;[,字段2=值2…&nbsp;]&nbsp;[</span><span style="color:#0000ff;">WHERE</span><span style="color:#000000;">&nbsp;子句&nbsp;]<BR>
+[</span><span style="color:#0000ff;">ORDER</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">BY</span><span style="color:#000000;">&nbsp;子句]&nbsp;[</span><span style="color:#0000ff;">LIMIT</span><span style="color:#000000;">&nbsp;子句]</span></div></td></tr></table></div>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 语法说明如下：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;表名&gt;：用于指定要更新的表名称
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SET 子句：用于指定表中要修改的列名及其列值，其中，每个指定的列值可以是表达式，也可以是该列对应的默认值，如果指定的是默认值，可用关键字 DEFAULT 表示列值
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WHERE 子句：可选项，用于限定表中要修改的行。若不指定，则修改表中所有的行
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ORDER BY 子句：可选项，用于限定表中的行被修改的次序
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LIMIT 子句：可选项，用于限定被修改的行数
+<br> • 修改数据表：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 添加字段：ALTER TABLE &lt;表名&gt; ADD &lt;新字段名&gt; &lt;数据类型&gt; [约束条件] [FIRST|AFTER 已存在的字段名];
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 修改字段：ALTER TABLE &lt;表名&gt; MODIFY &lt;字段名&gt; &lt;数据类型&gt;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 删除字段：ALTER TABLE &lt;表名&gt; DROP &lt;字段名&gt;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 修改字段名称：ALTER TABLE &lt;表名&gt; CHANGE &lt;旧字段名&gt; &lt;新字段名&gt; &lt;新数据类型&gt;;
+<br> • 查看表属性：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; desc 表名;
+<br>
+<br><font color=green size = 4>分组</font>
+<br> • 同oracle，查询结果只能在分组的基础之上
+<br> • MySQL中的分组相比较于Oracle检查不严格
+<br> • 当然可以使用 having 子句进行过滤，having常用于 group by 的后面
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select 列1, 列2, . . . from 表 group by 列 having . . .
+<br>
+<br><font color=green size = 4>时间日期相关函数</font>
+<br><table border="5">
+<tr align="center">
+<th>函数</th>
+<th>说明</th>
+</tr>
+<tr align="center">
+<td>ADDTIME(date2, time_interval)</td>
+<td>将time_interval加到date2</td>
+</tr>
+<tr align="center">
+<td>CURRENT_DATE()</td>
+<td>当前日期</td>
+</tr>
+<tr align="center">
+<td>CURRENT_TIME</td>
+<td>当前时间</td>
+</tr>
+<tr align="center">
+<td>CURRENT_TIMESTAMP()</td>
+<td>当前时间戳</td>
+</tr>
+<tr align="center">
+<td>DATE(datetime)</td>
+<td>返回datetime的日期部分</td>
+</tr>
+<tr align="center">
+<td>DATE_ADD(date2, INTERVAL d_value d_type)</td>
+<td>在date2基础上加上日期或时间</td>
+</tr>
+<tr align="center">
+<td>DATE_SUB(date2, INTERVAL d_value d_type)</td>
+<td>在date2基础上减去日期或时间</td>
+</tr>
+<tr align="center">
+<td>DATEDIFF(date1, date2)</td>
+<td>两个日期差</td>
+</tr>
+<tr align="center">
+<td>NOW()</td>
+<td>当前时间</td>
+</tr>
+<tr align="center">
+<td>YEAR|Month|DATE(datetime)</td>
+<td>年月日</td>
+</tr>
+</table>
+<br> eg：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 查询当前日期：
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;SQL Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">select</span><span style="color:#000000;">&nbsp;now()&nbsp;当前日期,&nbsp;</span><span style="color:#0000ff;">year</span><span style="color:#000000;">(now())&nbsp;年,&nbsp;</span><span style="color:#0000ff;">month</span><span style="color:#000000;">(now())&nbsp;月,&nbsp;</span><span style="color:#0000ff;">day</span><span style="color:#000000;">(now())&nbsp;日<BR>
+</span><span style="color:#0000ff;">from</span><span style="color:#000000;">&nbsp;dual;</span></div></td></tr></table></div>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 查询昨天、今天、明天：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 时间的 加和减 与 oracle 不一样，MySQL中必须使用 date_add() 函数实现
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;SQL Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">select</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">date_add</span><span style="color:#000000;">(now(),&nbsp;</span><span style="color:#0000ff;">interval</span><span style="color:#000000;">&nbsp;-</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">day</span><span style="color:#000000;">)&nbsp;昨天,&nbsp;now()&nbsp;今天,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">date_add</span><span style="color:#000000;">(now(),&nbsp;</span><span style="color:#0000ff;">interval</span><span style="color:#000000;">&nbsp;+</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">day</span><span style="color:#000000;">)&nbsp;明天&nbsp;</span><span style="color:#0000ff;">from</span><span style="color:#000000;">&nbsp;dual;<BR>
+<BR>
+加上2年：<BR>
+</span><span style="color:#0000ff;">select</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">date_add</span><span style="color:#000000;">(now(),&nbsp;</span><span style="color:#0000ff;">INTERVAL</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">/+</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">year</span><span style="color:#000000;">)&nbsp;</span><span style="color:#0000ff;">from</span><span style="color:#000000;">&nbsp;dual;</span></div></td></tr></table></div>
+<br>
+<br><font color=green size = 4>字符串相关函数</font>
+<br><table border="5">
+<tr align="center">
+<th>函数</th>
+<th>说明</th>
+</tr>
+<tr align="center">
+<td>CHARSET(str)</td>
+<td>返回文本字符集</td>
+</tr>
+<tr align="center">
+<td>CONCAT(string2 [, ...])</td>
+<td>连接字符</td>
+</tr>
+<tr align="center">
+<td>INSTR(string, substring)</td>
+<td>返回substring中出现的位置，没有返回0</td>
+</tr>
+<tr align="center">
+<td>UCASE(string2)</td>
+<td>转换成大写</td>
+</tr>
+<tr align="center">
+<td>LCASE(string2)</td>
+<td>转换成小写</td>
+</tr>
+<tr align="center">
+<td>LEFT(string2, length)</td>
+<td>从字符串2中的左边起取length个字符</td>
+</tr>
+<tr align="center">
+<td>LENGTH(string)</td>
+<td>获取string的长度</td>
+</tr>
+<tr align="center">
+<td>REPLACE(str, search_str, replace_str)</td>
+<td>在str中用replace_str替换search_str</td>
+</tr>
+<tr align="center">
+<td>STRCMP(string, string2)</td>
+<td>逐字符比较两字串大小</td>
+</tr>
+<tr align="center">
+<td>SUBSTRING(str, position, [, length])</td>
+<td>从str的position开始，取length个字符</td>
+</tr>
+<tr align="center">
+<td>LTRIM(string2) RTRIM(string2) trim</td>
+<td>去除前端或者后端的空格</td>
+</tr>
+</table>
+<br> 字符串连接中无 &quot;||&quot; 连接，与oracle不一样
+<br> select concat(aharset('name'), 'aaa') 自定义 from dual;
+<br>
+<br><font color=green size = 4>字符串与日期相互转换</font>
+<br> • 日期转换为字符串
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select date_format(now(), '%Y-%m-%d') from dual;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select date_format(now(), '%Y-%c-%d %b:%i:%s') from dual;
+<br> • 字符串转换为日期
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select str_to_date('2019-11-14 09:40:55', '%Y-%c-%d %b:%i:%s') from dual;
+<br>
+<br><font color=green size = 4>数学相关函数</font>
+<br><table border="5">
+<tr align="center">
+<th>函数</th>
+<th>说明</th>
+</tr>
+<tr align="center">
+<td>ABS(number2)</td>
+<td>绝对值</td>
+</tr>
+<tr align="center">
+<td>BIN(decimal_number)</td>
+<td>十进制转二进制</td>
+</tr>
+<tr align="center">
+<td>CEILING(number2)</td>
+<td>向上取整</td>
+</tr>
+<tr align="center">
+<td>FLOOR(number2)</td>
+<td>向下取整</td>
+</tr>
+<tr align="center">
+<td>CONV(number2, from_base, to_base)</td>
+<td>进制转换</td>
+</tr>
+<tr align="center">
+<td>FORMAT(number, decimal_places)</td>
+<td>保留小数位数</td>
+</tr>
+<tr align="center">
+<td>HEX(DescimalNumber)</td>
+<td>转十六进制</td>
+</tr>
+<tr align="center">
+<td>LEAST(number, number2, [, ...])</td>
+<td>求最小值</td>
+</tr>
+<tr align="center">
+<td>MOD(number, denominator)</td>
+<td>求余</td>
+</tr>
+<tr align="center">
+<td>RAND([seed])</td>
+<td>RAND([seed])</td>
+</tr>
+</table>
+<br>
+<br><font color=green size = 4>表的约束</font>
+<br> 定义主键约束：primary key; 不允许为空，不允许重复
+<br> 定义主键自动增长：auto_increment
+<br> 定义唯一约束：unique
+<br> 定义非空约束：not null
+<br> 定义外键约束：constraint ordersid_FK foreign key(ordersid) references orders(id);
+<br>
+<br><font color=green size = 4>多表查询</font>
+<br><font color=green size = 4>eg：</font>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 创建部门表并赋值
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;SQL Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47<br>48<br>49<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;">&nbsp;<span style="color:#0000ff;">drop</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">table</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">exists</span><span style="color:#000000;">&nbsp;dept;&nbsp;</span><span style="color:#0000ff;">create</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">table</span><span style="color:#000000;">&nbsp;dept&nbsp;<BR>
+&nbsp;&nbsp;(<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;deptno&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;(<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">primary</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">key</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;dname&nbsp;</span><span style="color:#8000ff;">varchar</span><span style="color:#000000;">&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;(<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">14</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">not</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">null</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;loc&nbsp;</span><span style="color:#8000ff;">varchar</span><span style="color:#000000;">&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;(<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">13</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;)<BR>
+&nbsp;&nbsp;)<BR>
+&nbsp;&nbsp;</span><span style="color:#0000ff;">default</span><span style="color:#000000;">&nbsp;charset=utf8;<BR>
+</span><span style="color:#0000ff;">insert</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">into</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;dept&nbsp;</span><span style="color:#0000ff;">values</span><span style="color:#000000;">&nbsp;<BR>
+&nbsp;&nbsp;(<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'ACCOUNTING'</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'NEW&nbsp;YORK'</span><span style="color:#000000;">&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;)<BR>
+&nbsp;&nbsp;;<BR>
+</span><span style="color:#0000ff;">insert</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">into</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;dept&nbsp;</span><span style="color:#0000ff;">values</span><span style="color:#000000;">&nbsp;<BR>
+&nbsp;&nbsp;(<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">20</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'BESEARCH'</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'DALLAS'</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;)<BR>
+&nbsp;&nbsp;;<BR>
+</span><span style="color:#0000ff;">insert</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">into</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;dept&nbsp;</span><span style="color:#0000ff;">values</span><span style="color:#000000;">&nbsp;<BR>
+&nbsp;&nbsp;(<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">30</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'SALES'</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'CHICAGO'</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;)<BR>
+&nbsp;&nbsp;;<BR>
+</span><span style="color:#0000ff;">insert</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">into</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;dept&nbsp;</span><span style="color:#0000ff;">values</span><span style="color:#000000;">&nbsp;<BR>
+&nbsp;&nbsp;(<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">40</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'OPERATIONS'</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'BOSTOH'</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;)<BR>
+&nbsp;&nbsp;;&nbsp;</span><span style="color:#0000ff;">COMMIT</span><span style="color:#000000;">;</span></div></td></tr></table></div>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 创建员工表并赋值
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;SQL Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47<br>48<br>49<br>50<br>51<br>52<br>53<br>54<br>55<br>56<br>57<br>58<br>59<br>60<br>61<br>62<br>63<br>64<br>65<br>66<br>67<br>68<br>69<br>70<br>71<br>72<br>73<br>74<br>75<br>76<br>77<br>78<br>79<br>80<br>81<br>82<br>83<br>84<br>85<br>86<br>87<br>88<br>89<br>90<br>91<br>92<br>93<br>94<br>95<br>96<br>97<br>98<br>99<br>100<br>101<br>102<br>103<br>104<br>105<br>106<br>107<br>108<br>109<br>110<br>111<br>112<br>113<br>114<br>115<br>116<br>117<br>118<br>119<br>120<br>121<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;">&nbsp;<span style="color:#0000ff;">drop</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">table</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">exists</span><span style="color:#000000;">&nbsp;emp;&nbsp;</span><span style="color:#0000ff;">create</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">table</span><span style="color:#000000;">&nbsp;emp&nbsp;<BR>
+&nbsp;&nbsp;(<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">--&nbsp;empno&nbsp;int<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;(<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">constraint</span><span style="color:#000000;">&nbsp;emp_deptno_fk<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">primary</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">key</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;empno&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;(<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">primary</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">key</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;ename&nbsp;</span><span style="color:#8000ff;">varchar</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;(<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">not</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">null</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;job&nbsp;</span><span style="color:#8000ff;">varchar</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;(<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;mgr&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;(<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;hiredate&nbsp;</span><span style="color:#8000ff;">date</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;sal&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;comm&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;deptno&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;(<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">constraint</span><span style="color:#000000;">&nbsp;emp_deptno_fk&nbsp;</span><span style="color:#0000ff;">foreign</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">key</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;(<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;deptno<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">references</span><span style="color:#000000;">&nbsp;dept<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;(<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;deptno<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;)<BR>
+&nbsp;&nbsp;)<BR>
+&nbsp;&nbsp;</span><span style="color:#0000ff;">default</span><span style="color:#000000;">&nbsp;charset=utf8;<BR>
+</span><span style="color:#0000ff;">insert</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">into</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;emp&nbsp;</span><span style="color:#0000ff;">values</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;(<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">7396</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'SNITH'</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'CLERK'</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">7902</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'1980-12-17'</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">800</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">20</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;)<BR>
+&nbsp;&nbsp;;<BR>
+</span><span style="color:#0000ff;">insert</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">into</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;emp&nbsp;</span><span style="color:#0000ff;">values</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;(<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">7499</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'ALLEN'</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'SALESMAN'</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">7698</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'1981-02-20'</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">1600</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">300</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">30</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;)<BR>
+&nbsp;&nbsp;;<BR>
+</span><span style="color:#0000ff;">insert</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">into</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;emp&nbsp;</span><span style="color:#0000ff;">values</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;(<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">7521</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'MARP'</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'CLERK'</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">7698</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'1981-02-22'</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">1250</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">500</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">30</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;)<BR>
+&nbsp;&nbsp;;<BR>
+</span><span style="color:#0000ff;">insert</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">into</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;emp&nbsp;</span><span style="color:#0000ff;">values</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;(<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">7566</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'JOMES'</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'PRESIDENT'</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">7839</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'1987-04-02'</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">2975</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">20</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;)<BR>
+&nbsp;&nbsp;;<BR>
+</span><span style="color:#0000ff;">insert</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">into</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;emp&nbsp;</span><span style="color:#0000ff;">values</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;(<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">7654</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'MARITH'</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'PRESIDENT'</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">7698</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'1981-09-28'</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">1250</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">1400</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">30</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;)<BR>
+&nbsp;&nbsp;;<BR>
+</span><span style="color:#0000ff;">insert</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">into</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;emp&nbsp;</span><span style="color:#0000ff;">values</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;(<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">7698</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'BLAKE'</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'SALESMAN'</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">7839</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">'1985-05-01'</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">2850</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">30</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;)<BR>
+&nbsp;&nbsp;;&nbsp;</span><span style="color:#0000ff;">commit</span><span style="color:#000000;">;</span></div></td></tr></table></div>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 创建索引
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; create index emp_ename_index on emp(ename);
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 查看表中的索引及其它属性
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; show index/keys from 表名;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 创建工资表并赋值
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;SQL Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;">&nbsp;<span style="color:#0000ff;">drop</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">table</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">exists</span><span style="color:#000000;">&nbsp;salgrade;&nbsp;</span><span style="color:#0000ff;">create</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">table</span><span style="color:#000000;">&nbsp;salgrade&nbsp;<BR>
+&nbsp;&nbsp;(<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;grade&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;losal&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hisal&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;)<BR>
+&nbsp;&nbsp;</span><span style="color:#0000ff;">default</span><span style="color:#000000;">&nbsp;charset=utf8;<BR>
+</span><span style="color:#0000ff;">insert</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">into</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;salgrade&nbsp;</span><span style="color:#0000ff;">values</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;(<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">700</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">1200</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;)<BR>
+&nbsp;&nbsp;;<BR>
+</span><span style="color:#0000ff;">insert</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">into</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;salgrade&nbsp;</span><span style="color:#0000ff;">values</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;(<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">1201</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">1400</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;)<BR>
+&nbsp;&nbsp;;<BR>
+</span><span style="color:#0000ff;">insert</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">into</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;salgrade&nbsp;</span><span style="color:#0000ff;">values</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;(<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">1401</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">2000</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;)<BR>
+&nbsp;&nbsp;;<BR>
+</span><span style="color:#0000ff;">insert</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">into</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;salgrade&nbsp;</span><span style="color:#0000ff;">values</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;(<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">4</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">2001</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">3000</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;)<BR>
+&nbsp;&nbsp;;<BR>
+</span><span style="color:#0000ff;">insert</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">into</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;salgrade&nbsp;</span><span style="color:#0000ff;">values</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;(<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">5</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">3001</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">9999</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;)<BR>
+&nbsp;&nbsp;;&nbsp;</span><span style="color:#0000ff;">commit</span><span style="color:#000000;">;</span></div></td></tr></table></div>
+<br> 使用SQL99标准的连接查询
+<br> • 内连接
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 只返回满足条件的数据 (两表都有的才显示)
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;SQL Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">select</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;e.*,<BR>
+&nbsp;&nbsp;d.*<BR>
+</span><span style="color:#0000ff;">from</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;emp&nbsp;e&nbsp;</span><span style="color:#0000ff;">inner</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">join</span><span style="color:#000000;">&nbsp;dept&nbsp;d&nbsp;</span><span style="color:#0000ff;">on</span><span style="color:#000000;">&nbsp;e.deptno=d.deptno;</span></div></td></tr></table></div>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; --也可以省略inner关键字
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;SQL Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">select</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;e.*,<BR>
+&nbsp;&nbsp;d.*<BR>
+</span><span style="color:#0000ff;">from</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;emp&nbsp;e&nbsp;</span><span style="color:#0000ff;">inner</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">join</span><span style="color:#000000;">&nbsp;dept&nbsp;d&nbsp;</span><span style="color:#0000ff;">on</span><span style="color:#000000;">&nbsp;e.deptno=d.deptno;</span></div></td></tr></table></div>
+<br> • 左外连接
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 左边表有值才显示
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;SQL Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">select</span><span style="color:#000000;">&nbsp;e.*,&nbsp;d.*<BR>
+</span><span style="color:#0000ff;">from</span><span style="color:#000000;">&nbsp;emp&nbsp;e<BR>
+</span><span style="color:#0000ff;">left</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">outer</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">join</span><span style="color:#000000;">&nbsp;dept&nbsp;d&nbsp;</span><span style="color:#0000ff;">on</span><span style="color:#000000;">&nbsp;e.deptno=d.deptno;</span></div></td></tr></table></div>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; --也可以省略outer关键字
+<br> • 右外连接
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 右边表有值才显示
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;SQL Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">select</span><span style="color:#000000;">&nbsp;e.*,&nbsp;d.*<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">from</span><span style="color:#000000;">&nbsp;emp&nbsp;e<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">right</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">outer</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">join</span><span style="color:#000000;">&nbsp;dept&nbsp;d<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">on</span><span style="color:#000000;">&nbsp;e.deptno=d.deptno;</span></div></td></tr></table></div>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; --也可以省略outer关键字
+<br> • 满外连接
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 任一边有值就会显示
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;SQL Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">select</span><span style="color:#000000;">&nbsp;e.*,&nbsp;d.*<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">from</span><span style="color:#000000;">&nbsp;emp&nbsp;e<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;full&nbsp;</span><span style="color:#0000ff;">outer</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">join</span><span style="color:#000000;">&nbsp;dept&nbsp;d<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">on</span><span style="color:#000000;">&nbsp;e.deptno=d.deptno;</span></div></td></tr></table></div>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; --也可以省略outer关键字
+<br> • 交叉连接
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 叉集，就是笛卡尔积
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;SQL Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">select</span><span style="color:#000000;">&nbsp;e.*,&nbsp;d.*<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">from</span><span style="color:#000000;">&nbsp;emp&nbsp;e<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">cross</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">join</span><span style="color:#000000;">&nbsp;dept&nbsp;d;</span></div></td></tr></table></div>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; --没有连接条件
+<br> • 自连接：将表自己起两个或多个别名进行相关连接称为自连接
+<br>
+<br> 在 MySQL 中进行多表查询查询操作一般使用以上的连接技术，而不是oracle那样的语法
+<br> eg：(不太使用)
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;SQL Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">select</span><span style="color:#000000;">&nbsp;e.deptno,&nbsp;e.ename,&nbsp;d.ename<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">from</span><span style="color:#000000;">&nbsp;emp&nbsp;e,&nbsp;dept&nbsp;d<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">where</span><span style="color:#000000;">&nbsp;e.deptno=d.deptno;</span></div></td></tr></table></div>
+<br> eg：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 显示XXX的老板
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; oracle语法，MySQL不支持
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;SQL Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">select</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">concat</span><span style="color:#000000;">(e.ename,&nbsp;</span><span style="color:#800000;">'的老板是'</span><span style="color:#000000;">,&nbsp;b.ename)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">from</span><span style="color:#000000;">&nbsp;emp&nbsp;e,&nbsp;emp&nbsp;b<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">where</span><span style="color:#000000;">&nbsp;e.mgr=b.empno&nbsp;(+);</span></div></td></tr></table></div>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SQL99语法
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;SQL Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">select</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">concat</span><span style="color:#000000;">(e.ename,&nbsp;</span><span style="color:#800000;">'的老板是'</span><span style="color:#000000;">,&nbsp;</span><span style="color:#0000ff;">ifnull</span><span style="color:#000000;">(b.ename,&nbsp;</span><span style="color:#800000;">'他自己'</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">from</span><span style="color:#000000;">&nbsp;emp&nbsp;e<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">left</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">outer</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">join</span><span style="color:#000000;">&nbsp;emp&nbsp;b<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">on</span><span style="color:#000000;">&nbsp;e.mgr=b.empno;</span></div></td></tr></table></div>
+<br>
+<br><font color=green size = 4>滤空修正</font>
+<br> oracle中的 nvl() 函数在MySQL中不能使用
+<br> 在MySQL中滤空修正函数为 ifnull
+<br> eg 如上
+<br>
+<br><font color=green size = 4>MySQL中的中文乱码问题</font>
+<br> MySQL有六处使用了字符集：system、client、server、connection、database、results
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; system 是数据库系统使用的字符集设定
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; client 是客户端使用的字符集
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; server 是服务器安装时指定的默认字符集设定
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; connection 是连接数据库的字符集设置类型，如果程序没有指明连接数据库使用的字符集类型就按照服务器默认的字符集设置
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; database 是数据库服务器中某个库使用的字符集设定，如果建库时没有指明，将使用服务器安装时指定的字符集设置
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; results 是数据库给客户端返回时使用的字符集设定，如果没有指明，使用服务器默认的字符集
+<br> 利用 show variables like 'character%'; 可以查看以上六处使用的字符集
+<br> 而我们程序需要关心的是 客户端和服务器连接 的地方
+<br> • 中文问题的三层因素：
+<br> 1&gt;. MySQL自身的设计 (6处中文)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; eg：登录时指定客户端字符集
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mysql -uroot -p --default character_set=gbk;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 它会影响数据的输入和输出
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 然后使用 show variables like 'character%'; 查看字符集
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 这就是影响我们程序员编程的中文问题之一，它影响了三处 (最外层)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 如果使用了 gbk 后能够插入中文呢？插入成功后能使用中文显示出来呢？
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 不能，不能
+<br> 2&gt;. 操作系统的语言集设置的原因
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Linux 操作系统 是一个多用户的操作
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cat /etc/sysconfig/i18n
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 操作系统的菜单按照 zh_CN显示 | 文件存储按照 utf8 显示
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Linux 操作系统的语言环境 和 用户配置的语言环境 LANG 相互影响
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 修改用户的LANG (vi /.bash_profile) 去屏蔽操作系统的LANG设置也会影响数据库
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 用户的LANG设置影响了应用程序的语言环境导致MySQL环境也受到了影响
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 如果在这个环境之下再向数据库中插入中文数据，会成功吗？
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 成功！但是查询时显示的是乱码，恐怖
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 应该把自己的程序部署到单独的用户之下，这个用户的环境变量归自己/程序所有，不允许让另外任何一个程序去接触这个程序，要不然就麻烦了
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 这是一个十分深刻的教训，在项目开发里面 切忌 是两个开发厂商使用同一个用户在底下部署环境
+<br> 3&gt;. 文件存储格式
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 936中文
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 在window中的文件应当先转换成为utf8后在存储到Linux服务器上面去</p>
+
+<p><br><br><br>
+<font color = gray size = 3>如有错误，欢迎指正！</font></p></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://oubc.github.io/tags/db/">DB</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmg4aog3074074gnf.gif?tags=%5B%5D">I </a>
+	<a href="">love</a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmfm2eg306o06o74u.gif?tags=%5B%5D"> you </a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx4tpcj30fn0bq3zg.jpg?tags=%5B%5D">three </a>
+	<a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx64ctg307s07swfy.gif?tags=%5B%5D">thousand</a>
+    <a href="https://www.kugou.com/song/#hash=96426C78381DE98DC31A5846FC274CBF&album_id=646623"> times.</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>家庭、梦想、内心的平静</span>
+  </div>
+</footer>
+
+
+
+<script src="https://oubc.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://oubc.github.io/js/zozo.js"></script>
+<script src="https://oubc.github.io/js/highlight.pack.js"></script>
+<link  href="https://oubc.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://oubc.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>
