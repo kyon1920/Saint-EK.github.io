@@ -6,10 +6,19 @@
     <description>Recent content on Love, or death</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Thu, 14 Nov 2019 22:10:24 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 18 Nov 2019 20:09:03 +0800</lastBuildDate>
     
 	<atom:link href="https://oubc.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>MySQL程序开发</title>
+      <link>https://oubc.github.io/post/o10_mysql1/</link>
+      <pubDate>Mon, 18 Nov 2019 20:09:03 +0800</pubDate>
+      
+      <guid>https://oubc.github.io/post/o10_mysql1/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>MySQL相关操作</title>

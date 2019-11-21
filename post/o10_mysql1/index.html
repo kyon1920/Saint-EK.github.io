@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Bruce Cheung"/>
+
+  
+  <meta name="description" content=""/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, simple, dream"/>
+  
+
+  
+  <link rel="canonical" href="https://oubc.github.io/post/o10_mysql1/"/>
+
+  
+
+  <title>MySQL程序开发 &middot; Love, or death</title>
+
+  <link rel="shortcut icon" href="https://oubc.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/post/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://oubc.github.io/">
+          <span>Love, or death</span>
+          <img src="https://oubc.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">For you, a thousand times over.</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/oubc" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=uYGOjo6OiIuLivnIyJfa1tQ" title="mail" target="_blank"><i class="remixicon-mail-fill"></i></a>
+        
+        
+        
+        <a href="http://sighttp.qq.com/msgrd?v=1&amp;uin=877771223" title="qq" target="_blank"><i class="remixicon-qq-fill"></i></a>
+        
+        
+        
+        <a href="https://github.com/oubc/oubc.github.io/blob/master/images/wx.jpg?raw=true" title="wechat" target="_blank"><i class="remixicon-wechat-fill"></i></a>
+        
+        
+        
+        <a href="https://weibo.com/u/6993631995?topnav=1&amp;wvr=6&amp;topsug=1" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://oubc.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/post/o10_mysql1/'>MySQL程序开发</a></h2>
+          <span class="date">2019.11.18</span>
+        </div>
+        <div class="post_content markdown"><p><br>
+<br>
+<font color = gray size = 2>列表，点击跳转</font>
+<br><font color=blue size = 4><a href="#bc0">MySQL</a></font>
+<br><font color=blue size = 4><a href="#bc1">查询库所在目录</a></font>
+<br><font color=blue size = 4><a href="#bc2">MySQL API 调用流程</a></font>
+<br><font color=blue size = 4><a href="#bc3">编译错误原因分析</a></font>
+<br><font color=blue size = 4><a href="#bc4">最终gcc/g++ 编译</a></font>
+<br><font color=blue size = 4><a href="#bc5">初始化数据库</a></font>
+<br><font color=blue size = 4><a href="#bc6">连接数据库</a></font>
+<br><font color=blue size = 4><a href="#bc7">执行查询语句</a></font>
+<br><font color=blue size = 4><a href="#bc8">获取结果集的两种方式</a></font>
+<br><font color=blue size = 4><a href="#bc9">解析结果集</a></font>
+<br><font color=blue size = 4><a href="#bc10">释放结果集</a></font>
+<br><font color=green size = 4><a href="#bc11">检索</a></font>
+<br><font color=green size = 4><a href="#bc12">mysql tool 工具开发</a></font>
+<br><font color=green size = 4><a href="#bc13">MySQL 回显问题</a></font>
+<br><font color=green size = 4><a href="#bc14">MySQL 上下键问题</a></font>
+<br><font color=green size = 4><a href="#bc15">MySQL预处理</a></font>
+<br><font color=green size = 4><a href="#bc16">MySQL时间类</a></font>
+<br><font color=green size = 4><a href="#bc17">多查询执行的 C API 处理 (multsql)</a></font>
+<br><font color=green size = 4><a href="#bc18">MySQL的事务</a></font>
+<br>
+<br>
+<br><font color=green size = 5><a name="bc0">MySQL</a></font>
+<br> 🐬 MySQL为我们提供了一个动态库，通过这个动态库可以访问MySQL服务器
+<br> 🐬 有关MySQLClient库：C APIs 包含在mysqlclient库文件中，与MySQL的源代码一块发行，用于连接到数据库和执行数据库查询
+<br>
+<br><font color=green size = 5><a name="bc1">查询库所在目录</a></font>
+<br> 🐬 命令：find / -name &quot;libmysqlclient.*&quot;
+<br> 🐬 命令：find / -name &quot;mysql.h&quot;    查询头文件所在目录
+<br> 🐬 所以 g++ 编译命令为
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; g++ 源文件 -o 目标文件 -I /usr/include/mysql/mysql.h -L /usr/lib64/mysql/ -l mysqlclient
+<br>
+<br><font color=green size = 5><a name="bc2">MySQL API 调用流程</a></font>
+<br> 第一步：MySQL 初始化，获得句柄
+<br> 第二步：建立连接
+<br> 第三步：执行SQL语句
+<br> 第四步：获得结果
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;iostream&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;mysql/mysql.h&gt;<BR>
+</span><span style="color:#0000ff;">using</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">namespace</span><span style="color:#000000;">&nbsp;std;<BR>
+<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;mian()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;ret;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;获取错误码<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;MYSQL&nbsp;mysql;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;MYSQL&nbsp;*connect;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;建立句柄<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;connect&nbsp;=&nbsp;mysql_init(&amp;mysql)<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(connect&nbsp;==&nbsp;</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ret&nbsp;=&nbsp;mysql_errno(&amp;mysql);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;func&nbsp;mysql_init()&nbsp;err:&quot;</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;&lt;&nbsp;ret&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;ret;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;mysql_init()&nbsp;success!&quot;</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;&lt;&nbsp;endl;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;mysql_close(&amp;mysql);&nbsp;&nbsp;&nbsp;&nbsp;释放句柄<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}</span></div></td></tr></table></div>
+<br>
+<br><font color=green size = 5><a name="bc3">编译错误原因分析</a></font>
+<br> 问题一：使用了 g++ 的原因，利用 gcc 需要链接 -lstdc++
+<br> 问题二：用一个程序去加载了MySQL的动态库，需要链接 -ldl 动态库
+<br> 问题三：没有加线程库，需要连接 -lpthread
+<br> 问题四：没有配置数学库函数，需要链接 -lm -lrt
+<br>
+<br><font color=green size = 5><a name="bc4">最终gcc/g++ 编译</a></font>
+<br> gcc  源文件 -o 目标文件 -I /usr/include/mysql/mysql.h -L /usr/lib64/mysql/ -l mysqlclient -ldl -lpthread -lm -lrt -lstdc++
+<br> g++ 源文件 -o 目标文件 -I /usr/include/mysql/mysql.h -L /usr/lib64/mysql/ -l mysqlclient -ldl -lpthread -lm -lrt
+<br>
+<br><font color=green size = 5><a name="bc5">初始化数据库</a></font>
+<br> MYSQL mysql;
+<br> MYSQL *connect;
+<br> connect = mysql_init(&amp;mysql)<br />
+<br>
+<br><font color=green size = 5><a name="bc6">连接数据库</a></font>
+<br> MYSQL *mysql_connect(MYSQL *mysql, const char *host, const char *user, const char *passwd);
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; host 主机名字
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; user 用户名
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; passwd 密码
+<br> 🐬 此函数以过时，使用
+<br> MYSQL *mysql_real_connect(MYSQL *mysql, const char *host,
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; const char *user, const char *passwd, const char *db,
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; unsigned int port, const char *unix_socket, unsigned long client_flag)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; db 哪一个数据库
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; port 端口号，如果 port 不是0，其值将用作TCP/IP连接的端口号，注意，host 参数决定了连接的类型
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; unix_socket  如果unix_socket不是NULL，该字符串描述了应使用的套接字或命名管道，注意，host 参数决定了连接的类型
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; client_flag client_flag的值通常为0
+<br>
+<br><font color=green size = 5><a name="bc7">执行查询语句</a></font>
+<br> int mysql_query(MYSQL *mysql, const char *query);
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; query 为需要执行的MySQL语句
+<br> mysql_query()不能用于包含二进制数据的查询，应使用mysql_real_query()取而代之
+<br>
+<br><font color=green size = 5><a name="bc8">获取结果集的两种方式</a></font>
+<br> 🐬 全部获取：通过 mysql_store_result() 将整个结果集全部取出来
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MYSQL_RES *mysql_store_result(MYSQL *mysql);
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 失败返回NULL
+<br> 🐬 调用 mysql_use_result() 初始化获取操作，但暂时不取回任何记录
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MYSQL_RES *mysql_use_result(MYSQL *mysql);
+<br>
+<br><font color=green size = 5><a name="bc9">解析结果集</a></font>
+<br> 🐬 两种方式均通过 mysql_fetch_row() 来访问每一条记录
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MYSQL_ROW mysql_fetch_row(MYSQL_RES *result);
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MYSQL_ROW 即是二级指针
+<br> 🐬 注：若先前调用的是 mysql_store_result() ，则直接在本地访问记录，若先前调用的是 mysql_use_result() ，则此时才到服务器上去获取记录
+<br> 🐬 内存模型分析：
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;**mysql_fetch_row()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;**tmp=(</span><span style="color:#8000ff;">char</span><span style="color:#000000;">**)malloc(</span><span style="color:#0000ff;">sizeof</span><span style="color:#000000;">(</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;*)*</span><span style="color:#ff0000;">9</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">9</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tmp[i]&nbsp;=&nbsp;(</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;*)malloc(</span><span style="color:#ff0000;">100</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;copy&nbsp;Ъ§Он<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;strcpy(tmp[</span><span style="color:#ff0000;">0</span><span style="color:#000000;">],&nbsp;</span><span style="color:#800000;">&quot;xxxx&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;strcpy(tmp[</span><span style="color:#ff0000;">1</span><span style="color:#000000;">],&nbsp;</span><span style="color:#800000;">&quot;xxxx&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;strcpy(tmp[</span><span style="color:#ff0000;">2</span><span style="color:#000000;">],&nbsp;</span><span style="color:#800000;">&quot;xxxx&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;strcpy(tmp[</span><span style="color:#ff0000;">3</span><span style="color:#000000;">],&nbsp;</span><span style="color:#800000;">&quot;xxxx&quot;</span><span style="color:#000000;">);<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;tmp;<BR>
+}</span></div></td></tr></table></div>
+<br>
+<br><font color=green size = 5><a name="bc10">释放结果集</a></font>
+<br> void mysql_free_result(MYSQL_RES *result);
+<br>
+<br><font color=green size = 5><a name="bc11">检索</a></font>
+<br> 🐬 从结果集里获取/解析表头
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 只获取一列
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MYSQL_FIELD *mysql_fetch_field(MYSQL_RES *result);
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 获取多列
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MYSQL_FIELD *mysql_fetch_fields(MYSQL_RES *result);
+<br> 🐬 通过句柄获取列数
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; unsigned int mysql_field_count(MYSQL *mysql);
+<br> 🐬 通过结果集获取列数
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; unsigned int mysql_num_fields(MYSQL_RES *result);
+<br> 🐬 编程实例：
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47<br>48<br>49<br>50<br>51<br>52<br>53<br>54<br>55<br>56<br>57<br>58<br>59<br>60<br>61<br>62<br>63<br>64<br>65<br>66<br>67<br>68<br>69<br>70<br>71<br>72<br>73<br>74<br>75<br>76<br>77<br>78<br>79<br>80<br>81<br>82<br>83<br>84<br>85<br>86<br>87<br>88<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;iostream&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;mysql/mysql.h&gt;<BR>
+</span><span style="color:#0000ff;">using</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">namespace</span><span style="color:#000000;">&nbsp;std;<BR>
+<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;main()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;ret;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;获取错误码<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MYSQL&nbsp;mysql,&nbsp;*connect;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;初始化，建立句柄<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;connect&nbsp;=&nbsp;mysql_init(&amp;mysql);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">&nbsp;==&nbsp;connect)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ret&nbsp;=&nbsp;mysql_errno(&amp;mysql);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cerr&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;func&nbsp;mysql_init()&nbsp;err:&quot;</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;&lt;&nbsp;ret&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;ret;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;mysql_init()&nbsp;success!&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;endl;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;连接数据库<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;connect&nbsp;=&nbsp;mysql_real_connect(connect,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">&quot;locahost&quot;</span><span style="color:#000000;">,&nbsp;</span><span style="color:#800000;">&quot;root&quot;</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">&quot;20191115&quot;</span><span style="color:#000000;">,&nbsp;</span><span style="color:#800000;">&quot;mydb&quot;</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">&nbsp;==&nbsp;connect)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ret=mysql_real_connect(&amp;mysql);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cerr&nbsp;&lt;&lt;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">&quot;func&nbsp;mysql_real_connect()&nbsp;err:&quot;</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;&lt;&nbsp;ret&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;ret;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;connect&nbsp;success!&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;endl;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;查询<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;*psql&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;select&nbsp;*&nbsp;from&nbsp;emp&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ret&nbsp;=&nbsp;mysql_query(connect,&nbsp;psql);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">&nbsp;!=&nbsp;ret)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cerr&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;func&nbsp;mysql_query()&nbsp;err:&quot;</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;&lt;&nbsp;ret&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;ret;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;获取结果集合<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MYSQL_RES&nbsp;*result&nbsp;=<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mysql_store_result(connect);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(result&nbsp;==&nbsp;</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ret&nbsp;=&nbsp;mysql_errno(connect);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">&quot;func&nbsp;mysql_store_result()&nbsp;err:&quot;</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;&lt;&nbsp;ret&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;ret;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;解析表头<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MYSQL_FILED&nbsp;*filed;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">unsigned</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;num_fields&nbsp;=<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mysql_num_fields(result);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fields&nbsp;=&nbsp;mysql_fetch_fields(result);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;num_fields;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;i&nbsp;&lt;&lt;&nbsp;fields[i].name&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\t&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;endl;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;解析结果集合，一行一行地检索数据<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MYSQL_ROW&nbsp;row&nbsp;=&nbsp;</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">while</span><span style="color:#000000;">&nbsp;(row&nbsp;=&nbsp;mysql_fetch_row(result))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mysql_num_fields(result);&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;row[i]&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\t&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;释放结果集<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mysql_free_result(result);<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mysql_close(&amp;mysql);&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;释放句柄<BR>
+</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}</span></div></td></tr></table></div>
+<br>
+<br><font color=green size = 5><a name="bc12">mysql tool 工具开发</a></font>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47<br>48<br>49<br>50<br>51<br>52<br>53<br>54<br>55<br>56<br>57<br>58<br>59<br>60<br>61<br>62<br>63<br>64<br>65<br>66<br>67<br>68<br>69<br>70<br>71<br>72<br>73<br>74<br>75<br>76<br>77<br>78<br>79<br>80<br>81<br>82<br>83<br>84<br>85<br>86<br>87<br>88<br>89<br>90<br>91<br>92<br>93<br>94<br>95<br>96<br>97<br>98<br>99<br>100<br>101<br>102<br>103<br>104<br>105<br>106<br>107<br>108<br>109<br>110<br>111<br>112<br>113<br>114<br>115<br>116<br>117<br>118<br>119<br>120<br>121<br>122<br>123<br>124<br>125<br>126<br>127<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;iostream&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;string.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;mysql/mysql.h&gt;<BR>
+</span><span style="color:#0000ff;">using</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">namespace</span><span style="color:#000000;">&nbsp;std;<BR>
+<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;main()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;ret,&nbsp;num&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;获取错误码<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MYSQL&nbsp;mysql,&nbsp;*connect&nbsp;=&nbsp;</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;*sqlbuf;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;初始化，建立句柄<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;connect&nbsp;=&nbsp;mysql_init(&amp;mysql);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">&nbsp;==&nbsp;connect)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ret&nbsp;=&nbsp;mysql_errno(&amp;mysql);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cerr&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;func&nbsp;mysql_init()&nbsp;err:&nbsp;&quot;</span><span style="color:#000000;">&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;&lt;&nbsp;ret&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">goto</span><span style="color:#000000;">&nbsp;END;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;mysql_init()&nbsp;success!&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;endl;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;连接数据库<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;connect&nbsp;=&nbsp;mysql_real_connect(connect,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">&quot;locahost&quot;</span><span style="color:#000000;">,&nbsp;</span><span style="color:#800000;">&quot;root&quot;</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">&quot;20191115&quot;</span><span style="color:#000000;">,&nbsp;</span><span style="color:#800000;">&quot;mydb&quot;</span><span style="color:#000000;">,&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">&nbsp;==&nbsp;connect)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ret&nbsp;=&nbsp;mysql_real_connect(&amp;mysql);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cerr&nbsp;&lt;&lt;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">&quot;func&nbsp;mysql_real_connect()&nbsp;err:&quot;</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;&lt;&nbsp;ret&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">goto</span><span style="color:#000000;">&nbsp;END;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;connect&nbsp;success!&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;endl;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;操作<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;char&nbsp;*psql&nbsp;=&nbsp;&quot;select&nbsp;*&nbsp;from&nbsp;emp&quot;;<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">while</span><span style="color:#000000;">(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;Please&nbsp;enter&nbsp;your&nbsp;sql:&nbsp;&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;gets(sqlbuf);<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;getline(cin,&nbsp;sqlbuf);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(strncmp(sqlbuf,&nbsp;</span><span style="color:#800000;">&quot;exit&quot;</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">4</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">break</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;ret&nbsp;=&nbsp;mysql_query(connect,&nbsp;psql);<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;解决中文乱码问题&nbsp;<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ret&nbsp;=&nbsp;mysql_query(connect,&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">&quot;set&nbsp;names&nbsp;utf8&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">&nbsp;!=&nbsp;ret)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cerr&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;func&nbsp;mysql_query()&nbsp;err:&quot;</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;&lt;&nbsp;ret&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">goto</span><span style="color:#000000;">&nbsp;END;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;select<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ret&nbsp;=&nbsp;mysql_query(connect,&nbsp;sqlbuf);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">&nbsp;!=&nbsp;ret)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cerr&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;func&nbsp;mysql_query()&nbsp;err:&quot;</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;&lt;&nbsp;ret&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">goto</span><span style="color:#000000;">&nbsp;END;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(strncmp(sqlbuf,</span><span style="color:#800000;">&quot;select&quot;</span><span style="color:#000000;">,</span><span style="color:#ff0000;">6</span><span style="color:#000000;">)==</span><span style="color:#ff0000;">0</span><span style="color:#000000;">&nbsp;||<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;strncmp(sqlbuf,</span><span style="color:#800000;">&quot;SELECT&quot;</span><span style="color:#000000;">,</span><span style="color:#ff0000;">6</span><span style="color:#000000;">)==</span><span style="color:#ff0000;">0</span><span style="color:#000000;">&nbsp;||<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;num=mysql_filed_count(connect);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;获取结果集<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MYSQL_RES&nbsp;*result&nbsp;=&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mysql_store_result(connect);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(result&nbsp;==&nbsp;</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ret&nbsp;=&nbsp;mysql_errno(connect);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">&quot;func&nbsp;mysql_store_result()&nbsp;err:&quot;</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;&lt;&nbsp;ret&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;ret;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;解析表头<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MYSQL_FILED&nbsp;*filed;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">unsigned</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;num_fields&nbsp;=<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mysql_num_fields(result);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fields&nbsp;=&nbsp;mysql_fetch_fields(result);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;num_fields;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;i&lt;&lt;fields[i].name&lt;&lt;</span><span style="color:#800000;">&quot;\t&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;endl;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;解析结果集合，一行一行地检索数据<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MYSQL_ROW&nbsp;row&nbsp;=&nbsp;</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">while</span><span style="color:#000000;">&nbsp;(row&nbsp;=&nbsp;mysql_fetch_row(result))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mysql_num_fields(result);&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;row[i]&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\t&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;释放结果集<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mysql_free_result(result);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;非select语句&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;<BR>
+<BR>
+END:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(connect&nbsp;!=&nbsp;</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mysql_close(&amp;mysql);&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;释放句柄<BR>
+</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}</span></div></td></tr></table></div>
+<br> 🐬 中文会是乱码，需要在执行查询语句时设置查询的属性，告诉客户端按照相应的格式显示
+<br>
+<br><font color=green size = 5><a name="bc13">MySQL 回显问题</a></font>
+<br> 🐬 在使用 Linux MySQL Tool 键入命令的过程中，当我们输错了一个字母，利用 Backspace 键想要进行删除时，不但不会删除，还会在后面增加 `H 符号，这种问题就是MySQL Tool中的回显问题
+<br> 🐬 第一种解决方法：利用一个shell命令 stty erase `H (擦除`H)，使用后回显键将不再显示，会变成退格键
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;setstty()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;system(</span><span style="color:#800000;">&quot;stty&nbsp;erase&nbsp;`H&quot;</span><span style="color:#000000;">);<BR>
+}&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;可以将此函数添加到上面的程序中</span></div></td></tr></table></div>
+<br> 🐬 第二种解决方案：编程，需要很大一个知识领域，tty API函数，即终端编程
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; man tcgetattr
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; man setstty2   设置输入退格键，不回显 函数man pages
+<br>
+<br><font color=green size = 5><a name="bc14">MySQL 上下键问题</a></font>
+<br> 🐬 再开发一个监控软件，将每次键入的命令都保存下来，在按下上下键的时候将对应的命令写进去并显示就OK
+<br> 🐬 在市场上有一个这样的开源软件：rlwrap
+<br> 🐬 如果想要在自己的程序中实现这样的功能，就可以将 此软件源码 写进自己的程序中
+<br>
+<br><font color=green size = 5><a name="bc15">MySQL预处理</a></font>
+<br> 🐬 设计理念及流程
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1&gt;. 连接数据库 . . .
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2&gt;. mysql_stmt_init()  初始化预处理环境句柄 stmt
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 3&gt;. mysql_stmt_prepare()  向预处理句柄添加sql语句 (? ? ?)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 4&gt;. mysql_stmt_bind_param(stmt, bind[3])  向预处理句柄中添加参数值
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 5&gt;. mysql_stmt_execute(stmt)  执行预处理的sql语句
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 6&gt;. 选择继续向句柄添加参数值并执行还是向下执行
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 7&gt;. mysql_stmt_close(stmt)  关闭预处理环境句柄
+<br> 🐬 eg：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 在下面的示例中，介绍了使用mysql_stmt_init()、mysql_stmt_prepare()、mysql_stmt_param_count()、mysql_stmt_bind_param()、mysql_stmt_execute()、以及mysql_stmt_affected_rows()创建和填充表的方法。假定mysql变量具有有效的连接句柄
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47<br>48<br>49<br>50<br>51<br>52<br>53<br>54<br>55<br>56<br>57<br>58<br>59<br>60<br>61<br>62<br>63<br>64<br>65<br>66<br>67<br>68<br>69<br>70<br>71<br>72<br>73<br>74<br>75<br>76<br>77<br>78<br>79<br>80<br>81<br>82<br>83<br>84<br>85<br>86<br>87<br>88<br>89<br>90<br>91<br>92<br>93<br>94<br>95<br>96<br>97<br>98<br>99<br>100<br>101<br>102<br>103<br>104<br>105<br>106<br>107<br>108<br>109<br>110<br>111<br>112<br>113<br>114<br>115<br>116<br>117<br>118<br>119<br>120<br>121<br>122<br>123<br>124<br>125<br>126<br>127<br>128<br>129<br>130<br>131<br>132<br>133<br>134<br>135<br>136<br>137<br>138<br>139<br>140<br>141<br>142<br>143<br>144<br>145<br>146<br>147<br>148<br>149<br>150<br>151<br>152<br>153<br>154<br>155<br>156<br>157<br>158<br>159<br>160<br>161<br>162<br>163<br>164<br>165<br>166<br>167<br>168<br>169<br>170<br>171<br>172<br>173<br>174<br>175<br>176<br>177<br>178<br>179<br>180<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;STRING_SIZE&nbsp;</span><span style="color:#ff0000;">50</span><span style="color:#000000;"><BR>
+<BR>
+</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;DROP_SAMPLE_TABLE&nbsp;</span><span style="color:#800000;">&quot;DROP&nbsp;TABLE&nbsp;IF&nbsp;EXISTS<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;test_table</span><span style="color:#800000;">&quot;<BR>
+</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;CREATE_SAMPLE_TABLE&nbsp;</span><span style="color:#800000;">&quot;CREATE&nbsp;TABLE&nbsp;<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;test_table(col1&nbsp;INT,\ <BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;col2&nbsp;VARCHAR(</span><span style="color:#ff0000;">40</span><span style="color:#000000;">),\ <BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;col3&nbsp;SMALLINT,\ <BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;col4&nbsp;TIMESTAMP)</span><span style="color:#800000;">&quot;<BR>
+</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;INSERT_SAMPLE&nbsp;</span><span style="color:#800000;">&quot;INSERT&nbsp;INTO&nbsp;<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;test_table(col1,col2,col3)&nbsp;VALUES(?,?,?)</span><span style="color:#800000;">&quot;<BR>
+</span><span style="color:#000000;"><BR>
+MYSQL_STMT&nbsp;&nbsp;&nbsp;&nbsp;*stmt;<BR>
+MYSQL_BIND&nbsp;&nbsp;&nbsp;&nbsp;bind[</span><span style="color:#ff0000;">3</span><span style="color:#000000;">];<BR>
+my_ulonglong&nbsp;&nbsp;affected_rows;<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;param_count;<BR>
+</span><span style="color:#8000ff;">short</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;small_data;<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int_data;<BR>
+</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;str_data[STRING_SIZE];<BR>
+</span><span style="color:#8000ff;">unsigned</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">long</span><span style="color:#000000;">&nbsp;str_length;<BR>
+my_bool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;is_null;<BR>
+<BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(mysql_query(mysql,&nbsp;DROP_SAMPLE_TABLE))<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;fprintf(stderr,</span><span style="color:#800000;">&quot;DROP&nbsp;TABLE&nbsp;failed\n&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;fprintf(stderr,</span><span style="color:#800000;">&quot;%s\n&quot;</span><span style="color:#000000;">,mysql_error(mysql));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;exit(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">);<BR>
+}<BR>
+<BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(mysql_query(mysql,&nbsp;CREATE_SAMPLE_TABLE))<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;fprintf(stderr,</span><span style="color:#800000;">&quot;CREATE&nbsp;TABLE&nbsp;failed\n&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;fprintf(stderr,</span><span style="color:#800000;">&quot;%s\n&quot;</span><span style="color:#000000;">,&nbsp;mysql_error(mysql));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;exit(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">);<BR>
+}<BR>
+<BR>
+</span><span style="color:#008000;">/*&nbsp;Prepare&nbsp;an&nbsp;INSERT&nbsp;query&nbsp;with&nbsp;3&nbsp;parameters&nbsp;*/</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">/*(the&nbsp;TIMESTAMP&nbsp;column&nbsp;is&nbsp;not&nbsp;named;the&nbsp;server&nbsp;*/</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">/*&nbsp;&nbsp;sets&nbsp;it&nbsp;to&nbsp;the&nbsp;current&nbsp;date&nbsp;and&nbsp;time)&nbsp;*/</span><span style="color:#000000;"><BR>
+stmt&nbsp;=&nbsp;mysql_stmt_init(mysql);<BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(!stmt)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;fprintf(stderr,&nbsp;</span><span style="color:#800000;">&quot;&nbsp;mysql_stmt_init(),<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;out&nbsp;of&nbsp;memory\n</span><span style="color:#800000;">&quot;);<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;exit(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">);<BR>
+}<BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(mysql_stmt_prepare(stmt,&nbsp;INSERT_SAMPLE,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;strlen(INSERT_SAMPLE)))<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;fprintf(stderr,&nbsp;</span><span style="color:#800000;">&quot;&nbsp;mysql_stmt_prepare(),<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;INSERT&nbsp;failed\n</span><span style="color:#800000;">&quot;);<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;fprintf(stderr,&nbsp;</span><span style="color:#800000;">&quot;&nbsp;%s\n&quot;</span><span style="color:#000000;">,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mysql_stmt_error(stmt));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;exit(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">);<BR>
+}<BR>
+fprintf(stdout,&nbsp;</span><span style="color:#800000;">&quot;&nbsp;prepare,&nbsp;INSERT&nbsp;successful\n&quot;</span><span style="color:#000000;">);<BR>
+<BR>
+</span><span style="color:#008000;">/*&nbsp;Get&nbsp;the&nbsp;parameter&nbsp;count&nbsp;from&nbsp;the&nbsp;statement&nbsp;*/</span><span style="color:#000000;"><BR>
+param_count&nbsp;=&nbsp;mysql_stmt_param_count(stmt);<BR>
+fprintf(stdout,&nbsp;</span><span style="color:#800000;">&quot;&nbsp;total&nbsp;parameters&nbsp;in&nbsp;INSERT:&nbsp;<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%d\n</span><span style="color:#800000;">&quot;,&nbsp;param_count);<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(param_count&nbsp;!=&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">)&nbsp;<BR>
+</span><span style="color:#008000;">/*&nbsp;validate&nbsp;parameter&nbsp;count&nbsp;*/</span><span style="color:#000000;"><BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;fprintf(stderr,&nbsp;</span><span style="color:#800000;">&quot;&nbsp;invalid&nbsp;parameter&nbsp;count<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returned&nbsp;by&nbsp;MySQL\n</span><span style="color:#800000;">&quot;);<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;exit(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">);<BR>
+}<BR>
+<BR>
+</span><span style="color:#008000;">/*&nbsp;Bind&nbsp;the&nbsp;data&nbsp;for&nbsp;all&nbsp;3&nbsp;parameters&nbsp;*/</span><span style="color:#000000;"><BR>
+<BR>
+memset(bind,&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;</span><span style="color:#0000ff;">sizeof</span><span style="color:#000000;">(bind));<BR>
+<BR>
+</span><span style="color:#008000;">/*&nbsp;INTEGER&nbsp;PARAM&nbsp;*/</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">/*&nbsp;This&nbsp;is&nbsp;a&nbsp;number&nbsp;type,&nbsp;so&nbsp;there&nbsp;is&nbsp;no<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;need&nbsp;to&nbsp;specify&nbsp;buffer_length&nbsp;*/</span><span style="color:#000000;"><BR>
+bind[</span><span style="color:#ff0000;">0</span><span style="color:#000000;">].buffer_type&nbsp;=&nbsp;MYSQL_TYPE_LONG;<BR>
+bind[</span><span style="color:#ff0000;">0</span><span style="color:#000000;">].buffer&nbsp;=&nbsp;(</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;*)&nbsp;&amp;int_data;<BR>
+bind[</span><span style="color:#ff0000;">0</span><span style="color:#000000;">].is_null&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+bind[</span><span style="color:#ff0000;">0</span><span style="color:#000000;">].length&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+<BR>
+</span><span style="color:#008000;">/*&nbsp;STRING&nbsp;PARAM&nbsp;*/</span><span style="color:#000000;"><BR>
+bind[</span><span style="color:#ff0000;">1</span><span style="color:#000000;">].buffer_type&nbsp;=&nbsp;MYSQL_TYPE_STRING;<BR>
+bind[</span><span style="color:#ff0000;">1</span><span style="color:#000000;">].buffer&nbsp;=&nbsp;(</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;*)str_data;<BR>
+bind[</span><span style="color:#ff0000;">1</span><span style="color:#000000;">].buffer_length&nbsp;=&nbsp;STRING_SIZE;<BR>
+bind[</span><span style="color:#ff0000;">1</span><span style="color:#000000;">].is_null&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+bind[</span><span style="color:#ff0000;">1</span><span style="color:#000000;">].length&nbsp;=&nbsp;&amp;str_length;<BR>
+<BR>
+</span><span style="color:#008000;">/*&nbsp;SMALLINT&nbsp;PARAM&nbsp;*/</span><span style="color:#000000;"><BR>
+bind[</span><span style="color:#ff0000;">2</span><span style="color:#000000;">].buffer_type&nbsp;=&nbsp;MYSQL_TYPE_SHORT;<BR>
+bind[</span><span style="color:#ff0000;">2</span><span style="color:#000000;">].buffer&nbsp;=&nbsp;(</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;*)&nbsp;&amp;small_data;<BR>
+bind[</span><span style="color:#ff0000;">2</span><span style="color:#000000;">].is_null&nbsp;=&nbsp;&amp;is_null;<BR>
+bind[</span><span style="color:#ff0000;">2</span><span style="color:#000000;">].length&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+<BR>
+</span><span style="color:#008000;">/*&nbsp;Bind&nbsp;the&nbsp;buffers&nbsp;*/</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(mysql_stmt_bind_param(stmt,&nbsp;bind))<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;fprintf(stderr,&nbsp;</span><span style="color:#800000;">&quot;&nbsp;mysql_stmt_bind_param()<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failed\n</span><span style="color:#800000;">&quot;);<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;fprintf(stderr,&nbsp;</span><span style="color:#800000;">&quot;&nbsp;%s\n&quot;</span><span style="color:#000000;">,&nbsp;mysql_stmt_error<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(stmt));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;exit(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">);<BR>
+}<BR>
+<BR>
+</span><span style="color:#008000;">/*&nbsp;Specify&nbsp;the&nbsp;data&nbsp;values&nbsp;for&nbsp;the&nbsp;first&nbsp;row&nbsp;*/</span><span style="color:#000000;"><BR>
+int_data&nbsp;=&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">/*&nbsp;integer&nbsp;*/</span><span style="color:#000000;"><BR>
+strncpy(str_data,&nbsp;</span><span style="color:#800000;">&quot;MySQL&quot;</span><span style="color:#000000;">,&nbsp;STRING_SIZE);&nbsp;</span><span style="color:#008000;">/*<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;&nbsp;*/</span><span style="color:#000000;"><BR>
+str_length&nbsp;=&nbsp;strlen(str_data);<BR>
+<BR>
+</span><span style="color:#008000;">/*&nbsp;INSERT&nbsp;SMALLINT&nbsp;data&nbsp;as&nbsp;NULL&nbsp;*/</span><span style="color:#000000;"><BR>
+is_null&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;<BR>
+<BR>
+</span><span style="color:#008000;">/*&nbsp;Execute&nbsp;the&nbsp;INSERT&nbsp;statement&nbsp;-&nbsp;1*/</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(mysql_stmt_execute(stmt))<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;fprintf(stderr,&nbsp;</span><span style="color:#800000;">&quot;&nbsp;mysql_stmt_execute(),<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;failed\n</span><span style="color:#800000;">&quot;);<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;fprintf(stderr,&nbsp;</span><span style="color:#800000;">&quot;&nbsp;%s\n&quot;</span><span style="color:#000000;">,&nbsp;mysql_stmt_error<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(stmt));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;exit(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">);<BR>
+}<BR>
+<BR>
+</span><span style="color:#008000;">/*&nbsp;Get&nbsp;the&nbsp;total&nbsp;number&nbsp;of&nbsp;affected&nbsp;rows&nbsp;*/</span><span style="color:#000000;"><BR>
+affected_rows&nbsp;=&nbsp;mysql_stmt_affected_rows(stmt);<BR>
+fprintf(stdout,&nbsp;</span><span style="color:#800000;">&quot;&nbsp;total&nbsp;affected&nbsp;rows(insert&nbsp;1)<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;%lu\n</span><span style="color:#800000;">&quot;,<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(</span><span style="color:#8000ff;">unsigned</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">long</span><span style="color:#000000;">)&nbsp;affected_rows);<BR>
+<BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(affected_rows&nbsp;!=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)&nbsp;</span><span style="color:#008000;">/*&nbsp;validate&nbsp;affected<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rows&nbsp;*/</span><span style="color:#000000;"><BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;fprintf(stderr,&nbsp;</span><span style="color:#800000;">&quot;&nbsp;invalid&nbsp;affected&nbsp;rows<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;by&nbsp;MySQL\n</span><span style="color:#800000;">&quot;);<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;exit(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">);<BR>
+}<BR>
+<BR>
+</span><span style="color:#008000;">/*&nbsp;Specify&nbsp;data&nbsp;values&nbsp;for&nbsp;second&nbsp;row,&nbsp;then<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;re-execute&nbsp;the&nbsp;statement&nbsp;*/</span><span style="color:#000000;"><BR>
+int_data&nbsp;=&nbsp;</span><span style="color:#ff0000;">1000</span><span style="color:#000000;">;<BR>
+strncpy(str_data,&nbsp;</span><span style="color:#800000;">&quot;The&nbsp;most&nbsp;popular&nbsp;Open<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Source&nbsp;database</span><span style="color:#800000;">&quot;,&nbsp;STRING_SIZE);<BR>
+</span><span style="color:#000000;">str_length&nbsp;=&nbsp;strlen(str_data);<BR>
+small_data&nbsp;=&nbsp;</span><span style="color:#ff0000;">1000</span><span style="color:#000000;">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">/*&nbsp;smallint&nbsp;*/</span><span style="color:#000000;"><BR>
+is_null&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">/*&nbsp;reset&nbsp;*/</span><span style="color:#000000;"><BR>
+<BR>
+</span><span style="color:#008000;">/*&nbsp;Execute&nbsp;the&nbsp;INSERT&nbsp;statement&nbsp;-&nbsp;2*/</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(mysql_stmt_execute(stmt))<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;fprintf(stderr,&nbsp;</span><span style="color:#800000;">&quot;&nbsp;mysql_stmt_execute,<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;failed\n</span><span style="color:#800000;">&quot;);<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;fprintf(stderr,&nbsp;</span><span style="color:#800000;">&quot;&nbsp;%s\n&quot;</span><span style="color:#000000;">,&nbsp;mysql_stmt_error<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(stmt));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;exit(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">);<BR>
+}<BR>
+<BR>
+</span><span style="color:#008000;">/*&nbsp;Get&nbsp;the&nbsp;total&nbsp;rows&nbsp;affected&nbsp;*/</span><span style="color:#000000;"><BR>
+affected_rows&nbsp;=&nbsp;mysql_stmt_affected_rows(stmt);<BR>
+fprintf(stdout,&nbsp;</span><span style="color:#800000;">&quot;&nbsp;total&nbsp;affected&nbsp;rows(insert&nbsp;2)<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;%lu\n</span><span style="color:#800000;">&quot;,<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(</span><span style="color:#8000ff;">unsigned</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">long</span><span style="color:#000000;">)&nbsp;affected_rows);<BR>
+<BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(affected_rows&nbsp;!=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)&nbsp;</span><span style="color:#008000;">/*&nbsp;validate&nbsp;affected<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rows&nbsp;*/</span><span style="color:#000000;"><BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;fprintf(stderr,&nbsp;</span><span style="color:#800000;">&quot;&nbsp;invalid&nbsp;affected&nbsp;rows&nbsp;<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;by&nbsp;MySQL\n</span><span style="color:#800000;">&quot;);<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;exit(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">);<BR>
+}<BR>
+<BR>
+</span><span style="color:#008000;">/*&nbsp;Close&nbsp;the&nbsp;statement&nbsp;*/</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(mysql_stmt_close(stmt))<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;fprintf(stderr,&nbsp;</span><span style="color:#800000;">&quot;&nbsp;failed&nbsp;while&nbsp;closing&nbsp;<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;statement\n</span><span style="color:#800000;">&quot;);<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;fprintf(stderr,&nbsp;</span><span style="color:#800000;">&quot;&nbsp;%s\n&quot;</span><span style="color:#000000;">,&nbsp;mysql_stmt_error<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(stmt));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;exit(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">);<BR>
+}</span></div></td></tr></table></div>
+<br> 🐬 注释：关于使用预处理语句函数的完整示例，请参见文件tests/mysql_client_test.c。该文件可从MySQL源码分发版获得，或从BitKeeper源码仓库获得
+<br>
+<br><font color=green size = 5><a name="bc16">MySQL时间类</a></font>
+<br> MYSQL_TIME
+<br> 🐬 原型
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">typedef</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;st_mysql_time<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">unsigned</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;year,&nbsp;month,&nbsp;day,&nbsp;hour,&nbsp;minute,&nbsp;second;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">unsigned</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">long</span><span style="color:#000000;">&nbsp;second_part;&nbsp;&nbsp;</span><span style="color:#008000;">/*&nbsp;microseconds&nbsp;*/</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;my_bool&nbsp;msg;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">enum</span><span style="color:#000000;">&nbsp;enum_mysql_timestamp_type&nbsp;time_type;<BR>
+}&nbsp;MYSQL_TIME;</span></div></td></tr></table></div>
+<br> 🐬 既可以通过 SQL 语句进行时间存取，也可以通过 预处理 语句进行存取
+<br> 🐬 预处理环境变量可以 节省网络流量
+<br> 🐬 eg：
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47<br>48<br>49<br>50<br>51<br>52<br>53<br>54<br>55<br>56<br>57<br>58<br>59<br>60<br>61<br>62<br>63<br>64<br>65<br>66<br>67<br>68<br>69<br>70<br>71<br>72<br>73<br>74<br>75<br>76<br>77<br>78<br>79<br>80<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;iostream&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;stdlib.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;string.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;errno.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;termios.h&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;mysql/mysql.h&gt;<BR>
+</span><span style="color:#0000ff;">using</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">namespace</span><span style="color:#000000;">&nbsp;std;<BR>
+<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;main()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;ret&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;status&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;MYSQL&nbsp;*mysql;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;MYSQL_RES&nbsp;*result;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;mysql&nbsp;=&nbsp;mysql_init(</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;mysql&nbsp;=&nbsp;mysql_real_connect(mysql,&nbsp;</span><span style="color:#800000;">&quot;locahost&quot;</span><span style="color:#000000;">,&nbsp;</span><span style="color:#800000;">&quot;root&quot;</span><span style="color:#000000;">,&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">&quot;123456&quot;</span><span style="color:#000000;">,&nbsp;</span><span style="color:#800000;">&quot;mydb&quot;</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">,&nbsp;</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">,&nbsp;CLIENT_MULTI_STATEMENTS);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(mysql&nbsp;==&nbsp;</span><span style="color:#0000ff;">NULL</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ret&nbsp;=&nbsp;mysql_errno(mysql);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;mysql_error&nbsp;&quot;</span><span style="color:#000000;">&lt;&lt;&nbsp;mysql_error(mysql)&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;func&nbsp;mysql_real_connect()&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;ret&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;ret;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;OK&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;MYSQL_TIME&nbsp;ts;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;MYSQL_BIND&nbsp;bind[</span><span style="color:#ff0000;">3</span><span style="color:#000000;">];<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;MYSQL_STMT&nbsp;*stmt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;query[</span><span style="color:#ff0000;">1024</span><span style="color:#000000;">]&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;INSERT&nbsp;INTO&nbsp;test&nbsp;VALUES(date_field&nbsp;date,<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;time_field&nbsp;time,&nbsp;timestamp_field&nbsp;timestamp)</span><span style="color:#800000;">&quot;;<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;stmt&nbsp;=&nbsp;mysql_stmt_init(mysql);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(!stmt)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cerr&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;mysql_stmt_init()&nbsp;error&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;error&nbsp;:&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;mysql_stmt_error(stmt)&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(mysql_stmt_prepare(stmt,&nbsp;query,&nbsp;strlen(query)))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cerr&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;mysql_stme_prepare&nbsp;error&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;error&nbsp;:&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;mysql_stmt_error(stmt)&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;bind[</span><span style="color:#ff0000;">0</span><span style="color:#000000;">].buffer_type=&nbsp;MYSQL_TYPE_DATE;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;bind[</span><span style="color:#ff0000;">0</span><span style="color:#000000;">].buffer=&nbsp;(</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;*)&ts;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;bind[</span><span style="color:#ff0000;">0</span><span style="color:#000000;">].is_null=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;bind[</span><span style="color:#ff0000;">0</span><span style="color:#000000;">].length=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;bind[</span><span style="color:#ff0000;">1</span><span style="color:#000000;">]&nbsp;=&nbsp;bind[</span><span style="color:#ff0000;">2</span><span style="color:#000000;">]&nbsp;=&nbsp;bind[</span><span style="color:#ff0000;">0</span><span style="color:#000000;">];<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;mysql_stmt_bind_param(stmt,&nbsp;bind);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;ts.year&nbsp;=&nbsp;</span><span style="color:#ff0000;">2050</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;ts.month&nbsp;=&nbsp;</span><span style="color:#ff0000;">02</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;ts.day&nbsp;=&nbsp;</span><span style="color:#ff0000;">03</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;ts.hour&nbsp;=&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;ts.minute&nbsp;=&nbsp;</span><span style="color:#ff0000;">45</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;ts.second&nbsp;=&nbsp;</span><span style="color:#ff0000;">20</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;mysql_stmt_execute(stmt);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(mysql_stmt_close(stmt))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cerr&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;failed&nbsp;while&nbsp;closeing&nbsp;the&nbsp;statement&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cerr&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;error&nbsp;:&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;mysql_stmt_error(stmt)&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;mysql_close(mysql);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}</span></div></td></tr></table></div>
+<br>
+<br><font color=green size = 5><a name="bc17">多查询执行的 C API 处理 (multsql)</a></font>
+<br> 🐬 支持在单个字符串中指定的多语句的执行，要想与给定的连接一起使用该功能，打开连接时，必须将标志参数中的 CLIENT_MULTI_STATEMENTS 选项指定给 mysql_real_connect()，也可以通过调用 mysql_set_server_option(MYSQL_MULTI_STATEMENTS_ON)，为已有的连接设置它
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#008000;">/*&nbsp;Connect&nbsp;to&nbsp;server&nbsp;with&nbsp;option&nbsp;CLIENT_MULTI_STATEMENTS&nbsp;*/</span><span style="color:#000000;"><BR>
+mysql_real_connect(...,&nbsp;CLIENT_MULTI_STATEMENTS);<BR>
+<BR>
+</span><span style="color:#008000;">/*&nbsp;Now&nbsp;execute&nbsp;multiple&nbsp;queries&nbsp;*/</span><span style="color:#000000;"><BR>
+mysql_query(mysql,&nbsp;</span><span style="color:#800000;">&quot;DROP&nbsp;TABLE&nbsp;IF&nbsp;EXISTS&nbsp;test_table;\ <BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CREATE&nbsp;TABLE&nbsp;test_table(id&nbsp;INT);\ <BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;INSERT&nbsp;INTO&nbsp;test_table&nbsp;VALUES(</span><span style="color:#ff0000;">10</span><span style="color:#000000;">);\ <BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;UPDATE&nbsp;test_table&nbsp;SET&nbsp;id=</span><span style="color:#ff0000;">20</span><span style="color:#000000;">&nbsp;WHERE&nbsp;id=</span><span style="color:#ff0000;">10</span><span style="color:#000000;">;\ <BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SELECT&nbsp;*&nbsp;FROM&nbsp;test_table;\ <BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DROP&nbsp;TABLE&nbsp;test_table</span><span style="color:#800000;">&quot;);<BR>
+</span><span style="color:#0000ff;">do</span><span style="color:#000000;"><BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">/*&nbsp;Process&nbsp;all&nbsp;results&nbsp;*/</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;...<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;printf(</span><span style="color:#800000;">&quot;total&nbsp;affected&nbsp;rows:&nbsp;%lld&quot;</span><span style="color:#000000;">,&nbsp;mysql_affected_rows(mysql));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;...<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(!(result&nbsp;=&nbsp;mysql_store_result(mysql)))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;printf(stderr,&nbsp;</span><span style="color:#800000;">&quot;Got&nbsp;fatal&nbsp;error&nbsp;processing&nbsp;query\n&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;process_result_set(result);&nbsp;</span><span style="color:#008000;">/*&nbsp;client&nbsp;function&nbsp;*/</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;mysql_free_result(result);<BR>
+}<BR>
+</span><span style="color:#0000ff;">while</span><span style="color:#000000;">&nbsp;(!mysql_next_result(mysql));</span></div></td></tr></table></div>
+<br>
+<br><font color=green size = 5><a name="bc18">MySQL的事务</a></font>
+<br> 🐬 事务的概念同 Oracle 数据库中的事务
+<br> 🐬 但也有一些差别：MySQL的事务在默认情况下是自动提交，即一条语句即提交
+<br> 🐬 将 MySQL 事务设置为同 Oracle数据库 一样 手动提交：自制函数
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47<br>48<br>49<br>50<br>51<br>52<br>53<br>54<br>55<br>56<br>57<br>58<br>59<br>60<br>61<br>62<br>63<br>64<br>65<br>66<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;mysql_BeginTram(MYSQL&nbsp;*mysql)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;ret&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;执行事务开始SQL&nbsp;(开启事务)<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ret&nbsp;=&nbsp;mysql_query(mysql,&nbsp;BEGIN_TRAM)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">&nbsp;!=&nbsp;ret)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;func&nbsp;mysql_query()&nbsp;err&nbsp;:&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;ret&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;ret;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;设置事务手动提交<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ret&nbsp;=&nbsp;mysql_query(mysql,&nbsp;SET_TRAM);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">&nbsp;!=&nbsp;ret)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;func&nbsp;mysql_query()&nbsp;err&nbsp;:&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;ret&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;ret;<BR>
+}<BR>
+<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;mysql_Commit(MYSQL&nbsp;*mysql)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;ret&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;执行事务提交SQL<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ret&nbsp;=&nbsp;mysql_query(mysql,&nbsp;COMMIT_TRAM);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">&nbsp;!=&nbsp;ret)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;func&nbsp;mysql_query()&nbsp;err&nbsp;:&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;ret&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;ret;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;恢复自动提交设置<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ret&nbsp;=&nbsp;mysql_query(mysql,&nbsp;UNSET_TRAM);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">&nbsp;!=&nbsp;ret)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;func&nbsp;mysql_query()&nbsp;err&nbsp;:&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;ret&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;ret;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;ret;<BR>
+}<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;mysql_Rollback(MYSQL&nbsp;*mysql)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;ret&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;事务回滚操作<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ret&nbsp;=&nbsp;mysql_query(mysql,&nbsp;ROLLBACK_TRAM);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">&nbsp;!=&nbsp;ret)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;func&nbsp;mysql_query()&nbsp;err&nbsp;:&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;ret&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;ret;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;恢复自动提交设置<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ret&nbsp;=&nbsp;mysql_query(mysql,&nbsp;UNSET_TRAM);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">&nbsp;!=&nbsp;ret)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;func&nbsp;mysql_query()&nbsp;err&nbsp;:&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;ret&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;ret;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;ret;<BR>
+}</span></div></td></tr></table></div></p>
+
+<p><br><br><br>
+<font color = gray size = 3>如有错误，欢迎指正！</font></p></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://oubc.github.io/tags/db/">DB</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmg4aog3074074gnf.gif?tags=%5B%5D">I </a>
+	<a href="">love</a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmfm2eg306o06o74u.gif?tags=%5B%5D"> you </a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx4tpcj30fn0bq3zg.jpg?tags=%5B%5D">three </a>
+	<a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx64ctg307s07swfy.gif?tags=%5B%5D">thousand</a>
+    <a href="https://www.kugou.com/song/#hash=96426C78381DE98DC31A5846FC274CBF&album_id=646623"> times.</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>家庭、梦想、内心的平静</span>
+  </div>
+</footer>
+
+
+
+<script src="https://oubc.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://oubc.github.io/js/zozo.js"></script>
+<script src="https://oubc.github.io/js/highlight.pack.js"></script>
+<link  href="https://oubc.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://oubc.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>
