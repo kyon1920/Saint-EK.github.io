@@ -6,10 +6,19 @@
     <description>Recent content in Tags on Love, or death</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Mon, 18 Nov 2019 20:09:03 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 09 Feb 2020 16:06:47 +0800</lastBuildDate>
     
 	<atom:link href="https://oubc.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>C/C&#43;&#43;</title>
+      <link>https://oubc.github.io/tags/c/c&#43;&#43;/</link>
+      <pubDate>Sun, 09 Feb 2020 16:06:47 +0800</pubDate>
+      
+      <guid>https://oubc.github.io/tags/c/c&#43;&#43;/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>DB</title>
@@ -17,15 +26,6 @@
       <pubDate>Mon, 18 Nov 2019 20:09:03 +0800</pubDate>
       
       <guid>https://oubc.github.io/tags/db/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>C/C&#43;&#43;</title>
-      <link>https://oubc.github.io/tags/c/c&#43;&#43;/</link>
-      <pubDate>Wed, 13 Nov 2019 17:27:13 +0800</pubDate>
-      
-      <guid>https://oubc.github.io/tags/c/c&#43;&#43;/</guid>
       <description></description>
     </item>
     

@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Bruce Cheung"/>
+
+  
+  <meta name="description" content=""/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, simple, dream"/>
+  
+
+  
+  <link rel="canonical" href="https://oubc.github.io/post/modernc&#43;&#43;0/"/>
+
+  
+
+  <title>Modern C&#43;&#43; 正则表达式 &middot; Love, or death</title>
+
+  <link rel="shortcut icon" href="https://oubc.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/post/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://oubc.github.io/">
+          <span>Love, or death</span>
+          <img src="https://oubc.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">For you, a thousand times over.</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/oubc" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=uYGOjo6OiIuLivnIyJfa1tQ" title="mail" target="_blank"><i class="remixicon-mail-fill"></i></a>
+        
+        
+        
+        <a href="http://sighttp.qq.com/msgrd?v=1&amp;uin=877771223" title="qq" target="_blank"><i class="remixicon-qq-fill"></i></a>
+        
+        
+        
+        <a href="https://github.com/oubc/oubc.github.io/blob/master/images/wx.jpg?raw=true" title="wechat" target="_blank"><i class="remixicon-wechat-fill"></i></a>
+        
+        
+        
+        <a href="https://weibo.com/u/6993631995?topnav=1&amp;wvr=6&amp;topsug=1" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://oubc.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/post/modernc&#43;&#43;0/'>Modern C&#43;&#43; 正则表达式</a></h2>
+          <span class="date">2020.02.09</span>
+        </div>
+        <div class="post_content markdown"><p><br><font color=green size = 5>C++新标准之正则表达式</font>
+<br>
+<br><font color = gray size = 3>目录</font><font color = gray size = 2> (点击跳转)</font>
+<br><a href="#bc0"><font color=green size = 4>0、介绍</font></a>
+<br><a href="#bc1"><font color=green size = 4>1、正则表达式语法</font></a>
+<br><a href="#bc2"><font color=green size = 4>2、正则表达式的使用</font></a>
+<br><a href="#bc3"><font color=green size = 4>3、基本类</font></a>
+<br><a href="#bc4"><font color=green size = 4>4、算法</font></a>
+<br><a href="#bc5"><font color=green size = 4>5、迭代器</font></a>
+<br><a href="#bc6"><font color=green size = 4>6、异常</font></a>
+<br><a href="#bc7"><font color=green size = 4>7、分组及其它概念</font></a>
+<br><a href="#bc8"><font color=green size = 4>8、使用示例</font></a>
+<br>
+<br>
+<br><a name="bc0"><font color=green size = 5>0、介绍</font></a>
+<br>正则表达式(Regular Expression)描述了一种字符串匹配的模式(Pattern)，可以用来检查一个串是否含有某种子串、将匹配的子串或者从某个串中取出符合某个条件的子串等。
+<br>正则表达式十分强大，具体的实现算法有一定差异，C++新标准支持6中正则表达式引擎，ECMAScript是其中支持最多元的引擎，也是Regex默认支持的引擎。
+<br>&nbsp;&nbsp;&nbsp;&nbsp; ● ECMAScript
+<br>&nbsp;&nbsp;&nbsp;&nbsp; ● basic (POSIX Basic Regular Expressions)
+<br>&nbsp;&nbsp;&nbsp;&nbsp; ● extended (POSIX Extended Regular Expressions)
+<br>&nbsp;&nbsp;&nbsp;&nbsp; ● awk (POSIX awk)
+<br>&nbsp;&nbsp;&nbsp;&nbsp; ● grep (POSIX grep)
+<br>&nbsp;&nbsp;&nbsp;&nbsp; ● egrep (POSIX grep –E)
+<br>
+<br><a name="bc1"><font color=green size = 5>1、正则表达式语法</font></a>
+<br>正则表达式主要由两部分构成，特殊字符和普通字符
+<br>
+<table border="4">
+<tr>
+<th>符号</th>
+<th>意义</th>
+<th>描述</th>
+</tr>
+<tr>
+<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.&nbsp;&nbsp;</td>
+<td>匹配除&quot;\n&quot;之外的任何单个字符</td>
+<td>&quot;[\s\S]&quot;之类的模式可以匹配包括&quot;\n&quot;在内的任意字符</td>
+</tr>
+<tr>
+<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;^&nbsp;&nbsp;</td>
+<td>匹配输入字符串的开始位置</td>
+<td>当该符号在方括号表达式中使用时，表示不接受该方括号表达式中的字符集合。要匹配&quot;^&quot;字符本身，请使用&quot;\^&quot;</td>
+</tr>
+<tr>
+<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$&nbsp;&nbsp;</td>
+<td>匹配输入字符串结尾的位置</td>
+<td>要匹配&quot;$&quot;字符本身，请使用&quot;\ \$&quot;</td>
+</tr>
+<tr>
+<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;&nbsp;</td>
+<td>零次或多次匹配前面的字符或子表达式</td>
+<td>等价于&quot;{0,}&quot;要匹配&quot;*&quot;字符本身，请使用&quot;\*&quot;</td>
+</tr>
+<tr>
+<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+&nbsp;&nbsp;</td>
+<td>一次或多次匹配前面的字符或子表达式</td>
+<td>等价于&quot;{1,}&quot;要匹配&quot;+&quot;字符本身，请使用&quot;\+&quot;</td>
+</tr>
+<tr>
+<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?&nbsp;&nbsp;</td>
+<td>零次或一次匹配前面的字符或子表达式</td>
+<td>等价于&quot;{0,1}&quot;，要匹配&quot;?&quot;字符本身，请使用&quot;\?&quot;</td>
+</tr>
+<tr>
+<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;</td>
+<td>将两个匹配条件进行逻辑&quot;或&quot;运算</td>
+<td>指明两项之间的一个选择，要匹配&quot;|&quot;字符本身，请使用&quot;\|&quot;</td>
+</tr>
+<tr>
+<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\&nbsp;&nbsp;</td>
+<td>将下一字符标记为特殊字符、文本、反向引用或八进制转义符</td>
+<td>如： &quot;n&quot; 匹配字符 &quot;n&quot;，&quot;\n&quot; 匹配换行符，序列 &quot;\\&quot; 匹配 &quot;\&quot;，而 &quot;\(&quot; 则匹配 &quot;(&quot;</td>
+</tr>
+<tr>
+<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\w&nbsp;&nbsp;&nbsp;</td>
+<td>匹配任何一个字母或数字或下划线</td>
+<td>即 A~Z，a~z，0~9，_ 中任意一个</td>
+</tr>
+<tr>
+<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\W&nbsp;&nbsp;&nbsp;</td>
+<td>匹配任意不是字母、数字、下划线的字符</td>
+</tr>
+<tr>
+<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\s&nbsp;&nbsp;&nbsp;</td>
+<td>匹配任意的空白符</td>
+<td>等价于&quot;[\f\n\r\t\v]&quot;，包括空格、制表符、换页符等</td>
+</tr>
+<tr>
+<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\S&nbsp;&nbsp;&nbsp;</td>
+<td>匹配任意不是空白的字符</td>
+<td>等价于&quot;[^\f\n\r\t\v]&quot;</td>
+</tr>
+<tr>
+<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\d&nbsp;&nbsp;&nbsp;</td>
+<td>匹配数字</td>
+<td>等价于&quot;[0-9]&quot;，0-9中任意一个数字</td>
+</tr>
+<tr>
+<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\D&nbsp;&nbsp;&nbsp;</td>
+<td>匹配任意非数字的字符</td>
+<td>等价于&quot;[^0-9]&quot;</td>
+</tr>
+<tr>
+<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\b&nbsp;&nbsp;&nbsp;</td>
+<td>匹配一个字边界，即字与空格间的位置</td>
+<td>也就是单词和空格之间的位置，如：&quot;er\b&quot;匹配&quot;never&quot;中的&quot;er&quot;，但不匹配&quot;verb&quot;中的&quot;er&quot;</td>
+</tr>
+<tr>
+<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\B&nbsp;&nbsp;&nbsp;</td>
+<td>非字边界匹配</td>
+<td>&quot;er\B&quot;匹配&quot;verb&quot;中的&quot;er&quot;，但不匹配&quot;never&quot;中的&quot;er&quot;</td>
+</tr>
+<tr>
+<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\f&nbsp;&nbsp;&nbsp;</td>
+<td>匹配一个换页符</td>
+<td>等价于&quot;\x0c&quot;和&quot;\cL&quot;</td>
+</tr>
+<tr>
+<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n&nbsp;&nbsp;&nbsp;</td>
+<td>匹配一个换行符</td>
+<td>等价于&quot;\x0a&quot;和&quot;\cJ&quot;</td>
+</tr>
+<tr>
+<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\r&nbsp;&nbsp;&nbsp;</td>
+<td>匹配一个回车符</td>
+<td>等价于&quot;\x0d&quot;和&quot;\cM&quot;</td>
+</tr>
+<tr>
+<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\t&nbsp;&nbsp;&nbsp;</td>
+<td>匹配一个制表符</td>
+<td>等价于&quot;\x09&quot;和&quot;\cl&quot;</td>
+</tr>
+<tr>
+<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\v&nbsp;&nbsp;&nbsp;</td>
+<td>匹配一个垂直制表符</td>
+<td>等价于&quot;\x0b&quot;和&quot;\cK&quot;</td>
+</tr>
+<tr>
+<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\cx&nbsp;&nbsp;&nbsp;</td>
+<td>匹配&quot;x&quot;指示的控制字符</td>
+<td>如：\cM匹配Control-M或回车符，&quot;x&quot;的值必须在&quot;A-Z&quot;或&quot;a-z&quot;之间,如果不是这样，则假定c就是&quot;c&quot;字符本身</td>
+</tr>
+<tr>
+<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{n}&nbsp;&nbsp;&nbsp;</td>
+<td>&quot;n&quot;是非负整数，正好匹配n次</td>
+<td>如：&quot;o{2}&quot;与&quot;Bob&quot;中的&quot;o&quot;不匹配，但与&quot;food&quot;中的两个&quot;o&quot;匹配</td>
+</tr>
+<tr>
+<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{n,}&nbsp;&nbsp;&nbsp;</td>
+<td>&quot;n&quot;是非负整数，至少匹配n次</td>
+<td>&quot;o{1,}&quot;等价于&quot;o+&quot;，&quot;o{0,}&quot;等价于&quot;o*&quot;，如：&quot;o{2,}&quot;不匹配&quot;Bob&quot;中的&quot;o&quot;，而匹配&quot;foooood&quot;中的所有&quot;O&quot;</td>
+</tr>
+<tr>
+<td>&nbsp;&nbsp;&nbsp;&nbsp;{n,m}&nbsp;&nbsp;&nbsp;</td>
+<td>&quot;n&quot;和&quot;m&quot;都是非负整数n&lt;=m，匹配至少n次，至多m次</td>
+<td>如：&quot;o{1,3}&quot;匹配&quot;fooood&quot;中的头三个o，&quot;o{0,1}&quot;等效于&quot;o?&quot;，注意，不能将空格插入逗号和数字之间</td>
+</tr>
+<tr>
+<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x|y&nbsp;&nbsp;&nbsp;</td>
+<td>匹配&quot;x&quot;或&quot;y&quot;</td>
+<td>如：&quot;z|food&quot;匹配&quot;z&quot;或&quot;food&quot;，&quot;(z|f)ood&quot;匹配&quot;zood&quot;或&quot;food&quot;</td>
+</tr>
+<tr>
+<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[xyz]&nbsp;&nbsp;</td>
+<td>字符集，匹配包含的任一字符</td>
+<td>如：&quot;[abc]&quot;匹配&quot;plain&quot;中的&quot;a&quot;</td>
+</tr>
+<tr>
+<td>&nbsp;&nbsp;&nbsp;&nbsp;[^xyz]&nbsp;&nbsp;</td>
+<td>反向字符集，匹配未包含的任意字符</td>
+<td>如：&quot;[^abc]&quot;匹配&quot;plain&quot;中的&quot;p&quot;</td>
+</tr>
+<tr>
+<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[a-z]&nbsp;&nbsp;</td>
+<td>字符范围，匹配指定范围内的任何字符</td>
+<td>如：&quot;[a-z]&quot;匹配&quot;a&quot;到&quot;z&quot;范围内的任何小写字母</td>
+</tr>
+<tr>
+<td>&nbsp;&nbsp;&nbsp;&nbsp;[^a-z]&nbsp;&nbsp;</td>
+<td>反向范围字符，匹配不在指定的范围内的任何字符</td>
+<td>如：&quot;[^a-z]&quot;匹配任何不在&quot;a&quot;到&quot;z&quot;范围内的任何字符</td>
+</tr>
+<tr>
+<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;()&nbsp;</td>
+<td>将&quot;(&quot;和&quot;)&quot;之间的表达式定义为&quot;组&quot;group</td>
+<td>匹配这个表达式的字符保存到一个临时区域，一个正则表达式中最多能保存9个，可以用&quot;\1&quot;到&quot;\9&quot;的符号来引用</td>
+</tr>
+<tr>
+<td>&nbsp;(pattern)&nbsp;</td>
+<td>匹配pattern并捕获该匹配的子表达式</td>
+<td>可以使用\$0…\$9属性从结果&quot;匹配&quot;集合中检索捕获的匹配；&quot;\$0&quot;表示整个匹配，&quot;\$1&quot;表示第1个子表达式的匹配结果，当只有一个子表达式时两者可能是相同</td>
+</tr>
+<tr>
+<td>(?:pattern)</td>
+<td>匹配pattern但不捕获该匹配的子表达式</td>
+<td>即它是一个非捕获匹配，不存储供以后使用的匹配，这对于用&quot;or&quot;字符 &quot;(|)&quot;组合模式部件的情况很有用, 如：&quot;industr(?:y|ies)&quot;是比&quot;industry|industries&quot;更简略的表达式</td>
+</tr>
+<tr>
+<td>(?=pattern)</td>
+<td>非获取匹配，正向肯定预查，在任何匹配pattern的字符串开始处匹配查找字符串，该匹配不需要获取供以后使用</td>
+<td>如：&quot;Windows(?=95|98|NT|2000)&quot;能匹配&quot;Windows2000&quot;中的&quot;Windows&quot;，但不能匹配&quot;Windows3.1&quot;中的&quot;Windows”。预查不消耗字符，也就是说，在一个匹配发生后，在最后一次匹配之后立即开始下一次匹配的搜索，而不是从包含预查的字符之后开始</td>
+</tr>
+<tr>
+<td>(?!pattern)</td>
+<td>非获取匹配，正向否定预查，...... 同上</td>
+<td>如：&quot;Windows(?!95|98|NT|2000)&quot;能匹配&quot;Windows3.1&quot;中的&quot;Windows&quot;，但不能匹配&quot;Windows2000&quot;中的&quot;Windows&quot;</td>
+</tr>
+</table>
+<br>注：&quot;?&quot; 匹配模式是&quot;非贪心的&quot;。&quot;非贪心的&quot; 模式匹配搜索到的、尽可能短的字符串，而默认的&quot;贪心的&quot;模式匹配搜索到的、尽可能长的字符串。如，在字符串&quot;oooo&quot;中，&quot;o+?“只匹配单个&quot;o”，而&quot;o+“匹配所有&quot;o”；
+<br>
+<br><a name="bc2"><font color=green size = 5>2、正则表达式的使用</font></a>
+<br> ● <font color=black size = 3>目标序列(Target sequence)</font>：为模式搜索到的字符序列，可以是2个迭代器所指定的范围、空终止字符串或一个 std::string 。
+<br> ● <font color=black size = 3>模式(Pattern)</font>：即正则表达式，是带特定语法的字符串构成的 std::basic_regex 类型对象，支持的语法变体描述见 syntax_option_type 。
+<br> ● <font color=black size = 3>匹配的数组(Matched array)</font>：关于匹配的信息可作为 std::match_results 类型对象获取。
+<br> ● <font color=black size = 3>替换字符串(Replacement string)</font>：确定如何替换匹配的字符串，受支持的语法变体的描述不同而不同。
+<br>
+<br><a name="bc3"><font color=green size = 5>3、基本类</font></a>
+<br>正则表达式的类基本上是通过类模板来实现的
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">typedef</span><span style="color:#000000;">&nbsp;basic_regex&lt;</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&gt;&nbsp;regex;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;正则表达式对象<BR>
+</span><span style="color:#0000ff;">typedef</span><span style="color:#000000;">&nbsp;basic_regex&lt;</span><span style="color:#8000ff;">wchar_t</span><span style="color:#000000;">&gt;&nbsp;wregex;<BR>
+</span><span style="color:#008000;">//&nbsp;标识一个正则表达式匹配，包含所有子表达式匹配(字符指针）<BR>
+</span><span style="color:#0000ff;">typedef</span><span style="color:#000000;">&nbsp;match_results&lt;</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;*&gt;&nbsp;cmatch;<BR>
+</span><span style="color:#0000ff;">typedef</span><span style="color:#000000;">&nbsp;match_results&lt;</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">wchar_t</span><span style="color:#000000;">&nbsp;*&gt;&nbsp;wcmatch;<BR>
+</span><span style="color:#008000;">//&nbsp;标识一个正则表达式匹配，包含所有子表达式匹配(字符串）<BR>
+</span><span style="color:#0000ff;">typedef</span><span style="color:#000000;">&nbsp;match_results&lt;string::const_iterator&gt;&nbsp;smatch;<BR>
+</span><span style="color:#0000ff;">typedef</span><span style="color:#000000;">&nbsp;match_results&lt;wstring::const_iterator&gt;&nbsp;wsmatch;<BR>
+</span><span style="color:#008000;">//&nbsp;标识子表达式所匹配的字符序列<BR>
+</span><span style="color:#0000ff;">typedef</span><span style="color:#000000;">&nbsp;sub_match&lt;</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;*&gt;&nbsp;csub_match;<BR>
+</span><span style="color:#0000ff;">typedef</span><span style="color:#000000;">&nbsp;sub_match&lt;</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">wchar_t</span><span style="color:#000000;">&nbsp;*&gt;&nbsp;wcsub_match;</span></div></td></tr></table></div>
+<br>
+<br><a name="bc4"><font color=green size = 5>4、算法</font></a>
+<br>封装于regex的正则表达式应用到字符的目标序列，算法主要由函数模板实现
+<br> ● <font color=black size = 3>regex_match</font>：试图匹配正则表达式到整个字符序列
+<br> ● <font color=black size = 3>regex_search</font>：试图匹配正则表达式到字符序列的任何部分
+<br> ● <font color=black size = 3>regex_replace</font>：以格式化的替换文本来替换正则表达式匹配的出现位置
+<br>
+<br><a name="bc5"><font color=green size = 5>5、迭代器</font></a>
+<br>迭代器用于遍历在序列中找到的匹配正则表达式的整个集合
+<br> ● <font color=black size = 3>regex_iterator</font>：在字符序列中通过所有正则表达式匹配迭代
+<br> ● <font color=black size = 3>regex_token_iterator</font>：通过在给定的字符串中所有正则表达式匹配中的指定子表达式，或通过不匹配的子串迭代
+<br>
+<br><a name="bc6"><font color=green size = 5>6、异常</font></a>
+<br> ● <font color=black size = 3>regex_error</font>：定义一个对象抛出的来自正则表达式库的异常
+<br>
+<br><a name="bc7"><font color=green size = 5>7、分组及其它概念</font></a>
+<br> ● <strong><font color=black size = 3>分组</font></strong>：用小括号来指定子表达式的重复次数，如：IP地址匹配表达式 (\d{1,3}.){3}\d{1,3}
+<br> ● <strong><font color=black size = 3>后向引用</font></strong>：使用小括号指定一个子表达式后，匹配这个子表达式的文本可以在表达式或其它程序中作进一步的处理，默认情况下，每个分组会自动拥有一个组号，规则是：以分组的左括号为标志，从左向右，第一个分组的组号为1，第二个为2，以此类推。后向引用用于重复搜索前面某个分组匹配的文本，如：\1代表分组1匹配的文本
+<br> ● <strong><font color=black size = 3>分组及捕获</font></strong>：
+<table border="4">
+<tr>
+<th>表达式</th>
+<th>意义</th>
+</tr>
+<tr>
+<td>(exp)</td>
+<td>匹配exp，并捕获文本到自动命名的组里</td>
+</tr>
+<tr>
+<td>(?exp)</td>
+<td>匹配exp，并捕获文本到名称为name的组里</td>
+</tr>
+<tr>
+<td>(?:exp)</td>
+<td>匹配exp，不捕获匹配的文本</td>
+</tr>
+<tr>
+<td>(?=exp)</td>
+<td>匹配exp前面的位置</td>
+</tr>
+<tr>
+<td>(?&lt;=exp)</td>
+<td>匹配exp后面的位置</td>
+</tr>
+<tr>
+<td>(?!exp)</td>
+<td>匹配后面跟的不是exp的位置</td>
+</tr>
+<tr>
+<td>(?&lt;!exp)</td>
+<td>匹配前面不是exp的位置</td>
+</tr>
+<tr>
+<td>(?#comment)</td>
+<td>这种类型的组不对正则表达式的处理产生任何影响，只是为了提供让人阅读注释</td>
+</tr>
+</table>
+ ● <strong><font color=black size = 3>贪婪与懒惰</font></strong>
+贪婪匹配：当正则表达式中包含能接受重复的量词(指定数量的代码，例如*,{5,12}等)时，通常的行为是匹配尽可能多的字符。考虑这个表达式：a.*b，它将会匹配最长的以a开始，以b结束的字符串。如果用它来搜索aabab的话，它会匹配整个字符串aabab。
+懒惰匹配：匹配尽可能少的字符。前面给出的量词都可以被转化为懒惰匹配模式，只要在它后面加上一个问号?。这样.?就意味着匹配任意数量的重复，但是在能使整个匹配成功的前提下使用最少的重复。如：a.?b匹配最短的，以a开始，以b结束的字符串。如果把它应用于aabab的话，它会匹配aab和ab。
+<table border="4">
+<tr>
+<th>表达式</th>
+<th>意义</th>
+</tr>
+<tr>
+<td><em>?</td>
+<td>重复任意次，但尽可能少重复</td>
+</tr>
+<tr>
+<td>+?</td>
+<td>重复1次或更多次，但尽可能少重复</td>
+</tr>
+<tr>
+<td>??</td>
+<td>重复0次或1次，但尽可能少重复</td>
+</tr>
+<tr>
+<td>{n,m}?</td>
+<td>重复n到m次，但尽可能少重复</td>
+</tr>
+<tr>
+<td>{n,}?</td>
+<td>重复n次以上，但尽可能少重复</td>
+</tr>
+</table>
+<br>
+<br><a name="bc8"><font color=green size = 5>8、使用示例</font></a>
+<br> 🎀 regex_match regex_search
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;iostream&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;regex&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;string&gt;<BR>
+</span><span style="color:#0000ff;">using</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">namespace</span><span style="color:#000000;">&nbsp;std;<BR>
+<BR>
+</span><span style="color:#0000ff;">auto</span><span style="color:#000000;">&nbsp;main()&nbsp;-&gt;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;"><BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;str{&nbsp;R</span><span style="color:#800000;">&quot;(\abcde&nbsp;Hello&nbsp;world!&nbsp;_123456\m\n)&quot;</span><span style="color:#000000;">&nbsp;};<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;regex&nbsp;re0(R</span><span style="color:#800000;">&quot;(^\\abcde\s(H|h)ello\s[a-z]{5}!\s\w[1-6]{6}\\.\\\S$)&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;regex&nbsp;re1(R</span><span style="color:#800000;">&quot;(Hello&nbsp;world!)&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;boolalpha&nbsp;&lt;&lt;&nbsp;regex_match(str,&nbsp;re0)&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;输出&nbsp;true<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;boolalpha&nbsp;&lt;&lt;&nbsp;regex_search(str,&nbsp;re1)&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;输出&nbsp;true<BR>
+</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}</span></div></td></tr></table></div>
+<br> 🎀 regex_replace
+<br>regex_replace要做两件事，首先是搜索匹配，然后将匹配到的字符按规则进行替换
+<div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47<br>48<br>49<br>50<br>51<br>52<br>53<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;iostream&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;regex&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;string&gt;<BR>
+</span><span style="color:#0000ff;">using</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">namespace</span><span style="color:#000000;">&nbsp;std;<BR>
+<BR>
+</span><span style="color:#0000ff;">auto</span><span style="color:#000000;">&nbsp;main()&nbsp;-&gt;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;"><BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;匹配所有的小写字母，替换为*<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;str{&nbsp;R</span><span style="color:#800000;">&quot;(\abcde&nbsp;Hello&nbsp;world!&nbsp;_123456\m\n)&quot;</span><span style="color:#000000;">&nbsp;};<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;str_replace{&nbsp;</span><span style="color:#800000;">&quot;*&quot;</span><span style="color:#000000;">&nbsp;};<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;regex&nbsp;rep(R</span><span style="color:#800000;">&quot;([a-z])&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;regex_replace(str,&nbsp;rep,&nbsp;str_replace)&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;输出&nbsp;\*****&nbsp;H****&nbsp;*****!&nbsp;_123456\*\*<BR>
+</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;\$&amp;表示匹配的字符,[\$&amp;]即替换为[匹配的字符]<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;str_replace&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;[$&amp;]&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;regex_replace(str,&nbsp;rep,&nbsp;str_replace)&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;输出只要有字母的地方加上[]括号括起来<BR>
+</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;$1&nbsp;$2&nbsp;$3$4表示正则表达式中对应的4个捕获组&nbsp;(子表达式)<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;匹配之后按要求显示4个捕获组内容<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;str&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;{0xff-0x11-0xab-0x21}&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;str_replace&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;$1&nbsp;$2&nbsp;$3$4&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;rep&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;\\{([a-z0-9]+)-([a-z0-9]+)-([a-z0-9]+)-([a-z0-9]+)\\}&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;()&nbsp;括起来的为子表达式，对应着对应的$n&nbsp;<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;regex_replace(str,&nbsp;rep,&nbsp;str_replace)&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;输出&nbsp;0xff&nbsp;0x11&nbsp;0xab0x21<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;str_replace&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;$1&nbsp;$3$4&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;rep&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;\\{([a-z0-9]+)-([a-z0-9]+)-([a-z0-9]+)-([a-z0-9]+)\\}&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;regex_replace(str,&nbsp;rep,&nbsp;str_replace)&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;输出&nbsp;0xff&nbsp;0xab0x21<BR>
+</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;str&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;{0xff-0x11-0xab-0x21}&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;rep&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;([a-z0-9]+)-([a-z0-9]+)-([a-z0-9]+)-([a-z0-9]+)&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;str_replace&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;$(反撇号)&quot;</span><span style="color:#000000;">;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;将匹配的内容替换成prefix<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;str_replace1&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;$'&quot;</span><span style="color:#000000;">;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;将匹配的内容替换成suffix<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;参数3为&quot;$(反撇号)&quot;，与正则表达式相匹配的子序列之前的字符序列<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;regex_replace(str,&nbsp;rep,&nbsp;str_replace)&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;输出&nbsp;{{}<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;//&nbsp;参数3为&quot;$'&quot;，与正则表达式相匹配的子序列之后的字符序列<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;regex_replace(str,&nbsp;rep,&nbsp;str_replace1)&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;输出&nbsp;{}}<BR>
+</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;修改默认的flag参数为format_no_copy,即不拷贝prefix和suffix<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;regex_replace(str,&nbsp;rep,&nbsp;str_replace,&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;regex_constants::format_no_copy)&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;输出&nbsp;{<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;regex_replace(str,&nbsp;rep,&nbsp;str_replace1,&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;regex_constants::format_no_copy)&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;输出&nbsp;}<BR>
+</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}</span></div></td></tr></table></div>
+<table border="4">
+<tr>
+<th>ECMAScript 扩展格式规则</th>
+<th>替换的字符</th>
+</tr>
+<tr>
+<td>$&amp;</td>
+<td>与整个正则表达式相匹配的字符序列</td>
+</tr>
+<tr>
+<td>$$</td>
+<td>直接替换$</td>
+</tr>
+<tr>
+<td>$`(反撇号)</td>
+<td>与正则表达式相匹配的子序列之前的字符序列</td>
+</tr>
+<tr>
+<td>$’(正撇号)</td>
+<td>与正则表达式相匹配的子序列之后的字符序列</td>
+</tr>
+<tr>
+<td>$n</td>
+<td>在 n(即0-9)位置与捕获组相匹配的字符序列</td>
+</tr>
+<tr>
+<td>$nn</td>
+<td>在 nn(即10-99)位置与捕获组相匹配的字符序列</td>
+</tr>
+</table>
+<br> 🎀 sregex_iterator
+<br>sregex_iterator按正则表达式循环匹配整个字符串,获取并存放所有匹配结果
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;iostream&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;regex&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;string&gt;<BR>
+</span><span style="color:#0000ff;">using</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">namespace</span><span style="color:#000000;">&nbsp;std;<BR>
+<BR>
+</span><span style="color:#0000ff;">auto</span><span style="color:#000000;">&nbsp;main()&nbsp;-&gt;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;"><BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;str&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;Quick&nbsp;brown&nbsp;fox.&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;regex&nbsp;rep&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;[^\\s]+&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;遍历整个字符串，匹配到空白时进入下一次匹配<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;匹配的结果存放在迭代器中<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">auto</span><span style="color:#000000;">&nbsp;wordIt&nbsp;=&nbsp;sregex_iterator(str.begin(),&nbsp;str.end(),&nbsp;rep);<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;计算迭代器中存放的正确匹配的数量<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;distance(wordIt,&nbsp;sregex_iterator())&nbsp;&lt;&lt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">&quot;&nbsp;words.&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;输出&nbsp;3&nbsp;words<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;进行遍历输出<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(;&nbsp;wordIt&nbsp;!=&nbsp;sregex_iterator();&nbsp;++wordIt)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;wordIt-&gt;str()&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;输出&nbsp;Quick\nbrown\nfox.<BR>
+</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;str&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;AB-12-AB&nbsp;AB-23-AC&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;(\\D{2})表示2个非数字,(\\d{2})表示2个数字，<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;(\\1)表示第1个捕获组即(\\D{2})的内容<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;rep&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;(\\D{2})-(\\d{2})-(\\1)&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;regex_iterator&lt;string::const_iterator&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin(str.begin(),&nbsp;str.end(),&nbsp;rep);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#0000ff;">auto</span><span style="color:#000000;">&nbsp;iter&nbsp;=&nbsp;begin;&nbsp;iter&nbsp;!=&nbsp;sregex_iterator();&nbsp;iter++)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;iter-&gt;str()&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;输出&nbsp;AB-12-AB<BR>
+</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}</span></div></td></tr></table></div>
+<br> 🎀 regex_token_iterator
+<br>按正则表达式循环匹配整个字符串,获取满足token要求的匹配结果并存放，相较于sregex_iterator提高了效率
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47<br>48<br>49<br>50<br>51<br>52<br>53<br>54<br>55<br>56<br>57<br>58<br>59<br>60<br>61<br>62<br>63<br>64<br>65<br>66<br>67<br>68<br>69<br>70<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;iostream&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;regex&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;string&gt;<BR>
+</span><span style="color:#0000ff;">using</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">namespace</span><span style="color:#000000;">&nbsp;std;<BR>
+<BR>
+</span><span style="color:#0000ff;">auto</span><span style="color:#000000;">&nbsp;main()&nbsp;-&gt;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;"><BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;str&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;Quick&nbsp;brown&nbsp;fox.&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;data{&nbsp;</span><span style="color:#800000;">&quot;&lt;person&gt;\n&quot;</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">&quot;&nbsp;&lt;first&gt;Nico&lt;/first&gt;\n&quot;</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">&quot;&nbsp;&lt;last&gt;Josuttis&lt;/last&gt;\n&quot;</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">&quot;&lt;/person&gt;\n&quot;</span><span style="color:#000000;">&nbsp;};<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;\\1指定第1个捕获组,即第1个子表达式<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;regex&nbsp;re(</span><span style="color:#800000;">&quot;&lt;(.\</em>)&gt;(.\*)&lt;/(\\1)&gt;&quot;</span><span style="color:#000000;">);<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;0是默认值，即完整的匹配结果，<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;1是匹配结果的第1个捕获组，<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;2是匹配结果的第2个捕获组(子表达式)<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;iterate&nbsp;over&nbsp;all&nbsp;matches&nbsp;(using&nbsp;a&nbsp;regex_token_iterator):<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;sregex_token_iterator&nbsp;pos(<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data.cbegin(),&nbsp;data.cend(),&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;sequence<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;re,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;token&nbsp;separator<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;0:full&nbsp;match,&nbsp;<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//1:First&nbsp;substring,&nbsp;2:second&nbsp;substring<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;sregex_token_iterator&nbsp;end;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(;&nbsp;pos&nbsp;!=&nbsp;end;&nbsp;++pos)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;pos-&gt;str()&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;输出<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;&lt;first&gt;Nico&lt;/first&gt;<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;&lt;last&gt;Josuttis&lt;/last&gt;<BR>
+</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;第4个参数支持数组<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;arrSubMatch[]&nbsp;=&nbsp;{&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;};<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;sregex_token_iterator&nbsp;pos2(<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data.cbegin(),&nbsp;data.cend(),&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;sequence<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;re,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;token&nbsp;separator<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;arrSubMatch);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;0:full&nbsp;match,&nbsp;1:First&nbsp;substring,&nbsp;2:second&nbsp;substring<BR>
+</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(;&nbsp;pos2&nbsp;!=&nbsp;end;&nbsp;++pos2)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;pos2-&gt;str()&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;输出<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;first<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;Nico<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;last<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;Josuttis<BR>
+</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;-1指定显示匹配的prefix,即前面不匹配的<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;names&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;nico,&nbsp;jim,&nbsp;helmut&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;regex&nbsp;sep(</span><span style="color:#800000;">&quot;[&nbsp;\t\n]\*[,;.][&nbsp;\t\n]\*&quot;</span><span style="color:#000000;">);&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;separated&nbsp;by&nbsp;,&nbsp;;&nbsp;or&nbsp;.&nbsp;and&nbsp;spaces<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;sregex_token_iterator&nbsp;iter(<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;names.cbegin(),&nbsp;names.cend(),&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;sequence<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sep,&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;separator<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-</span><span style="color:#ff0000;">1</span><span style="color:#000000;">);&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;-1:&nbsp;values&nbsp;between&nbsp;separators<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(;&nbsp;iter&nbsp;!=&nbsp;end;&nbsp;++iter)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;*iter&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;输出<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;nico<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;jim<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;helmut<BR>
+</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}</span></div></td></tr></table></div>
+<br> 🎀 regex_error
+<br>将正则表达式写错容易导致程序崩溃，则需要添加异常处理，防止程序崩溃
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;iostream&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;regex&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;string&gt;<BR>
+</span><span style="color:#0000ff;">using</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">namespace</span><span style="color:#000000;">&nbsp;std;<BR>
+<BR>
+</span><span style="color:#0000ff;">auto</span><span style="color:#000000;">&nbsp;main()&nbsp;-&gt;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;"><BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">try</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;regex&nbsp;re(</span><span style="color:#800000;">&quot;[a-b][a&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">catch</span><span style="color:#000000;">&nbsp;(</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;regex_error&nbsp;&amp;&nbsp;e)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;regex&nbsp;error&nbsp;caught:&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;e.what()&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(e.code()&nbsp;==&nbsp;regex_constants::error_brack)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;The&nbsp;code&nbsp;was&nbsp;error!\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}</span></div></td></tr></table></div></p>
+
+<p><br><br><br>
+<font color = gray size = 3>如有错误，欢迎指正！</font></p></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://oubc.github.io/tags/c/c&#43;&#43;/">C/C&#43;&#43;</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmg4aog3074074gnf.gif?tags=%5B%5D">I </a>
+	<a href="">love</a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmfm2eg306o06o74u.gif?tags=%5B%5D"> you </a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx4tpcj30fn0bq3zg.jpg?tags=%5B%5D">three </a>
+	<a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx64ctg307s07swfy.gif?tags=%5B%5D">thousand</a>
+    <a href="https://www.kugou.com/song/#hash=96426C78381DE98DC31A5846FC274CBF&album_id=646623"> times.</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>家庭、梦想、内心的平静</span>
+  </div>
+</footer>
+
+
+
+<script src="https://oubc.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://oubc.github.io/js/zozo.js"></script>
+<script src="https://oubc.github.io/js/highlight.pack.js"></script>
+<link  href="https://oubc.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://oubc.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>
