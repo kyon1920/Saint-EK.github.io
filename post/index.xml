@@ -6,10 +6,19 @@
     <description>Recent content in Posts on Love, or death</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Sun, 09 Feb 2020 16:06:47 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 11 Feb 2020 09:22:12 +0800</lastBuildDate>
     
 	<atom:link href="https://oubc.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Modern C&#43;&#43; 多线程 thread</title>
+      <link>https://oubc.github.io/post/modernc&#43;&#43;1/</link>
+      <pubDate>Tue, 11 Feb 2020 09:22:12 +0800</pubDate>
+      
+      <guid>https://oubc.github.io/post/modernc&#43;&#43;1/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>Modern C&#43;&#43; 正则表达式</title>

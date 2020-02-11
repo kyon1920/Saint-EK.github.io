@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Bruce Cheung"/>
+
+  
+  <meta name="description" content=""/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, simple, dream"/>
+  
+
+  
+  <link rel="canonical" href="https://oubc.github.io/post/modernc&#43;&#43;1/"/>
+
+  
+
+  <title>Modern C&#43;&#43; 多线程 thread &middot; Love, or death</title>
+
+  <link rel="shortcut icon" href="https://oubc.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/post/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://oubc.github.io/">
+          <span>Love, or death</span>
+          <img src="https://oubc.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">For you, a thousand times over.</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/oubc" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=uYGOjo6OiIuLivnIyJfa1tQ" title="mail" target="_blank"><i class="remixicon-mail-fill"></i></a>
+        
+        
+        
+        <a href="http://sighttp.qq.com/msgrd?v=1&amp;uin=877771223" title="qq" target="_blank"><i class="remixicon-qq-fill"></i></a>
+        
+        
+        
+        <a href="https://github.com/oubc/oubc.github.io/blob/master/images/wx.jpg?raw=true" title="wechat" target="_blank"><i class="remixicon-wechat-fill"></i></a>
+        
+        
+        
+        <a href="https://weibo.com/u/6993631995?topnav=1&amp;wvr=6&amp;topsug=1" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://oubc.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/post/modernc&#43;&#43;1/'>Modern C&#43;&#43; 多线程 thread</a></h2>
+          <span class="date">2020.02.11</span>
+        </div>
+        <div class="post_content markdown"><p><br>
+<br><font color=green size = 5>C++多线程 总述</font>
+<br>
+<br>C++中关于并发多线程部分主要包含了 &lt;thread&gt; &lt;mutex&gt; &lt;atomic&gt; &lt;condition_varible&gt; &lt;future&gt; 五个部分
+<br> ● &lt;thread&gt;：该头文件主要声明了 std::thread 类，另外 std::this_thread 命名空间也在该头文件中。
+<br> ● &lt;mutex&gt;：该头文件主要声明了与互斥量(mutex)相关的类，包括 std::mutex 系列类，std::lock_guard, std::unique_lock, 以及其他的类型和函数。
+<br> ● &lt;atomic&gt;：该头文主要声明了两个类, std::atomic 和 std::atomic_flag，另外还声明了一套 C 风格的原子类型和与 C 兼容的原子操作的函数。
+<br> ● &lt;condition_varible&gt;：该头文件主要声明了与条件变量相关的类，包括 std::condition_variable 和 std::condition_variable_any。
+<br> ● &lt;future&gt;：该头文件主要声明了 std::promise, std::package_task 两个 Provider 类，以及 std::future 和 std::shared_future 两个 Future 类，另外还有一些与之相关的类型和函数，std::async() 函数就声明在此头文件中。
+<br>
+<br><font color=green size = 5>C++新标准之多线程 thread</font>
+<br>
+<br>C++新标准提供了一套精练的线程库，小巧且易用。运行一个线程，可以直接创建一个std::thread的实例，线程在实例成功构造成时启动。若有底层平台支持，成员函数std::thread::native_handle()将可提供对原生线程对象运行平台特定的操作。
+<br>
+<br><font color=green size = 4>thread 成员变量</font>
+<br> 🎯 id：Thread ID (public member type)
+<br> 🎯 native_handle_type：Native handle type (public member type)
+<br> ● thread::id是线程调用get_id和this_thread::get_id的返回值；thread::id默认构造函数的结果是一个non-joinable的值；通常用来和其他线程 thread::get_id的结果做比较。
+<br> ● thread::native_handle_type本地句柄类型，如果库实现支持它，这个成员类型只存在于类线程中。是thread类成员函数thread::native_handle的返回值。
+<br>定义: typedef /* implementation-defined */ native_handle_type;
+<br>
+<br><font color=green size = 4>thread 成员函数</font>
+<table border = "4">
+<tr>
+<th>函数</th>
+<th>解释</th>
+</tr>
+<tr>
+<td>(constructor)</td>
+<td>Construct thread (public member function )</td>
+</tr>
+<tr>
+<td>(destructor)</td>
+<td>Thread destructor (public member function )</td>
+</tr>
+<tr>
+<td>operator=</td>
+<td>Move-assign thread (public member function )</td>
+</tr>
+<tr>
+<td>get_id</td>
+<td>Get thread ID (public member function )</td>
+</tr>
+<tr>
+<td>join</td>
+<td>Join thread (public member function )</td>
+</tr>
+<tr>
+<td>joinable</td>
+<td>Check if joinable (public member function )</td>
+</tr>
+<tr>
+<td>detach</td>
+<td>Detach thread (public member function )</td>
+</tr><tr>
+<td>swap</td>
+<td>Swap threads (public member function )</td>
+</tr>
+<tr>
+<td>native_handle</td>
+<td>Get native handle (public member function )</td>
+</tr>
+<tr>
+<td>hardware_concurrency</td>
+<td>Detect hardware concurrency (public static member function )</td>
+</tr>
+</table>
+<br>
+<br><font color=green size = 4>thread 使用及说明</font>
+<br> 🎯 构造函数(constructor)
+<br> default (1) thread() noexcept;
+<br> initialization(2) template &lt;class Fn, class... Args&gt;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;explicit thread (Fn&amp;&amp; fn, Args&amp;&amp;... args);
+<br>copy [deleted] (3) thread (const thread&amp;) = delete;
+<br>move (4) thread (thread&amp;&amp; x) noexcept;
+<br>(1) 默认构造函数：构造一个不表示任何执行线程的线程对象；
+<br>(2) 初始化构造函数 模板函数：构造一个线程对象，该对象表示一个新的可接合线程，新的执行线程调用fn传递args作为参数(使用其lvalue或rvalue引用的衰变副本)。此构造的完成开始同步调用fn副本；
+<br>(3) 拷贝构造：不允许拷贝构造
+<br>(4) 移动构造：构造线程获取x线程，这个操作不影响移动线程的执行，它只会传输它的处理程序，完成x后将不再表示一个线程。
+<br>
+<br> 🎯 析构函数(destructor)
+<br>std::thread::~thread 破坏了线程对象，如果在销毁时线程是可接合的，则调用终止()。
+<br>
+<br> 🎯 std::thread::operator=
+<br> move (1) thread&amp; operator= (thread&amp;&amp; rhs) noexcept；
+<br> copy [deleted] (2) thread&amp; operator= (const thread&amp;) = delete;
+<br>thread不允许拷贝；如果对象当前不是joinable的，它将获得由rhs(如果有的话)表示的执行线程。如果是joinable，则调用终止()。赋值“=”运算符通过右值表达式，复制后的thread对象不再是一个线程。
+<br>
+<br> 🎯 std::thread::get_id()
+<br>如果线程对象是joinable，函数将返回唯一标识线程的值
+<br>如果线程对象是非joinable，函数将返回成员类型线程的默认构造对象ID
+<br>
+<br> 🎯 std::thread::sleep_for() 或 std::thread::sleep_until()
+<br>线程内部暂停函数
+<br>sleep 500毫秒：std::this_thread::sleep_for(milliseconds(500));
+<br>sleep到指定事件点：std::this_thread::sleep_until(system_clock::now() + milliseconds(500));
+<br>
+<br> 🎯 std::thread::joinable()
+<br>返回线程对象是否可joinable
+<br>如果线程对象表示执行线程，则是可joinable
+<br>在这些情况下，一个线程对象是不可连接的
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如果是默认构造
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如果它已经被移动或者构造另一个线程对象，或者分配给它
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如果它的成员加入或分离被调用
+<br>
+<br> 🎯 std::thread::join()
+<br>join 函数在线程执行完成的时候返回
+<br>此函数在函数返回时与线程中所有操作的完成是同步的
+<br>调用join直到join被构造函数调用返回间，阻塞调用的线程
+<br>在调用此函数之后，线程对象变得不可连接，可以安全地销毁
+<br>
+<br> 🎯 std::thread::detach()
+<br>分离出调用线程对象所代表的线程，允许它们彼此独立地执行
+<br>这两个线程在任何方式上都不阻塞或同步
+<br>在调用此函数之后，线程对象变得不可连接，可以安全地销毁
+<br>注：detach以后就失去了对线程的所有权，不能再调用join了，当一个结束执行时，它的资源被释放
+<br>补充：判断线程是否还有对线程的所有权的一个简单方式是调用joinable函数，返回true则有，否则为无
+<br>
+<br> 🎯 std::thread::swap()
+<br>void swap (thread&amp; x) noexcept;  // 与X交换对象状态
+<br>
+<br> 🎯 std::thread::native_handle()
+<br>获取本地处理函数
+<br>如果库实现支持，这个成员函数只存在于类线程中
+<br>如果存在，它将返回用于访问与线程关联的特定于实现的信息的值
+<br>
+<br> 🎯 std::thread::hardware_concurrency()
+<br>static unsigned hardware_concurrency() noexcept; //函数定义
+<br>检测硬件并发，返回硬件线程上下文的数量
+<br>对这个值的解释是看具体的系统和实现，可能不是精确的，只是一个近似值
+<br>注：这并不需要匹配系统中可用的处理器或内核的实际数目:一个系统可以支持每个处理单元的多个线程，或者限制对程序的资源的访问，如果此值没有计算或被定义好，则函数返回0。
+<br>
+<br> 🎯 std::swap(thread)
+<br>std::swap 跟前面提到的成员函数有所不同，他不是成员函数
+<br>函数定义：void swap (thread&amp; x, thread&amp; y) noexcept;
+<br>交换线程对象x和y的状态；就像x.swap(y)被调用
+<br>
+<br> 📝 程序示例：
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47<br>48<br>49<br>50<br>51<br>52<br>53<br>54<br>55<br>56<br>57<br>58<br>59<br>60<br>61<br>62<br>63<br>64<br>65<br>66<br>67<br>68<br>69<br>70<br>71<br>72<br>73<br>74<br>75<br>76<br>77<br>78<br>79<br>80<br>81<br>82<br>83<br>84<br>85<br>86<br>87<br>88<br>89<br>90<br>91<br>92<br>93<br>94<br>95<br>96<br>97<br>98<br>99<br>100<br>101<br>102<br>103<br>104<br>105<br>106<br>107<br>108<br>109<br>110<br>111<br>112<br>113<br>114<br>115<br>116<br>117<br>118<br>119<br>120<br>121<br>122<br>123<br>124<br>125<br>126<br>127<br>128<br>129<br>130<br>131<br>132<br>133<br>134<br>135<br>136<br>137<br>138<br>139<br>140<br>141<br>142<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;iostream&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;vector&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;thread&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;atomic&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;chrono&gt;<BR>
+</span><span style="color:#0000ff;">using</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">namespace</span><span style="color:#000000;">&nbsp;std;<BR>
+<BR>
+atomic&lt;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&gt;&nbsp;global_counter(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">);<BR>
+<BR>
+thread::id&nbsp;main_thread_id&nbsp;=&nbsp;this_thread::get_id();<BR>
+<BR>
+</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;Greet<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;str{&nbsp;</span><span style="color:#800000;">&quot;Great&quot;</span><span style="color:#000000;">&nbsp;};<BR>
+</span><span style="color:#0000ff;">public</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;Say(string&nbsp;name)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;class&nbsp;Great&nbsp;is&nbsp;called&nbsp;&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;Hello&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;name&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+};<BR>
+<BR>
+</span><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;C:atomic&lt;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&gt;<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;C():atomic&lt;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&gt;(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">){}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;increase_member(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;n)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;n;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fetch_add(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+};<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;mythread()&nbsp;{}<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;foo(){&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;foo&nbsp;is&nbsp;called\n&quot;</span><span style="color:#000000;">;&nbsp;}<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;bar(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;x)&nbsp;{&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;bar&nbsp;is&nbsp;called\n&quot;</span><span style="color:#000000;">;&nbsp;}<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;increase_global(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;n)&nbsp;<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;n;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;++global_counter;<BR>
+}<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;increase_reference<BR>
+(atomic&lt;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&gt;&amp;&nbsp;variable,&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;n)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;n;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;++variable;<BR>
+}<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;pause_thread(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;n)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;this_thread::sleep_for(chrono::seconds(n));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;pause&nbsp;of&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;n&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;&nbsp;seconds&nbsp;ended\n&quot;</span><span style="color:#000000;">;<BR>
+}<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;is_main_thread()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(main_thread_id&nbsp;==&nbsp;this_thread::get_id())<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;This&nbsp;is&nbsp;the&nbsp;main&nbsp;thread.\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;This&nbsp;is&nbsp;not&nbsp;the&nbsp;main&nbsp;thread.\n&quot;</span><span style="color:#000000;">;<BR>
+}<BR>
+<BR>
+</span><span style="color:#0000ff;">auto</span><span style="color:#000000;">&nbsp;main()&nbsp;-&gt;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;"><BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;构造函数使用示例<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;Greet&nbsp;greet;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;thread&nbsp;first(foo);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;thread&nbsp;second(bar,&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;类成员函数作为线程入口<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;thread&nbsp;third(&amp;Greet::Say,&nbsp;&amp;greet,&nbsp;</span><span style="color:#800000;">&quot;greet&quot;</span><span style="color:#000000;">);<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;vector&lt;thread&gt;&nbsp;threads;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;increase&nbsp;global&nbsp;counter&nbsp;with&nbsp;10&nbsp;threads...\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;threads.push_back(thread(increase_global,&nbsp;</span><span style="color:#ff0000;">1000</span><span style="color:#000000;">));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;increase&nbsp;counter&nbsp;(ato)&nbsp;with&nbsp;10&nbsp;threads&quot;</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">&quot;&nbsp;using&nbsp;reference...\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;atomic&lt;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&gt;&nbsp;ato(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;threads.push_back(thread(increase_reference,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ref(ato),&nbsp;</span><span style="color:#ff0000;">1000</span><span style="color:#000000;">));<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;C&nbsp;cba;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;threads.push_back(thread(&amp;C::increase_member,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ref(cba),&nbsp;</span><span style="color:#ff0000;">1000</span><span style="color:#000000;">));<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;std::thread::operator=&nbsp;示例<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;thread&nbsp;threads1[</span><span style="color:#ff0000;">5</span><span style="color:#000000;">];<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">5</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;threads1[i]&nbsp;=&nbsp;thread(pause_thread,&nbsp;i&nbsp;+&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">);<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;std::thread::get_id()&nbsp;示例<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;thread&nbsp;th(is_main_thread);<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;std::thread::joinable()&nbsp;示例<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;thread&nbsp;th1(mythread);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;thread&nbsp;th2;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;Joinable&nbsp;after&nbsp;construction:\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;boolalpha&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;th1:&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;th1.joinable()&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;boolalpha&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;th2:&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;th2.joinable()&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(th1.joinable())&nbsp;th1.join();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(th2.joinable())&nbsp;th2.join();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;Joinable&nbsp;after&nbsp;joining:\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;boolalpha&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;th1:&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;th1.joinable()&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;boolalpha&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;th2:&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;th2.joinable()&nbsp;&lt;&lt;&nbsp;endl;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;std::thread::join<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;synchronizing&nbsp;all&nbsp;threads...\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;Done&nbsp;spawning&nbsp;threads.&nbsp;&quot;</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">&quot;Now&nbsp;waiting&nbsp;for&nbsp;them&nbsp;to&nbsp;join:\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;first.join();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;second.join();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;third.join();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#0000ff;">auto</span><span style="color:#000000;">&amp;&nbsp;th&nbsp;:&nbsp;threads)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;th.join();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">5</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;threads1[i].join();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;th.join();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;All&nbsp;threads&nbsp;joined!\n&quot;</span><span style="color:#000000;">;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;输出结果<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;global_counter:&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;global_counter&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;ato:&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;ato&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;cba:&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;cba&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;std::thread::detach()&nbsp;示例<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;Spawning&nbsp;and&nbsp;detaching&nbsp;3&nbsp;threads...\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;thread(pause_thread,&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">).detach();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;thread(pause_thread,&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">).detach();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;thread(pause_thread,&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">).detach();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;Done&nbsp;spawning&nbsp;threads.\n&quot;</span><span style="color:#000000;">;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;the&nbsp;main&nbsp;thread&nbsp;will&nbsp;now&nbsp;pause&nbsp;for&nbsp;5&nbsp;seconds\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;pause_thread(</span><span style="color:#ff0000;">5</span><span style="color:#000000;">);<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}</span></div></td></tr></table></div>
+<br> 🎞 输出
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;">increase&nbsp;global&nbsp;counter&nbsp;with&nbsp;<span style="color:#ff0000;">10</span><span style="color:#000000;">&nbsp;threads...<BR>
+increase&nbsp;counter&nbsp;(ato)&nbsp;with&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">&nbsp;threads&nbsp;</span><span style="color:#0000ff;">using</span><span style="color:#000000;">&nbsp;reference...<BR>
+Joinable&nbsp;after&nbsp;construction:<BR>
+th1:&nbsp;</span><span style="color:#0000ff;">true</span><span style="color:#000000;"><BR>
+th2:&nbsp;</span><span style="color:#0000ff;">false</span><span style="color:#000000;"><BR>
+foo&nbsp;is&nbsp;called<BR>
+</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;Great&nbsp;is&nbsp;called&nbsp;Hello&nbsp;greet<BR>
+bar&nbsp;is&nbsp;called<BR>
+This&nbsp;is&nbsp;</span><span style="color:#0000ff;">not</span><span style="color:#000000;">&nbsp;the&nbsp;main&nbsp;thread.<BR>
+Joinable&nbsp;after&nbsp;joining:<BR>
+th1:&nbsp;</span><span style="color:#0000ff;">false</span><span style="color:#000000;"><BR>
+th2:&nbsp;</span><span style="color:#0000ff;">false</span><span style="color:#000000;"><BR>
+synchronizing&nbsp;all&nbsp;threads...<BR>
+Done&nbsp;spawning&nbsp;threads.&nbsp;Now&nbsp;waiting&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;them&nbsp;to&nbsp;join:<BR>
+pause&nbsp;of&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;seconds&nbsp;ended<BR>
+pause&nbsp;of&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;seconds&nbsp;ended<BR>
+pause&nbsp;of&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">&nbsp;seconds&nbsp;ended<BR>
+pause&nbsp;of&nbsp;</span><span style="color:#ff0000;">4</span><span style="color:#000000;">&nbsp;seconds&nbsp;ended<BR>
+pause&nbsp;of&nbsp;</span><span style="color:#ff0000;">5</span><span style="color:#000000;">&nbsp;seconds&nbsp;ended<BR>
+All&nbsp;threads&nbsp;joined!<BR>
+global_counter:&nbsp;</span><span style="color:#ff0000;">10000</span><span style="color:#000000;"><BR>
+ato:&nbsp;</span><span style="color:#ff0000;">10000</span><span style="color:#000000;"><BR>
+cba:&nbsp;</span><span style="color:#ff0000;">10000</span><span style="color:#000000;"><BR>
+Spawning&nbsp;</span><span style="color:#0000ff;">and</span><span style="color:#000000;">&nbsp;detaching&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">&nbsp;threads...<BR>
+Done&nbsp;spawning&nbsp;threads.<BR>
+the&nbsp;main&nbsp;thread&nbsp;will&nbsp;now&nbsp;pause&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">5</span><span style="color:#000000;">&nbsp;seconds<BR>
+pause&nbsp;of&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">&nbsp;seconds&nbsp;ended<BR>
+pause&nbsp;of&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;seconds&nbsp;ended<BR>
+pause&nbsp;of&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">&nbsp;seconds&nbsp;ended<BR>
+pause&nbsp;of&nbsp;</span><span style="color:#ff0000;">5</span><span style="color:#000000;">&nbsp;seconds&nbsp;ended<BR>
+<BR>
+A:\C++\C++11\多线程\Debug\多线程.exe&nbsp;(进程&nbsp;</span><span style="color:#ff0000;">12072</span><span style="color:#000000;">)已退出，代&nbsp;码为&nbsp;0。</span></div></td></tr></table></div>
+<br><br><br>
+<font color = gray size = 3>如有错误，欢迎指正！</font></p></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://oubc.github.io/tags/c/c&#43;&#43;/">C/C&#43;&#43;</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmg4aog3074074gnf.gif?tags=%5B%5D">I </a>
+	<a href="">love</a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmfm2eg306o06o74u.gif?tags=%5B%5D"> you </a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx4tpcj30fn0bq3zg.jpg?tags=%5B%5D">three </a>
+	<a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx64ctg307s07swfy.gif?tags=%5B%5D">thousand</a>
+    <a href="https://www.kugou.com/song/#hash=96426C78381DE98DC31A5846FC274CBF&album_id=646623"> times.</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>家庭、梦想、内心的平静</span>
+  </div>
+</footer>
+
+
+
+<script src="https://oubc.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://oubc.github.io/js/zozo.js"></script>
+<script src="https://oubc.github.io/js/highlight.pack.js"></script>
+<link  href="https://oubc.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://oubc.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>
