@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Bruce Cheung"/>
+
+  
+  <meta name="description" content=""/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, simple, dream"/>
+  
+
+  
+  <link rel="canonical" href="https://oubc.github.io/post/modernc&#43;&#43;2/"/>
+
+  
+
+  <title>Modern C&#43;&#43; 多线程 mutex &middot; Love, or death</title>
+
+  <link rel="shortcut icon" href="https://oubc.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/post/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://oubc.github.io/">
+          <span>Love, or death</span>
+          <img src="https://oubc.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">For you, a thousand times over.</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/oubc" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=uYGOjo6OiIuLivnIyJfa1tQ" title="mail" target="_blank"><i class="remixicon-mail-fill"></i></a>
+        
+        
+        
+        <a href="http://sighttp.qq.com/msgrd?v=1&amp;uin=877771223" title="qq" target="_blank"><i class="remixicon-qq-fill"></i></a>
+        
+        
+        
+        <a href="https://github.com/oubc/oubc.github.io/blob/master/images/wx.jpg?raw=true" title="wechat" target="_blank"><i class="remixicon-wechat-fill"></i></a>
+        
+        
+        
+        <a href="https://weibo.com/u/6993631995?topnav=1&amp;wvr=6&amp;topsug=1" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://oubc.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/post/modernc&#43;&#43;2/'>Modern C&#43;&#43; 多线程 mutex</a></h2>
+          <span class="date">2020.02.12</span>
+        </div>
+        <div class="post_content markdown"><p><br>
+<br><font color=green size = 5>C++新标准之多线程 mutex互斥量</font>
+<br> ● mutex又称互斥量，用于提供对共享变量的互斥访问
+<br> ● C++新标准中mutex相关的类都在&lt;mutex&gt;头文件中
+<br>
+<br><font color=green size = 5>&lt;mutex&gt;</font>
+<br> ● &lt;mutex&gt;：该头文件主要声明了与互斥量(mutex)相关的类，包括 std::mutex 系列类，std::lock_guard, std::unique_lock, 以及其他的类型和函数。
+<br> ● 在C++新标准中，共四种互斥类:
+<table border="4">
+<tr>
+<th>序号</th>
+<th>名称</th>
+<th>意义</th>
+</tr>
+<tr>
+<td>1</td>
+<td>std::mutex</td>
+<td>最基本也是最常用的互斥类</td>
+</tr>
+<tr>
+<td>2</td>
+<td>std::recursive_mutex</td>
+<td>同一线程内可递归(重入)的互斥类</td>
+</tr>
+<tr>
+<td>3</td>
+<td>std::timed_mutex</td>
+<td>除具备mutex功能外，还提供了带时限请求锁定的能力</td>
+</tr>
+<tr>
+<td>4</td>
+<td>std::recursive_timed_mutex</td>
+<td>同一线程内可递归(重入)的timed_mutex</td>
+</tr>
+</table>
+ ● 与std::thread一样，mutex相关类不支持拷贝构造、不支持赋值。同时mutex类也不支持move语义(move构造、move赋值)，所以不用担心会误用这些操作。
+<br>
+<br><font color=blue size = 4>std::mutex</font>
+<br> ● (constructor)不允许拷贝；互斥对象不能被复制/移动，初始状态为未锁定。
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; default (1） constexpr mutex() noexcept;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; copy [deleted] (2) mutex (const mutex&amp;) = delete;
+<br>
+<br><font color=blue size = 4>lock</font>
+<br> ● 锁住互斥量。调用lock时有三种情况:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1.如果互斥量没有被锁住，则调用线程将该mutex锁住，直到调用线程调用unlock释放锁；
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2.如果mutex已被其它线程lock，则调用线程将被阻塞，直到其它线程unlock该mutex；
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 3.如果当前mutex已被调用者线程锁住，则std::mutex死锁，而recursive系列则成功返回。
+<br>
+<br><font color=blue size = 4>try_lock</font>
+<br> ● 尝试锁住mutex，调用该函数有三种情况：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1.如果互斥量没有被锁住，则调用线程将该mutex锁住(返回true)，直到调用线程调用unlock释放；
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2.如果mutex已被其它线程lock，则调用线程将失败，没有阻塞并返回false;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 3.如果当前mutex已被调用者线程锁住，则std::mutex死锁，而recursive系列则成功返回true。
+<br>
+<br><font color=blue size = 4>unlock</font>
+<br> ● 解锁mutex，释放mutex的所有权
+<br>注：对于recursive系列mutex，unlock次数需要与lock次数相同才可以完全解锁。
+<br>
+<br> 📝 程序示例：
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47<br>48<br>49<br>50<br>51<br>52<br>53<br>54<br>55<br>56<br>57<br>58<br>59<br>60<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;iostream&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;thread&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;mutex&gt;<BR>
+mutex&nbsp;mtx;<BR>
+mutex&nbsp;mtx1;<BR>
+</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;counter(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">);<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;print_thread_id(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;id)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;mtx.lock();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;thread&nbsp;#&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;id&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;mtx.unlock();<BR>
+}<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;print_thread1_id(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;id)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;mtx1.lock();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;thread&nbsp;#&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;id&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;mtx1.unlock();<BR>
+}<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;attempt_10k_increases()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">10000</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(mtx.try_lock())<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;++counter;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mtx.unlock();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+}<BR>
+<BR>
+</span><span style="color:#0000ff;">auto</span><span style="color:#000000;">&nbsp;main()&nbsp;-&gt;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;"><BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;lock&nbsp;unlock&nbsp;示例<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;thread&nbsp;threads[</span><span style="color:#ff0000;">10</span><span style="color:#000000;">];<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;thread&nbsp;th0(print_thread_id,&nbsp;</span><span style="color:#ff0000;">1000</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;thread&nbsp;th1(print_thread1_id,&nbsp;</span><span style="color:#ff0000;">2000</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;threads[i]&nbsp;=&nbsp;thread(print_thread_id,&nbsp;i&nbsp;+&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#0000ff;">auto</span><span style="color:#000000;">&amp;&nbsp;th&nbsp;:&nbsp;threads)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;th.join();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;th0.join();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;th1.join();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;输出&nbsp;thread&nbsp;#1&nbsp;~&nbsp;10，<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;若//&nbsp;mtx.unlock&nbsp;则只输出&nbsp;thread&nbsp;#1&nbsp;并产生了阻塞<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;若在线程函数中&nbsp;两次加锁&nbsp;则会产生死锁<BR>
+</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;try_lock&nbsp;unlock&nbsp;示例<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;threads[i]&nbsp;=&nbsp;thread(attempt_10k_increases);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#0000ff;">auto</span><span style="color:#000000;">&amp;&nbsp;th&nbsp;:&nbsp;threads)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;th.join();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;counter&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;&nbsp;successful&nbsp;increases&quot;</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">&quot;&nbsp;of&nbsp;the&nbsp;counter.\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;输出结果不确定，有可能为&nbsp;10000&nbsp;~&nbsp;100000<BR>
+</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}</span></div></td></tr></table></div>
+<br><font color=blue size = 4>native_handle</font>
+<br> ● 获取本地处理，如果库实现支持它，这个成员函数只存在于类互斥中；
+<br> ● 如果存在，它返回一个值，这个值用于访问特定于实现的信息相关联的对象。
+<br>
+<br><font color=blue size = 4>recursive_mutex</font>
+<br> ● 递归锁基本函数同上，只是std::recursive_mutex 允许同一个线程对互斥量多次上锁（即递归上锁），来获得对互斥量对象的多层所有权，std::recursive_mutex 释放互斥量时需要调用与该锁层次深度相同次数的 unlock()。
+<br>
+<br><font color=blue size = 4>timed_mutex</font>
+<br>timed_mutex锁比较mutex所多了两个成员函数try_lock_for 和 try_lock_until。
+<br> ● try_lock_for ：传入时间段，在时间范围内未获得所就阻塞住线程，如果在此期间其他线程释放了锁，则该线程可以获得对互斥量的锁，如果超时，则返回 false
+<br> ● try_lock_until ：同上，只是传入参数为一个未来的一个时间点。
+<br>
+<br><font color=blue size = 4>recursive_timed_mutex</font>
+<br> ● 递归的时间锁，允许同一个线程对互斥量多次上锁（即递归上锁）
+<br> 📝 程序示例：
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47<br>48<br>49<br>50<br>51<br>52<br>53<br>54<br>55<br>56<br>57<br>58<br>59<br>60<br>61<br>62<br>63<br>64<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;iostream&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;thread&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;chrono&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;mutex&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;ctime&gt;<BR>
+</span><span style="color:#0000ff;">using</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">namespace</span><span style="color:#000000;">&nbsp;std;<BR>
+<BR>
+timed_mutex&nbsp;mtx;<BR>
+timed_mutex&nbsp;cinderella;<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;fn()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">while</span><span style="color:#000000;">&nbsp;(!mtx.try_lock_for(chrono::milliseconds(</span><span style="color:#ff0000;">2</span><span style="color:#000000;">)))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;.&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;this_thread::sleep_for(chrono::milliseconds(</span><span style="color:#ff0000;">100</span><span style="color:#000000;">));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;*\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;mtx.unlock();<BR>
+}<BR>
+<BR>
+chrono::time_point&lt;chrono::system_clock&gt;&nbsp;midnight()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">using</span><span style="color:#000000;">&nbsp;chrono::system_clock;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;time_t&nbsp;tt&nbsp;=&nbsp;system_clock::to_time_t(system_clock::now());<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;std::tm*&nbsp;ptm&nbsp;=&nbsp;std::localtime(&amp;tt);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;++ptm-&gt;tm_mday;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;ptm-&gt;tm_hour&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;ptm-&gt;tm_min&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;ptm-&gt;tm_sec&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;system_clock::from_time_t(mktime(ptm));<BR>
+}<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;carriage()&nbsp;<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(cinderella.try_lock_until(midnight()))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;ride&nbsp;back&nbsp;home&nbsp;on&nbsp;carriage\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cinderella.unlock();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;carriage&nbsp;reverts&nbsp;to&nbsp;pumpkin\n&quot;</span><span style="color:#000000;">;<BR>
+}<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;ball()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cinderella.lock();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;call&nbsp;the&nbsp;ball()...\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cinderella.unlock();<BR>
+}<BR>
+<BR>
+</span><span style="color:#0000ff;">auto</span><span style="color:#000000;">&nbsp;main()&nbsp;-&gt;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;"><BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;thread&nbsp;th[</span><span style="color:#ff0000;">10</span><span style="color:#000000;">];<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;th[i]&nbsp;=&nbsp;thread(fn);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#0000ff;">auto</span><span style="color:#000000;">&amp;&nbsp;th&nbsp;:&nbsp;th)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;th.join();<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;thread&nbsp;th0(ball);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;thread&nbsp;th1(carriage);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;th0.join();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;th1.join();<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}</span></div></td></tr></table></div>
+<br>
+<br><font color=green size = 5>Locks 模板类</font>
+<table border="4">
+<tr>
+<th> 名称 </th>
+<th> 意义 </th>
+<th> 类型 </th>
+</tr>
+<tr>
+<td> lock_guard </td>
+<td> Lock guard(class template ) </td>
+<td> 模板类 </td>
+</tr>
+<tr>
+<td> unique_lock </td>
+<td> Unique lock (class template ) </td>
+<td> 模板类 </td>
+</tr>
+</table>
+<br><font color=blue size = 5>lock_guard</font>
+<br> ● 定义： template <class Mutex> class lock_guard;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;模板参数Mutex代表互斥量，可以是上一篇介绍的std::mutex, std::timed_mutex, std::recursive_mutex, std::recursive_timed_mutex中的任何一个，也可以是std::unique_lock(下面即将介绍)，这些都提供了lock和unlock的能力
+<br> ● 锁保护是一个通过将互斥对象保持锁定来管理互斥对象的对象；
+<br> ● 在构造上，互斥对象被调用线程锁定，并且在销毁时，互斥锁被解锁，它是最简单的锁，作为具有自动持续时间的对象特别有用，直到它的上下文结束，这样，它保证在抛出异常时，可以正确地锁定互斥对象；
+<br> ● 注：lock_guard对象不以任何方式管理互斥对象的生命周期，互斥对象的持续时间至少要延长到锁定它的lock_guard的销毁为止；
+<br> ● lock_guard仅用于上锁、解锁，不对mutex承担供任何生周期的管理，因此在使用的时候，请确保lock_guard管理的mutex一直有效；
+<br> ● 同其它mutex类一样，locak_guard不允许拷贝，即拷贝构造和赋值函数被声明为delete。
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lock_guard(lock_guard const&amp;) = delete;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lock_guard&amp; operator=(lock_guard const&amp;) = delete;
+<br> ● lock_guard的设计保证了即使程序在锁定期间发生了异常，也会安全的释放锁，不会发生死锁
+<br>
+<br><font color=purple size = 4>构造函数(constructor)</font>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;locking (1) explicit lock_guard (mutex_type&amp; m);
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adopting (2) lock_guard (mutex_type&amp; m, adopt_lock_t tag);
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;copy deleted lock_guard (const lock_guard&amp;) = delete;
+<br> (1) 锁定初始化：对象管理m，并通过调用m.lock()锁定它
+<br> (2) 采用初始化：对象管理m，它是当前已经被构造线程锁定的互斥对象
+<br> (3) 复制构造：删除 (lock_guard对象不能被复制/移动)
+<br>注：lock_guard的对象保持锁定并管理m (通过调用它的成员解锁) 来解锁它，当lock_guard的对象析构的时候，mtx将会被解锁。
+<br> 📝 程序示例：
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;iostream&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;mutex&gt;<BR>
+<BR>
+std::mutex&nbsp;mutex;<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;safe_thread()&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">try</span><span style="color:#000000;">&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;std::lock_guard&lt;std::mutex&gt;&nbsp;_guard(mutex);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">throw</span><span style="color:#000000;">&nbsp;std::logic_error(</span><span style="color:#800000;">&quot;logic&nbsp;error&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;</span><span style="color:#0000ff;">catch</span><span style="color:#000000;">&nbsp;(std::exception&nbsp;&amp;ex)&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;std::cerr&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;[caught]&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;ex.what()&nbsp;&lt;&lt;&nbsp;std::endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+}<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;main()&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;safe_thread();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;此处仍能上锁<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;mutex.lock();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;std::cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;OK,&nbsp;still&nbsp;locked&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;std::endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;mutex.unlock();<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}<BR>
+<BR>
+</span><span style="color:#008000;">//&nbsp;程序输出<BR>
+</span><span style="color:#000000;">[caught]&nbsp;logic&nbsp;error<BR>
+OK,&nbsp;still&nbsp;locked<BR>
+<BR>
+</span><span style="color:#008000;">//&nbsp;lock_guard的设计保证了即使程序在锁定期间发生了异常<BR>
+//&nbsp;也会安全的释放锁，不会发生死锁</span></div></td></tr></table></div>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;iostream&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;thread&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;chrono&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;mutex&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;ctime&gt;<BR>
+<BR>
+mutex&nbsp;mtx;<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;print_thread_id(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;id)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;mtx.lock();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;lock_guard&lt;mutex&gt;&nbsp;lck(mtx,&nbsp;adopt_lock);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;thread&nbsp;#&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;id&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;this_thread::sleep_for(chrono::milliseconds(</span><span style="color:#ff0000;">1000</span><span style="color:#000000;">));<BR>
+}<BR>
+<BR>
+</span><span style="color:#0000ff;">auto</span><span style="color:#000000;">&nbsp;main()&nbsp;-&gt;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;"><BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;thread&nbsp;threads[</span><span style="color:#ff0000;">10</span><span style="color:#000000;">];<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;threads[i]&nbsp;=&nbsp;thread(print_thread_id,&nbsp;i&nbsp;+&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#0000ff;">auto</span><span style="color:#000000;">&amp;&nbsp;th&nbsp;:&nbsp;threads)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;th.join();<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}<BR>
+<BR>
+</span><span style="color:#008000;">//&nbsp;输出&nbsp;程序每隔一秒钟打印一次&nbsp;threa#(id)</span></div></td></tr></table></div>
+<br><font color=blue size = 5>unique_lock</font>
+<br> ● 定义： template <class Mutex> class unique_lock;
+<br> ● lock_guard提供了简单上锁、解锁操作，但当我们需要更灵活的操作时便无能为力了，这时unique_lock便出场了；
+<br> ● unique_lock 对象以独占所有权的方式(官方叫做unique ownership)管理 mutex 对象的上锁和解锁操作；独占所有权，就是没有其他的 unique_lock 对象同时拥有某个 mutex 对象的所有权 (unique_lock拥有对Mutex的所有权，一但初始化了unique_lock，其就接管了该mutex，在unique_lock结束生命周期前(析构前)，其它地方就不要再直接使用该mutex了)；
+<br> ● unique_lock对象在析构的时候一定保证互斥量为解锁状态，因此它作为具有自动持续时间的对象特别有用，因为它保证在抛出异常时，互斥对象被正确地解锁；
+<br> ● 注：unique_lock对象并不以任何方式管理互斥对象的生命周期：互斥对象的持续时间将延长至少直到unique_lock管理它的毁灭。
+<br>
+<br><font color=purple size = 4>构造函数(constructor)</font>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">default</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;unique_lock()&nbsp;noexcept;<BR>
+locking&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(</span><span style="color:#ff0000;">2</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">explicit</span><span style="color:#000000;">&nbsp;unique_lock&nbsp;(mutex_type&nbsp;&amp;m);<BR>
+</span><span style="color:#0000ff;">try</span><span style="color:#000000;">&nbsp;-&nbsp;locking&nbsp;&nbsp;&nbsp;(</span><span style="color:#ff0000;">3</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;unique_lock&nbsp;(mutex_type&nbsp;&amp;m,&nbsp;try_to_lock_t&nbsp;tag);<BR>
+deferred&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(</span><span style="color:#ff0000;">4</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;unique_lock&nbsp;(mutex_type&nbsp;&amp;m,&nbsp;defer_lock_t&nbsp;tag)&nbsp;noexcept;<BR>
+adopting&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(</span><span style="color:#ff0000;">5</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;unique_lock&nbsp;(mutex_type&nbsp;&amp;m,&nbsp;adopt_lock_t&nbsp;tag);<BR>
+locking&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;(</span><span style="color:#ff0000;">6</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;Rep,&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;Period&gt;<BR>
+unique_lock&nbsp;(mutex_type&nbsp;&amp;m,&nbsp;</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;chrono::duration&lt;Rep,&nbsp;Period&gt;&nbsp;&amp;rel_time);<BR>
+locking&nbsp;until&nbsp;(</span><span style="color:#ff0000;">7</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;Clock,&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;Duration&gt;<BR>
+unique_lock&nbsp;(mutex_type&nbsp;&amp;m,&nbsp;</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;chrono::time_point&lt;Clock,&nbsp;Duration&gt;&nbsp;&amp;abs_time);<BR>
+copy&nbsp;[deleted]&nbsp;(</span><span style="color:#ff0000;">8</span><span style="color:#000000;">)&nbsp;&nbsp;unique_lock&nbsp;(</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;unique_lock&nbsp;&amp;)&nbsp;=&nbsp;</span><span style="color:#0000ff;">delete</span><span style="color:#000000;">;<BR>
+move&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(</span><span style="color:#ff0000;">9</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;unique_lock&nbsp;(unique_lock&nbsp;&amp;&amp;x);</span></div></td></tr></table></div>
+<br>(1) 默认构造函数：unique_lock 对象不管理任何 Mutex 对象m
+<br>
+<br>(2) locking初始化
+<br>unique_lock 对象管理Mutex对象m，并调用m.lock()对Mutex对象进行上锁，如果其它unique_lock()对象已经管理了m，该线程将会被阻塞
+<br>
+<br>(3) try-locking 初始化
+<br>unique_lock 对象管理Mutex对象m，并调用m.try_lock()对Mutex对象进行上锁，但如果上锁不成功，不会阻塞当前线程
+<br>
+<br>(4) deferred 初始化
+<br>unique_lock对象管理Mutex对象m并不锁住m，m是一个没有被当前线程锁住的Mutex
+对象
+<br>
+<br>(5) adopting 初始化
+<br>unique_lock 对象管理Mutex对象m，m应该是一个已经被当前线程锁住的Mutex对象 (当前unique_lock对象拥有对锁(lock)的所有权)
+<br>
+<br>(6) locking 一段时间 (duration)
+<br>新创建的unique_lock对象管理Mutex对象m，通过调用m.try_lock_for(rel_time)来锁住Mutex对象一段时间(rel_time)
+<br>
+<br>(7) locking 直到某个时间点 (time point)
+<br>新创建的unique_lock对象管理Mutex对象m，通过调用m.try_lock_until(abs_time)将在某个时间点(abs_time)之前锁住Mutex对象
+<br>
+<br>(8) 拷贝构造[被禁用]：unique_lock 对象不能被拷贝构造
+<br>
+<br>(9) 移动(move)构造
+<br>新创建的unique_lock对象获得了由x所管理的Mutex对象的所有权(包括当前Mutex的状态)
+<br>调用move构造之后，x 对象如同通过默认构造函数所创建的，就不再管理任何Mutex对象了
+<br>
+<br> 📝 程序示例：
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;thread&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;atomic&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;chrono&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;mutex&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;ctime&gt;<BR>
+</span><span style="color:#0000ff;">using</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">namespace</span><span style="color:#000000;">&nbsp;std;<BR>
+<BR>
+mutex&nbsp;foo,&nbsp;bar;<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;task_a()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;lock(foo,&nbsp;bar);&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;simultaneous&nbsp;lock&nbsp;(prevents&nbsp;deadlock)<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;unique_lock&lt;mutex&gt;&nbsp;lck1(foo,&nbsp;adopt_lock);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;unique_lock&lt;mutex&gt;&nbsp;lck2(bar,&nbsp;adopt_lock);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;task&nbsp;a\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;(unlocked&nbsp;automatically&nbsp;on&nbsp;destruction&nbsp;of&nbsp;lck1&nbsp;and&nbsp;lck2)<BR>
+</span><span style="color:#000000;">}<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;task_b()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;unique_lock&lt;mutex&gt;&nbsp;lck1,&nbsp;lck2;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;lck1&nbsp;=&nbsp;unique_lock&lt;mutex&gt;(bar,&nbsp;defer_lock);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;lck2&nbsp;=&nbsp;unique_lock&lt;mutex&gt;(foo,&nbsp;defer_lock);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;lock(lck1,&nbsp;lck2);&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;simultaneous&nbsp;lock&nbsp;(prevents&nbsp;deadlock)<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;task&nbsp;b\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;(unlocked&nbsp;automatically&nbsp;on&nbsp;destruction&nbsp;of&nbsp;lck1&nbsp;and&nbsp;lck2)<BR>
+</span><span style="color:#000000;">}<BR>
+<BR>
+</span><span style="color:#0000ff;">auto</span><span style="color:#000000;">&nbsp;main()&nbsp;-&gt;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;"><BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;thread&nbsp;th1(task_a);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;thread&nbsp;th2(task_b);<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;th1.join();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;th2.join();<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}<BR>
+<BR>
+</span><span style="color:#008000;">//&nbsp;初始化第二个参数见上面博文说明<BR>
+</span><span style="color:#000000;"><BR>
+</span><span style="color:#008000;">//&nbsp;程序输出<BR>
+</span><span style="color:#000000;">task_a<BR>
+task_b</span></div></td></tr></table></div>
+<br><font color=purple size = 4>其它成员函数</font>
+<table border="4">
+<tr>
+<th>Lock/Unlock</th>
+<th>加锁和解锁过程</th>
+<th>说明</th>
+</tr>
+<tr>
+<td>lock</td>
+<td>Lock mutex (public member function )</td>
+<td>调用被托管的互斥对象的成员锁</td>
+</tr>
+<tr>
+<td>try_lock</td>
+<td>Lock mutex if not locked (public ... )</td>
+<td>尝试上锁</td>
+</tr>
+<tr>
+<td>try_lock_for</td>
+<td>Try to lock mutex during time span (public ... )</td>
+<td>尝试在时间段上锁</td>
+</tr>
+<tr>
+<td>try_lock_until</td>
+<td>Try to lock mutex until time point (public ... )</td>
+<td>尝试在时间点到之前上锁</td>
+</tr>
+<tr>
+<td>unlock</td>
+<td>Unlock mutex (public ... )</td>
+<td>解锁</td>
+</tr>
+</table>
+<table border="4">
+<tr>
+<br>
+<th>Modifiers</th>
+<th>修改</th>
+<th>说明</th>
+</tr>
+<tr>
+<td>operator=</td>
+<td>Move-assign unique_lock (public member function )</td>
+<td>同move操作</td>
+</tr>
+<tr>
+<td>swap</td>
+<td>Swap unique locks (public member function )</td>
+<td>交换两个互斥对象</td>
+</tr>
+<tr>
+<td>release</td>
+<td>Release mutex (public member function )</td>
+<td>释放锁</td>
+</tr>
+</table>
+<br>
+<table border="4">
+<tr>
+<th>Observers</th>
+<th>获取操作</th>
+</tr>
+<tr>
+<td>owns_lock</td>
+<td>Owns lock (public member function )</td>
+</tr>
+<tr>
+<td>lock</td>
+<td>Return whether it owns a lock (public member function )</td>
+</tr>
+<tr>
+<td>mutex</td>
+<td>Get mutex (public member function )</td>
+</tr>
+</table>
+<br> (1) std::unique_lock::lock
+<br>锁定互斥对象，调用被托管的互斥对象的成员锁
+<br>对已经被其他线程锁定的互斥对象调用锁，阻塞当前线程(等待)，直到锁释放
+<br>当函数返回时，对象在互斥锁上拥有一个锁，如果调用锁定失败，抛出system_error异常
+<br>
+<br> (2) std::unique_lock::try_lock
+<br>如果互斥量没有锁定就锁定
+<br>调用try_lock管理mutex对象，并使用返回值设置拥有状态，如果拥有的状态在调用前为真或者如果对象目前管理没有互斥对象，函数抛出一个system_error异常
+<br>
+<br> (3) std::unique_lock::try_lock_for
+<br>定义：template &lt;class Rep, class Period&gt;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bool try_lock_for (const chrono::duration<Rep,Period>&amp; rel_time);
+<br>在时间范围span内锁定互斥锁
+<br>调用try_lock_for管理时间的mutex对象，并使用返回值设置拥有状态，如果在调用之前拥有状态已经真或者如果对象目前管理没有互斥对象，函数抛出一个system_error异常
+<br>
+<br> (4) std::unique_lock::try_lock_until
+<br>同上面unique_lock::try_lock_for描述，传入一个时间点而不是时间段
+<br>
+<br> (5) std::unique_lock::unlock
+<br>调用unlock对托管的mutex对象进行解锁，并将拥有的状态设置为false
+<br>如果调用之前拥有状态是错误，函数抛出一个system_error异常与operation_not_permitted错误条件
+<br>
+<br> (6) std::unique_lock::operator=
+<br>定义：move (1)    unique_lock&amp; operator= (unique_lock&amp;&amp; x) noexcept;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;copy [deleted] (2) unique_lock&amp; operator= (const unique_lock&amp;) = delete;
+<br>使用x的mutex对象替换掉当前对象的mutex，同时获取x的状态
+<br>替换掉的x将不再有mutex对象，如果对象在调用之前对其托管的mutex对象拥有一个锁，那么它的解锁成员在被替换之前就被调用了
+<br>unique_lock对象不能被复制
+<br>
+<br> (7) std::unique_lock::swap
+<br>与x交换内容，包括托管的互斥对象和它们当前拥有的状态
+<br>
+<br> (8) std::unique_lock::release
+<br>返回一个指向托管的互斥对象的指针，并释放对它的所有权
+<br>调用后unique_lock不再管理mutex对象(像默认构造一样)
+<br>注：该函数不会锁定或释放返回的互斥对象
+<br>
+<br> (9) std::unique_lock::owns_lock
+<br>返回unique_lock对象拥有的一个锁
+<br>unique_lock锁定一个mutex，在没有解锁或者释放unique_lock之前返回为真，其他情况返回为假
+<br>是unique_lock::operator bool的别名
+<br>
+<br> (10) std::unique_lock::operator bool
+<br>同上 std::unique_lock::owns_lock
+<br>
+<br> (11) std::unique_lock::mutex
+<br>返回一个指向托管的mutex对象的指针
+<br>unique_lock不释放互斥对象管理的所有权，如果它拥有一个互斥锁,它仍然是负责释放它在某一时刻(像当unique_lock被销毁的时候)
+<br>
+<br> 📝 编程示例：
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47<br>48<br>49<br>50<br>51<br>52<br>53<br>54<br>55<br>56<br>57<br>58<br>59<br>60<br>61<br>62<br>63<br>64<br>65<br>66<br>67<br>68<br>69<br>70<br>71<br>72<br>73<br>74<br>75<br>76<br>77<br>78<br>79<br>80<br>81<br>82<br>83<br>84<br>85<br>86<br>87<br>88<br>89<br>90<br>91<br>92<br>93<br>94<br>95<br>96<br>97<br>98<br>99<br>100<br>101<br>102<br>103<br>104<br>105<br>106<br>107<br>108<br>109<br>110<br>111<br>112<br>113<br>114<br>115<br>116<br>117<br>118<br>119<br>120<br>121<br>122<br>123<br>124<br>125<br>126<br>127<br>128<br>129<br>130<br>131<br>132<br>133<br>134<br>135<br>136<br>137<br>138<br>139<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;iostream&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;vector&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;thread&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;atomic&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;chrono&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;mutex&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;ctime&gt;<BR>
+</span><span style="color:#0000ff;">using</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">namespace</span><span style="color:#000000;">&nbsp;std;<BR>
+<BR>
+mutex&nbsp;mtx;<BR>
+timed_mutex&nbsp;tmtx;<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;count&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+<BR>
+</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;MyMutex&nbsp;:</span><span style="color:#0000ff;">public</span><span style="color:#000000;">&nbsp;mutex<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;_id;<BR>
+</span><span style="color:#0000ff;">public</span><span style="color:#000000;">:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;MyMutex(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;id)&nbsp;:_id(id){}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;id()&nbsp;{&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;_id;&nbsp;}<BR>
+};<BR>
+<BR>
+MyMutex&nbsp;mytx(</span><span style="color:#ff0000;">101</span><span style="color:#000000;">);<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;print_thread_id(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;id)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;unique_lock&lt;mutex&gt;&nbsp;lck(mtx,&nbsp;defer_lock);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;lck.lock();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;thread&nbsp;#&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;id&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;lck.unlock();<BR>
+}<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;print_star()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;unique_lock&lt;mutex&gt;&nbsp;lck(mtx,&nbsp;defer_lock);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(lck.try_lock())<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;*&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;x&quot;</span><span style="color:#000000;">;<BR>
+}<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;fireworks()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;unique_lock&lt;timed_mutex&gt;&nbsp;lck(tmtx,&nbsp;defer_lock);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">while</span><span style="color:#000000;">&nbsp;(!lck.try_lock_for(chrono::milliseconds(</span><span style="color:#ff0000;">200</span><span style="color:#000000;">)))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;-&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;this_thread::sleep_for(chrono::milliseconds(</span><span style="color:#ff0000;">1000</span><span style="color:#000000;">));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;*\n&quot;</span><span style="color:#000000;">;<BR>
+}<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;print_fifty(</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;c)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;unique_lock&lt;mutex&gt;&nbsp;lck;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;lck&nbsp;=&nbsp;unique_lock&lt;mutex&gt;(mtx);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">50</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;c;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\n&quot;</span><span style="color:#000000;">;<BR>
+}<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;print_count_and_unlock(mutex*&nbsp;p_mtx)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;count:&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;::count&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;p_mtx-&gt;unlock();<BR>
+}<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;task()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;unique_lock&lt;mutex&gt;&nbsp;lck(mtx);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;++::count;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;print_count_and_unlock(lck.release());<BR>
+}<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;print_star2()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;unique_lock&lt;mutex&gt;&nbsp;lck(mtx,&nbsp;try_to_lock);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(lck.owns_lock())<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;*&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;x&quot;</span><span style="color:#000000;">;<BR>
+}<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;print_ids(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;id)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;unique_lock&lt;MyMutex&gt;&nbsp;lck(mytx);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;thread&nbsp;#&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;id&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;&nbsp;lock&nbsp;mutex&nbsp;&quot;</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;&lt;&nbsp;lck.mutex()-&gt;id()&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\n&quot;</span><span style="color:#000000;">;<BR>
+}<BR>
+<BR>
+</span><span style="color:#0000ff;">auto</span><span style="color:#000000;">&nbsp;main()&nbsp;-&gt;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;"><BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;unique_lock::lock&nbsp;unique_lock::unlock&nbsp;示例<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;thread&nbsp;threads[</span><span style="color:#ff0000;">10</span><span style="color:#000000;">];<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;threads[i]&nbsp;=&nbsp;thread(print_thread_id,&nbsp;i&nbsp;+&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#0000ff;">auto</span><span style="color:#000000;">&amp;&nbsp;th&nbsp;:&nbsp;threads)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;th.join();<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;unique_lock::try_lock&nbsp;示例<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;vector&lt;thread&gt;&nbsp;ths;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">500</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ths.emplace_back(print_star);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#0000ff;">auto</span><span style="color:#000000;">&amp;&nbsp;th&nbsp;:&nbsp;ths)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;th.join();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\n&quot;</span><span style="color:#000000;">;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;unique_lock::try_lock_for&nbsp;示例<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;threads[i]&nbsp;=&nbsp;thread(fireworks);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#0000ff;">auto</span><span style="color:#000000;">&amp;&nbsp;th&nbsp;:&nbsp;threads)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;th.join();<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;unique_lock::operator=&nbsp;示例<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;thread&nbsp;th1(print_fifty,&nbsp;</span><span style="color:#800000;">'￥'</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;thread&nbsp;th2(print_fifty,&nbsp;</span><span style="color:#800000;">'$'</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;th1.join();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;th2.join();<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;unique_lock::release&nbsp;示例<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;vector&lt;std::thread&gt;&nbsp;thrds;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;thrds.emplace_back(task);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#0000ff;">auto</span><span style="color:#000000;">&amp;&nbsp;th&nbsp;:&nbsp;thrds)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;th.join();<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;unique_lock::owns_lock&nbsp;示例<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;vector&lt;std::thread&gt;&nbsp;threds;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">500</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;threds.emplace_back(print_star2);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#0000ff;">auto</span><span style="color:#000000;">&amp;&nbsp;th&nbsp;:&nbsp;threds)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;th.join();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;std::cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\n&quot;</span><span style="color:#000000;">;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;unique_lock::mutex&nbsp;示例<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;threads[i]&nbsp;=&nbsp;thread(print_ids,&nbsp;i&nbsp;+&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#0000ff;">auto</span><span style="color:#000000;">&amp;&nbsp;th&nbsp;:&nbsp;threads)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;th.join();<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}</span></div></td></tr></table></div>
+<br><font color = green size = 5>Other Types其他类型</font>
+<br>
+<br><font color = blue size = 4>once_flag</font>
+<br>此类型的对象用作call_once的参数
+<br>在不同的线程中使用相同的对象在不同的调用上调用call_once，如果同时调用，则会单个执行
+<br>它是一个不可复制的、不可移动的、可构造的类
+<br>struct once_flag {
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;constexpr once_flag() noexcept;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;once_flag (const once_flag&amp;) = delete;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;once_flag&amp; operator= (const once_flag&amp;) = delete;
+<br>};
+<br>
+<br><font color = blue size = 4>adopt_lock_t</font>
+<br>这是一个空的类，用作adopt_lock的使用的类型
+<br>向unique_lock或lock_guard的构造函数传递使用过的锁，使该对象不锁定互斥对象，并假设它已经被当前线程锁定
+<br>struct defer_lock_t {}; // 空类，只是作为adopt_lock类型
+<br>constexpr adopt_lock_t adopt_lock {};
+<br>定义adopt_lock 值用作对unique_lock或lock_guard的构造函数的可能参数
+<br>使用adopt_lock构造unique_lock对象不锁定构建中的互斥对象，只是假设它已经被当前线程锁定了；这个值是一个没有状态的编译时常量，只是用来消除构造函数签名之间的歧义
+<br>
+<br><font color = blue size = 4>defer_lock_t</font>
+<br>这是一个空类，用作延迟锁的类型
+<br>将延迟锁传递给unique_lock的构造函数，使它不会在构造上自动锁定互斥对象，初始化对象为不拥有锁
+<br>struct defer_lock_t {};
+<br>constexpr defer_lock_t defer_lock {};
+<br>定义defer_lock用于unique_lock的构造函数的可能的参数。使用延迟锁构造的unique_lock对象不将互斥对象自动锁定在构造上，并初始化它们不拥有锁。同上面的一样，这个值是一个没有状态的编译时常量，它只是用来消除构造函数签名之间的歧义
+<br>
+<br><font color = blue size = 4>try_to_lock_t</font>
+<br>try_to_lock_t是用于try_to_lock类型的空类
+<br>将try_to_lock传递给unique_lock的构造函数，使它通过调用它的try_lock成员来锁定互斥对象，代替lock
+<br>struct try_to_lock_t {};
+<br>constexpr try_to_lock_t try_to_lock {};
+<br>try_to_lock 用于unique_lock的构造函数的可能的参数，使用try_to_lock构造的unique_lock对象试图通过调用其try_lock成员而不是锁成员来锁定互斥对象
+<br>
+<br><font color = green size = 5>mutex中的函数</font>
+<table border="4">
+<tr>
+<th>函数名</th>
+<th>意义</th>
+<th></th>
+</tr>
+<tr>
+<td>try_lock</td>
+<td>Try to lock multiple mutexes (function template )</td>
+<td>试锁互斥量</td>
+</tr>
+<tr>
+<td>lock</td>
+<td>Lock multiple mutexes (function template )</td>
+<td>锁</td>
+</tr>
+<tr>
+<td>call_once</td>
+<td>Call function once (public member function )</td>
+<td>call_once</td>
+</tr>
+</table>
+<br><font color = blue size = 4>std::try_lock()</font>
+<br>std::try_lock是一个模版函数：
+<br>template &lt;class Mutex1, class Mutex2, class... Mutexes&gt;
+<br>int try_lock (Mutex1&amp; a, Mutex2&amp; b, Mutexes&amp;... cde);
+<br>使用try_lock成员函数(非阻塞)式的锁定对象a,b...等
+<br>函数为每个参数调用try_lock成员函数(首先是a，然后是b，最后是cde中的其他函数)，直到所有调用都是成功的，或者只要调用失败(返回false或抛出异常)
+<br>如果函数结束是因为调用失败，则对所有调用try_lock成功的对象调用解锁，函数将返回锁定失败的对象的参数序号。没有对参数列表中的其余对象执行其他调用
+<br> 📝 程序示例：
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;iostream&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;thread&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;mutex&gt;<BR>
+<BR>
+std::mutex&nbsp;foo,bar;<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;task_a&nbsp;()<BR>
+{<BR>
+&nbsp;&nbsp;foo.lock();<BR>
+&nbsp;&nbsp;std::cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;task&nbsp;a\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;bar.lock();<BR>
+&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;...<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;foo.unlock();<BR>
+&nbsp;&nbsp;bar.unlock();<BR>
+}<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;task_b&nbsp;()<BR>
+{<BR>
+&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;x&nbsp;=&nbsp;try_lock(bar,foo);<BR>
+&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(x==-</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;std::cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;task&nbsp;b\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;...<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;bar.unlock();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;foo.unlock();<BR>
+&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;">&nbsp;<BR>
+&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;std::cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;[task&nbsp;b&nbsp;failed:&nbsp;mutex&nbsp;&quot;</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;&lt;&nbsp;(x?</span><span style="color:#800000;">&quot;foo&quot;</span><span style="color:#000000;">:</span><span style="color:#800000;">&quot;bar&quot;</span><span style="color:#000000;">)&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;&nbsp;locked]\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;}<BR>
+}<BR>
+<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;main&nbsp;()<BR>
+{<BR>
+&nbsp;&nbsp;std::thread&nbsp;th1&nbsp;(task_a);<BR>
+&nbsp;&nbsp;std::thread&nbsp;th2&nbsp;(task_b);<BR>
+<BR>
+&nbsp;&nbsp;th1.join();<BR>
+&nbsp;&nbsp;th2.join();<BR>
+<BR>
+&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}</span></div></td></tr></table></div>
+<br><font color = blue size = 4>std::lock()</font>
+<br>std::lock同样为一个模版函数:
+<br>template &lt;class Mutex1, class Mutex2, class... Mutexes&gt;
+<br>void lock (Mutex1&amp; a, Mutex2&amp; b, Mutexes&amp;... cde);
+<br>锁定所有的参数互斥对象，阻塞当前调用线程
+<br>该函数使用一个未指定的调用序列来锁定对象，该序列调用其成员锁、try_lock和解锁，以确保所有参数都被锁定再返回(不产生任何死锁)
+<br>如果函数不能锁定所有对象(例如，因为其中一个内部调用抛出异常)，则函数首先解锁所有成功锁定的对象(如果有的话)
+<br> 📝 程序示例：
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;iostream&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;thread&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;mutex&gt;<BR>
+<BR>
+std::mutex&nbsp;foo,&nbsp;bar;<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;task_a&nbsp;()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;foo.lock();&nbsp;bar.lock();<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;replaced&nbsp;by:<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;std::lock&nbsp;(foo,&nbsp;bar);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;std::cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;task&nbsp;a\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;foo.unlock();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;bar.unlock();<BR>
+}<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;task_b&nbsp;()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;bar.lock();&nbsp;foo.lock();<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;replaced&nbsp;by:<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;std::lock&nbsp;(bar,&nbsp;foo);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;std::cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;task&nbsp;b\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;bar.unlock();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;foo.unlock();<BR>
+}<BR>
+<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;main&nbsp;()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;std::thread&nbsp;th1&nbsp;(task_a);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;std::thread&nbsp;th2&nbsp;(task_b);<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;th1.join();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;th2.join();<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}</span></div></td></tr></table></div>
+<br><font color = blue size = 4>std::call_once()</font>
+<br>std::call_once 公有模版函数：
+<br>template &lt;class Fn, class... Args&gt;
+<br>void call_once (once_flag&amp; flag, Fn&amp;&amp; fn, Args&amp;&amp;... args);
+<br>call_once调用将args 作为fn的参数调用fn，除非另一个线程已经(或正在执行)使用相同的flag调用执行call_once
+<br>如果已经有一个线程使用相同flag调用call_once，会使得当前变为被动执行，所谓被动执行不执行fn也不返回直到恢复执行后返回。这这个时间点上所有的并发调用这个函数相同的flag都是同步的
+<br>注：一旦一个活跃调用返回了,所有当前被动执行和未来可能的调用call_once相同相同的flag也还不会成为积极执行
+<br> 📝 程序示例：
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;iostream&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;thread&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;chrono&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;mutex&gt;<BR>
+<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;winner;<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;set_winner&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;x)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;winner&nbsp;=&nbsp;x;<BR>
+}<BR>
+std::once_flag&nbsp;winner_flag;<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;wait_1000ms&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;id)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;count&nbsp;to&nbsp;1000,&nbsp;waiting&nbsp;1ms&nbsp;between&nbsp;increments:<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">1000</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;std::this_thread::sleep_for<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(std::chrono::milliseconds(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;claim&nbsp;to&nbsp;be&nbsp;the&nbsp;winner<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(only&nbsp;the&nbsp;first&nbsp;such&nbsp;call&nbsp;is&nbsp;executed):<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;std::call_once&nbsp;(winner_flag,&nbsp;set_winner,&nbsp;id);<BR>
+}<BR>
+<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;main&nbsp;()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;std::thread&nbsp;threads[</span><span style="color:#ff0000;">10</span><span style="color:#000000;">];<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;spawn&nbsp;10&nbsp;threads:<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;threads[i]&nbsp;=&nbsp;std::thread(wait_1000ms,&nbsp;i&nbsp;+&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">);<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;std::cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;waiting&nbsp;for&nbsp;the&nbsp;first&nbsp;&quot;</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">&quot;among&nbsp;10&nbsp;threads&nbsp;to&nbsp;count&nbsp;1000&nbsp;&nbsp;&nbsp;ms...\n&quot;</span><span style="color:#000000;">;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#0000ff;">auto</span><span style="color:#000000;">&nbsp;&amp;th&nbsp;:&nbsp;threads)&nbsp;th.join();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;std::cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;winner&nbsp;thread:&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;winner&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">'\n'</span><span style="color:#000000;">;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}</span></div></td></tr></table></div>
+<br><br><br>
+<font color = gray size = 3>如有错误，欢迎指正！</font></p></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://oubc.github.io/tags/c/c&#43;&#43;/">C/C&#43;&#43;</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmg4aog3074074gnf.gif?tags=%5B%5D">I </a>
+	<a href="">love</a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmfm2eg306o06o74u.gif?tags=%5B%5D"> you </a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx4tpcj30fn0bq3zg.jpg?tags=%5B%5D">three </a>
+	<a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx64ctg307s07swfy.gif?tags=%5B%5D">thousand</a>
+    <a href="https://www.kugou.com/song/#hash=96426C78381DE98DC31A5846FC274CBF&album_id=646623"> times.</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>家庭、梦想、内心的平静</span>
+  </div>
+</footer>
+
+
+
+<script src="https://oubc.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://oubc.github.io/js/zozo.js"></script>
+<script src="https://oubc.github.io/js/highlight.pack.js"></script>
+<link  href="https://oubc.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://oubc.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>
