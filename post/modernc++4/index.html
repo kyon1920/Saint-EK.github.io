@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Bruce Cheung"/>
+
+  
+  <meta name="description" content=""/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, simple, dream"/>
+  
+
+  
+  <link rel="canonical" href="https://oubc.github.io/post/modernc&#43;&#43;4/"/>
+
+  
+
+  <title>Modern C&#43;&#43; 多线程 异步 &middot; Love, or death</title>
+
+  <link rel="shortcut icon" href="https://oubc.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/post/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://oubc.github.io/">
+          <span>Love, or death</span>
+          <img src="https://oubc.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">For you, a thousand times over.</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/oubc" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=uYGOjo6OiIuLivnIyJfa1tQ" title="mail" target="_blank"><i class="remixicon-mail-fill"></i></a>
+        
+        
+        
+        <a href="http://sighttp.qq.com/msgrd?v=1&amp;uin=877771223" title="qq" target="_blank"><i class="remixicon-qq-fill"></i></a>
+        
+        
+        
+        <a href="https://github.com/oubc/oubc.github.io/blob/master/images/wx.jpg?raw=true" title="wechat" target="_blank"><i class="remixicon-wechat-fill"></i></a>
+        
+        
+        
+        <a href="https://weibo.com/u/6993631995?topnav=1&amp;wvr=6&amp;topsug=1" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://oubc.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/post/modernc&#43;&#43;4/'>Modern C&#43;&#43; 多线程 异步</a></h2>
+          <span class="date">2020.02.14</span>
+        </div>
+        <div class="post_content markdown"><p><br>
+<br><font color=green size = 5>C++新标准之多线程 异步操作</font>
+<br>
+<br><font color = gray size = 3>目录</font><font color = gray size = 2> (点击跳转)</font>
+<br><a href="#bc0"><font color=yellow size = 4>&lt;future&gt;头文件描述及结构</font></a>
+<br><a href="#bc1"><font color=blue size = 4>class promise</font></a>
+<br><a href="#bc2"><font color=pink size = 4>class packaged_task</font></a>
+<br><a href="#bc3"><font color=purple size = 4>class future</font></a>
+<br><a href="#bc4"><font color=cyan size = 4>class shared_future</font></a>
+<br><a href="#bc5"><font color=yellow size = 4>other types</font></a>
+<br><a href="#bc6"><font color=blue size = 4>&lt;future&gt; function</font></a>
+<br>
+<br>
+<br>本文将介绍C++11的另一大特性：异步运行(std::async)。async顾名思义是将一个函数A移至另一线程中去运行，A可以是静态函数、全局函数，甚至类成员函数，在异步运行的过程中，如果A需要向调用者输出结果怎么办呢？std::async完美解决了这一问题。在了解async的解决之道前，我们需要一些知识储备，那就是：std::promise、std::packaged_task和std::future。
+<br>
+<br><a name="bc0"><font color=green size = 5>&lt;future&gt;头文件描述及结构</font></a>
+<br> ● &lt;future&gt;头文件功能允许对特定提供者设置的值进行异步访问，可能在不同的线程中；
+<br> ● 这些提供程序(要么是promise 对象，要么是packaged_task对象，或者是对异步的调用async)与future对象共享共享状态：提供者使共享状态就绪的点与future对象访问共享状态的点同步。
+<br>&lt;future&gt; 头文件结构：
+<br>
+<table border="2">
+<tr>
+<th>类型</th>
+<th>类</th>
+<th>描述</th>
+</tr>
+<tr>
+<th>Providers</th>
+<td>promise<br>packaged_task</td>
+<td>为异步检索存储一个值(类模板)<br>打包一个函数，用于存储异步检索的返回值(类模板)</td>
+</tr>
+<tr>
+<th>Futures</th>
+<td>future<br>shared_future</td>
+<td>等待一个异步设置的值(类模板)<br>等待一个异步设置的值(可能被其它future所引用)(类模板)</td>
+</tr>
+<tr>
+<th>Other types</th>
+<td>future_error<br>future_errc<br>future_status<br>launch</td>
+<td>报告与future或promises有关的错误(类)<br>识别future的错误代码(枚举)<br>用于定时的操作的返回值(枚举)<br>指定std::async的启动策略(枚举)</td>
+</tr>
+</table>
+<br>
+<table border="2">
+<tr>
+<th>类型</th>
+<th>函数</th>
+<th>描述</th>
+</tr>
+<tr>
+<th>Provider</th>
+<td>async</td>
+<td>异步地运行一个函数(可能在一个新线程中)并返回一个保持结果的std::future(函数模板)</td>
+</tr>
+<tr>
+<th>Other types</th>
+<td>future_category</td>
+<td>识别future的错误类别(函数)</td>
+</tr>
+</table>
+<br><font color=green size = 5>&lt;future&gt; Providers</font>
+<br>
+<br><a name="bc1"><font color=blue size = 5>std::promise</font></a>
+<br> 🎨 定义：
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;T&gt;&nbsp;&nbsp;promise;&nbsp;&nbsp;&nbsp;<BR>
+</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;R&amp;&gt;&nbsp;promise&lt;R&amp;&gt;;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;specialization:&nbsp;T&nbsp;is&nbsp;a&nbsp;reference&nbsp;type&nbsp;(R&amp;)<BR>
+</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;promise&lt;</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&gt;;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;specialization:&nbsp;T&nbsp;is&nbsp;void</span></div></td></tr></table></div>
+ ● promise是一个存储由一个(可能是另一个线程)future对象检索的类型T的值的对象，可以提供一个同步点；
+<br> ● 在构造上，promise对象与一个新的共享状态相关联，它们可以存储类型T的值或从std::exception中派生的异常；
+<br> ● 这个共享状态可以通过调用成员get_future关联到一个future对象，调用后，两个对象共享相同的共享状态：
+<br> 1.promise对象是异步提供程序，它将为共享状态设置一个值
+<br> 2.future对象是一个异步返回对象，它可以检索共享状态的值，等待它在必要时就绪
+<br> ● 共享状态的生命周期至少持续到最后一个对象释放它或被销毁。因此，它可以使promise对象存活下来，如果把它与future对象联系在一起的话，它就能在第一个地方得到它；
+<br> ● 两个promise的特化定义在&lt;future&gt;头文件中，它们以与非专门化模板相同的方式操作，除非参数是set_value和set_value_thread_exit成员函数；
+<br> ● std::promise允许move语义(右值构造，右值赋值)，但不允许拷贝(拷贝构造、赋值)，std::future亦然；
+<br> ● std::promise和std::future合作共同实现了多线程间通信。
+<br>
+<br> 📝 编程示例：
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;iostream&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;functional&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;mutex&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;thread&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;future&gt;<BR>
+</span><span style="color:#0000ff;">using</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">namespace</span><span style="color:#000000;">&nbsp;std;<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;print_int(future&lt;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&gt;&amp;&nbsp;fut)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;x&nbsp;=&nbsp;fut.get();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;value:&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;x&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\n&quot;</span><span style="color:#000000;">;<BR>
+}<BR>
+<BR>
+</span><span style="color:#0000ff;">auto</span><span style="color:#000000;">&nbsp;main()&nbsp;-&gt;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;"><BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;promise&lt;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&gt;&nbsp;prom;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;future&lt;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&gt;&nbsp;fut&nbsp;=&nbsp;prom.get_future();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;thread&nbsp;th1(print_int,&nbsp;ref(fut));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;ref&nbsp;用于包装按引用传递的值，cref&nbsp;用于包装按const传递的值<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;this_thread::sleep_for(chrono::milliseconds(5000));<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;prom.set_value(</span><span style="color:#ff0000;">10</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;th1.join();<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}<BR>
+</span><span style="color:#008000;">//&nbsp;输出：value:&nbsp;10</span></div></td></tr></table></div>
+ ●  与std::promise关联的std::future是通过std::promise::get_future获取到的，自己构造出来的无效；
+<br> ●  一个std::promise实例只能与一个std::future关联共享状态，当在同一个std::promise上反复调用get_future会抛出future_error异常
+<br> ● 共享状态：在std::promise构造时，std::promise对象会与共享状态关联起来，这个共享状态可以存储一个T类型的值或者一个由std::exception派生出来的异常值，通过std::promise::get_future调用获得的std::future与std::promise共享相同的共享状态
+<br> ● 如果promise直到销毁时，都未设置过任何值，则promise会在析构时自动设置为std::future_error，这会造成std::future.get抛出std::future_error异常
+<br> ● 通过std::promise::set_exception函数可以设置自定义异常，该异常最终会被传递到std::future，并在其get函数中被抛出
+<br>std::promise虽然支持自定义异常，但它并不直接接受异常对象：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;void set_exception(std::exception_ptr p);
+<br> 自定义异常可以通过位于头文件exception下的std::make_exception_ptr函数转化为std::exception_ptr
+<br>
+<br><font color=blue size = 5>Member functions</font>
+<br>
+<br><font color=purple size = 4>(constructor)构造函数</font>
+<br> 🎨 定义：
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">default</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)&nbsp;&nbsp;promise();<BR>
+with&nbsp;allocator&nbsp;(</span><span style="color:#ff0000;">2</span><span style="color:#000000;">)&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;Alloc&gt;&nbsp;promise&nbsp;(allocator_arg_t&nbsp;aa,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;Alloc&nbsp;&amp;alloc);<BR>
+copy&nbsp;[deleted]&nbsp;(</span><span style="color:#ff0000;">3</span><span style="color:#000000;">)&nbsp;&nbsp;promise&nbsp;(</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;promise&nbsp;&amp;)&nbsp;=&nbsp;</span><span style="color:#0000ff;">delete</span><span style="color:#000000;">;<BR>
+move&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(</span><span style="color:#ff0000;">4</span><span style="color:#000000;">)&nbsp;&nbsp;promise&nbsp;(promise&nbsp;&amp;&amp;x)&nbsp;noexcept;</span></div></td></tr></table></div>
+(1)默认构造函数
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;对象被初始化，以访问一个新的空共享状态
+<br>(2)构造器和分配器
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;与(1)相同，但是使用alloc为共享状态分配内存
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;aa： std::allocator_arg价值。这个常量值只是用于显式地选择这个构造函数重载
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;alloc：分配器对象。容器保存并使用这个分配器的内部副本，并使用它为共享状态分配存储
+<br>(3)拷贝构造函数 (删除)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;promise对象不能被复制
+<br>(4)移动构造函数
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;构造的对象获得x的共享状态(如果有的话)。x是没有共享状态的，同一类型的另一个promise对象(具有相同的模板参数T)
+<br>(5)std::promise<void>是合法的，此时std::promise.set_value不接受任何参数，仅用于通知关联的std::future.get()解除阻塞
+<br> ● 函数执行异常情况：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;强保证：在抛出异常时没有任何效果
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;根据库的实现，成员函数可能会在某些条件(例如bad_alloc)上抛出异常(例如在没有分配内存的情况下)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;移动构造函数(4)从不抛出异常(无抛出保证)
+<br>
+<br><font color=purple size = 4>(destructor)析构函数</font>
+<br> ● 析构promise
+<br> ● 放弃共享状态，并破坏promise对象
+<br>注：
+<br> ● 如果其它future对象与相同的共享状态相关联，共享状态本身不会被破坏，直到所有这些对象也释放它；
+<br> ● 如果对象在它的共享状态通过显式设置值或引用之前被销毁，那么共享状态将自动为包含future_error类型的异常做好准备(有故障时的错误条件)。
+<br>
+<br><font color=purple size = 4>std::promise::operator=</font>
+<br> 🎨 定义：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;move (1) promise&amp; operator= (promise&amp;&amp; rhs) noexcept;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;copy [deleted] (2) promise&amp; operator= (const promise&amp;) = delete;
+<br> ● Move-assign承诺：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如果有共享状态，获得rhs的共享状态
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;调用之前的对象相关联的共享状态
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rhs：没有共享状态：任何影响其共享状态的操作都将抛出future_error和no_status错误条件
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;promise对象不能拷贝
+<br>
+<br><font color=purple size = 4>std::promise::get_future</font>
+<br> ● 定义：future<T> get_future();
+<br> ● 得到future对象
+<br> ● 返回关联着共享状态的future对象
+<br> ● 返回的future对象可以通过promise对象在准备就绪时访问共享状态的值或异常
+<br> ● 每个promise共享状态只能检索到一个future对象
+<br> ● 在调用此函数之后，预期将在某个点通过设置值或异常使其共享状态就绪，否则它将自动为销毁所准备就绪，包含了future_error类型的异常
+<br>
+<br><font color=purple size = 4>std::promise::set_value</font>
+<br> 🎨 定义：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;generic template(1) void set_value (const T&amp; val);
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;void set_value (T&amp;&amp; val);
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;specializations(2) void promise<R&>::set_value (R&amp; val); //when T is a reference type(R&amp;)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;void promise<void>::set_value (void); //when T is void
+<br> ● 存储val作为共享状态的值，它已经准备好了
+<br> ● 如果一个与相同共享状态相关联的future对象正在等待对future的调用::get，它将打开并返回val
+<br> ● void专门化的成员只是使共享状态就绪，没有设置任何值
+<br>
+<br><font color=purple size = 4>std::promise::set_exception</font>
+<br> 🎨 定义：void set_exception (exception_ptr p);
+<br> ● 设置异常
+<br> ● 使准备状态的共享状态中存储异常指针p
+<br> ● 如果与同一共享状态相关联的future对象在当前正在等待future::get，它将抛出异常对象
+<br> ● 此成员函数会在以下条件下抛出异常，根据库的实现，也可能会在其它情况下抛出异常
+<table border="2">
+<tr>
+<th>异常类型</th>
+<th>错误条件</th>
+<th>描述</th>
+</tr>
+<tr>
+<td>future_error</td>
+<td>future_errc::no_state</td>
+<td>对象没有共享状态(已被移动)</td>
+</tr>
+<tr>
+<td>future_error</td>
+<td>future_errc::promise_already_satisfied</td>
+<td>在共享状态已经具有存储的值或异常</td>
+</tr>
+</table>
+<br><font color=purple size = 4>std::promise::set_value_at_thread_exit</font>
+<br> 🎨 定义：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;generic template (1) void set_value_at_thread_exit (const T&amp; val);
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;void set_value_at_thread_exit (T&amp;&amp; val);
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;specializations (2) void promise<R&>::set_value_at_thread_exit (R&amp; val);
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// when T is a reference type (R&amp;)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;void promise<void>::set_value_at_thread_exit (void); // when T is void
+<br> ● 当线程退出时设置值
+<br> ● 存储val作为共享状态的值，而不立即准备。相反，它将在线程退出时自动完成，因为所有线程存储时间的对象都被销毁了
+<br> ● 如果与同一共享状态相关联的future对象在当前正在等待调用future，它会一直阻塞，直到线程结束，一旦线程结束，它将打开并返回val
+<br>注：
+<br> ● 调用此函数已经设置了共享状态的值，并且任何尝试在此调用和线程末尾修改此值的调用都将抛出future_error与promise_already_satisfied作为错误条件
+<br> ● 此成员函数在以下条件抛出异常：
+<table border="2">
+<tr>
+<th>异常类型</th>
+<th>错误条件</th>
+<th>描述</th>
+</tr>
+<tr>
+<td>future_error</td>
+<td>future_errc::no_state</td>
+<td>对象没有共享状态(已被移动)</td>
+</tr>
+<tr>
+<td>future_error</td>
+<td>future_errc::promise_already_satisfied</td>
+<td>在共享状态已经具有存储的值或异常</td>
+</tr>
+</table>
+<br><font color=purple size = 4>std::promise::set_value_at_thread_exit</font>
+<br> 🎨 定义：void set_exception_at_thread_exit (exception_ptr p);
+<br> ● 在线程退出时设置异常
+<br> ● 在共享状态中存储异常指针，而不立即准备。相反，它将在线程退出时自动完成，因为所有线程存储时间的对象都被销毁了
+<br> ● 如果与同一共享状态相关联的future对象正在等待调用future:get，它会一直阻塞，直到线程结束。一旦线程结束，它就会抛出异常对象p
+<br>注：
+<br> ● 调用这个函数已经在共享状态中设置了一个值，并且在这个调用和线程结束之间修改这个值的任何调用都会将抛出future_error与promise_already_satisfied错误条件
+<br> ● 此成员函数在以下条件下抛出异常：
+<table border="2">
+<tr>
+<th>异常类型</th>
+<th>错误条件</th>
+<th>描述</th>
+</tr>
+<tr>
+<td>future_error</td>
+<td>future_errc::no_state</td>
+<td>对象没有共享状态(已被移动)</td>
+</tr>
+<tr>
+<td>future_error</td>
+<td>future_errc::promise_already_satisfied</td>
+<td>在共享状态已经具有存储的值或异常</td>
+</tr>
+</table>
+<br><font color=purple size = 4>std::promise::swap</font>
+<br> 🎨 定义：void swap (promise&amp; x) noexcept;
+<br> ● 与x交换共享状态
+<br>
+<br> 📝 程序示例
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47<br>48<br>49<br>50<br>51<br>52<br>53<br>54<br>55<br>56<br>57<br>58<br>59<br>60<br>61<br>62<br>63<br>64<br>65<br>66<br>67<br>68<br>69<br>70<br>71<br>72<br>73<br>74<br>75<br>76<br>77<br>78<br>79<br>80<br>81<br>82<br>83<br>84<br>85<br>86<br>87<br>88<br>89<br>90<br>91<br>92<br>93<br>94<br>95<br>96<br>97<br>98<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;iostream&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;functional&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;chrono&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;mutex&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;thread&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;future&gt;<BR>
+</span><span style="color:#0000ff;">using</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">namespace</span><span style="color:#000000;">&nbsp;std;<BR>
+<BR>
+promise&lt;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&gt;&nbsp;prom;<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;print_string(future&lt;string&gt;&amp;&nbsp;fut)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;str&nbsp;=&nbsp;fut.get();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;string&nbsp;value:&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;str&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\n&quot;</span><span style="color:#000000;">;<BR>
+}<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;print_global_promise()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;future&lt;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&gt;&nbsp;fut&nbsp;=&nbsp;prom.get_future();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;x&nbsp;=&nbsp;fut.get();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;global_promise&nbsp;value:&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;x&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\n&quot;</span><span style="color:#000000;">;<BR>
+}<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;get_int(promise&lt;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&gt;&amp;&nbsp;proi)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;x;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;Please,&nbsp;enter&nbsp;an&nbsp;integer&nbsp;value:&nbsp;&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cin.exceptions(ios::failbit);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">try</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cin&nbsp;&gt;&gt;&nbsp;x;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;proi.set_value(x);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">catch</span><span style="color:#000000;">(exception&amp;)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;proi.set_exception(current_exception());<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+}<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;print_int(future&lt;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&gt;&amp;&nbsp;fut)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">try</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;x&nbsp;=&nbsp;fut.get();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;integer&nbsp;value:&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;x&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">catch</span><span style="color:#000000;">&nbsp;(exception&nbsp;&amp;&nbsp;e)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;[exception&nbsp;caught:&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;e.what()&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;]\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+}<BR>
+<BR>
+</span><span style="color:#0000ff;">auto</span><span style="color:#000000;">&nbsp;main()&nbsp;-&gt;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;"><BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;构造函数(2)示例<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;promise&lt;string&gt;&nbsp;foo;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;promise&lt;string&gt;&nbsp;bar&nbsp;=&nbsp;promise&lt;string&gt;(allocator_arg,&nbsp;allocator&lt;string&gt;());<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;future&lt;string&gt;&nbsp;fut&nbsp;=&nbsp;bar.get_future();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;thread&nbsp;th0(print_string,&nbsp;ref(fut));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;this_thread::sleep_for(chrono::seconds(1));<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;bar.set_value(</span><span style="color:#800000;">&quot;Hello&nbsp;thread!&quot;</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;th0.join();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;输出：string&nbsp;value:&nbsp;Hello&nbsp;thread!<BR>
+</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;promise::operator=/get_future()/set_value()&nbsp;示例<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;thread&nbsp;th1(print_global_promise);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;prom.set_value(</span><span style="color:#ff0000;">10</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;th1.join();<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;prom&nbsp;=&nbsp;promise&lt;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&gt;();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;thread&nbsp;th2(print_global_promise);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;prom.set_value(</span><span style="color:#ff0000;">20</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;th2.join();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;输出：global_promise&nbsp;value:&nbsp;10\n&nbsp;global_promise&nbsp;value&nbsp;:&nbsp;20<BR>
+</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;promise::set_exception&nbsp;示例<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;promise&lt;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&gt;&nbsp;proi;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;future&lt;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&gt;&nbsp;fur&nbsp;=&nbsp;proi.get_future();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;thread&nbsp;th3(print_int,&nbsp;ref(fur));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;thread&nbsp;th4(get_int,&nbsp;ref(proi));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;th3.join();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;th4.join();<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//promise::set_value_at_thread_exit&nbsp;示例<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;promise&lt;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&gt;&nbsp;p;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;future&lt;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&gt;&nbsp;f&nbsp;=&nbsp;p.get_future();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;thread([&amp;p]<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this_thread::sleep_for(chrono::seconds(</span><span style="color:#ff0000;">2</span><span style="color:#000000;">));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p.set_value_at_thread_exit(</span><span style="color:#ff0000;">9</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}).detach();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;Waiting&nbsp;...&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;flush;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;f.wait();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;Done!\nResult&nbsp;is:&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;f.get()&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;结果&nbsp;f.get()&nbsp;为&nbsp;9<BR>
+</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}</span></div></td></tr></table></div>
+<br><font color=blue size = 5>Non-member function overloads</font>
+<br>
+<br><font color=purple size = 4>std::swap(promise)</font>
+<br> 🎨 定义：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;template <class T>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;void swap (promise<T>&amp; x, promise<T>&amp; y) noexcept;
+<br> ● 交换x和y之间的共享状态，类似于重载的交换，就像x.swap(y)
+<br>
+<br><font color=blue size = 5>Non-member class specializations</font>
+<br>
+<br><font color=purple size = 4>std::uses_allocator<promise></font>
+<br> 🎨 定义：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;template <class T, class Alloc>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;struct uses_allocator<promise<T>,Alloc&gt;;
+<br> ● 为保证使用分配器uses_allocator的这种特性专门化通知promise对象可以用配置器构建，即使类没有任何allocator_type成员。它在&lt; future &gt;中定义，与相同的行为如下：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;template <class T, class Alloc>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;struct uses_allocator<promise<T>,Alloc&gt; : true_type {};
+<br>&nbsp;&nbsp;&nbsp;std::uses_allocator定义如下：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;template <class T, class Alloc> struct uses_allocator;
+<br> ● Uses allocator： integral_constant ← uses_allocator
+<br> ● 识别T是否接受来自Alloc的分配器可转换的特性类
+<br> ● 它从 integral_constant继承为true_type或false_type，这取决于T是否接受这样的分配器
+<br> ● 不填写这一要求但仍然使用分配器的类将专门化该模板，以从true_type派生出：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;构造函数的最后一个参数有类型Alloc
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;构造函数的第一个参数有类型allocator_arg_t，第二个参数有类型Alloc
+<br>
+<br> 📝 程序示例：
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;iostream&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;memory&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;vector&gt;<BR>
+<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;main()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">typedef</span><span style="color:#000000;">&nbsp;std::vector&lt;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&gt;&nbsp;Container;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">typedef</span><span style="color:#000000;">&nbsp;std::allocator&lt;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&gt;&nbsp;Allocator;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(std::uses_allocator&lt;Container,&nbsp;Allocator&gt;::value)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Allocator&nbsp;alloc;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Container&nbsp;foo&nbsp;(</span><span style="color:#ff0000;">5</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">,&nbsp;alloc);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#0000ff;">auto</span><span style="color:#000000;">&nbsp;x&nbsp;:&nbsp;foo)&nbsp;std::cout&nbsp;&lt;&lt;&nbsp;x&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">'&nbsp;'</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;std::cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">'\n'</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}</span></div></td></tr></table></div>
+<br><a name="bc2"><font color=green size = 5>packaged_task</font></a>
+<br> ● std::packaged_task位于头文件#include&lt;future&gt;中，是一个模板类
+<br> ● spackaged_task封装可调用的元素，并允许异步检索其结果
+<br> ● 它类似于std::function，但是将其结果自动传输到一个future对象
+<br> ● 对象包含两个元素：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.一个存储的任务，它是一些可调用的对象(例如函数指针、指向成员或函数对象的指针)，其调用签名将在Args中进行类型的传参，返回一个类型为Ret的值
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2.一个共享状态，它可以存储调用任务(类型为Ret)的结果，并通过未来异步访问
+<br> ● 共享状态可以通过调用成员get_future关联到一个future对象。调用后，两个对象共享相同的共享状态：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.packaged_task对象是异步提供程序，并期望通过调用存储任务在某个点上设置共享状态
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2.future对象是一个异步返回对象，可以检索共享状态的值，等待它在必要时就绪
+<br> ● 共享状态的生命周期至少持续到最后一个对象释放它或被销毁。因此，它可以在packaged_task对象中生存，该对象在与将来相关联的情况下，首先获得它
+<br> ● 判断一个std::packaged_task是否可使用，可通过其成员函数valid来判断
+<br>
+<br><font color=blue size = 5>Member functions</font>
+<br>
+<br><font color=purple size = 4>(constructor)构造函数</font>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">default</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)&nbsp;packaged_task()&nbsp;noexcept;<BR>
+initialization&nbsp;(</span><span style="color:#ff0000;">2</span><span style="color:#000000;">)&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;Fn&gt;<BR>
+</span><span style="color:#0000ff;">explicit</span><span style="color:#000000;">&nbsp;packaged_task&nbsp;(Fn&nbsp;&amp;&amp;fn);<BR>
+with&nbsp;allocator&nbsp;(</span><span style="color:#ff0000;">3</span><span style="color:#000000;">)&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;Fn,&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;Alloc&gt;<BR>
+</span><span style="color:#0000ff;">explicit</span><span style="color:#000000;">&nbsp;packaged_task&nbsp;(allocator_arg_t&nbsp;aa,&nbsp;</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;Alloc&nbsp;&amp;alloc,&nbsp;Fn&nbsp;&amp;&amp;fn);<BR>
+copy&nbsp;[deleted]&nbsp;(</span><span style="color:#ff0000;">4</span><span style="color:#000000;">)&nbsp;packaged_task&nbsp;(packaged_task&nbsp;&amp;)&nbsp;=&nbsp;</span><span style="color:#0000ff;">delete</span><span style="color:#000000;">;<BR>
+move&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(</span><span style="color:#ff0000;">5</span><span style="color:#000000;">)&nbsp;packaged_task&nbsp;(packaged_task&nbsp;&amp;&amp;x)&nbsp;noexcept;</span></div></td></tr></table></div>
+<br>(1)默认构造函数
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;对象被初始化，没有共享状态，也没有存储任务
+<br>(2)初始化构造函数
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;对象被初始化，它的存储任务初始化为fn
+<br>(3)带有分配器的初始化构造函数
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;与(2)相同，但是使用alloc为内部数据结构分配内存
+<br>(4)拷贝构造函数(删除)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;无法复制packaged_task对象(删除了拷贝构造函数)
+<br>(5)构造函数
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;构造的对象获得x的共享状态，并且它的存储任务被移动，此后，x是没有共享状态的
+<br>(6)参数：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.fn：一个可调用的指针，指向函数、指向成员的指针或任何形式的可构造函数对象(一个类定义操作符的对象，包括闭包和函数对象，这个函数的返回类型和参数应该与packaged_task的模板参数(Ret和Args)相对应，存储任务被设置为fn(内部初始化为std::forword<fn>(fn)))
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2.aa：std::allocator_arg，这个常量值只是用于显式地选择这个构造函数重载
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3.alloc：容器中保存并使用这个分配器的内部副本，并使用它为内部数据结构分配存储
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.x：同一类型的另一个packaged_task对象，具有相同的模板参数、Ret和Args
+<br>
+<br><font color=purple size = 4>(destructor)析构函数</font>
+<br> ● 放弃共享状态(如果有的话)并销毁packaged_task对象
+<br>注：
+<br> ● 如果其他(future)对象与相同的共享状态相关联，共享状态本身不会被破坏(直到所有这些对象也释放它)
+<br> ● 如果对象在已经准备好(通过调用存储任务)之前被销毁，那么共享状态就会自动被准备好，包含一个future_error类型的异常(有一个破碎的promise错误条件)
+<br>
+<br><font color=purple size = 4>std::packaged_task::operator=</font>
+<br> 🎨 定义：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;move (1) packaged_task&amp; operator= (packaged_task&amp;&amp; rhs) noexcept;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;copy [deleted] (2) packaged_task&amp; operator= (const packaged_task&amp;) = delete;
+<br> ● 获得rhs的共享状态和存储任务
+<br> ● 在调用(如果有的话)之前，转移对象关联的共享状态(如果有的话)(就像packaged_task被销毁一样)
+<br> ● rhs没有共享状态，任何访问其共享状态的操作都将抛出future_error和no_state错误条件
+<br>
+<br><font color=purple size = 4>std::packaged_task::valid</font>
+<br> 🎨 定义：bool valid() const noexcept;
+<br> ● 检查是否存在有效的共享状态
+<br> ● 返回packaged_task当前是否与共享状态相关联
+<br> ● 对于默认构造的packaged_task对象，此函数将返回false(除非被分配或与有效的packaged_task交换)
+<br>
+<br><font color=purple size = 4>std::packaged_task::get_future</font>
+<br> 🎨 定义：future<Ret> get_future();
+<br> ● 返回与对象的共享状态相关联的future对象
+<br> ● 一旦调用了它的存储任务，返回可以通过packaged_task访问共享状态下的值或异常的future对象
+<br> ● 每个promise共享状态只能检索到一个future对象
+<br> ● 调用此函数之后，packaged_task将在某个点(通过调用它的存储任务)设置共享状态，它会自动在销毁前而准备就绪，包含一个future_error类型的异常(一个promise错误条件)
+<br>
+<br><font color=purple size = 4>std::packaged_task::operator()</font>
+<br> 🎨 定义：void operator()(Args... args);
+<br> ● 调用存储任务，将Args作为其参数转发
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如果对存储任务的调用成功完成，它返回的值(如果有的话)存储在共享状态中
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如果对存储任务的调用抛出异常，则捕获异常并存储在共享状态中
+<br> ● 在这两种情况下，共享状态都已准备好(这将解除当前等待它的任何线程)
+<br> ● 可以通过调用get()来访问共享状态，该对象将通过之前调用成员get_future返回的对象进行访问
+<br> ● 存储任务通常在构造上指定，调用的效果取决于它的类型：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如果存储任务是一个函数指针或函数对象，则调用它将参数转发给调用
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如果存储任务是一个指向非静态成员函数的指针，它被称为使用第一个参数作为对象的成员(这可以是一个对象,引用,或者一个指针)，和其余参数转发为成员函数作为参数
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如果它是指向非静态数据成员的指针，则应该用一个参数调用它，并且在共享状态中存储的函数将引用其参数的成员(参数可能是对象、引用或指向它的指针)
+<br> ● 此成员函数在以下条件下抛出异常：
+<table border="2">
+<tr>
+<th>异常类型</th>
+<th>错误条件</th>
+<th>描述</th>
+</tr>
+<td>future_error</td>
+<td>future_errc::no_state</td>
+<td>对象没有共享状态(默认构造的packaged_task)</td>
+<tr>
+</tr>
+<tr>
+<td>future_error</td>
+<td>future_errc::promise_already_satisfied</td>
+<td>存储的任务已被调用</td>
+</tr>
+</table>
+<br><font color=purple size = 4>std::packaged_task::make_ready_at_thread_exit</font>
+<br> 🎨 定义：void make_ready_at_thread_exit (args... args);
+<br> ● 调用存储任务并在线程退出时准备就绪
+<br> ● 调用存储任务，将args作为其参数转发，就像调用它的operate()成员一样，但是在线程退出时使共享状态就绪，而不是在调用完成时立即执行
+<br> ● 如果与同一共享状态相关联的future对象正在等待调用future:get，它会一直阻塞，直到线程结束。一旦线程结束，对未来的调用::获取unblock和返回或抛出异常
+<br>注：
+<br> ● 调用此函数已经设置了共享状态的值，并且任何尝试在此调用和线程末尾修改此值的调用，都会将future_error与promise_already_satisfied作为错误条件
+<br> ● 函数异常情况同上
+<br>
+<br><font color=purple size = 4>std::packaged_task::reset</font>
+<br> ● 在保留相同的存储任务时，重新设置具有新共享状态的对象，这样就可以再次调用存储的任务
+<br> ● 在调用(如果有的话)存储任务之前，与对象关联的共享状态(如果有的话)(就像packaged_task被销毁一样)
+<br> ● 在内部，该函数的行为就好像是对新构造的packaged_task(以及它的存储任务)进行了分配
+<br>
+<br><font color=purple size = 4>std::packaged_task::swap</font>
+<br> 🎨 定义：void swap (packaged_task&amp; x) noexcept;
+<br> ● 与x交换共享状态和存储任务
+<br>
+<br> 📝 程序示例：
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47<br>48<br>49<br>50<br>51<br>52<br>53<br>54<br>55<br>56<br>57<br>58<br>59<br>60<br>61<br>62<br>63<br>64<br>65<br>66<br>67<br>68<br>69<br>70<br>71<br>72<br>73<br>74<br>75<br>76<br>77<br>78<br>79<br>80<br>81<br>82<br>83<br>84<br>85<br>86<br>87<br>88<br>89<br>90<br>91<br>92<br>93<br>94<br>95<br>96<br>97<br>98<br>99<br>100<br>101<br>102<br>103<br>104<br>105<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;iostream&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;utility&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;chrono&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;mutex&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;thread&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;future&gt;<BR>
+</span><span style="color:#0000ff;">using</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">namespace</span><span style="color:#000000;">&nbsp;std;<BR>
+<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;countdown(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;from,&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;to)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;from;&nbsp;i&nbsp;!=&nbsp;to;&nbsp;--i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;i&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this_thread::sleep_for(chrono::milliseconds(</span><span style="color:#ff0000;">10</span><span style="color:#000000;">));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;Lift&nbsp;off!\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;from&nbsp;-&nbsp;to;<BR>
+}<BR>
+<BR>
+future&lt;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&gt;&nbsp;launcher(packaged_task&lt;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">)&gt;&amp;&nbsp;tsk,&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;arg)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(tsk.valid())<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;future&lt;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&gt;&nbsp;ret&nbsp;=&nbsp;tsk.get_future();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;thread(move(tsk),&nbsp;arg).detach();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;ret;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;not&nbsp;valid.\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;future&lt;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&gt;();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+}<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;worker(future&lt;</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&gt;&amp;&nbsp;output)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;packaged_task&lt;</span><span style="color:#8000ff;">void</span><span style="color:#000000;">(</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&amp;)&gt;&nbsp;my_task{&nbsp;[](</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&amp;&nbsp;done)&nbsp;{&nbsp;done&nbsp;=&nbsp;</span><span style="color:#0000ff;">true</span><span style="color:#000000;">;&nbsp;}&nbsp;};<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">auto</span><span style="color:#000000;">&nbsp;result&nbsp;=&nbsp;my_task.get_future();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&nbsp;done&nbsp;=&nbsp;</span><span style="color:#0000ff;">false</span><span style="color:#000000;">;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;execute&nbsp;task&nbsp;right&nbsp;away<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;my_task.make_ready_at_thread_exit(done);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;worker:&nbsp;done&nbsp;=&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;boolalpha&nbsp;&lt;&lt;&nbsp;done&nbsp;&lt;&lt;&nbsp;endl;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">auto</span><span style="color:#000000;">&nbsp;status&nbsp;=&nbsp;result.wait_for(chrono::seconds(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(status&nbsp;==&nbsp;future_status::timeout)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;worker:&nbsp;result&nbsp;is&nbsp;not&nbsp;ready&nbsp;yet&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;endl;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;output&nbsp;=&nbsp;move(result);<BR>
+}<BR>
+<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;triple(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;x)&nbsp;{&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;x&nbsp;*&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">;&nbsp;}<BR>
+<BR>
+</span><span style="color:#0000ff;">auto</span><span style="color:#000000;">&nbsp;main()&nbsp;-&gt;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;"><BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;packaged_task&lt;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">,&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">)&gt;&nbsp;tsk(countdown);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;future&lt;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&gt;&nbsp;ret&nbsp;=&nbsp;tsk.get_future();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;thread&nbsp;th0(move(tsk),&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;value&nbsp;=&nbsp;ret.get();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;The&nbsp;countdown&nbsp;lasted&nbsp;for&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;value&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;&nbsp;seconds.\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;th0.join();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;输出：10~1&nbsp;The&nbsp;countdown&nbsp;...&nbsp;10&nbsp;seconds.<BR>
+</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;构造函数&nbsp;示例<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;packaged_task&lt;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">)&gt;&nbsp;foo;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;packaged_task&lt;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">)&gt;&nbsp;bar([](</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;x)&nbsp;{</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;x&nbsp;*&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">;&nbsp;});<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;foo&nbsp;=&nbsp;move(bar);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;future&lt;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&gt;&nbsp;rret&nbsp;=&nbsp;foo.get_future();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;future&lt;int&gt;&nbsp;rrret&nbsp;=&nbsp;bar.get_future();<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;会抛出错误，因为bar无状态和存储对象，已经被foo接管<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;thread(move(foo),&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">).detach();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;value&nbsp;=&nbsp;rret.get();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;The&nbsp;double&nbsp;of&nbsp;10&nbsp;is&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;value&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;.\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;输出：The&nbsp;double&nbsp;of&nbsp;10&nbsp;is&nbsp;20.<BR>
+</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;packaged_task::valid&nbsp;示例<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;packaged_task&lt;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">)&gt;&nbsp;tssk;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;future&lt;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&gt;&nbsp;fut&nbsp;=&nbsp;launcher(tssk,&nbsp;</span><span style="color:#ff0000;">25</span><span style="color:#000000;">);<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;packaged_task&lt;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">)&gt;&nbsp;tskk([](</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;x)&nbsp;{</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;x&nbsp;*&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">;&nbsp;});<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;fut&nbsp;=&nbsp;launcher(tskk,&nbsp;</span><span style="color:#ff0000;">25</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;The&nbsp;double&nbsp;of&nbsp;25&nbsp;is&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;fut.get()&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;.\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;输出：not&nbsp;valid\n&nbsp;The...&nbsp;is&nbsp;50.<BR>
+</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;packaged_task::make_ready_at_thread_exit&nbsp;示例<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;future&lt;</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&gt;&nbsp;result;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;thread{&nbsp;worker,&nbsp;ref(result)&nbsp;}.join();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">auto</span><span style="color:#000000;">&nbsp;status&nbsp;=&nbsp;result.wait_for(chrono::seconds(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(status&nbsp;==&nbsp;future_status::ready)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;main:&nbsp;result&nbsp;is&nbsp;ready&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;endl;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;packaged_task::reset&nbsp;示例<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;packaged_task&lt;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">)&gt;&nbsp;ttsk(triple);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;future&lt;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&gt;&nbsp;fuut&nbsp;=&nbsp;ttsk.get_future();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;ttsk(</span><span style="color:#ff0000;">33</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;The&nbsp;triple&nbsp;of&nbsp;33&nbsp;is&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;fuut.get()&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;.\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;ttsk.reset();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;fuut&nbsp;=&nbsp;ttsk.get_future();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;thread(move(ttsk),&nbsp;</span><span style="color:#ff0000;">99</span><span style="color:#000000;">).detach();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;The&nbsp;triple&nbsp;of&nbsp;99&nbsp;is&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;fuut.get()&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;.\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;输出：The&nbsp;triple&nbsp;of&nbsp;33、99&nbsp;is&nbsp;99、297.<BR>
+</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}</span></div></td></tr></table></div>
+<br><font color=blue size = 5>Non-member function overloads</font>
+<br>
+<br><font color=purple size = 4>std::swap (packaged_task)</font>
+<br> 🎨 定义：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;template &lt;class Ret, class... Args&gt;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;void swap (packaged_task&lt;Ret(Args...)&gt;&amp; x, packaged_task&lt;Ret(args...)&gt;&amp; y) noexcept;
+<br> ● 交换x和y之间的共享状态和存储任务。这是一个重载的交换，就像x.swap(y)被调用
+<br>
+<br><font color=blue size = 5>Non-member class specializations</font>
+<br>
+<br><font color=purple size = 4>std::uses_allocator&lt;packaged_task&gt;</font>
+<br> 🎨 定义：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;template &lt;class Ret, class Alloc&gt;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;struct uses_allocator&lt;packaged_task&lt;Ret&gt;,Alloc&gt;;
+<br> ● 使用分配器packaged_task
+<br> ● uses_allocator的这种特性专门化通知了packaged_task对象可以与配置器一起构建，即使类中没有任何allocator_type成员
+<br> ● 它在&lt; future &gt;中定义，与相同的行为如下：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;template &lt;class Ret, class Alloc&gt;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;struct uses_allocator&lt;packaged_task&lt;Ret&gt;,Alloc&gt; : true_type {};
+<br> ● uses_allocator 这个的说明同上面promise的std::uses_allocator&lt;promise&gt;里面的解释
+<br>
+<br><font color=green size = 5>Futures</font>
+<br>
+<br><a name="bc3"><font color=green size = 5>future</font></a>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;T&gt;&nbsp;&nbsp;future;<BR>
+</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;R&amp;&gt;&nbsp;future&lt;R&amp;&gt;;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;specialization&nbsp;:&nbsp;T&nbsp;is&nbsp;a&nbsp;reference&nbsp;type&nbsp;(R&amp;)<BR>
+</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;future&lt;</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&gt;;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;specialization&nbsp;:&nbsp;T&nbsp;is&nbsp;void</span></div></td></tr></table></div>
+<br> ● future是一个对象，它可以从某个提供者对象或函数中检索值，如果在不同的线程中，可以正确地同步此访问
+<br> ● “有效”futures是与共享状态相关联的future对象，并通过调用下列函数之一来构建：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;async
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;promise::get_future
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;packaged_task::get_future
+<br> ● future对象只在有效的时候有用，默认构造的future对象是无效的(除非被分配到一个有效的future)
+<br> ● 在一个有效的future对象上调用future::get线程就会阻塞住，直到提供者使共享状态就绪(通过设置值或异常)。这样，两个线程就可以同步，等待另一个线程来设置值
+<br> ● 共享状态的生命周期至少持续到最后一个对象释放它或被销毁。因此，如果关联了future，共享状态可以在第一个声明(如果有的话)中存活
+<br> ● 定义中有两个特化，一个是对引用特化，一个是对void特化
+<br>
+<br><font color=blue size = 5>Member functions</font>
+<br>
+<br><font color=purple size = 4>(constructor)构造函数</font>
+<br> 🎨 定义：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;default (1) future() noexcept;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;copy [deleted] (2) future (const future&amp;) = delete;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;move (3) future (future&amp;&amp; x) noexcept;
+<br>(1)默认构造函数
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;构造一个空的future，对象没有共享状态，因此是无效的，但它可以被分配给另一个future值
+<br>(2)拷贝构造函数(删除)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;future对象不能被复制
+<br>(3)构造函数
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;构造的对象获得x的共享状态，x变成了没有共享状态的future对象
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;具有有效共享状态的future只能由某些提供者函数(如async)构建，像 async, promise::get_future 或 packaged_task::get_future
+<br>
+<br><font color=purple size = 4>(destructor)析构函数</font>
+<br> ● 如果对象是有效的(即它可以访问共享状态)，使它与它的共享状态不再关联
+<br> ● 如果它是与共享状态相关联的唯一对象，那么共享状态本身也会被破坏
+<br>
+<br><font color=purple size = 4>std::future::operator=</font>
+<br> 🎨 定义：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;move (1) future&amp; operator= (future&amp;&amp; rhs) noexcept;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;copy [deleted] (2) future&amp; operator= (const future&amp;) = delete;
+<br> ● 获得rhs的共享状态
+<br> ● 如果对象是有效的(即它可以在调用之前访问共享状态)，它与共享状态是分离
+<br> ● 如果它是与这个共享状态相关联的唯一对象，那么前共享状态本身也会被破坏
+<br> ● 在移动move后，rhs没有共享状态(就像默认构建的那样)：它不再有效
+<br> ● future对象不能被复制(2)
+<br>
+<br><font color=purple size = 4>std::future::share</font>
+<br> 🎨 定义：shared_future<T> share();
+<br> ● 返回一个shared_future对象，该对象获取future对象的共享状态，future对象(* this)没有共享状态(如默认构建的)，不再有效
+<br>
+<br><font color=purple size = 4>std::future::get</font>
+<br> 🎨 定义：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;generic template (1) T get();
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reference specialization (2) R&amp; future&lt;R&amp;&gt;::get(); // when T is a reference type (R&amp;)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;void specialization (3) void future&lt;void&gt;::get(); // when T is void
+<br> ● 当共享状态就绪时，返回存储在共享状态的值(或抛出异常)
+<br> ● 如果共享状态还未就绪(即提供者还没有设置值或异常)，该函数阻塞调用线程，并等待它就绪，一旦共享状态就绪，函数将打开并返回共享状态(或抛出异常)，这使得以后的对象不再有效
+<br> ● 这个成员函数将在每个future共享状态的大多数情况下被调用
+<br> ● 所有可见的副作用在提供者使共享状态就绪和返回该函数之间同步
+<br> ● void专门化的成员(3)不返回任何值，但是仍然等待共享状态准备好并释放它
+<br>
+<br><font color=purple size = 4>std::future::valid</font>
+<br> ● 返回当前future对象是否与共享状态相关联
+<br> ● 对于默认构造的future对象，这个函数将返回false(除非有一个有效的future)
+<br> ● 只能通过某些提供者函数(如async、promise::get_future、packaged_task::get_future)初始构建与有效共享状态的期货
+<br> ● 一旦共享状态的值被future::get，调用此函数返回false(除非被分配到新的有效future)
+<br>
+<br><font color=purple size = 4>std::future::wait</font>
+<br> ● 等待共享状态就绪
+<br> ● 如果共享状态未就绪(即提供者还没有设置值或异常)，该函数阻塞调用线程，并等待它就绪，一旦共享状态就绪，函数将打开并返回共享状态，而不读取其值，也不会抛出它的设置异常(如果存在的话)
+<br> ● 所有可见的副作用在提供者使共享状态就绪和返回该函数之间同步
+<br>
+<br><font color=purple size = 4>std::future::wait_for</font>
+<br> 🎨 定义：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;template &lt;class Rep, class Period&gt;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;future_status wait_for (const chrono::duration&lt;Rep,Period&gt;&amp; rel_time) const;
+<br> ● 在指定的时间rel_time内等待共享状态就绪
+<br> ● 如果共享状态未就绪(即提供者还没有设置值或异常)，该函数阻塞调用线程，并等待直到它准备就绪，或者直到rel_time已经运行，无论第一次发生了什么
+<br> ● 当函数返回时，因为它的共享状态已经准备好了，在共享状态上的值或异常设置为不被读取，但是，所有可见的副作用在提供者使共享状态就绪和返回该函数之间同步
+<br> ● 如果共享状态包含一个递延函数(如async返回的future对象)，则函数不会阻塞，立即返回值为future_status::deferred
+<br>类型的值future_status指示什么导致函数返回：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;future_status::ready：该共享状态是准备就绪，生产者已设定值或异常
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;future_status::timeout：该函数等待rel_time，而没有共享状态就绪
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;future_status::deferred：该共享状态包含延迟功能
+<br>
+<br><font color=purple size = 4>std::future::wait_until</font>
+<br> 🎨 定义：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;template &lt;class Clock, class Duration&gt;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;future_status wait_until (const chrono::time_point&lt;Clock,Duration&gt;&amp; abs_time) const;
+<br> ● 等待共享状态就绪，最多到abs_time
+<br> ● 如果共享状态还未就绪(即提供者还没有设置它的值或异常)，该函数阻塞调用线程，并等待直到它准备好，无论哪个第一次出现
+<br> ● 当函数返回时，因为它的共享状态已经准备好了，在共享状态上的值或异常设置为不被读取，但是，所有可见的副作用都是在提供者使共享状态就绪并返回该函数之间同步
+<br> ● 如果共享状态包含一个递延函数(如async返回的future对象)，则函数不会阻塞，立即返回值为future_status::deferred
+<br>类型的值future_status指示什么导致函数返回：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;future_status::ready：该共享状态是准备就绪，生产者已设定值或异常
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;future_status::timeout：该函数等待rel_time，而没有共享状态就绪
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;future_status::deferred：该共享状态包含延迟功能
+<br>
+<br> 📝 程序示例：
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47<br>48<br>49<br>50<br>51<br>52<br>53<br>54<br>55<br>56<br>57<br>58<br>59<br>60<br>61<br>62<br>63<br>64<br>65<br>66<br>67<br>68<br>69<br>70<br>71<br>72<br>73<br>74<br>75<br>76<br>77<br>78<br>79<br>80<br>81<br>82<br>83<br>84<br>85<br>86<br>87<br>88<br>89<br>90<br>91<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;iostream&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;utility&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;chrono&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;mutex&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;thread&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;future&gt;<BR>
+</span><span style="color:#0000ff;">using</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">namespace</span><span style="color:#000000;">&nbsp;std;<BR>
+<BR>
+</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&nbsp;is_prime(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;x)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;x;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(x&nbsp;%&nbsp;i&nbsp;==&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">false</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">true</span><span style="color:#000000;">;<BR>
+}<BR>
+<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;get_value()&nbsp;{&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">;&nbsp;}<BR>
+<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;get_int()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cin.exceptions(ios::failbit);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;x;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cin&nbsp;&gt;&gt;&nbsp;x;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;x;<BR>
+}<BR>
+<BR>
+</span><span style="color:#0000ff;">auto</span><span style="color:#000000;">&nbsp;main()&nbsp;-&gt;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;"><BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;future::share&nbsp;示例<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;future&lt;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&gt;&nbsp;sut&nbsp;=&nbsp;async(get_value);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;shared_future&lt;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&gt;&nbsp;shfut&nbsp;=&nbsp;sut.share();<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;cout&nbsp;&lt;&lt;&nbsp;&quot;value:&nbsp;&quot;&nbsp;&lt;&lt;&nbsp;sut.get()&nbsp;&lt;&lt;&nbsp;&quot;\n&quot;;<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;会抛出错误，因为sut对象已不再有效<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;value:&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;shfut.get()&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;its&nbsp;double:&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;shfut.get()&nbsp;*&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;输出：value:&nbsp;10&nbsp;\n&nbsp;its&nbsp;double:&nbsp;20<BR>
+</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;future::get&nbsp;示例<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;future&lt;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&gt;&nbsp;futt&nbsp;=&nbsp;async(get_int);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;Please&nbsp;enter&nbsp;an&nbsp;integer&nbsp;value:&nbsp;&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">try</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;x&nbsp;=&nbsp;futt.get();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;You&nbsp;entered:&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;x&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">catch</span><span style="color:#000000;">&nbsp;(exception&nbsp;&amp;&nbsp;e)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;[exception&nbsp;caught]:&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;e.what()&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;输入数字将打印数字，输入其它类型的值将抛出异常<BR>
+</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;future::vaild&nbsp;示例<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;future&lt;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&gt;&nbsp;fo,&nbsp;ba;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;fo&nbsp;=&nbsp;async(get_value);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;ba&nbsp;=&nbsp;move(fo);<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(fo.valid())<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;fo's&nbsp;value:&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;fo.get()&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;fo&nbsp;is&nbsp;not&nbsp;valid\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(ba.valid())<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;ba's&nbsp;value:&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;ba.get()&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;ba&nbsp;is&nbsp;not&nbsp;valid\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;输出：fo&nbsp;is&nbsp;not&nbsp;valid&nbsp;&nbsp;ba's&nbsp;value:&nbsp;10<BR>
+</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;判断一个数是否为质数<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;future::wait&nbsp;示例<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;future&lt;</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&gt;&nbsp;fuut&nbsp;=&nbsp;async(is_prime,&nbsp;</span><span style="color:#ff0000;">194232491</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;checking&nbsp;...\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;fuut.wait();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\n19232491&nbsp;&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(fuut.get())<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;is&nbsp;prime.\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;is&nbsp;not&nbsp;prime.\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;在得到结果之前会阻塞<BR>
+</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;future::wait_for&nbsp;示例<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;future&lt;</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&gt;&nbsp;fut&nbsp;=&nbsp;async(is_prime,&nbsp;</span><span style="color:#ff0000;">444444443</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;checking,&nbsp;please&nbsp;wait&nbsp;&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;chrono::milliseconds&nbsp;span(</span><span style="color:#ff0000;">100</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">while</span><span style="color:#000000;">&nbsp;(fut.wait_for(span)&nbsp;==&nbsp;future_status::timeout)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;.&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;flush;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&nbsp;x&nbsp;=&nbsp;fut.get();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\n444444443&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;(x&nbsp;?&nbsp;</span><span style="color:#800000;">&quot;is&quot;</span><span style="color:#000000;">&nbsp;:&nbsp;</span><span style="color:#800000;">&quot;is&nbsp;not&quot;</span><span style="color:#000000;">)&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;&nbsp;prime.\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;首先一直打印&nbsp;.&nbsp;直到得到结果<BR>
+</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}</span></div></td></tr></table></div>
+<br><a name="bc4"><font color=green size = 5>shared_future</font></a>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;T&gt;&nbsp;&nbsp;shared_future;<BR>
+</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;R&amp;&gt;&nbsp;shared_future&lt;R&amp;&gt;;&nbsp;</span><span style="color:#008000;">//&nbsp;specialization&nbsp;:&nbsp;T&nbsp;is&nbsp;a&nbsp;reference&nbsp;type&nbsp;(R&amp;)<BR>
+</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;shared_future&lt;</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&gt;;&nbsp;</span><span style="color:#008000;">//&nbsp;specialization&nbsp;:&nbsp;T&nbsp;is&nbsp;void</span></div></td></tr></table></div>
+shared_future对象的行为就像future对象，除非它可以被复制，而且不止一个shared_future可以共享共享状态，它还允许将共享状态中的值一次性检索多次
+<br> ● shared_future对象可以隐式地从future的对象(查看其构造函数)转换，或者通过调用future::share来显式地获得，在这两种情况下，它所获得的future对象将其与共享状态的关联转移到shared_future并使其自身无效
+<br> ● 共享状态的生命周期至少持续到与它关联的最后一个对象被销毁，从shared_future检索值(与成员获取)不释放其对共享状态的所有权。因此，如果关联到shared_future对象，共享状态可以在第一个位置(如果有的话)中存活
+<br>
+<br><font color=blue size = 5>Member functions</font>
+<br>
+<br><font color=purple size = 4>(constructor)构造函数</font>
+<br> 🎨 定义：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;default (1) shared_future() noexcept;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;copy (2) shared_future (const shared_future&amp; x);
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;move (3) shared_future (shared_future&amp;&amp; x) noexcept;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;move from future (4) shared_future (future<T>&amp;&amp; x) noexcept;
+<br>(1)默认构造函数
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;构造一个空的shared_future对象，没有共享状态，因此它是无效的，但是它可以被赋值一个有效值
+<br>(2)拷贝构造函数
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;构建的shared_future具有与x相同的共享状态，并享有所有权
+<br>(3)构造函数
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;构造的对象获得x的共享状态(如果有的话)，x不再有效
+<br>(4)通过move构造函数或调用成员future::share可以从future的对象中获得具有有效共享状态的future
+<br>
+<br><font color=purple size = 4>(destructor)析构函数</font>
+<br> ● 破坏shared_future对象
+<br> ● 如果对象是有效的(即可以访问共享状态)，它与共享状态分离
+<br> ● 如果它是与共享状态相关联的唯一对象，那么共享状态本身也会被破坏
+<br>
+<br><font color=purple size = 4>std::shared_future::operator=</font>
+<br> 🎨 定义：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;move (1) shared_future&amp; operator= (shared_future&amp;&amp; rhs) noexcept;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;copy (2) shared_future&amp; operator= (const shared_future&amp; rhs);
+<br>(1)move assignment
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;对象获得rhs的共享状态(如果有的话)，rhs将不再有效
+<br>(2)拷贝构造
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;对象与rhs(如果有的话)相同的共享状态相关联，共享所有权，rhs并没有被修改
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如果在调用之前对象是有效的(即它可以在调用之前访问共享状态)，它与共享状态分离。如果它是与这个共享状态相关联的唯一对象，那么之前的共享状态也会被破坏
+<br>
+<br><font color=purple size = 4>std::shared_future::get</font>
+<br> 🎨 定义：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;generic template (1) const T&amp; get() const;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reference specialization (2) R&amp; shared_future&lt;R&amp;&gt;::get() const; // when T is a
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reference type (R&amp;) void specialization (3) void shared_future&lt;void&gt;::get() const; // when T is void
+<br> ● 当共享状态就绪时，返回存储在共享状态(或抛出异常)的值的引用
+<br> ● 如果共享状态还未就绪(即提供者还没有设置值或异常)，该函数阻塞调用线程，并等待它就绪，一旦共享状态就绪，函数将启动并返回共享状态(或抛出异常)，但不会释放它的共享状态(不像future::get)，允许其它shared_future对象也访问存储的值(或同一对象的新访问)
+<br> ● 所有可见的副作用在提供者使共享状态就绪和返回该函数之间同步，但是注意，在这个事件中返回的潜在的多个函数之间不存在同步(在多个shared_future对象等待相同的共享状态的情况下)
+<br> ● void专门化的成员(3)不返回任何值，但是仍然等待共享状态在返回/抛出之前准备就绪
+<br>
+<br><font color=purple size = 4>std::shared_future::valid</font>
+<br> ● 返回当前shared_future对象是否与共享状态相关联
+<br> ● 对于默认构造的shared_future对象，这个函数将返回false(除非指定有效的shared_future)
+<br> ● 共享futures从future的对象(在构建或分配它们)中获得有效的共享状态。与future对象不同，它们保留相同的共享状态关联和有效性，直到销毁(或分配)
+<br>
+<br><font color=purple size = 4>std::shared_future::wait</font>
+<br> ● 等待共享状态就绪
+<br> ● 如果共享状态还未就绪(即提供者还没有设置其值或异常），该函数阻塞调用线程，并等待它就绪
+<br> ● 一旦共享状态就绪，函数就会打开并返回，而不读取其值，也不会抛出它的设置异常(如果有的话)
+<br> ● 所有可见的副作用在提供者使共享状态就绪和返回该函数的时候同步，但是注意，在这个事件中返回的潜在的多个函数之间不存在同步(在多个shared_future对象等待相同的共享状态的情况下)
+<br>
+<br><font color=purple size = 4>std::shared_future::wait_for</font>
+<br> 🎨 定义：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;template &lt;class Rep, class Period&gt;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;future_status wait_for (const chrono::duration&lt;Rep,Period&gt;&amp; rel_time) const;
+<br> ● 等待指定的rel_time时间共享状态就绪
+<br> ● 如果共享状态还未就绪(即提供者还没有设置其值或异常），该函数阻塞调用线程，并等待直到它准备就绪，或者直到rel_time时间到，无论第一次发生什么
+<br> ● 当函数返回时，因为它的共享状态已经准备好了，在共享状态上的值或异常设置为不被读取，但是，所有可见的副作用都是在提供者使共享状态就绪并返回该函数之间同步
+<br> ● 如果共享状态包含一个递延函数，则函数不会阻塞，立即返回值为future_status::deferred
+<br> ● 同 future::wait_for的异常情况
+<br>
+<br><font color=purple size = 4>std::shared_future::wait_until</font>
+<br> 🎨 定义：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;template &lt;class Clock, class Duration&gt;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;future_status wait_until (const chrono::time_point&lt;Clock,Duration&gt;&amp; abs_time) const;
+<br> ● 等待共享状态就绪，最多只能等待abs_time
+<br> ● 如果共享状态还未就绪(即提供者还没有设置它的值或异常)，该函数阻塞调用线程，并等待直到它准备好，无论哪个第一次出现
+<br> ● 当函数返回时，因为它的共享状态已经准备好了，在共享状态上的值或异常设置为不被读取，但是，所有可见的副作用都是在提供者使共享状态就绪并返回该函数之间同步
+<br> ● 如果共享状态包含一个递延函数，则函数不会阻塞，立即返回值为future_status::deferred
+<br> ● 同 future::wait_for的异常情况
+<br>
+<br> 📝 程序示例：
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47<br>48<br>49<br>50<br>51<br>52<br>53<br>54<br>55<br>56<br>57<br>58<br>59<br>60<br>61<br>62<br>63<br>64<br>65<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;iostream&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;utility&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;chrono&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;mutex&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;thread&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;future&gt;<BR>
+</span><span style="color:#0000ff;">using</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">namespace</span><span style="color:#000000;">&nbsp;std;<BR>
+<BR>
+</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&nbsp;is_prime(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;x)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;x;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(x&nbsp;%&nbsp;i&nbsp;==&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">false</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">true</span><span style="color:#000000;">;<BR>
+}<BR>
+<BR>
+</span><span style="color:#0000ff;">auto</span><span style="color:#000000;">&nbsp;main()&nbsp;-&gt;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;"><BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;future&lt;</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&gt;&nbsp;ffut;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;boolalpha&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;ffut&nbsp;is&nbsp;valid?&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;ffut.valid()&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;shared_future&lt;</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&gt;&nbsp;sfuut&nbsp;=&nbsp;move(ffut);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;boolalpha&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;and&nbsp;now&nbsp;ffut&nbsp;is&nbsp;valid?&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;ffut.valid()&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;boolalpha&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;and&nbsp;the&nbsp;sfuut&nbsp;is&nbsp;valid?&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;sfuut.valid()&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\n&quot;</span><span style="color:#000000;">;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;future&lt;</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&gt;&nbsp;fut&nbsp;=&nbsp;async(is_prime,&nbsp;</span><span style="color:#ff0000;">444444443</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;checking&nbsp;444444443&nbsp;&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">while</span><span style="color:#000000;">&nbsp;(fut.wait_for(chrono::milliseconds(</span><span style="color:#ff0000;">100</span><span style="color:#000000;">))&nbsp;==&nbsp;future_status::timeout)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;.&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&nbsp;x&nbsp;=&nbsp;fut.get();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\n444444443&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;(x&nbsp;?&nbsp;</span><span style="color:#800000;">&quot;is&nbsp;&quot;</span><span style="color:#000000;">&nbsp;:&nbsp;</span><span style="color:#800000;">&quot;is&nbsp;not&nbsp;&quot;</span><span style="color:#000000;">)&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;prime\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;boolalpha&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;and&nbsp;now&nbsp;fut&nbsp;is&nbsp;valid?&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;fut.valid()&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\n&quot;</span><span style="color:#000000;">;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;future&lt;</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&gt;&nbsp;futt&nbsp;=&nbsp;async(is_prime,&nbsp;</span><span style="color:#ff0000;">194232491</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;shared_future&lt;</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&gt;&nbsp;ssfut&nbsp;=&nbsp;move(futt);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;checking&nbsp;194232491&nbsp;&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">while</span><span style="color:#000000;">&nbsp;(ssfut.wait_for(chrono::milliseconds(</span><span style="color:#ff0000;">100</span><span style="color:#000000;">))&nbsp;==&nbsp;future_status::timeout)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;.&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;x&nbsp;=&nbsp;ssfut.get();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\n194232491&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;(x&nbsp;?&nbsp;</span><span style="color:#800000;">&quot;is&nbsp;&quot;</span><span style="color:#000000;">&nbsp;:&nbsp;</span><span style="color:#800000;">&quot;is&nbsp;not&nbsp;&quot;</span><span style="color:#000000;">)&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;prime\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;boolalpha&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;and&nbsp;now&nbsp;futt&nbsp;is&nbsp;valid?&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;futt.valid()&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\n&quot;</span><span style="color:#000000;">;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;shared_future&lt;</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&gt;&nbsp;sffut&nbsp;=&nbsp;ssfut;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;checking&nbsp;194232491&nbsp;again&nbsp;&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">while</span><span style="color:#000000;">&nbsp;(sffut.wait_for(chrono::milliseconds(</span><span style="color:#ff0000;">100</span><span style="color:#000000;">))&nbsp;==&nbsp;future_status::timeout)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;.&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;x&nbsp;=&nbsp;sffut.get();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\n194232491&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;(x&nbsp;?&nbsp;</span><span style="color:#800000;">&quot;is&nbsp;&quot;</span><span style="color:#000000;">&nbsp;:&nbsp;</span><span style="color:#800000;">&quot;is&nbsp;not&nbsp;&quot;</span><span style="color:#000000;">)&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;prime\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;boolalpha&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;and&nbsp;now&nbsp;ssfut&nbsp;is&nbsp;valid?&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;ssfut.valid()&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\n&quot;</span><span style="color:#000000;">;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}<BR>
+<BR>
+</span><span style="color:#008000;">//&nbsp;输出如下：<BR>
+</span><span style="color:#000000;">ffut&nbsp;is&nbsp;valid?&nbsp;</span><span style="color:#0000ff;">false</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">and</span><span style="color:#000000;">&nbsp;now&nbsp;ffut&nbsp;is&nbsp;valid?&nbsp;</span><span style="color:#0000ff;">false</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">and</span><span style="color:#000000;">&nbsp;the&nbsp;sfuut&nbsp;is&nbsp;valid?&nbsp;</span><span style="color:#0000ff;">false</span><span style="color:#000000;"><BR>
+checking&nbsp;</span><span style="color:#ff0000;">444444443</span><span style="color:#000000;">&nbsp;..................<BR>
+</span><span style="color:#ff0000;">444444443</span><span style="color:#000000;">&nbsp;is&nbsp;prime<BR>
+</span><span style="color:#0000ff;">and</span><span style="color:#000000;">&nbsp;now&nbsp;fut&nbsp;is&nbsp;valid?&nbsp;</span><span style="color:#0000ff;">false</span><span style="color:#000000;"><BR>
+checking&nbsp;</span><span style="color:#ff0000;">194232491</span><span style="color:#000000;">&nbsp;.......<BR>
+</span><span style="color:#ff0000;">194232491</span><span style="color:#000000;">&nbsp;is&nbsp;prime<BR>
+</span><span style="color:#0000ff;">and</span><span style="color:#000000;">&nbsp;now&nbsp;futt&nbsp;is&nbsp;valid?&nbsp;</span><span style="color:#0000ff;">false</span><span style="color:#000000;"><BR>
+checking&nbsp;</span><span style="color:#ff0000;">194232491</span><span style="color:#000000;">&nbsp;again<BR>
+</span><span style="color:#ff0000;">194232491</span><span style="color:#000000;">&nbsp;is&nbsp;prime<BR>
+</span><span style="color:#0000ff;">and</span><span style="color:#000000;">&nbsp;now&nbsp;ssfut&nbsp;is&nbsp;valid?&nbsp;</span><span style="color:#0000ff;">true</span></div></td></tr></table></div>
+<br><a name="bc5"><font color=green size = 5>Other types</font></a>
+<br>
+<br><font color=purple size = 4>std::future_error</font>
+<br> 🎨 定义：class future_error : public logic_error;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exception ← logic_error ← future_error
+<br> ● 这个类定义抛出的对象的类型，以便于对未来可能访问future共享状态库中的其它对象或者元素报告无效的操作
+<br> ● 这个类继承了logic_error，它添加了一个error_code作为成员代码(并定义了一个专门的成员)
+<br>1.std::future_error::future_error 构造一个future_error异常对象以ec作为错误代码
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;future_error (error_code ec); //定义
+<br>2.std::future_error::code 返回与异常关联的error_code对象
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const error_code&amp; code() const noexcept;
+<br>3.std::future_error::what 返回描述异常的消息。包括由code(). message()返回的字符串
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const char* what() const noexcept;
+<br>
+<br><font color=purple size = 4>std::future_errc</font>
+<br> 🎨 定义：enum class future_errc;
+<br> ● 这个enum类定义了future类别的错误条件。枚举类型future_errc的值可用于创建error_condition对象，以与future_error的代码成员返回的值进行比较：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;broken_promise(值0)：promise 对象用future对象分享其共享状态在设定值或异常之前被销毁
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;future_already_retrieved(值1)： 一个future对象已从此提供程序检索
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;promise_already_satisfied(值2)：该promise对象已经设置了一个值或异常
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;no_state(值3)： 操作尝试访问没有一个对象的共享状态
+<br>
+<br><font color=purple size = 4>std::future_status</font>
+<br> 🎨 定义：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;enum class future_status;
+<br> ● 这个enum类定义了furure和shared_future的成员函数wait_for和wait_until的可能返回值
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;future_status::ready : 由于共享状态已准备就绪，因此返回该函数
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;future_status::timeout : 该函数返回，因为指定的时间已用尽
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;future_status::deferred : 该函数返回，因为共享状态包含延迟函数（参见的std::sync）
+<br>
+<br><font color=purple size = 4>std::launch</font>
+<br> 🎨 定义：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;enum class launch;
+<br> ● 这个enum类类型是一个位掩模类型，它定义了对异步的调用的启动策略
+<br> ● 指定的等价int值应该表示单个位，允许多个标签组合在一个位掩码中。当将此类型的多个值组合在一起时，该函数将自动选择一个(根据它们特定的库实现)
+<br> ● 库实现可以为不同的启动策略定义这种类型的附加标签，这些策略可以通过不同的调用描述对任务交互的限制
+<br> ● 它可以是下列值的任意组合：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;launch::async(异步)：该函数被一个新线程异步调用，并与共享状态的访问点同步它的返回
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;launch::deferred(递延)：函数在访问共享状态时调用
+<br>
+<br> 📝 程序示例：
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47<br>48<br>49<br>50<br>51<br>52<br>53<br>54<br>55<br>56<br>57<br>58<br>59<br>60<br>61<br>62<br>63<br>64<br>65<br>66<br>67<br>68<br>69<br>70<br>71<br>72<br>73<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;iostream&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;chrono&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;future&gt;<BR>
+</span><span style="color:#0000ff;">using</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">namespace</span><span style="color:#000000;">&nbsp;std;<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;print_ten(</span><span style="color:#8000ff;">char</span><span style="color:#000000;">&nbsp;c,&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;ms)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this_thread::sleep_for(chrono::milliseconds(ms));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;c;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+}<BR>
+<BR>
+</span><span style="color:#0000ff;">auto</span><span style="color:#000000;">&nbsp;main()&nbsp;-&gt;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;"><BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;future_error&nbsp;示例<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;promise&lt;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&gt;&nbsp;prom;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">try</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;prom.get_future();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;prom.get_future();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">catch</span><span style="color:#000000;">&nbsp;(future_error&nbsp;&amp;&nbsp;e)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;cout&nbsp;&lt;&lt;&nbsp;&quot;future_error&nbsp;caught:&nbsp;&quot;&nbsp;&lt;&lt;&nbsp;e.what()&nbsp;&lt;&lt;&nbsp;&quot;\n&quot;;<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;future_error&nbsp;caught:&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;e.code().message()&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">'\n'</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;输出：future_error&nbsp;caught:&nbsp;future&nbsp;already&nbsp;retrieved<BR>
+</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;future_errc&nbsp;示例<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">try</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;prom.get_future();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;throws&nbsp;std::future_error&nbsp;with&nbsp;future_already_retrieved<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">catch</span><span style="color:#000000;">&nbsp;(std::future_error&nbsp;&amp;&nbsp;e)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(e.code()&nbsp;==&nbsp;make_error_condition(future_errc::future_already_retrieved))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cerr&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;[future&nbsp;already&nbsp;retrieved]\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cerr&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;[unknown&nbsp;exception]\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;输出：[future&nbsp;already&nbsp;retrieved]<BR>
+</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;launch&nbsp;示例<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;with&nbsp;launch::async:&nbsp;\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;future&lt;</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&gt;&nbsp;foo&nbsp;=&nbsp;async(launch::async,&nbsp;print_ten,&nbsp;</span><span style="color:#800000;">'*'</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">100</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;future&lt;</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&gt;&nbsp;bar&nbsp;=&nbsp;async(launch::async,&nbsp;print_ten,&nbsp;</span><span style="color:#800000;">'@'</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">200</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;定义后即被新线程异步调用<BR>
+</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;foo.get();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;bar.get();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\n\n&quot;</span><span style="color:#000000;">;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;with&nbsp;launch::deferred:&nbsp;\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;foo&nbsp;=&nbsp;async(launch::deferred,&nbsp;print_ten,&nbsp;</span><span style="color:#800000;">'*'</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">100</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;bar&nbsp;=&nbsp;async(launch::deferred,&nbsp;print_ten,&nbsp;</span><span style="color:#800000;">'@'</span><span style="color:#000000;">,&nbsp;</span><span style="color:#ff0000;">200</span><span style="color:#000000;">);<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;foo.get();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;bar.get();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;如果不执行.get()，则递延deferred不会执行函数print_ten<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\n&quot;</span><span style="color:#000000;">;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}<BR>
+<BR>
+</span><span style="color:#008000;">//&nbsp;launch&nbsp;示例部分输出：<BR>
+</span><span style="color:#000000;">with&nbsp;launch::async:<BR>
+*@**@**@**@**@*@@@@@<BR>
+<BR>
+with&nbsp;launch::deferred:<BR>
+**********@@@@@@@@@@</span></div></td></tr></table></div>
+<br><a name="bc6"><font color=green size = 5>&lt;future&gt;头文件 Functions</font></a>
+<br>
+<br><font color=blue size = 5>Providers</font>
+<br>
+<br><font color=purple size = 4>std::async</font>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;">unspecified&nbsp;policy&nbsp;(<span style="color:#ff0000;">1</span><span style="color:#000000;">)&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;Fn,&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">...&nbsp;Args&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;future&lt;</span><span style="color:#0000ff;">typename</span><span style="color:#000000;">&nbsp;result_of&lt;Fn(Args...)&gt;::type&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;async&nbsp;(Fn&amp;&amp;&nbsp;fn,&nbsp;Args&amp;&amp;...&nbsp;args);<BR>
+specific&nbsp;policy&nbsp;&nbsp;&nbsp;&nbsp;(</span><span style="color:#ff0000;">2</span><span style="color:#000000;">)&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;Fn,&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">...&nbsp;Args&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;future&lt;</span><span style="color:#0000ff;">typename</span><span style="color:#000000;">&nbsp;result_of&lt;Fn(Args...)&gt;::type&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;async&nbsp;(launch&nbsp;policy,&nbsp;Fn&amp;&amp;&nbsp;fn,&nbsp;Args&amp;&amp;...&nbsp;args);</span></div></td></tr></table></div>
+异步调用函数
+<br> ● 在某个点调用fn(以args为参数)，无需等待fn的执行完成
+<br> ● fn返回的值可以通过调用future对象的成员future::get访问
+<br> ● 第二个版本(2)让调用者选择一个特定的启动策略，而第一个版本(1)使用自动选择，就绪调用(2)launch::async | launch::deferred 作为策略
+<br> ● 函数在共享状态中临存储，线程处理程序使用或复制fn和args作为递延函数，而不准备就绪，一旦fn的执行完成，共享状态包含fn的返回的值，并准备就绪
+<br> 🚩 参数 policy：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;launch::async：启动一个新线程来调用fn，好像一个线程对象时fn和args作为参数构建的，并且可以访问返回的future共享状态
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;launch::defrred：对fn的调用被推迟，直到被访问的future的共享状态被访问(等待或获取)，此时，调用fn并不再考虑函数的递延。当这个函数返回时，返回的future共享状态已经准备好了
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;launch::async|launch::deferred：函数自动地选择策略，这取决于系统和库的实现，通常会优化系统当前的并发可用性
+<br> 🚩 参数 fn：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;指向函数的指针、指向成员的指针、或任何形式的可构造函数对象(例如：一个类定义操作符()的对象，包括闭包和函数对象)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fn的返回值存储为异步返回的future对象检索的共享状态，如果fn抛出，则在共享状态中设置异常，以被future对象检索
+<br> 🚩 参数 args：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;参数传递给fn(如果有的话)，它们的类型是可构造的，如果fn是一个成员指针，则第一个参数应该是定义该成员的对象、引用或指向它的指针
+<br> 📝 编程示例如上 👆
+<br>
+<br><font color=blue size = 5>Other functions</font>
+<br>
+<br><font color=purple size = 4>std::future_category</font>
+<br> 🎨 定义：const error_category&amp; future_category() noexcept;
+<br> ● 返回对具有以下特征的error_category类型的静态对象的引用：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.它的成员函数返回一个指向字符序列“future”的指针
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2.default_error_condition成员函数按照基本error_category类指定
+<br> ● 描述与enum类型future_errc对应的错误和error_condition对象与此类别相关联，这些对应关系中的错误类型取决于操作系统和特定的库实现。
+<br>
+<br> 📝 编程示例：
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;iostream&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;future&gt;<BR>
+<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;main()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;promise&lt;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&gt;&nbsp;prom;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">try</span><span style="color:#000000;">&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;prom.get_future();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;throws&nbsp;a&nbsp;std::future_error&nbsp;of&nbsp;the&nbsp;future&nbsp;category<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;prom.get_future();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">catch</span><span style="color:#000000;">&nbsp;(future_error&nbsp;&amp;&nbsp;e)&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(e.code().category()&nbsp;==&nbsp;future_category())<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cerr&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;future_error&nbsp;of&nbsp;the&nbsp;future&nbsp;category&nbsp;thrown\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}</span></div></td></tr></table></div>
+输出：future_error of the future category thrown</p>
+
+<p><br><br><br>
+<font color = gray size = 3>如有错误，欢迎指正！</font></p></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://oubc.github.io/tags/c/c&#43;&#43;/">C/C&#43;&#43;</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmg4aog3074074gnf.gif?tags=%5B%5D">I </a>
+	<a href="">love</a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmfm2eg306o06o74u.gif?tags=%5B%5D"> you </a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx4tpcj30fn0bq3zg.jpg?tags=%5B%5D">three </a>
+	<a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx64ctg307s07swfy.gif?tags=%5B%5D">thousand</a>
+    <a href="https://www.kugou.com/song/#hash=96426C78381DE98DC31A5846FC274CBF&album_id=646623"> times.</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>家庭、梦想、内心的平静</span>
+  </div>
+</footer>
+
+
+
+<script src="https://oubc.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://oubc.github.io/js/zozo.js"></script>
+<script src="https://oubc.github.io/js/highlight.pack.js"></script>
+<link  href="https://oubc.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://oubc.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>

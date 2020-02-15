@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Bruce Cheung"/>
+
+  
+  <meta name="description" content=""/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, simple, dream"/>
+  
+
+  
+  <link rel="canonical" href="https://oubc.github.io/post/modernc&#43;&#43;3/"/>
+
+  
+
+  <title>Modern C&#43;&#43; 多线程 condition_varible &middot; Love, or death</title>
+
+  <link rel="shortcut icon" href="https://oubc.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/post/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://oubc.github.io/">
+          <span>Love, or death</span>
+          <img src="https://oubc.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">For you, a thousand times over.</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/oubc" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=uYGOjo6OiIuLivnIyJfa1tQ" title="mail" target="_blank"><i class="remixicon-mail-fill"></i></a>
+        
+        
+        
+        <a href="http://sighttp.qq.com/msgrd?v=1&amp;uin=877771223" title="qq" target="_blank"><i class="remixicon-qq-fill"></i></a>
+        
+        
+        
+        <a href="https://github.com/oubc/oubc.github.io/blob/master/images/wx.jpg?raw=true" title="wechat" target="_blank"><i class="remixicon-wechat-fill"></i></a>
+        
+        
+        
+        <a href="https://weibo.com/u/6993631995?topnav=1&amp;wvr=6&amp;topsug=1" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://oubc.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/post/modernc&#43;&#43;3/'>Modern C&#43;&#43; 多线程 condition_varible</a></h2>
+          <span class="date">2020.02.13</span>
+        </div>
+        <div class="post_content markdown"><p><br>
+<br><font color=green size = 5>C++新标准之多线程 condition_varible条件变量</font>
+<br>
+<br><font color = gray size = 3>目录</font><font color = gray size = 2> (点击跳转)</font>
+<br><a href="#bc0"><font color=yellow size = 4>&lt;condition_variable&gt;头文件</font></a>
+<br><a href="#bc1"><font color=blue size = 4>class condition_variable</font></a>
+<br><a href="#bc2"><font color=pink size = 4>class condition_variable_any</font></a>
+<br><a href="#bc3"><font color=purple size = 4>Enum classes</font></a>
+<br><a href="#bc4"><font color=cyan size = 4>Other functions</font></a>
+<br>
+<br>
+<br> ● 互斥量是多线程间同时访问某一共享变量时，保证变量可被安全访问的手段
+<br> ● 在多线程编程中，还有另一种十分常见的行为：线程同步，线程同步是指线程间需要按照预定的先后次序顺序进行的行为
+<br> ● C++新标准对这种行为也提供了有力的支持，这就是条件变量，条件变量位于头文件&lt;condition_variable&gt;中
+<br>
+<br><a name="bc0"><font color=green size = 5>&lt;condition_variable&gt;</font></a>
+<br> ● &lt;condition_variable&gt;头文件主要包含了与条件变量相关的类和函数
+<br> ● 主要含有类condition_variable和condition_variable_any，枚举cv_status，函数notify_all_at_thread_exit
+<br><table border="4">
+<tr>
+<th>Classes</th>
+<th>description</th>
+</tr>
+<tr>
+<td>condition_variable</td>
+<td>提供了std::unique_lock相关联的条件变量</td>
+</tr>
+<tr>
+<td>condition_variable_any</td>
+<td>提供与任何锁类型相关联的条件变量</td>
+</tr>
+</table>
+<br><table border="4">
+<tr>
+<th>Enum classes</th>
+<th>description</th>
+</tr>
+<tr>
+<td>cv_status</td>
+<td>列出在条件变量上限时等待的可能结果 (枚举)</td>
+</tr>
+</table>
+<br><table border="4">
+<tr>
+<th>Functions</th>
+<th>description</th>
+</tr>
+<tr>
+<td>notify_all_at_thread_exit</td>
+<td>当这个线程完全完成(函数)时，调度调用notify_all</td>
+</tr>
+</table>
+<br> ● 结构定义：
+ <br>namespace std
+ <br>{
+ <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;class condition_variable;
+ <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;class condition_variable_any;
+ <br>
+ <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;void notify_all_at_thread_exit(condition_variable&amp; cond, unique_lock<mutex> lk);
+ <br>
+ <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;enum class cv_status
+ <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+ <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;no_timeout;
+ <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;timeout;
+ <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;};
+ <br>}
+<br>
+<br><a name="bc1"><font color=green size = 5>classe condition_variable</font></a>
+<br>
+<br><font color=blue size = 5>std::condition_variable</font>
+<br> ● 条件变量提供了两类操作：wait和notify，这两类操作构成了多线程同步的基础；
+<br> ● 条件变量类是一个同步原语，它可以阻塞一个或多个线程，直到另一个线程同时修改一个共享变量(条件)，并通知条件变量；
+<br> ● 条件变量能够阻塞调用线程的对象，直到通知恢复为止
+<br>它使用unique_lock来锁定线程，当它的一个等待函数被调用时，线程仍然被阻塞，直到被另一个线程唤醒，该线程调用同一个条件变量对象上的通知函数；
+<br> ● 类型条件变量的对象总是使用unique_lock&lt;mutex&gt;等待，对于可以使用任何类型的可锁定类型的选项，参见condition_variable_any。
+<br>
+<br><font color=purple size = 4>(constructor)构造函数</font>
+<br> ● 定义： condition_variable(); default (1)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;condition_variable (const condition_variable&amp;) = delete; copy[deleted] (2)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;operator=   [deleted]
+<br> * 构造一个condition_variable对象
+<br> * 条件变量不能被复制/移动
+<br> * 如果构建失败，将抛出system_error异常，根据库的实现，也可能在其它情况下抛出异常
+<br><table border="2">
+<tr>
+<th>exception type</th>
+<th>error condition</th>
+<th>description</th>
+</tr>
+<tr>
+<td>system_error</td>
+<td>errc::resource_unavailable_try_again</td>
+<td>资源限制(除了内存分配)防止初始化</td>
+</tr>
+</table>
+<br><font color=purple size = 4>(destructor)析构函数</font>
+<br> ● 破坏condition_variable对象
+<br> ● 在此破坏下被阻塞的任何线程在此析构之前都将被通知
+<br> ● 在析构函数被调用之后，没有线程将开始等待
+<br>注：
+<br> 1.如果所有线程被通知，调用析构函数是安全的，它们不需要退出各自的等待函数，一些线程可能还在等待重新获得相关的锁，或者等待调度再重新获得它之后运行；
+<br>2.程序员必须确保在启动析构函数时没有线程试图等待*this，特别是等待线程调用循环中的等待函数或使用执行谓词的等待函数的重载时。
+<br>
+<br><font color=blue size = 5>Wait functions</font>
+<br>
+<br><font color=purple size = 4>std::condition_variable::wait</font>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;wait&nbsp;(unique_lock&lt;mutex&gt;&nbsp;&amp;lck);&nbsp;unconditional&nbsp;(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)<BR>
+</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;Predicate&gt;&nbsp;predicate&nbsp;(</span><span style="color:#ff0000;">2</span><span style="color:#000000;">)<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;wait&nbsp;(unique_lock&lt;mutex&gt;&nbsp;&amp;lck,&nbsp;Predicate&nbsp;pred);</span></div></td></tr></table></div>
+1.当前线程的执行(该线程将锁定lck的互斥锁)将被阻塞，直到被通知；
+<br>2.在阻塞线程的时刻，该函数将自动调用lck.unlock()，允许其它锁定的线程继续运行；
+<br>3.一旦被通知，函数就unlock并调用lck.lock()，在调用函数时将lck留在相同的状态，然后函数返回(注：最后一个互斥锁可能会在返回之前阻塞线程)；
+<br>4.一般情况下，函数会被另一个线程的调用唤醒，无论是对成员notify_one还是notify_all，但是某些实现可能产生虚假的唤醒调用，而不需要调用这些函数，因此，该函数的用户将确保满足恢复的条件；
+<br>5.定义(2)如果指定pred，如果pred返回false，则函数只会阻塞，并且只有当它变为true时，通知才能解除线程(这对于检查伪唤醒特别有用)；
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;类似这样的实现：while(!pred()) wait(lck);
+<br>
+<br><font color=purple size = 4>std::condition_variable::wait_for</font>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;">(<span style="color:#ff0000;">1</span><span style="color:#000000;">)&nbsp;unconditional<BR>
+</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;Rep,&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;Period&gt;<BR>
+cv_status&nbsp;wait_for&nbsp;(unique_lock&lt;mutex&gt;&nbsp;&amp;lck,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;chrono::duration&lt;Rep,&nbsp;Period&gt;&nbsp;&amp;rel_time);<BR>
+(</span><span style="color:#ff0000;">2</span><span style="color:#000000;">)&nbsp;predicate<BR>
+</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;Rep,&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;Period,&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;Predicate&gt;<BR>
+</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&nbsp;wait_for&nbsp;(unique_lock&lt;mutex&gt;&nbsp;&amp;lck,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;chrono::duration&lt;Rep,&nbsp;Period&gt;&nbsp;&amp;rel_time,&nbsp;Predicate&nbsp;pred);</span></div></td></tr></table></div>
+1.当前执行线程在rel_time时间内或者在被通知之前(该线程锁定lck的互斥锁)被阻塞(如果后者先发生的话)；
+<br>2.在阻塞线程的时刻，该函数将自动调用lck.unlock()，允许其它锁定的线程继续运行；
+<br>3.一旦被通知或者一次rel_time时间段已经过去，函数将会unblocks并调用lck. lock()，将lck与调用函数时的状态保持一致，然后函数返回(注：最后一个互斥锁可能会在返回之前阻塞线程)；
+<br>4.一般情况下，函数会被另一个线程的调用唤醒，无论是对成员notify_one还是notify_all，但是某些实现可能产生虚假的唤醒调用，而不需要调用这些函数。因此，该函数的用户将确保满足恢复的条件；
+<br>5.如果指定pred(定义2)，如果pred返回false，则函数只会阻塞，并且只有当它变为true时，通知才能解除线程(这对于检查伪唤醒调用特别有用)；
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;类似这样的实现：return wait_until (lck, chrono::steady_clock::now() + rel_time, std::move(pred));
+<br>
+<br><font color=purple size = 4>std::condition_variable::wait_until</font>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;">(<span style="color:#ff0000;">1</span><span style="color:#000000;">)&nbsp;unconditional<BR>
+</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;Clock,&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;Duration&gt;<BR>
+cv_status&nbsp;wait_until&nbsp;(unique_lock&lt;mutex&gt;&nbsp;&amp;lck,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;chrono::time_point&lt;Clock,&nbsp;Duration&gt;&nbsp;&amp;abs_time);<BR>
+(</span><span style="color:#ff0000;">2</span><span style="color:#000000;">)&nbsp;predicate<BR>
+</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;Clock,&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;Duration,&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;Predicate&gt;<BR>
+</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&nbsp;wait_until&nbsp;(unique_lock&lt;mutex&gt;&nbsp;&amp;lck,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;chrono::time_point&lt;Clock,&nbsp;Duration&gt;&nbsp;&amp;abs_time,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Predicate&nbsp;pred);</span></div></td></tr></table></div>
+1.当前线程的执行(该线程将锁定lck的互斥锁)会被阻塞，直到被通知或到达abs_time时间点，无论那一个第一次发生；
+<br>2.在线程还处在阻塞时，该函数将自动调用lck.unlock()，允许其他锁定的线程继续运行；
+<br>3.一旦被通知或一旦abs_time时间到了，函数就会接触阻塞状态并调用lck. lock()，在调用函数时将lck与函数的状态保持在同一状态，然后函数返回(注意，最后一个互斥锁可能会在返回之前阻塞线程)；
+<br>4.一般情况下，函数会被另一个线程的调用唤醒，无论是对成员notify_one还是成员notify_all。但是某些实现可能产生虚假的唤醒调用，而不需要调用这些函数。因此，该函数的使用者将要确保满足恢复的条件；
+<br>5.(定义2)如果指定pred，如果pred返回false，则函数只会阻塞，并且只有当它变为true时，通知才能解除线程(这对于检查伪唤醒调用特别有用)；
+<br> * 类似这样的实现：
+<br>while (!pred())
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if ( wait_until(lck,abs_time) == cv_status::timeout)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return pred();
+<br>return true;
+<br>
+<br><font color=blue size = 5>Notify functions</font>
+<br> ● notify_one 唤醒等待的一个线程，注意只唤醒一个
+<br> ● notify_all 唤醒所有等待的线程，使用该函数时应避免出现惊群效应
+<br>
+<br><font color=purple size = 4>std::condition_variable::notify_one</font>
+<br>定义：void notify_one() noexcept;
+<br>1.打开当前等待该条件的一个线程。如果没有线程在等待，则该函数什么都不做。如果多于一个，则不指定哪个线程被选中，也不随机，而是由等待线程抢占；
+<br>2.该指令针对这个单独的条件变量，这使得notify_one()不可能被延迟，并且在调用notify_one()之后才开始等待；
+<br>3.通知线程不需要将锁保存在与等待线程所持有的相同互斥锁上，事实上，这样做是一个悲观的方法，因为通知的线程会立即阻塞，等待通知线程释放锁。然而，一些实现(特别是许多pthreads实现)识别这种情况，并避免这种“匆忙而等待”的场景，通过将等待的线程从条件变量的队列直接传递到通知调用的互斥锁的队列中，而不将其唤醒
+<br>
+<br><font color=purple size = 4>std::condition_variable::notify_all</font>
+<br>定义：void notify_all() noexcept;
+<br>解锁当前等待该条件的所有线程，如果没有线程在等待，则该函数什么都不做；
+<br>注：
+<br>1.notify_one()/notify_all()和wait()/wait_for()/wait_until() 三个原子部分中的每一个影响都在一个完全的顺序(解锁+等待, 唤醒, 锁)中，可以被视为一个原子变量的修改顺序：该命令是特定于这个单独的条件变量的。这使得notify_one()不可能被延迟，并且在调用notify_one()之后才开始等待；
+<br>2.通知线程不需要将锁保存在与等待线程所持有的相同互斥锁上；事实上，这样做是一个悲观的方法，因为通知的线程会立即阻塞，等待通知线程释放锁。
+<br>
+<br> 📝 程序示例：
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47<br>48<br>49<br>50<br>51<br>52<br>53<br>54<br>55<br>56<br>57<br>58<br>59<br>60<br>61<br>62<br>63<br>64<br>65<br>66<br>67<br>68<br>69<br>70<br>71<br>72<br>73<br>74<br>75<br>76<br>77<br>78<br>79<br>80<br>81<br>82<br>83<br>84<br>85<br>86<br>87<br>88<br>89<br>90<br>91<br>92<br>93<br>94<br>95<br>96<br>97<br>98<br>99<br>100<br>101<br>102<br>103<br>104<br>105<br>106<br>107<br>108<br>109<br>110<br>111<br>112<br>113<br>114<br>115<br>116<br>117<br>118<br>119<br>120<br>121<br>122<br>123<br>124<br>125<br>126<br>127<br>128<br>129<br>130<br>131<br>132<br>133<br>134<br>135<br>136<br>137<br>138<br>139<br>140<br>141<br>142<br>143<br>144<br>145<br>146<br>147<br>148<br>149<br>150<br>151<br>152<br>153<br>154<br>155<br>156<br>157<br>158<br>159<br>160<br>161<br>162<br>163<br>164<br>165<br>166<br>167<br>168<br>169<br>170<br>171<br>172<br>173<br>174<br>175<br>176<br>177<br>178<br>179<br>180<br>181<br>182<br>183<br>184<br>185<br>186<br>187<br>188<br>189<br>190<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;iostream&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;string&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;chrono&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;atomic&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;thread&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;mutex&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;condition_variable&gt;<BR>
+</span><span style="color:#0000ff;">using</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">namespace</span><span style="color:#000000;">&nbsp;std;<BR>
+<BR>
+mutex&nbsp;mtx;<BR>
+condition_variable&nbsp;cv;<BR>
+string&nbsp;da;<BR>
+</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&nbsp;ready&nbsp;=&nbsp;</span><span style="color:#0000ff;">false</span><span style="color:#000000;">;<BR>
+</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&nbsp;processed&nbsp;=&nbsp;</span><span style="color:#0000ff;">false</span><span style="color:#000000;">;<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;cargo&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+mutex&nbsp;cv_m;<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;ve;<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;print_id(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;id)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;unique_lock&lt;mutex&gt;&nbsp;lck(mtx);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">while</span><span style="color:#000000;">&nbsp;(!ready)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cv.wait(lck);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;thread&nbsp;#&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;id&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\n&quot;</span><span style="color:#000000;">;<BR>
+}<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;go()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;unique_lock&lt;mutex&gt;&nbsp;lck(mtx);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;ready&nbsp;=&nbsp;</span><span style="color:#0000ff;">true</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cv.notify_all();<BR>
+}<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;worker_thread()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;unique_lock&lt;mutex&gt;&nbsp;lck(mtx);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cv.wait(lck,&nbsp;[]&nbsp;{</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;ready;&nbsp;});<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;Worker&nbsp;thread&nbsp;is&nbsp;processing&nbsp;data\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;da&nbsp;+=&nbsp;</span><span style="color:#800000;">&quot;&nbsp;after&nbsp;processing&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;processed&nbsp;=&nbsp;</span><span style="color:#0000ff;">true</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;Worker&nbsp;thread&nbsp;signals&quot;</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">&quot;&nbsp;data&nbsp;processing&nbsp;completed\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;lck.unlock();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cv.notify_one();<BR>
+}<BR>
+<BR>
+</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&nbsp;shipment_available()&nbsp;{&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;cargo&nbsp;!=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;}<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;consume(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;n)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;n;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unique_lock&lt;mutex&gt;&nbsp;lck(mtx);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cv.wait(lck,&nbsp;shipment_available);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;cargo&nbsp;=&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;cargo&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cargo&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+}<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;waits()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;unique_lock&lt;mutex&gt;&nbsp;lck(mtx);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cerr&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;Waitting&nbsp;...\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cv.wait(lck,&nbsp;[]&nbsp;{</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;cargo&nbsp;==&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;&nbsp;});<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cerr&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;...&nbsp;finished&nbsp;wairing.&nbsp;cargo&nbsp;==&nbsp;1\n&quot;</span><span style="color:#000000;">;<BR>
+}<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;signals()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;this_thread::sleep_for(chrono::seconds(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lock_guard&lt;mutex&gt;&nbsp;lgk(cv_m);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cerr&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;Notifying&nbsp;...&nbsp;\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cv.notify_all();<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;this_thread::sleep_for(chrono::seconds(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lock_guard&lt;mutex&gt;&nbsp;lgk(cv_m);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cerr&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;Notifying&nbsp;...&nbsp;\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cv.notify_all();<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;this_thread::sleep_for(std::chrono::seconds(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lock_guard&lt;mutex&gt;&nbsp;lgk(cv_m);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cargo&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cerr&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;Notifying&nbsp;again&nbsp;...&nbsp;\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cv.notify_all();<BR>
+}<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;read_value()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cin&nbsp;&gt;&gt;&nbsp;ve;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cv.notify_one();<BR>
+}<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;waits2(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;idx)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;unique_lock&lt;mutex&gt;&nbsp;lck(cv_m);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">auto</span><span style="color:#000000;">&nbsp;now&nbsp;=&nbsp;chrono::system_clock::now();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(cv.wait_until(lck,&nbsp;now&nbsp;+&nbsp;idx&nbsp;*&nbsp;chrono::milliseconds(</span><span style="color:#ff0000;">100</span><span style="color:#000000;">),<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[]()&nbsp;{</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;cargo&nbsp;==&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;&nbsp;}))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cerr&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;Thread&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;idx&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;&nbsp;finished&nbsp;waiting.&nbsp;cargo&nbsp;=&nbsp;&quot;</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;&lt;&nbsp;cargo&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">else</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cerr&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;Thread&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;idx&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;&nbsp;time&nbsp;out.&nbsp;cargo&nbsp;=&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;cargo<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\n&quot;</span><span style="color:#000000;">;<BR>
+}<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;signals2()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;this_thread::sleep_for(chrono::milliseconds(</span><span style="color:#ff0000;">120</span><span style="color:#000000;">));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cerr&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;Notifying&nbsp;...&nbsp;\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cv.notify_all();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;this_thread::sleep_for(std::chrono::milliseconds(</span><span style="color:#ff0000;">100</span><span style="color:#000000;">));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cargo&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cerr&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;Notifying&nbsp;again...\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cv.notify_all();<BR>
+}<BR>
+<BR>
+</span><span style="color:#0000ff;">auto</span><span style="color:#000000;">&nbsp;main()&nbsp;-&gt;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;"><BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;小试牛刀<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;thread&nbsp;threads[</span><span style="color:#ff0000;">10</span><span style="color:#000000;">];<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;threads[i]&nbsp;=&nbsp;thread(print_id,&nbsp;i&nbsp;+&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;10&nbsp;threads&nbsp;ready&nbsp;to&nbsp;race...\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;go();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#0000ff;">auto</span><span style="color:#000000;">&amp;&nbsp;th&nbsp;:&nbsp;threads)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;th.join();<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;thread&nbsp;worker(worker_thread);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;da&nbsp;=&nbsp;</span><span style="color:#800000;">&quot;Example&nbsp;data&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;send&nbsp;data&nbsp;to&nbsp;the&nbsp;worker&nbsp;thread<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lock_guard&lt;mutex&gt;&nbsp;lgk(mtx);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ready&nbsp;=&nbsp;</span><span style="color:#0000ff;">true</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;main()&nbsp;signals&nbsp;data&nbsp;ready&nbsp;for&nbsp;processing\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cv.notify_one();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;wait&nbsp;for&nbsp;the&nbsp;worker<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unique_lock&lt;mutex&gt;&nbsp;lck(mtx);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cv.wait(lck,&nbsp;[]&nbsp;{</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;processed;&nbsp;});<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;Back&nbsp;in&nbsp;main(),&nbsp;data&nbsp;=&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;da&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;worker.join();<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;condition_variable::wait&nbsp;示例<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;thread&nbsp;consumer_thread(consume,&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">while</span><span style="color:#000000;">&nbsp;(shipment_available())<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this_thread::yield();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;yield()可以将本线程的CPU时间片放弃，并允许其他线程运行<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;这里的其它线程也包含本线程<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unique_lock&lt;mutex&gt;&nbsp;lck(mtx);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cargo&nbsp;=&nbsp;i&nbsp;+&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cv.notify_one();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;consumer_thread.join();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;输出：将依次打印&nbsp;cargo=1~10<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;cargo&nbsp;=&nbsp;0<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;thread&nbsp;t1(waits),&nbsp;t2(waits),&nbsp;t3(waits),&nbsp;t4(signals);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;t1.join(),&nbsp;t2.join(),&nbsp;t3.join(),&nbsp;t4.join();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cargo&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;condition_variable::wait_for&nbsp;示例<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;Please,&nbsp;enter&nbsp;an&nbsp;integer&quot;</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#800000;">&quot;&nbsp;(I'll&nbsp;be&nbsp;printing&nbsp;dots):&nbsp;\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;thread&nbsp;thrd(read_value);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;mutex&nbsp;mutx;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;unique_lock&lt;mutex&gt;&nbsp;lckk(mutx);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">while</span><span style="color:#000000;">&nbsp;(cv.wait_for(lckk,&nbsp;chrono::seconds(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">))&nbsp;==<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cv_status::timeout)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;.\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;You&nbsp;entered:&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;ve&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;thrd.join();<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;condition_variable::wait_until&nbsp;示例<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;thread&nbsp;t1_2(waits2,&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">),&nbsp;t2_2(waits2,&nbsp;</span><span style="color:#ff0000;">2</span><span style="color:#000000;">),<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;t3_2(waits2,&nbsp;</span><span style="color:#ff0000;">3</span><span style="color:#000000;">),&nbsp;t4_2(signals2);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;t1_2.join(),&nbsp;t2_2.join(),&nbsp;t3_2.join(),&nbsp;t4_2.join();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cargo&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;由于waits2函数中等待为100ms，最终结果有系统调度算法决定<BR>
+</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}</span></div></td></tr></table></div>
+<br><a name="bc2"><font color=green size = 5>class condition_variable_any</font></a>
+<br>
+<br><font color=blue size = 5>std::condition_variable_any</font>
+<br> ● std::condition_variable_any是std::condition_variable的泛化
+<br>1.与条件变量一样，除了它的等待函数可以将任何可锁类型作为参数(条件变量对象只能使用unique_lock&lt;mutex&gt;)，除此之外，它们是相同的；
+<br>2.std::condition_variable 只能用于std::unique_lock&lt;mutex&gt;，condition_variable_any可以操作任何满足基本要求的锁，参见std::condition_变量，用于描述条件变量的语义；类std::condition_variable_any是一个标准布局类，它不可拷贝构造的，移动可构造的，不可拷贝复制和移动复制；
+<br>3.如果锁是std::unique_lock，std::condition_variable可以提供更好的性能。
+<br>注：std::condition_variable_any与自定义的可锁类型是用来提供方便的可中断等待：自定义锁操作会像预期的那样锁定相关的互斥对象，并且在接收到中断信号时也执行必要的设置来通知这个条件变量。
+<br>
+<br><font color=purple size = 4>(constructor)构造函数</font>
+<br>定义：default (1) condition_variable_any();
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;copy [deleted] (2) condition_variable_any (const condition_variable_any&amp;) = delete;
+<br> ● 构造std::condition_variable_any类型的对象. 不能通过拷贝和移动构造(这个类型的拷贝构造函数和赋值操作符都被删除)
+<br>注：如果构造失败，会抛出一个系统异常：
+<table border="2">
+<tr>
+<th>异常类型</th>
+<th>错误条件</th>
+<th>描述</th>
+</tr>
+<tr>
+<td>系统错误</td>
+<td>ERRC::resource_unavailable_try_again</td>
+<td>资源限制(内存分配除外)可防止初始化</td>
+</tr>
+<tr>
+<td>系统错误</td>
+<td>ERRC::operation_not_perimtted</td>
+<td>线程没有执行操作的证书</td>
+</tr>
+</table>
+根据库的实现，也可能在其它情况下抛出异常，如bad_alloc无法分配内存
+<br>operator= [deleted] 不允许复制
+<br>
+<br><font color=purple size = 4>(destructor)析构函数</font>
+<br> ● 析构condition_variable_any对象。在此条件下被阻塞的任何线程在调用此析构函数之前都将被通知。在这个析构函数被调用之后，没有线程将开始等待
+<br>注：
+<br>1.如果所有线程都被通知，调用析构函数是安全的。它们不需要退出各自的等待函数：一些线程可能还在等待重新获得相关的锁，或者等待调度在重新获得它之后运行；
+<br>2.程序员必须确保在启动析构函数时，没有线程试图等待，特别是当等待线程调用循环中的等待函数或使用执行谓词的等待函数的重载时。
+<br>
+<br><font color=blue size = 5>Wait functions</font>
+<br>
+<br><font color=purple size = 4>std::condition_variable_any::wait</font>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;">unconditional&nbsp;(<span style="color:#ff0000;">1</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;Lock&gt;&nbsp;</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;wait&nbsp;(Lock&nbsp;&amp;lck);<BR>
+predicate&nbsp;(</span><span style="color:#ff0000;">2</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;Lock,&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;Predicate&gt;<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;wait&nbsp;(Lock&nbsp;&amp;lck,&nbsp;Predicate&nbsp;pred);</span></div></td></tr></table></div>
+1.当前线程（当前正在锁定lck）的执行将被阻止，直到通知为止；
+<br>2.阻止线程的时刻，该函数自动调用lck.unlock()，允许其他锁定线程继续；
+<br>3.一旦通知（显式地，通过某个其他线程），函数解除阻塞和调用lck.lock()，使lck处于与调用函数时相同的状态。然后函数返回（注意，这个最后的互斥锁定可能在返回之前再次阻止线程）；
+<br>4.通常，该函数被通知通过另一个线程的呼叫唤醒成员notify_one 或 notify_all。但是某些实现可能会产生虚假的唤醒呼叫，而不会调用这些功能。因此，该功能的用户应确保其恢复条件得到满足；
+<br>5.定义(2): 如果指定pred，如果pred返回false，则函数只会阻塞，并且只有当它变为true时，通知才能解除线程(这对于检查伪唤醒调用特别有用)；
+<br> * 类似这样的实现：
+<br>while (!pred())
+<br>{
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wait(lock);
+<br>}
+<br>
+<br><font color=purple size = 4>std::condition_variable_any::wait_for</font>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;">unconditional&nbsp;(<span style="color:#ff0000;">1</span><span style="color:#000000;">)<BR>
+</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;Lock,&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;Rep,&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;Period&gt;<BR>
+cv_status&nbsp;wait_for&nbsp;(Lock&nbsp;&amp;lck,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;chrono::duration&lt;Rep,&nbsp;Period&gt;&nbsp;&amp;rel_time);<BR>
+predicate&nbsp;(</span><span style="color:#ff0000;">2</span><span style="color:#000000;">)<BR>
+</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;Lock,&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;Rep,&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;Period,&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;Predicate&gt;<BR>
+</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&nbsp;wait_for&nbsp;(Lock&nbsp;&amp;lck,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;chrono::duration&lt;Rep,&nbsp;Period&gt;&nbsp;&amp;rel_time,&nbsp;Predicate&nbsp;pred);</span></div></td></tr></table></div>
+1.当前线程（当前锁定lck）的执行在rel_time期间被阻塞，或者直到通知（如果后者首先发生）；
+<br>2.在阻止线程的时刻，该函数自动调用lck.unlock()，允许其他锁定线程继续；
+<br>3.一旦通知或一旦rel_time已经过去，该函数解除阻塞和调用lck.lock()，使lck处于与调用函数时相同的状态。然后函数返回（注意，这个最后的互斥锁定可能在返回之前再次阻止线程）；
+<br>4.通常，该函数被通知通过另一个线程的呼叫唤醒成员notify_one 或 notify_one。但是某些实现可能会产生虚假的唤醒呼叫，而不会调用这些功能。因此，该功能的用户应确保其恢复条件得到满足；
+<br>5.版本(2):如果指定pred，如果pred返回false，则函数只会阻塞，并且只有当它变为true时，通知才能解除线程(这对于检查伪唤醒调用特别有用)。可以理解为：
+<br> return wait_until (lck, chrono::steady_clock::now() + rel_time, std::move(pred));
+<br>
+<br><font color=purple size = 4>std::condition_variable_any::wait_until</font>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;">unconditional&nbsp;(<span style="color:#ff0000;">1</span><span style="color:#000000;">)<BR>
+</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;Lock,&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;Clock,&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;Duration&gt;<BR>
+cv_status&nbsp;wait_until&nbsp;(Lock&nbsp;&amp;lck,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;chrono::time_point&lt;Clock,&nbsp;Duration&gt;&nbsp;&amp;abs_time);<BR>
+predicate&nbsp;(</span><span style="color:#ff0000;">2</span><span style="color:#000000;">)<BR>
+</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;Lock,&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;Clock,&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;Duration,&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;Predicate&gt;<BR>
+</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&nbsp;wait_until&nbsp;(Lock&nbsp;&amp;lck,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;chrono::time_point&lt;Clock,&nbsp;Duration&gt;&nbsp;&amp;abs_time,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Predicate&nbsp;pred);</span></div></td></tr></table></div>
+1.当前线程的执行（当前锁定lck）将被阻塞，直到通知或直到abs_time，以先发生者为准；
+<br>2.在阻止线程的时刻，该函数自动调用lck.unlock()，允许其他锁定线程继续；
+<br>3.一旦通知或一旦为abs_time，函数解除阻塞和调用lck.lock()，使lck处于与调用函数时相同的状态。然后函数返回（注意，这个最后的互斥锁定可能在返回之前再次阻止线程）；
+<br>4.通常，该函数被通知通过另一个线程的呼叫唤醒成员notify_one 或会员 notify_one。但是某些实现可能会产生虚假的唤醒呼叫，而不会调用这些功能。因此，该功能的用户应确保其恢复条件得到满足；
+<br>5.版本2：如果指定pred，如果pred返回false，则函数只会阻塞，并且只有当它变为true时，通知才能解除线程(这对于检查伪唤醒调用特别有用)。表现为：
+<br>while (!pred())
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if ( wait_until(lck,abs_time) == cv_status::timeout)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return pred();
+<br>return true;
+<br>
+<br><font color=blue size = 5>Notify functions</font>
+<br>
+<br><font color=purple size = 4>std::condition_variable_any::notify_one</font>
+<br>同上面std::condition_variable的函数
+<br>unblock当前等待该条件的一个线程，如果没有线程在等待，则该函数什么都不做，如果多于一个，则不指定哪个线程被选中。
+<br>
+<br><font color=purple size = 4>std::condition_variable_any::notify_all</font>
+<br>同上面std::condition_variable的函数。打开当前等待该条件的所有线程，如果没有线程在等待，则该函数什么都不做。
+<br>
+<br><a name="bc3"><font color=green size = 5>Enum classes</font></a>
+<br>
+<br><font color=purple size = 4>std::cv_status</font>
+<br>定义：enum class cv_status;
+<br> ● 条件变量状态：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;表示是否由于超时而返回的函数
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;这种类型的值由condition_variable和condition_variable_any的成员wait_for和wait_until返回
+<br> ● 定义类似：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;enum class cv_status { no_timeout, timeout };
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cv_status::no_timeout :  该函数返回没有超时
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cv_status::timeout : 该函数由于达到其时间限制（timeout）而返回
+<br>
+<br><a name="bc4"><font color=green size = 5>Functions</font></a>
+<br>
+<br><font color=purple size = 4>std::notify_all_at_thread_exit</font>
+<br>定义：void notify_all_at_thread_exit (condition_variable&amp; cond,unique_lock<mutex> lck);
+<br> ● 当调用线程退出时，等待在cond上的所有线程都被通知恢复执行
+<br> ● 该函数还获得由lck管理的mutex对象上的锁的所有权，该对象在内部由函数存储，并在线程退出时解锁(仅在通知所有线程之前)，行为如下，一旦所有具有线程存储时间的对象都被销毁：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lck.unlock();
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cond.notify_all();
+<br>注：
+<br>1.如果lock. mutex()没有被当前线程锁定，则调用此函数是未定义的行为；
+<br>2.如果lock.mutex()与当前在同一条件变量中等待的所有其他线程使用的互斥对象不相同，则调用此函数所提供的锁一直保持到线程退出。一旦调用这个函数，就不会有更多的线程可能获得相同的锁以等待cond。如果某个线程在这个条件变量上等待，它不应该尝试释放并重新获取锁，当它被错误地唤醒时；
+<br>3.在典型的用例中，这个函数是由一个独立的线程调用的最后一个函数。
+<br>
+<br> 📝 程序示例：
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;iostream&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;thread&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;mutex&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;condition_variable&gt;<BR>
+</span><span style="color:#0000ff;">using</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">namespace</span><span style="color:#000000;">&nbsp;std;<BR>
+<BR>
+mutex&nbsp;mtx;<BR>
+condition_variable&nbsp;cv;<BR>
+</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&nbsp;ready&nbsp;=&nbsp;</span><span style="color:#0000ff;">false</span><span style="color:#000000;">;<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;print_id(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;id)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;unique_lock&lt;mutex&gt;&nbsp;lck(mtx);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">while</span><span style="color:#000000;">&nbsp;(!ready)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cv.wait(lck);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;thread&nbsp;#&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;id&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\n&quot;</span><span style="color:#000000;">;<BR>
+}<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;go()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;unique_lock&lt;mutex&gt;&nbsp;lck(mtx);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;notify_all_at_thread_exit(cv,&nbsp;move(lck));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;ready&nbsp;=&nbsp;</span><span style="color:#0000ff;">true</span><span style="color:#000000;">;<BR>
+}<BR>
+<BR>
+</span><span style="color:#0000ff;">auto</span><span style="color:#000000;">&nbsp;main()&nbsp;-&gt;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;"><BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;thread&nbsp;threads[</span><span style="color:#ff0000;">10</span><span style="color:#000000;">];<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;threads[i]&nbsp;=&nbsp;thread(print_id,&nbsp;i&nbsp;+&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">);<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;10&nbsp;threads&nbsp;ready&nbsp;to&nbsp;race&nbsp;...\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;thread(go).detach();<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#0000ff;">auto</span><span style="color:#000000;">&amp;&nbsp;th&nbsp;:&nbsp;threads)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;th.join();<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}</span></div></td></tr></table></div>
+程序输出：提示语... thread#10 ~ 1
+<br><br><br>
+<font color = gray size = 3>如有错误，欢迎指正！</font></p></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://oubc.github.io/tags/c/c&#43;&#43;/">C/C&#43;&#43;</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmg4aog3074074gnf.gif?tags=%5B%5D">I </a>
+	<a href="">love</a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmfm2eg306o06o74u.gif?tags=%5B%5D"> you </a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx4tpcj30fn0bq3zg.jpg?tags=%5B%5D">three </a>
+	<a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx64ctg307s07swfy.gif?tags=%5B%5D">thousand</a>
+    <a href="https://www.kugou.com/song/#hash=96426C78381DE98DC31A5846FC274CBF&album_id=646623"> times.</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>家庭、梦想、内心的平静</span>
+  </div>
+</footer>
+
+
+
+<script src="https://oubc.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://oubc.github.io/js/zozo.js"></script>
+<script src="https://oubc.github.io/js/highlight.pack.js"></script>
+<link  href="https://oubc.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://oubc.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>
