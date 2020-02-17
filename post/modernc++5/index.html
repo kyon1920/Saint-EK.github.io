@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Bruce Cheung"/>
+
+  
+  <meta name="description" content=""/>
+  
+
+  
+  
+  <meta name="keywords" content="blog, simple, dream"/>
+  
+
+  
+  <link rel="canonical" href="https://oubc.github.io/post/modernc&#43;&#43;5/"/>
+
+  
+
+  <title>Modern C&#43;&#43; 多线程 atomic &middot; Love, or death</title>
+
+  <link rel="shortcut icon" href="https://oubc.github.io/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/zozo.css"/>
+  <link rel="stylesheet" href="https://oubc.github.io/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/post/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://oubc.github.io/">
+          <span>Love, or death</span>
+          <img src="https://oubc.github.io/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">For you, a thousand times over.</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/oubc" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=uYGOjo6OiIuLivnIyJfa1tQ" title="mail" target="_blank"><i class="remixicon-mail-fill"></i></a>
+        
+        
+        
+        <a href="http://sighttp.qq.com/msgrd?v=1&amp;uin=877771223" title="qq" target="_blank"><i class="remixicon-qq-fill"></i></a>
+        
+        
+        
+        <a href="https://github.com/oubc/oubc.github.io/blob/master/images/wx.jpg?raw=true" title="wechat" target="_blank"><i class="remixicon-wechat-fill"></i></a>
+        
+        
+        
+        <a href="https://weibo.com/u/6993631995?topnav=1&amp;wvr=6&amp;topsug=1" title="weibo" target="_blank"><i class="remixicon-weibo-fill"></i></a>
+        
+        
+        <a href="https://oubc.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/post/modernc&#43;&#43;5/'>Modern C&#43;&#43; 多线程 atomic</a></h2>
+          <span class="date">2020.02.16</span>
+        </div>
+        <div class="post_content markdown"><p><br>
+<br><font color=green size = 5>C++新标准之多线程 atomic原子操作</font>
+<br>
+<br><font color = gray size = 3>目录</font><font color = gray size = 2> (点击跳转)</font>
+<br><a href="#bc0"><font color=yellow size = 4>&lt;atomic&gt;头文件结构</font></a>
+<br><a href="#bc1"><font color=blue size = 4>std::atomic</font></a>
+<br><a href="#bc2"><font color=pink size = 4>std::atomic_flag</font></a>
+<br><a href="#bc3"><font color=purple size = 4>std::memory_order</font></a>
+<br><a href="#bc4"><font color=cyan size = 4>Functions</font></a>
+<br><a href="#bc5"><font color=blue size = 4>Functions for atomic objects (C-style)</font></a>
+<br><a href="#bc6"><font color=yellow size = 4>Macro functions</font></a>
+<br>
+<br>
+<br> ● 原子操作是一种lock free的操作，不需要同步锁，具有很高的性能
+<br> ● 原子操作是不可打断的最低粒度操作，是线程安全的
+<br> ● C++新标准中原子类提供的成员函数都是原子的，是线程安全的
+<br> ● 原子操作中最简单的莫过于atomic_flag，只有两种操作，test and set、clear
+<br> ● C++新标准中所有的原子类都是不允许拷贝、不允许Move的
+<br>
+<br><a name="bc0"><font color=green size = 5>&lt;atomic&gt;头文件</font></a>
+<br> ● 原子类型是封装了一个值的类型，它的访问保证不会导致数据的竞争，并且可以用于在不同的线程之间同步内存访问
+<br> ● &lt;atomic&gt;声明两个C++类，原子和atomic_flag，它实现了自包含类中的原子类型的所有特性，header还声明了整个C样式类型和函数并与C中的原子支持兼容
+<br> 🛠 &lt;atomic&gt;头文件结构
+<table border="2">
+<tr>
+<th>Class</th>
+<th>描述</th>
+</tr>
+<tr>
+<td>atomic</td>
+<td>用于bool、整数和指针类型的原子类模板和特殊化(类模板)</td>
+</tr>
+<tr>
+<td>atomic_flag</td>
+<td>无锁bool原子类型(类)</td>
+</tr>
+</table>
+<br>
+<table border="2">
+<tr>
+<th>Types</th>
+<th>描述</th>
+</tr>
+<tr>
+<td>memory_order</td>
+<td>为给定的原子操作定义内存排序约束(typedef)</td>
+</tr>
+</table>
+<br>
+<table border="2">
+<tr>
+<th>Functions</th>
+<th>描述</th>
+</tr>
+<tr>
+<td>kill_dependency</td>
+<td>从std::memory_order_consume依赖树中删除指定对象(模板函数)</td>
+</tr>
+<tr>
+<td>atomic_thread_fence</td>
+<td>通用内存顺序依赖关系的隔离同步原语(函数)</td>
+</tr>
+<tr>
+<td>atomic_signal_fence</td>
+<td>在同一线程中执行的线程和信号处理程序之间的隔离(函数)</td>
+</tr>
+</table>
+<br>
+<table border="2">
+<tr>
+<th>Functions for atomic objects (C-style)</th>
+<th>描述</th>
+</tr>
+<tr>
+<td>atomic_is_lock_free</td>
+<td>检查原子类型的操作是否免锁(函数模板)</td>
+</tr>
+<tr>
+<td>atomic_store<br>atomic_store_explicit</td>
+<td>使用非原子参数以原子方式替换原子对象的值(函数模板)</td>
+</tr>
+<tr>
+<td>atomic_load<br>atomic_load_explicit</td>
+<td>在原子对象中原子性地获取存储的值(函数模板)</td>
+</tr>
+<tr>
+<td>atomic_exchange<br>atomic_exchange_explicit</td>
+<td>原子性地用非原子参数替换原子对象的值，并返回原子的旧值(函数模板)</td>
+</tr>
+<tr>
+<td>atomic_compare_exchange_weak<br>atomic_compare_exchange_weak_explicit<br>atomic_compare_exchange_strong<br>atomic_compare_exchange_strong_explicit</td>
+<td>原子地比较原子对象和非原子参数的值，如果不相等，则执行原子交换，如果没有，就load atomic</td>
+</tr>
+<tr>
+<td>atomic_fetch_add<br>atomic_fetch_add_explicit</td>
+<td>向原子对象添加非原子值，并获取原子的前值(函数模板)</td>
+</tr>
+<tr>
+<td>atomic_fetch_sub<br>atomic_fetch_sub_explicit</td>
+<td>向原子对象减去非原子值，并获取原子的前值(函数模板)</td>
+</tr>
+<tr>
+<td>atomic_fetch_and<br>atomic_fetch_and_explicit</td>
+<td>用逻辑结果和非原子参数替换原子对象，并获得原子的前值(函数模板)</td>
+</tr>
+<tr>
+<td>atomic_fetch_or<br>atomic_fetch_or_explicit</td>
+<td>用逻辑或非原子参数替换原子对象，并获得原子的前值(函数模板)</td>
+</tr>
+<tr>
+<td>atomic_fetch_xor<br>atomic_fetch_xor_explicit</td>
+<td>用逻辑XOR和非原子参数替换原子对象，并获得原子的前值(函数模板)</td>
+</tr>
+</table>
+<br>
+<table border="2">
+<tr>
+<th>Functions for atomic flags (C-style)</th>
+<th>描述</th>
+</tr>
+<tr>
+<td>atomic_flag_test_and_set<br>atomic_flag_test_and_set_explicit</td>
+<td>原子地将flag设置为true并返回其先前的值(函数)</td>
+</tr>
+<tr>
+<td>atomic_flag_clear<br>atomic_flag_clear_explicit</td>
+<td>原子地将flag设置为false</td>
+</tr>
+</table>
+<br>
+<table border="2">
+<tr>
+<th>Preprocessor macros</th>
+<th>描述</th>
+</tr>
+<tr>
+<td>ATOMIC_VAR_INIT</td>
+<td>静态存储时间的原子变量的常量初始化(宏)</td>
+</tr>
+<tr>
+<td>ATOMIC_FLAG_INIT</td>
+<td>初始化std::atomic_flag为false</td>
+</tr>
+</table>
+<br> ● Macro constants
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#008000;">//&nbsp;lock-free&nbsp;property<BR>
+</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;ATOMIC_BOOL_LOCK_FREE&nbsp;</span><span style="color:#008000;">/*unspecified*/</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;ATOMIC_CHAR_LOCK_FREE&nbsp;</span><span style="color:#008000;">/*unspecified*/</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;ATOMIC_CHAR16_T_LOCK_FREE&nbsp;</span><span style="color:#008000;">/*unspecified*/</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;ATOMIC_CHAR32_T_LOCK_FREE&nbsp;</span><span style="color:#008000;">/*unspecified*/</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;ATOMIC_WCHAR_T_LOCK_FREE&nbsp;</span><span style="color:#008000;">/*unspecified*/</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;ATOMIC_SHORT_LOCK_FREE&nbsp;</span><span style="color:#008000;">/*unspecified*/</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;ATOMIC_INT_LOCK_FREE&nbsp;</span><span style="color:#008000;">/*unspecified*/</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;ATOMIC_LONG_LOCK_FREE&nbsp;</span><span style="color:#008000;">/*unspecified*/</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;ATOMIC_LLONG_LOCK_FREE&nbsp;</span><span style="color:#008000;">/*unspecified*/</span><span style="color:#000000;"><BR>
+</span><span style="color:#0000ff;">#define</span><span style="color:#000000;">&nbsp;ATOMIC_POINTER_LOCK_FREE&nbsp;</span><span style="color:#008000;">/*unspecified*/</span></div></td></tr></table></div>
+<br>
+<br><a name="bc1"><font color=green size = 5>std::atomic</font></a>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">template</span><span style="color:#000000;">&lt;&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;T&nbsp;&gt;&nbsp;</span><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;atomic;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)&nbsp;&nbsp;(since&nbsp;C++</span><span style="color:#ff0000;">11</span><span style="color:#000000;">)<BR>
+</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&lt;&gt;&nbsp;&nbsp;</span><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;atomic&lt;Integral&gt;;&nbsp;&nbsp;&nbsp;&nbsp;(</span><span style="color:#ff0000;">2</span><span style="color:#000000;">)&nbsp;&nbsp;(since&nbsp;C++</span><span style="color:#ff0000;">11</span><span style="color:#000000;">)<BR>
+</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&lt;&gt;&nbsp;&nbsp;</span><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;atomic&lt;</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&gt;;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(</span><span style="color:#ff0000;">3</span><span style="color:#000000;">)&nbsp;&nbsp;(since&nbsp;C++</span><span style="color:#ff0000;">11</span><span style="color:#000000;">)<BR>
+</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&lt;&nbsp;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;T&nbsp;&gt;&nbsp;&nbsp;</span><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;atomic&lt;T*&gt;;&nbsp;(</span><span style="color:#ff0000;">4</span><span style="color:#000000;">)&nbsp;&nbsp;(since&nbsp;C++</span><span style="color:#ff0000;">11</span><span style="color:#000000;">)指针特化</span></div></td></tr></table></div>
+ ● std::atomic模板的每个实例化和专门化都定义了一个原子类型
+<br> ● 如果一个线程在另一个线程读取它时写入一个原子对象，那么该行为就会被明确定义(参见关于数据竞争的详细信息的内存模型)
+<br> ● 此外，对原子对象的访问可以建立线程间的同步，并按照std::memory_order指定非原子性的内存访问
+<br> ● std::atomic可以用于任何简单的可复制的T实例化，同时std::atomic是不可复制和不可移动的
+<br>
+<br><font color=blue size = 5>Member functions</font>
+<br>
+<br><font color=purple size = 4>(constructor)构造函数</font>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;">atomic()&nbsp;noexcept&nbsp;=&nbsp;<span style="color:#0000ff;">default</span><span style="color:#000000;">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)&nbsp;&nbsp;</span><span style="color:#0000ff;">default</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(since&nbsp;C++</span><span style="color:#ff0000;">11</span><span style="color:#000000;">)<BR>
+constexpr&nbsp;atomic(&nbsp;T&nbsp;desired&nbsp;)&nbsp;noexcept;&nbsp;(</span><span style="color:#ff0000;">2</span><span style="color:#000000;">)&nbsp;&nbsp;initialization&nbsp;(since&nbsp;C++</span><span style="color:#ff0000;">11</span><span style="color:#000000;">)<BR>
+atomic(&nbsp;</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;atomic&nbsp;&amp;&nbsp;)&nbsp;=&nbsp;</span><span style="color:#0000ff;">delete</span><span style="color:#000000;">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(</span><span style="color:#ff0000;">3</span><span style="color:#000000;">)&nbsp;&nbsp;copy&nbsp;[deleted]&nbsp;(since&nbsp;C++</span><span style="color:#ff0000;">11</span><span style="color:#000000;">)</span></div></td></tr></table></div>
+ ● 构造原子变量
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(1)将原子对象放在未初始化的状态中，未初始化的原子对象可以通过调用atomicinit进行初始化
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(2)用desired初始化对象，初始化不是原子性的
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(3)原子变量是不可复制的
+<br>
+<br><font color=purple size = 4>operator=</font>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;">T&nbsp;<span style="color:#0000ff;">operator</span><span style="color:#000000;">=(&nbsp;T&nbsp;desired&nbsp;)&nbsp;noexcept;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set&nbsp;value&nbsp;(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)<BR>
+T&nbsp;</span><span style="color:#0000ff;">operator</span><span style="color:#000000;">=(&nbsp;T&nbsp;desired&nbsp;)&nbsp;</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;noexcept;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set&nbsp;value&nbsp;(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)<BR>
+atomic&nbsp;&amp;</span><span style="color:#0000ff;">operator</span><span style="color:#000000;">=(&nbsp;</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;atomic&nbsp;&amp;&nbsp;)&nbsp;=&nbsp;</span><span style="color:#0000ff;">delete</span><span style="color:#000000;">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;copy&nbsp;[deleted]&nbsp;(</span><span style="color:#ff0000;">2</span><span style="color:#000000;">)<BR>
+atomic&nbsp;&amp;</span><span style="color:#0000ff;">operator</span><span style="color:#000000;">=(&nbsp;</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;atomic&nbsp;&amp;&nbsp;)&nbsp;</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;=&nbsp;</span><span style="color:#0000ff;">delete</span><span style="color:#000000;">;&nbsp;copy&nbsp;[deleted]&nbsp;(</span><span style="color:#ff0000;">2</span><span style="color:#000000;">)</span></div></td></tr></table></div>
+ ● 用val替换存储的值。该操作是原子性的，并使用顺序一致性(memoryorderseqcst)。要使用不同的内存排序来修改值，请参见atomic::store
+<br> ● 原子对象没有定义的复制赋值，但是注意它们是可以隐式地转换为类型T
+<br>注：与大多数复制运算符不同，原子类型的复制运算符不会返回对它们的左参数的引用，它们返回一个存储值的副本
+<br>
+<br> 📝 程序示例：
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47<br>48<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;iostream&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;atomic&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;thread&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;vector&gt;<BR>
+</span><span style="color:#0000ff;">using</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">namespace</span><span style="color:#000000;">&nbsp;std;<BR>
+<BR>
+atomic&lt;</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&gt;&nbsp;ready(</span><span style="color:#0000ff;">false</span><span style="color:#000000;">);<BR>
+atomic_flag&nbsp;winner&nbsp;=&nbsp;ATOMIC_FLAG_INIT;<BR>
+atomic&lt;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&gt;&nbsp;foo(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">);<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;count1m(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;id)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">while</span><span style="color:#000000;">&nbsp;(!ready)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this_thread::yield();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">1000000</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(!winner.test_and_set())<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;thread&nbsp;#&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;id&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;&nbsp;won!\n&quot;</span><span style="color:#000000;">;<BR>
+}<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;set_foo(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;x)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;foo&nbsp;=&nbsp;x;<BR>
+}<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;print_foo()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">while</span><span style="color:#000000;">&nbsp;(foo&nbsp;==&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this_thread::yield();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;foo:&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;foo&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\n&quot;</span><span style="color:#000000;">;<BR>
+}<BR>
+<BR>
+</span><span style="color:#0000ff;">auto</span><span style="color:#000000;">&nbsp;main()&nbsp;-&gt;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;"><BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;vector&lt;thread&gt;&nbsp;threads;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;spawning&nbsp;10&nbsp;threads&nbsp;that&nbsp;count&nbsp;to&nbsp;1&nbsp;million&nbsp;...\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;threads.push_back(thread(count1m,&nbsp;i&nbsp;+&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;ready&nbsp;=&nbsp;</span><span style="color:#0000ff;">true</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#0000ff;">auto</span><span style="color:#000000;">&amp;&nbsp;th&nbsp;:&nbsp;threads)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;th.join();<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;thread&nbsp;first(print_foo);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;thread&nbsp;second(set_foo,&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;first.join();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;second.join();<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}</span></div></td></tr></table></div>
+<br><font color=blue size = 5>General atomic operations</font>
+<br>
+<br><font color=purple size = 4>std::atomic::is_lock_free</font>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#8000ff;">bool</span><span style="color:#000000;">&nbsp;is_lock_free()&nbsp;</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;noexcept;<BR>
+</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&nbsp;is_lock_free()&nbsp;</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;noexcept;</span></div></td></tr></table></div>
+ ● 一个无锁对象并不会导致其它线程在访问时阻塞(可能使用某种类型的事务性内存)，该函数返回值与相同类型的所有其它对象返回值一致
+<br> ● 检查这个类型的所有对象的原子操作是否都是无锁的，返回true表示lock_free
+<br>
+<br> 📝 程序示例：
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;iostream&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;utility&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;atomic&gt;<BR>
+<BR>
+</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;A&nbsp;{&nbsp;</span><span style="color:#0000ff;">public</span><span style="color:#000000;">:&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;a[</span><span style="color:#ff0000;">100</span><span style="color:#000000;">];&nbsp;};<BR>
+</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;B&nbsp;{&nbsp;</span><span style="color:#0000ff;">public</span><span style="color:#000000;">:&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;x;&nbsp;};<BR>
+<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;main()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;boolalpha<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;atomic&lt;A&gt;&nbsp;is&nbsp;lock&nbsp;free?&nbsp;&quot;</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;&lt;&nbsp;atomic&lt;A&gt;{}.is_lock_free()&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">'\n'</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;atomic&lt;B&gt;&nbsp;is&nbsp;lock&nbsp;free?&nbsp;&quot;</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;&lt;&nbsp;atomic&lt;B&gt;{}.is_lock_free()&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">'\n'</span><span style="color:#000000;">;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}<BR>
+</span><span style="color:#008000;">//&nbsp;输出：false&nbsp;&nbsp;true</span></div></td></tr></table></div>
+<br><font color=purple size = 4>std::atomic::store</font>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;store&nbsp;(T&nbsp;val,&nbsp;memory_order&nbsp;sync&nbsp;=&nbsp;memory_order_seq_cst)&nbsp;</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;noexcept;<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;store&nbsp;(T&nbsp;val,&nbsp;memory_order&nbsp;sync&nbsp;=&nbsp;memory_order_seq_cst)&nbsp;noexcept;</span></div></td></tr></table></div>
+ ● 用val替换包含的值
+<br> ● 操作是原子的，按照同步所指定的内存顺序内存数序包括：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;（std::memory_order_relaxed, std::memory_order_release 和std::memory_order_seq_cst）
+<br> ● 参数sync的描述(后续会介绍memory_order)：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;memory_order_relaxed：不同步副本
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;memory_order_release：同步下一个使用或者获取操作的副本
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;memory_order_seq_cst：同步所有与其他顺序一致操作的可见的副本，并遵循一个完整的顺序
+<br>
+<br><font color=purple size = 4>std::atomic::load</font>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;">T&nbsp;load&nbsp;(memory_order&nbsp;sync&nbsp;=&nbsp;memory_order_seq_cst)&nbsp;<span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;noexcept;<BR>
+T&nbsp;load&nbsp;(memory_order&nbsp;sync&nbsp;=&nbsp;memory_order_seq_cst)&nbsp;</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;noexcept;</span></div></td></tr></table></div>
+ ● 返回包含值
+<br> ● 操作是原子的，按照同步所指定的内存顺序。指令必须是 std::memory_order_relaxed, std::memory_order_consume, std::memory_order_acquire 和 std::memory_order_seq_cst；否则，行为是没有定义的
+<br> ● sync指令描述：
+<br>(上文已经描述了std::memory_order_relaxed和 std::memory_order_seq_cst，这里只描述memory_order_acquire和memory_order_consume)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;memory_order_acquire：同步从最后一个Release或顺序一致的操作所有可见的副本
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;memory_order_consume：同步与最后一个Release或顺序一致的操作所产生的依赖关系的可见的副本
+<br>
+<br> 📝 程序示例：
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;iostream&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;atomic&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;thread&gt;<BR>
+</span><span style="color:#0000ff;">using</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">namespace</span><span style="color:#000000;">&nbsp;std;<BR>
+<BR>
+atomic&lt;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&gt;&nbsp;foo(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">);<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;set_foo(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;x)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;set&nbsp;value&nbsp;atomically<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;foo.store(x,&nbsp;memory_order_relaxed);<BR>
+}<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;print_foo()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;x;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">do</span><span style="color:#000000;">&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;get&nbsp;value&nbsp;atomically<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x&nbsp;=&nbsp;foo.load(std::memory_order_seq_cst);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;</span><span style="color:#0000ff;">while</span><span style="color:#000000;">&nbsp;(x&nbsp;==&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;foo:&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;x&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">'\n'</span><span style="color:#000000;">;<BR>
+}<BR>
+<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;main()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;thread&nbsp;first(print_foo);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;thread&nbsp;second(set_foo,&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;first.join();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;second.join();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}<BR>
+<BR>
+</span><span style="color:#008000;">//&nbsp;输出：foo:&nbsp;10</span></div></td></tr></table></div>
+<br><font color=purple size = 4>std::atomic::operator T</font>
+<br> 🎨 定义：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;operator T() const volatile noexcept;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;operator T() const noexcept;
+<br> ● 这是一个类型转换的操作符
+<br> ● 这个表达式期望它包含的类型(T)的值，调用这个成员函数，访问包含的值
+<br> ● 该操作是原子的，并使用顺序一致性(memory_order_seq_cst)，要检索具有不同内存顺序的值，相当于std::atomic::load
+<br>
+<br> 📝 程序示例：
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;iostream&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;atomic&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;thread&gt;<BR>
+</span><span style="color:#0000ff;">using</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">namespace</span><span style="color:#000000;">&nbsp;std;<BR>
+<BR>
+atomic&lt;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&gt;&nbsp;foo(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">);<BR>
+atomic&lt;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&gt;&nbsp;bar(</span><span style="color:#ff0000;">0</span><span style="color:#000000;">);<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;set_foo(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;x)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;foo.store(x,&nbsp;memory_order_seq_cst);<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;foo&nbsp;=&nbsp;x;<BR>
+}<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;copy_foo_to_bar()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">while</span><span style="color:#000000;">&nbsp;(foo&nbsp;==&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this_thread::yield();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;bar&nbsp;=&nbsp;</span><span style="color:#0000ff;">static_cast</span><span style="color:#000000;">&lt;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&gt;(foo);<BR>
+}<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;print_bar()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">while</span><span style="color:#000000;">&nbsp;(bar&nbsp;==&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this_thread::yield();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;bar:&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;bar&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\n&quot;</span><span style="color:#000000;">;<BR>
+}<BR>
+<BR>
+</span><span style="color:#0000ff;">auto</span><span style="color:#000000;">&nbsp;main()&nbsp;-&gt;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;"><BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;thread&nbsp;first(print_bar);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;thread&nbsp;second(set_foo,&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;thread&nbsp;third(copy_foo_to_bar);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;first.join();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;second.join();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;third.join();<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}</span></div></td></tr></table></div>
+<br><font color=purple size = 4>std::atomic::exchange</font>
+<br> 🎨 定义：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T exchange (T val, memory_order sync = memory_order_seq_cst) volatile noexcept;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T exchange (T val, memory_order sync = memory_order_seq_cst) noexcept;
+<br> ● 访问和修改包含的值
+<br> ● 用val替换包含的值并返回它之前的值，整个操作是原子性的(一个原子的读-修改-写操作)，在读取(返回)值和被该函数修改的那一刻之间，值不会受到其它线程的影响
+<br> ● sync指令描述
+<br>(上文已经描述了std::memory_order_relaxed和 std::memory_order_seq_cst 和memory_order_consume 和 memory_order_acquire，这里只描述memory_order_acq_rel)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;memory_order_acq_rel：读取作为一个获取操作，并作为一个发布操作写入
+<br>
+<br> 📝 程序示例：
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;iostream&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;atomic&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;thread&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;vector&gt;<BR>
+</span><span style="color:#0000ff;">using</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">namespace</span><span style="color:#000000;">&nbsp;std;<BR>
+<BR>
+atomic&lt;</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&gt;&nbsp;ready(</span><span style="color:#0000ff;">false</span><span style="color:#000000;">);<BR>
+atomic&lt;</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&gt;&nbsp;winner(</span><span style="color:#0000ff;">false</span><span style="color:#000000;">);<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;count1m(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;id)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">while</span><span style="color:#000000;">(!ready){}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">1000000</span><span style="color:#000000;">;&nbsp;++i){&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(!winner.exchange(</span><span style="color:#0000ff;">true</span><span style="color:#000000;">))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;thread&nbsp;#&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;id&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;&nbsp;won!\n&quot;</span><span style="color:#000000;">;<BR>
+}<BR>
+<BR>
+</span><span style="color:#0000ff;">auto</span><span style="color:#000000;">&nbsp;main()&nbsp;-&gt;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;"><BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;vector&lt;thread&gt;&nbsp;threads;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;spawning&nbsp;10&nbsp;threads&nbsp;that&nbsp;count&nbsp;to&nbsp;1&nbsp;million&nbsp;...\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;=&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;threads.push_back(thread(count1m,&nbsp;i));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;ready&nbsp;=&nbsp;</span><span style="color:#0000ff;">true</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#0000ff;">auto</span><span style="color:#000000;">&amp;&nbsp;th&nbsp;:&nbsp;threads)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;th.join();<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}</span></div></td></tr></table></div>
+<br><font color=purple size = 4>std::atomic::compare_exchange_weak 和std::atomic::compare_exchange_strong</font>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#8000ff;">bool</span><span style="color:#000000;">&nbsp;compare_exchange_weak&nbsp;(T&amp;&nbsp;expected,&nbsp;T&nbsp;val,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;memory_order&nbsp;sync&nbsp;=&nbsp;memory_order_seq_cst)&nbsp;</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;noexcept;&nbsp;&nbsp;&nbsp;(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)<BR>
+</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&nbsp;compare_exchange_weak&nbsp;(T&amp;&nbsp;expected,&nbsp;T&nbsp;val,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;memory_order&nbsp;sync&nbsp;=&nbsp;memory_order_seq_cst)&nbsp;noexcept;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)<BR>
+<BR>
+</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&nbsp;compare_exchange_weak&nbsp;(T&amp;&nbsp;expected,&nbsp;T&nbsp;val,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;memory_order&nbsp;success,&nbsp;memory_order&nbsp;failure)&nbsp;</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;noexcept;&nbsp;(</span><span style="color:#ff0000;">2</span><span style="color:#000000;">)<BR>
+</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&nbsp;compare_exchange_weak&nbsp;(T&amp;&nbsp;expected,&nbsp;T&nbsp;val,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;memory_order&nbsp;success,&nbsp;memory_order&nbsp;failure)&nbsp;noexcept;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(</span><span style="color:#ff0000;">2</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&nbsp;compare_exchange_strong&nbsp;(T&amp;&nbsp;expected,&nbsp;T&nbsp;val,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;memory_order&nbsp;sync&nbsp;=&nbsp;memory_order_seq_cst)&nbsp;</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;noexcept;&nbsp;&nbsp;&nbsp;(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)<BR>
+</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&nbsp;compare_exchange_strong&nbsp;(T&amp;&nbsp;expected,&nbsp;T&nbsp;val,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;memory_order&nbsp;sync&nbsp;=&nbsp;memory_order_seq_cst)&nbsp;noexcept;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)<BR>
+<BR>
+</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&nbsp;compare_exchange_strong&nbsp;(T&amp;&nbsp;expected,&nbsp;T&nbsp;val,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;memory_order&nbsp;success,&nbsp;memory_order&nbsp;failure)&nbsp;</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;noexcept;&nbsp;(</span><span style="color:#ff0000;">2</span><span style="color:#000000;">)<BR>
+</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&nbsp;compare_exchange_strong&nbsp;(T&amp;&nbsp;expected,&nbsp;T&nbsp;val,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;memory_order&nbsp;success,&nbsp;memory_order&nbsp;failure)&nbsp;noexcept;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(</span><span style="color:#ff0000;">2</span><span style="color:#000000;">)</span></div></td></tr></table></div>
+ ● 比较原子对象的包含值与预期的内容：
+ <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1 如果是真的，它会用val替换包含的值(比如存储)
+ <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2 如果是假的，它会用所包含的值替换预期,因此调用该函数之后，如果被该原子对象封装的值与参数 expected 所指定的值不相等，expected 中的内容就是原子对象的旧值
+<br> ● 函数总是访问包含的值来读取它，如果这个比较是真的，那么它也会替换它。但是整个操作都是原子性的:在读取值和被替换的时刻之间，它的值不能被其他线程修改
+<br> ● 在第(2)种情况下，内存序（Memory Order）的选择取决于比较操作结果，如果比较结果为 true(即原子对象的值等于 expected)，则选择参数 success 指定的内存序，否则选择参数 failure 所指定的内存序
+<br> ● 注意：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;这个函数直接的比较物理内容所包含的价值与预期的内容，这可能导致得到使用operator==比较的结果是一个失败的结果，因为对象底层的物理内容中可能存在位对齐或其他逻辑表示相同但是物理表示不同的值(比如 true 和 2 或 3，它们在逻辑上都表示&quot;真&quot;，但在物理上两者的表示并不相同)；
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;不像 compare_exchange_strong，这个弱版本允许(spuriously 地)返回 false(即原子对象所封装的值与参数 expected 的物理内容相同，但却仍然返回 false)，即使在预期的实际情况与所包含的对象相比较时也是如此。对于某些循环算法来说，这可能是可接受的行为，并且可能会在某些平台上带来显著的性能提升。在这些虚假的失败中，函数返回false，而不修改预期。
+<br> ● 对于非循环算法来说， compare_exchange_strong通常是首选
+<br> ● compare_exchange_strong 跟 compare_exchange_week 不同的是：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;与compare_exchange_weak 不同，strong版本的 compare-and-exchange 操作不允许(spuriously 地)返回 false，即原子对象所封装的值与参数 expected 的物理内容相同，比较操作一定会为 true。不过在某些平台下，如果算法本身需要循环操作来做检查， compare_exchange_weak 的性能会更好。
+<br>
+<br> 📝 程序示例：
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;iostream&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;atomic&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;thread&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;vector&gt;<BR>
+</span><span style="color:#0000ff;">using</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">namespace</span><span style="color:#000000;">&nbsp;std;<BR>
+<BR>
+</span><span style="color:#008000;">//&nbsp;a&nbsp;simple&nbsp;global&nbsp;linked&nbsp;list:<BR>
+</span><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;Node&nbsp;{&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;value;&nbsp;Node*&nbsp;next;&nbsp;};<BR>
+atomic&lt;Node*&gt;&nbsp;list_head(nullptr);<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;append(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;val)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;append&nbsp;an&nbsp;element&nbsp;to&nbsp;the&nbsp;list<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;Node*&nbsp;oldHead&nbsp;=&nbsp;list_head;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;Node*&nbsp;newNode&nbsp;=&nbsp;</span><span style="color:#0000ff;">new</span><span style="color:#000000;">&nbsp;Node{&nbsp;val,oldHead&nbsp;};<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;what&nbsp;follows&nbsp;is&nbsp;equivalent&nbsp;to:&nbsp;list_head&nbsp;=&nbsp;newNode,&nbsp;<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;but&nbsp;in&nbsp;a&nbsp;thread-safe&nbsp;way:<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">while</span><span style="color:#000000;">&nbsp;(!list_head.compare_exchange_weak(oldHead,&nbsp;newNode))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;newNode-&gt;next&nbsp;=&nbsp;oldHead;<BR>
+}<BR>
+<BR>
+</span><span style="color:#0000ff;">auto</span><span style="color:#000000;">&nbsp;main()&nbsp;-&gt;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;"><BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;spawn&nbsp;10&nbsp;threads&nbsp;to&nbsp;fill&nbsp;the&nbsp;linked&nbsp;list:<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;vector&lt;thread&gt;&nbsp;threads;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;threads.push_back(thread(append,&nbsp;i));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#0000ff;">auto</span><span style="color:#000000;">&amp;&nbsp;th&nbsp;:&nbsp;threads)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;th.join();<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;print&nbsp;contents:<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(Node*&nbsp;it&nbsp;=&nbsp;list_head;&nbsp;it&nbsp;!=&nbsp;nullptr;&nbsp;it&nbsp;=&nbsp;it-&gt;next)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">'&nbsp;'</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;it-&gt;value;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">'\n'</span><span style="color:#000000;">;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;cleanup:<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;Node*&nbsp;it;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">while</span><span style="color:#000000;">&nbsp;(it&nbsp;=&nbsp;list_head)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;list_head&nbsp;=&nbsp;it-&gt;next;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">delete</span><span style="color:#000000;">&nbsp;it;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}</span></div></td></tr></table></div>
+<br><font color=blue size = 4>特定的操作支持(整型和指针)</font>
+<br>
+<br><font color=purple size = 4>std::atomic::fetch_add/std::atomic::fetch_sub</font>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;T&nbsp;is&nbsp;integral&nbsp;(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;T&nbsp;fetch_add&nbsp;(T&nbsp;val,&nbsp;memory_order&nbsp;sync&nbsp;=&nbsp;memory_order_seq_cst)&nbsp;</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;T&nbsp;fetch_add&nbsp;(T&nbsp;val,&nbsp;memory_order&nbsp;sync&nbsp;=&nbsp;memory_order_seq_cst)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;T&nbsp;fetch_sub&nbsp;(T&nbsp;val,&nbsp;memory_order&nbsp;sync&nbsp;=&nbsp;memory_order_seq_cst)&nbsp;</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;T&nbsp;fetch_sub&nbsp;(T&nbsp;val,&nbsp;memory_order&nbsp;sync&nbsp;=&nbsp;memory_order_seq_cst)&nbsp;noexcept;<BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;T&nbsp;is&nbsp;pointer&nbsp;(</span><span style="color:#ff0000;">2</span><span style="color:#000000;">)&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;T&nbsp;fetch_add&nbsp;(ptrdiff_t&nbsp;val,&nbsp;memory_order&nbsp;sync&nbsp;=&nbsp;memory_order_seq_cst)&nbsp;</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;T&nbsp;fetch_add&nbsp;(ptrdiff_t&nbsp;val,&nbsp;memory_order&nbsp;sync&nbsp;=&nbsp;memory_order_seq_cst)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;T&nbsp;fetch_sub&nbsp;(ptrdiff_t&nbsp;val,&nbsp;memory_order&nbsp;sync&nbsp;=&nbsp;memory_order_seq_cst)&nbsp;</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;T&nbsp;fetch_sub&nbsp;(ptrdiff_t&nbsp;val,&nbsp;memory_order&nbsp;sync&nbsp;=&nbsp;memory_order_seq_cst)&nbsp;noexcept;</span></div></td></tr></table></div>
+ ● 将val加或者减去到包含的值并返回在操作之前的值
+<br> ● 整个操作是原子的(一个原子的读-修改-写操作)：当在这个函数被修改的时候，读取的(返回)值被读取，值不受其他线程的影响
+<br> ● 这个成员函数是对整数(1)和指针(2)类型(除了bool除外)的原子专门化中定义
+<br> ● 如果第二个参数使用默认值，则该函数等价于原子::运算符+ =s
+<br>
+<br> 📝 程序示例：
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;iostream&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;thread&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;atomic&gt;<BR>
+</span><span style="color:#0000ff;">using</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">namespace</span><span style="color:#000000;">&nbsp;std;<BR>
+<BR>
+atomic&lt;</span><span style="color:#8000ff;">long</span><span style="color:#000000;">&nbsp;</span><span style="color:#8000ff;">long</span><span style="color:#000000;">&gt;&nbsp;data1;<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;do_work()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;data1.fetch_add(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,&nbsp;memory_order_relaxed);<BR>
+}<BR>
+<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;main()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;thread&nbsp;th1(do_work);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;thread&nbsp;th2(do_work);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;thread&nbsp;th3(do_work);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;thread&nbsp;th4(do_work);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;thread&nbsp;th5(do_work);<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;th1.join();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;th2.join();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;th3.join();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;th4.join();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;th5.join();<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;Result:&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;data1&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">'\n'</span><span style="color:#000000;">;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}<BR>
+<BR>
+</span><span style="color:#008000;">//&nbsp;输出：Result:5</span></div></td></tr></table></div>
+<br><font color=purple size = 4>std::atomic::fetch_and/std::atomic::fetch_or/std::atomic::fetch_xor</font>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;">T&nbsp;fetch_and&nbsp;(T&nbsp;val,&nbsp;memory_order&nbsp;sync&nbsp;=&nbsp;memory_order_seq_cst)&nbsp;<span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;noexcept;<BR>
+T&nbsp;fetch_and&nbsp;(T&nbsp;val,&nbsp;memory_order&nbsp;sync&nbsp;=&nbsp;memory_order_seq_cst)&nbsp;noexcept;<BR>
+T&nbsp;fetch_or&nbsp;(T&nbsp;val,&nbsp;memory_order&nbsp;sync&nbsp;=&nbsp;memory_order_seq_cst)&nbsp;</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;noexcept;<BR>
+T&nbsp;fetch_or&nbsp;(T&nbsp;val,&nbsp;memory_order&nbsp;sync&nbsp;=&nbsp;memory_order_seq_cst)&nbsp;noexcept;<BR>
+T&nbsp;fetch_xor&nbsp;(T&nbsp;val,&nbsp;memory_order&nbsp;sync&nbsp;=&nbsp;memory_order_seq_cst)&nbsp;</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;noexcept;<BR>
+T&nbsp;fetch_xor&nbsp;(T&nbsp;val,&nbsp;memory_order&nbsp;sync&nbsp;=&nbsp;memory_order_seq_cst)&nbsp;noexcept;</span></div></td></tr></table></div>
+ ● 读取包含的值并替换调该值和val执行一个位和操作的结果
+<br> ● 整个操作是原子的(一个原子的读-修改-写操作):当在这个函数被修改的时候,读取的(返回)值被读取，值不受其他线程的影响
+<br> ● 这个成员函数只在原子专门化中定义为整数类型(除了bool)
+<br> ● 如果第二个参数使用默认值，则该函数等价于原子::operator&amp; =
+<br>
+<br><font color=purple size = 4>std::atomic::operator++/std::atomic::operator--</font>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;">pre-increment&nbsp;(<span style="color:#ff0000;">1</span><span style="color:#000000;">)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T&nbsp;</span><span style="color:#0000ff;">operator</span><span style="color:#000000;">++()&nbsp;</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T&nbsp;</span><span style="color:#0000ff;">operator</span><span style="color:#000000;">++()&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T&nbsp;</span><span style="color:#0000ff;">operator</span><span style="color:#000000;">--()&nbsp;</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T&nbsp;</span><span style="color:#0000ff;">operator</span><span style="color:#000000;">--()&nbsp;noexcept;<BR>
+&nbsp;post-increment&nbsp;(</span><span style="color:#ff0000;">2</span><span style="color:#000000;">)&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T&nbsp;</span><span style="color:#0000ff;">operator</span><span style="color:#000000;">++&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">)&nbsp;</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T&nbsp;</span><span style="color:#0000ff;">operator</span><span style="color:#000000;">++&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T&nbsp;</span><span style="color:#0000ff;">operator</span><span style="color:#000000;">--&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">)&nbsp;</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T&nbsp;</span><span style="color:#0000ff;">operator</span><span style="color:#000000;">--&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">)&nbsp;noexcept;</span></div></td></tr></table></div>
+ ● 包含值的值进行增加或减少1，操作(1)返回所得到的包含值，操作(2)返回之前的值
+<br> ● 整个操作是原子的(一个原子的读-修改-写操作):当在这个函数被修改的时候,读取的(返回)值被读取，值不受其他线程的影响
+<br> ● 函数只在原子专门化中定义为整数和指针类型(除了bool)
+<br> ● 这个函数的行为就像调用std::stomic::fetch_add(1),memory_order_seq_cst作为参数
+<br>
+<br><font color=purple size = 4>atomic::operator (comp. assign.)</font>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;T&nbsp;is&nbsp;integral&nbsp;(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T&nbsp;</span><span style="color:#0000ff;">operator</span><span style="color:#000000;">+=&nbsp;(T&nbsp;val)&nbsp;</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T&nbsp;</span><span style="color:#0000ff;">operator</span><span style="color:#000000;">+=&nbsp;(T&nbsp;val)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T&nbsp;</span><span style="color:#0000ff;">operator</span><span style="color:#000000;">-=&nbsp;(T&nbsp;val)&nbsp;</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T&nbsp;</span><span style="color:#0000ff;">operator</span><span style="color:#000000;">-=&nbsp;(T&nbsp;val)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T&nbsp;</span><span style="color:#0000ff;">operator</span><span style="color:#000000;">&amp;=&nbsp;(T&nbsp;val)&nbsp;</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T&nbsp;</span><span style="color:#0000ff;">operator</span><span style="color:#000000;">&amp;=&nbsp;(T&nbsp;val)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T&nbsp;operator|=&nbsp;(T&nbsp;val)&nbsp;</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T&nbsp;operator|=&nbsp;(T&nbsp;val)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T&nbsp;</span><span style="color:#0000ff;">operator</span><span style="color:#000000;">^=&nbsp;(T&nbsp;val)&nbsp;</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T&nbsp;</span><span style="color:#0000ff;">operator</span><span style="color:#000000;">^=&nbsp;(T&nbsp;val)&nbsp;noexcept;<BR>
+</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;T&nbsp;is&nbsp;pointer&nbsp;(</span><span style="color:#ff0000;">2</span><span style="color:#000000;">)&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T&nbsp;</span><span style="color:#0000ff;">operator</span><span style="color:#000000;">+=&nbsp;(ptrdiff_t&nbsp;val)&nbsp;</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T&nbsp;</span><span style="color:#0000ff;">operator</span><span style="color:#000000;">+=&nbsp;(ptrdiff_t&nbsp;val)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T&nbsp;</span><span style="color:#0000ff;">operator</span><span style="color:#000000;">-=&nbsp;(ptrdiff_t&nbsp;val)&nbsp;</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T&nbsp;</span><span style="color:#0000ff;">operator</span><span style="color:#000000;">-=&nbsp;(ptrdiff_t&nbsp;val)&nbsp;noexcept;</span></div></td></tr></table></div>
+ ● 对于整型(1)和指针(2)类型的原子专门化是支持复合赋值的；每一个函数都访问包含的值，应用合适的操作符，并在操作之前返回包含值的值；所有这些操作都不会受到其他线程的影响
+<br> ● 这些函数的行为就像使用memory_order<em>seq</em>_cst调用std::stomic::fetch_ *函数一样：
+<table border="2">
+<tr>
+<th rowspan=2>operator</th>
+<th colspan=2>member functions</th>
+<th colspan=3>supported for</th>
+</tr>
+<tr>
+<th>comp. assign.</th>
+<th>equivalent</th>
+<th>integral types</th>
+<th>pointer types</th>
+<th>other types</th>
+</tr>
+<tr align=center>
+<td>+</td>
+<td>atomic::operator +=</td>
+<td>atomic::fetch_add</td>
+<td>yes</td>
+<td>yes</td>
+<td>no</td>
+</tr>
+<tr align=center>
+<td>-</td>
+<td>atomic::operator -=</td>
+<td>atomic::fetch_sub</td>
+<td>yes</td>
+<td>yes</td>
+<td>no</td>
+</tr>
+<tr align=center>
+<td>&amp;</td>
+<td>atomic::operator &amp;=</td>
+<td>atomic::fetch_and</td>
+<td>yes</td>
+<td>no</td>
+<td>no</td>
+</tr>
+<tr align=center>
+<td>|</td>
+<td>atomic::operator |=</td>
+<td>atomic::fetch_or</td>
+<td>yes</td>
+<td>no</td>
+<td>no</td>
+</tr>
+<tr align=center>
+<td>^</td>
+<td>atomic::operator ^=</td>
+<td>atomic::fetch_xor</td>
+<td>yes</td>
+<td>no</td>
+<td>no</td>
+</tr>
+</table>
+<br><a name="bc2"><font color=green size = 5>std::atomic_flag</font></a>
+<br> ● atomic_flag是一个原子布尔类型
+<br> ● 不同于std::atomic的所有专门化，它保证是lock_free
+<br> ● 不像std::stomic<bool>，std::atomic_flag不提供负载或存储操作
+<br>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;iostream&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;atomic&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;thread&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;vector&gt;<BR>
+</span><span style="color:#0000ff;">using</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">namespace</span><span style="color:#000000;">&nbsp;std;<BR>
+<BR>
+atomic_flag&nbsp;lock&nbsp;=&nbsp;ATOMIC_FLAG_INIT;<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;f(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;n)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">100</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">while</span><span style="color:#000000;">&nbsp;(lock.test_and_set(memory_order_acquire))&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;acquire&nbsp;lock<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;spin<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;Output&nbsp;from&nbsp;thread&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;n&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lock.clear(memory_order_release);&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;release&nbsp;lock<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+}<BR>
+<BR>
+</span><span style="color:#0000ff;">auto</span><span style="color:#000000;">&nbsp;main()&nbsp;-&gt;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;"><BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;vector&lt;thread&gt;&nbsp;v;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;v.emplace_back(f,&nbsp;i);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#0000ff;">auto</span><span style="color:#000000;">&amp;&nbsp;t&nbsp;:&nbsp;v)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;t.join();<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}</span></div></td></tr></table></div>
+<br>
+<br><font color=purple size = 4>构造函数(std::atomic_flag::atomic_flag)</font>
+<br> 🎨 定义：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;atomic_flag() noexcept = default;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;atomic_flag (const atomic_flag&amp;T) = delete;
+<br> ● atomic_flag在构建(或设置或清除)上处于一个未指定的状态，除非它被显式地初始化为ATOMIC_FLAG_INIT
+<br> ● ATOMIC_FLAG_INIT初始化是通过简单地调用默认构造函数或其他方法来实现的，这取决于特定的库实现
+<br> ● atomic_flag值不能复制/移动
+<br> ● 注意： std::atomic_flag::operator= 不可赋值，其赋值操作符被删除
+<br>
+<br><font color=purple size = 4>std::atomic_flag::test_and_set</font>
+<br> 🎨 定义：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bool test_and_set (memory_order sync = memory_order_seq_cst) volatile noexcept;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bool test_and_set (memory_order sync = memory_order_seq_cst) noexcept;
+<br> ● 设置atomic_flag并返回是否在调用之前已经设置的
+<br> ● 整个操作是原子的(一个原子的读-修改-写操作)：当在这个函数被修改的时候，读取的(返回)值被读取，值不受其他线程的影响
+<br>
+<br><font color=purple size = 4>std::atomic_flag::clear</font>
+<br> 🎨 定义：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;void clear (memory_order sync = memory_order_seq_cst) volatile noexcept;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;void clear (memory_order sync = memory_order_seq_cst) noexcept;
+<br> ● 清除atomic_flag(即把atomic_flag 设为假)
+<br> ● 清除atomic_flag使下一次调用成员atomic_flag::test_and_set对象返回false
+<br> ● 操作是原子的，按照sync所指定的内存顺序
+<br>
+<br> 📝 程序示例：
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47<br>48<br>49<br>50<br>51<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;iostream&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;atomic&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;thread&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;vector&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;sstream&gt;<BR>
+</span><span style="color:#0000ff;">using</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">namespace</span><span style="color:#000000;">&nbsp;std;<BR>
+<BR>
+atomic&lt;</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&gt;&nbsp;ready(</span><span style="color:#0000ff;">false</span><span style="color:#000000;">);<BR>
+atomic_flag&nbsp;winner&nbsp;=&nbsp;ATOMIC_FLAG_INIT;<BR>
+atomic_flag&nbsp;lock_stream&nbsp;=&nbsp;ATOMIC_FLAG_INIT;<BR>
+stringstream&nbsp;stream;<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;count1m(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;id)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">while</span><span style="color:#000000;">&nbsp;(!ready)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this_thread::yield();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">1000000</span><span style="color:#000000;">;&nbsp;++i){}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">if</span><span style="color:#000000;">&nbsp;(!winner.test_and_set())<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;thread&nbsp;#&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;id&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;&nbsp;won!\n&quot;</span><span style="color:#000000;">;<BR>
+}<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;append_number(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;x)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">while</span><span style="color:#000000;">(lock_stream.test_and_set()){}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;stream&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;thread&nbsp;#&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;x&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;lock_stream.clear();<BR>
+}<BR>
+<BR>
+</span><span style="color:#0000ff;">auto</span><span style="color:#000000;">&nbsp;main()&nbsp;-&gt;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;"><BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;winner.test_and_set()&nbsp;&lt;&lt;&nbsp;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;winner.clear();<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;vector&lt;thread&gt;&nbsp;threads;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;spawning&nbsp;10&nbsp;threads&nbsp;that&nbsp;count&nbsp;to&nbsp;1&nbsp;million...\n&quot;</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;threads.push_back(thread(count1m,&nbsp;i));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;ready&nbsp;=&nbsp;</span><span style="color:#0000ff;">true</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#0000ff;">auto</span><span style="color:#000000;">&amp;&nbsp;th&nbsp;:&nbsp;threads)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;th.join();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;\n&quot;</span><span style="color:#000000;">;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;vector&lt;thread&gt;&nbsp;th4reads;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;i&nbsp;=&nbsp;</span><span style="color:#ff0000;">1</span><span style="color:#000000;">;&nbsp;i&nbsp;&lt;=&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">;&nbsp;++i)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;th4reads.push_back(thread(append_number,&nbsp;i));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#0000ff;">auto</span><span style="color:#000000;">&amp;&nbsp;th&nbsp;:&nbsp;th4reads)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;th.join();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;stream.str();<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}</span></div></td></tr></table></div>
+<br><a name="bc3"><font color=green size = 5>std::memory_order</font></a>
+<br> ● 作为用于执行原子操作的函数的参数，用于指定如何同步不同线程上的其他操作
+<br> 🎨 定义：
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">typedef</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">enum</span><span style="color:#000000;">&nbsp;memory_order<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;memory_order_relaxed,&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;relaxed<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;memory_order_consume,&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;consume<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;memory_order_acquire,&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;acquire<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;memory_order_release,&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;release<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;memory_order_acq_rel,&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;acquire/release<BR>
+</span><span style="color:#000000;">&nbsp;&nbsp;&nbsp;&nbsp;memory_order_seq_cst&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#008000;">//&nbsp;sequentially&nbsp;consistent<BR>
+</span><span style="color:#000000;">}&nbsp;memory_order;</span></div></td></tr></table></div>
+<br> ● 当多个线程访问原子对象时，所有原子操作都会对一个原子对象定义良好的行为：在任何其他原子操作能够访问该对象之前，每个原子操作都是完全在对象上执行的。这保证了这些对象上没有数据竞争，而这正是定义原子性的特性
+<br> ● 但是，每个线程可能在内存位置上执行操作，而不是原子对象本身：这些操作可能会对其他线程产生可见的副作用。这种类型的参数允许指定操作的内存顺序，以确定这些(可能非原子)可见的副作用是如何在线程间同步的，使用原子操作作为同步点，如下参数
+<br>
+<br><font color=purple size = 4>memory_order_relaxed</font>
+<br> ● 该操作在某一时刻被命令进行原子化，这是最宽松的内存顺序，无法保证对不同线程的内存访问是如何根据原子操作进行排序的
+<br> ● 标记为memory_order_relaxed的原子操作不是同步操作，它们不会在并发内存访问中强制执行顺序，它们只保证原子性和修改顺序的一致性
+<br>
+<br> 📝 程序示例：
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;vector&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;iostream&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;thread&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;atomic&gt;<BR>
+</span><span style="color:#0000ff;">using</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">namespace</span><span style="color:#000000;">&nbsp;std;<BR>
+<BR>
+atomic&lt;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&gt;&nbsp;cnt&nbsp;=&nbsp;{&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">&nbsp;};<BR>
+<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;f()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;n&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;n&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">1000</span><span style="color:#000000;">;&nbsp;++n)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cnt.fetch_add(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">,&nbsp;memory_order_relaxed);<BR>
+}<BR>
+<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;main()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;vector&lt;thread&gt;&nbsp;v;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;n&nbsp;=&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;&nbsp;n&nbsp;&lt;&nbsp;</span><span style="color:#ff0000;">10</span><span style="color:#000000;">;&nbsp;++n)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;v.emplace_back(f);<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">for</span><span style="color:#000000;">&nbsp;(</span><span style="color:#0000ff;">auto</span><span style="color:#000000;">&amp;&nbsp;t&nbsp;:&nbsp;v)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;t.join();<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;Final&nbsp;counter&nbsp;value&nbsp;is&nbsp;&quot;</span><span style="color:#000000;">&nbsp;&lt;&lt;&nbsp;cnt&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">'\n'</span><span style="color:#000000;">;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}<BR>
+<BR>
+</span><span style="color:#008000;">//&nbsp;输出：Final&nbsp;counter&nbsp;value&nbsp;is&nbsp;10000</span></div></td></tr></table></div>
+<br><font color=purple size = 4>memory_order_consume</font>
+<br> ● 如果在这个对释放操作进行依赖（并且对加载线程有明显的副作用）的释放线程上 所有访问内存 已经发生，那么操作将被命令执行
+<br> ● 带有这个内存顺序的加载操作在受影响的内存位置上执行获取操作：当前线程依赖于当前装载的值，在此负载之前，不需要读取或写入。在当前线程中可以看到相同的原子变量。在大多数平台上，这只会影响编译器优化(参见下面的Release-Consume)
+<br>
+<br><font color=purple size = 4>memory_order_acquire</font>
+<br> ● 在释放线程(对加载线程有明显的副作用)的情况下，操作被命令进行一次
+<br> ● 带有这个内存顺序的加载操作在受影响的内存位置上执行获取操作：在此负载之前，在当前线程中不可以重新排序。所有在其他线程中都可以在当前线程中看到相同的原子变量(参见下面的Release-Acquire)
+<br>
+<br><font color=purple size = 4>memory_order_release</font>
+<br> ● 该操作被命令在消费或获取操作之前发生，作为对内存的其他访问的同步点，可能对加载线程有可见的副作用
+<br> ● 具有这种内存顺序的存储操作执行释放操作：在当前线程中，在该存储之后，不可以在当前线程中重新排序。当前线程中所有的写操作都可以在其他线程中看到，这些线程获得相同的原子变量(参见下面的Release-Acquire)，并且在使用相同原子的其他线程中，将对原子变量的依赖变为可见(参见下面的Release-Consume)
+<br>
+<br><font color=purple size = 4>memory_order_acq_rel</font>
+<br> ● 该操作加载并存储释放(如上所述，用于memory_order_acquire 、memory_order_release)
+<br>
+<br><font color=purple size = 4>memory_order_seq_cst</font>
+<br> ● 这个操作是按顺序一致的方式排序的：所有使用这个内存顺序的操作都是在所有可能对其他线程都有可见副作用的内存中执行的
+<br> ● 这是最严格的内存顺序，在非原子内存访问的情况下，保证了线程交互中最不意外的副作用
+<br> ● 对于消费和获取负载，顺序一致的存储操作被认为是发布操作
+<br>表格简述：
+<br><table border="2">
+<tr>
+<th>值</th>
+<th>意义</th>
+</tr>
+<tr>
+<td>memory_order_relaxed</td>
+<td>宽松模型，不对执行顺序做保证</td>
+</tr>
+<tr>
+<td>memory_order_consume</td>
+<td>当前线程中，满足happens-before原则<br>当前线程中该原子的所有后续操作，必须在本条操作完成之后执行</td>
+</tr>
+<tr>
+<td>memory_order_acquire</td>
+<td>当前线程中，读操作满足happens-before原则<br>所有后续的读操作必须在本操作完成后执行</td>
+</tr>
+<tr>
+<td>memory_order_release</td>
+<td>当前线程中，写操作满足happens-before原则<br>所有后续的写操作必须在本操作完成后执行</td>
+</tr>
+<tr>
+<td>memory_order_acq_rel</td>
+<td>当前线程中，同时满足memory_order_acquire和memory_order_release</td>
+</tr>
+<tr>
+<td>memory_order_seq_cst</td>
+<td>最强约束。全部读写都按顺序执行</td>
+</tr>
+</table>
+<br><a name="bc4"><font color=green size = 5>Functions</font></a>
+<br>
+<br><font color=purple size = 4>std::kill_dependency</font>
+<br> 🎨 定义：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;template <class T>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T kill_dependency (T y) noexcept;
+<br> ● 返回y的值而不需要依赖项
+<br> ● 使用memory_order_consume作为内存顺序的原子操作，要求编译器检查通过访问存储的内存位置所带来的依赖关系，同步这样的依赖关系可能会导致某些硬件选项被设置，并迫使编译器放弃涉及这些内存的位置并存在某些潜在优化
+<br> ● 调用此函数指示编译器，任何依赖于y的依赖项都不应该传递到返回值，而不需要同步
+<br>
+<br><font color=blue size = 4>&quot;C&quot;风格导出的函数：</font>
+<br>
+<br><font color=purple size = 4>atomic_thread_fence</font>
+<br> 🎨 定义：extern &quot;C&quot; void atomic_thread_fence (memory_order sync) noexcept;
+<br> ● 建立一个多线程的隔离：对这个函数的调用的时间点变成一个获取或者一个释放(或者两者都是)的同步点
+<br> ● 在调用这个函数之前发生的释放线程的所有可见的副作用都是同步的，调用这个函数在获取线程之前
+<br> ● 调用该函数与加载或存储原子操作具有相同的效果，但不涉及原子值
+<br>
+<br><font color=purple size = 4>atomic_thread_fence</font>
+<br> 🎨 定义：extern &quot;C&quot; void atomic_signal_fence (memory_order sync) noexcept;
+<br> ● 建立一个单线程的隔离：对这个函数的调用点在一个线程内变成一个获取或一个释放点(或者两者)
+<br> ● 这个函数相当于atomic_thread_fence，但是没有因为调用而发生线程间同步
+<br> ● 该函数的作用是对编译器进行发送指令，以阻止它进行优化，包括将写操作移动到一个释放栅栏或在获取栅栏之前的读操作
+<br>
+<br><a name="bc5"><font color=green size = 5>Functions for atomic objects (C-style)</font></a>
+<br>
+<br><font color=purple size = 4>atomic_is_lock_free</font>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;T&gt;&nbsp;</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&nbsp;atomic_is_lock_free&nbsp;(</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;atomic&lt;T&gt;*&nbsp;obj)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;T&gt;&nbsp;</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&nbsp;atomic_is_lock_free&nbsp;(</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;atomic&lt;T&gt;*&nbsp;obj)&nbsp;noexcept;<BR>
+overloads&nbsp;(</span><span style="color:#ff0000;">2</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&nbsp;atomic_is_lock_free&nbsp;(</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;A*&nbsp;obj)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&nbsp;atomic_is_lock_free&nbsp;(</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;A*&nbsp;obj)&nbsp;noexcept;</span></div></td></tr></table></div>
+ ● 是否是lock_free
+<br> ● 注意：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;除了std::atomic_flag的所有原子类型都可以使用互斥锁或其他锁定操作实现，而不是使用无锁的原子CPU指令
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;原子类型也被允许有时是无锁的，例如，如果在给定的体系结构中，只有对齐的内存访问是自然的，那么相同类型的不一致的对象就必须使用锁
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;C++标准推荐(但不需要)无锁的原子操作也是无地址的，也就是说，适合于使用共享内存的进程之间的通信
+<br>
+<br> 📝 程序示例：
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;iostream&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;utility&gt;<BR>
+</span><span style="color:#0000ff;">#include</span><span style="color:#000000;">&nbsp;&lt;atomic&gt;<BR>
+<BR>
+</span><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;A<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;a[</span><span style="color:#ff0000;">100</span><span style="color:#000000;">];<BR>
+};<BR>
+</span><span style="color:#0000ff;">struct</span><span style="color:#000000;">&nbsp;B<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;x,&nbsp;y;<BR>
+};<BR>
+</span><span style="color:#8000ff;">int</span><span style="color:#000000;">&nbsp;main()<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;std::atomic&lt;A&gt;&nbsp;a;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;std::atomic&lt;B&gt;&nbsp;b;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;std::cout&nbsp;&lt;&lt;&nbsp;std::boolalpha<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;std::atomic&lt;A&gt;&nbsp;is&nbsp;lock&nbsp;free?&nbsp;&quot;</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;&lt;&nbsp;std::atomic_is_lock_free(&amp;a)&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">'\n'</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">&quot;std::atomic&lt;B&gt;&nbsp;is&nbsp;lock&nbsp;free?&nbsp;&quot;</span><span style="color:#000000;"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;&lt;&nbsp;std::atomic_is_lock_free(&amp;b)&nbsp;&lt;&lt;&nbsp;</span><span style="color:#800000;">'\n'</span><span style="color:#000000;">;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">return</span><span style="color:#000000;">&nbsp;</span><span style="color:#ff0000;">0</span><span style="color:#000000;">;<BR>
+}</span></div></td></tr></table></div>
+<br><font color=purple size = 4>std::atomic_init</font>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;T&gt;&nbsp;</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;atomic_init&nbsp;(</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;atomic&lt;T&gt;*&nbsp;obj,&nbsp;T&nbsp;val)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;T&gt;&nbsp;</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;atomic_init&nbsp;(atomic&lt;T&gt;*&nbsp;obj,&nbsp;T&nbsp;val)&nbsp;noexcept;<BR>
+overloads&nbsp;(</span><span style="color:#ff0000;">2</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;atomic_init&nbsp;(</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;A*&nbsp;obj,&nbsp;T&nbsp;val)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;atomic_init&nbsp;(A*&nbsp;obj,&nbsp;T&nbsp;val)&nbsp;noexcept;</span></div></td></tr></table></div>
+ ● 用val的一个包含值初始化obj，该函数不是原子性的：来自另一个线程的并发访问，即使是通过原子操作，也是一种数据竞争
+<br> ● 如果obj不是默认构造，那么这个行为就没有定义
+<br> ● 如果这个函数在同一个obj上被调用两次，那么这个行为是没有定义的
+<br>
+<br><font color=purple size = 4>std::atomic_store和std::atomic_store_explicit</font>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;T&gt;&nbsp;</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;atomic_store&nbsp;(</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;atomic&lt;T&gt;*&nbsp;obj,&nbsp;T&nbsp;val)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;T&gt;&nbsp;</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;atomic_store&nbsp;(atomic&lt;T&gt;*&nbsp;obj,&nbsp;T&nbsp;val)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;T&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;atomic_store_explicit&nbsp;(</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;atomic&lt;T&gt;*&nbsp;obj,&nbsp;T&nbsp;val,&nbsp;memory_order&nbsp;sync)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;T&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;atomic_store_explicit&nbsp;(atomic&lt;T&gt;*&nbsp;obj,&nbsp;T&nbsp;val,&nbsp;memory_order&nbsp;sync)&nbsp;noexcept;<BR>
+overloads&nbsp;(</span><span style="color:#ff0000;">2</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;atomic_store&nbsp;(</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;A*&nbsp;obj,&nbsp;T&nbsp;val)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;atomic_store&nbsp;(A*&nbsp;obj,&nbsp;T&nbsp;val)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;atomic_store_explicit&nbsp;(</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;A*&nbsp;obj,&nbsp;T&nbsp;val,&nbsp;memory_order&nbsp;sync)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;atomic_store_explicit&nbsp;(A*&nbsp;obj,&nbsp;T&nbsp;val,&nbsp;memory_order&nbsp;sync)&nbsp;noexcept;</span></div></td></tr></table></div>
+ ● 用val替换obj中包含的值。该操作是原子性的，atomic_store 使用顺序一致性(memory_order_seq_cst)
+<br> ● atomic_store_explicit 显示制定内存顺序。参见stomic的等价函数atomic::store和 atomic::operator=
+<br>
+<br><font color=purple size = 4>std::atomic_load和std::atomic_load_explicit</font>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;T&gt;&nbsp;T&nbsp;atomic_load&nbsp;(</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;atomic&lt;T&gt;*&nbsp;obj)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;T&gt;&nbsp;T&nbsp;atomic_load&nbsp;(</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;atomic&lt;T&gt;*&nbsp;obj)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;T&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T&nbsp;atomic_load_explicit&nbsp;(</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;atomic&lt;T&gt;*&nbsp;obj,&nbsp;memory_order&nbsp;sync)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;T&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T&nbsp;atomic_load_explicit&nbsp;(</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;atomic&lt;T&gt;*&nbsp;obj,&nbsp;memory_order&nbsp;sync)&nbsp;noexcept;<BR>
+overloads&nbsp;(</span><span style="color:#ff0000;">2</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T&nbsp;atomic_load&nbsp;(</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;A*&nbsp;obj)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T&nbsp;atomic_load&nbsp;(</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;A*&nbsp;obj)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T&nbsp;atomic_load_explicit&nbsp;(</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;A*&nbsp;obj,&nbsp;memory_order&nbsp;sync)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T&nbsp;atomic_load_explicit&nbsp;(</span><span style="color:#0000ff;">const</span><span style="color:#000000;">&nbsp;A*&nbsp;obj,&nbsp;memory_order&nbsp;sync)&nbsp;noexcept;</span></div></td></tr></table></div>
+ ● 同上面函数，返回obj中包含的值。该操作是原子性的，并使用顺序一致性(memory_order_seq_cst)
+<br> ● 要制定内存数序使用显示调用函数atomic_load_explicit
+<br>
+<br><font color=purple size = 4>std::atomic_exchange和std::atomic_exchange_explicit</font>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;T&gt;&nbsp;T&nbsp;atomic_exchange&nbsp;(</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;atomic&lt;T&gt;*&nbsp;obj,&nbsp;T&nbsp;val)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;T&gt;&nbsp;T&nbsp;atomic_exchange&nbsp;(atomic&lt;T&gt;*&nbsp;obj,&nbsp;T&nbsp;val)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;T&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T&nbsp;atomic_exchange_explicit(</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;atomic&lt;T&gt;*&nbsp;obj,&nbsp;T&nbsp;val,&nbsp;memory_order&nbsp;sync)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;T&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T&nbsp;atomic_exchange_explicit(atomic&lt;T&gt;*&nbsp;obj,&nbsp;T&nbsp;val,&nbsp;memory_order&nbsp;sync)&nbsp;noexcept;<BR>
+overloads&nbsp;(</span><span style="color:#ff0000;">2</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T&nbsp;atomic_exchange&nbsp;(</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;A*&nbsp;obj,&nbsp;T&nbsp;val)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T&nbsp;atomic_exchange&nbsp;(A*&nbsp;obj,&nbsp;T&nbsp;val)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T&nbsp;atomic_exchange_explicit(</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;A*&nbsp;obj,&nbsp;T&nbsp;val,&nbsp;memory_order&nbsp;sync)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T&nbsp;atomic_exchange_explicit(A*&nbsp;obj,&nbsp;T&nbsp;val,&nbsp;memory_order&nbsp;sync)&nbsp;noexcept;</span></div></td></tr></table></div>
+ ● 用val替换obj中包含的值，并返回obj之前的值
+<br> ● 整个操作是原子性的(一个原子的读-修改-写操作)：在读取(返回)值和被该函数修改的瞬间之间，obj的值不会受到其他线程的影响。要制定内存数序使用显示调用函数atomic_exchange_explicit
+<br>
+<br><font color=purple size = 4>atomic_compare_exchange_weak和atomic_compare_exchange_weak_explicit</font>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;T&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&nbsp;atomic_compare_exchange_weak&nbsp;(</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;atomic&lt;T&gt;*&nbsp;obj,&nbsp;T*&nbsp;expected,&nbsp;T&nbsp;val)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;T&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&nbsp;atomic_compare_exchange_weak&nbsp;(atomic&lt;T&gt;*&nbsp;obj,&nbsp;T*&nbsp;expected,&nbsp;T&nbsp;val)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;T&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&nbsp;atomic_compare_exchange_weak_explicit&nbsp;(</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;atomic&lt;T&gt;*&nbsp;obj,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T*&nbsp;expected,&nbsp;T&nbsp;val,&nbsp;memory_order&nbsp;success,&nbsp;memory_order&nbsp;failure)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;T&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&nbsp;atomic_compare_exchange_weak_explicit&nbsp;(atomic&lt;T&gt;*&nbsp;obj,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T*&nbsp;expected,&nbsp;T&nbsp;val,&nbsp;memory_order&nbsp;success,&nbsp;memory_order&nbsp;failure)&nbsp;noexcept;<BR>
+overloads&nbsp;(</span><span style="color:#ff0000;">2</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&nbsp;atomic_compare_exchange_weak&nbsp;(</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;A*&nbsp;obj,&nbsp;T*&nbsp;expected,&nbsp;T&nbsp;val)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&nbsp;atomic_compare_exchange_weak&nbsp;(A*&nbsp;obj,&nbsp;T*&nbsp;expected,&nbsp;T&nbsp;val)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&nbsp;atomic_compare_exchange_weak_explicit&nbsp;(</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;A*&nbsp;obj,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T*&nbsp;expected,&nbsp;T&nbsp;val,&nbsp;memory_order&nbsp;success,&nbsp;memory_order&nbsp;failure)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&nbsp;atomic_compare_exchange_weak_explicit&nbsp;(A*&nbsp;obj,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T*&nbsp;expected,&nbsp;T&nbsp;val,&nbsp;memory_order&nbsp;success,&nbsp;memory_order&nbsp;failure)&nbsp;noexcept;</span></div></td></tr></table></div>
+ ● 将obj中包含的值与预期的内容进行比较
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如果是真的，它会用val替换包含的值
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如果是假的，它将用所包含的值替换预期值
+<br> ● 函数总是访问包含的值来读取它，如果这个比较是真的，那么它也会替换它。但是整个操作都是原子性的：在读取值和被替换的时刻之间，它的值不能被其他线程修改
+<br> ● 注意：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;这个函数直接的比较物理内容所包含的价值与预期的内容，这可能导致得到使用operator==比较的结果是一个失败的结果，因为对象底层的物理内容中可能存在位对齐或其他逻辑表示相同但是物理表示不同的值(比如 true 和 2 或 3，它们在逻辑上都表示&quot;真&quot;，但在物理上两者的表示并不相同)；
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;不像 compare_exchange_strong，这个弱版本允许(spuriously 地)返回 false(即原子对象所封装的值与参数 expected 的物理内容相同，但却仍然返回 false)，即使在预期的实际情况与所包含的对象相比较时也是如此。对于某些循环算法来说，这可能是可接受的行为，并且可能会在某些平台上带来显著的性能提升。在这些虚假的失败中，函数返回false，而不修改预期；
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;对于非循环算法来说， compare_exchange_strong通常是首选。
+<br>
+<br><font color=purple size = 4>atomic_compare_exchange_strong和atomic_compare_exchange_strong_explicit</font>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;T&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&nbsp;atomic_compare_exchange_strong&nbsp;(</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;atomic&lt;T&gt;*&nbsp;obj,&nbsp;T*&nbsp;expected,&nbsp;T&nbsp;val)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;T&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&nbsp;atomic_compare_exchange_strong&nbsp;(atomic&lt;T&gt;*&nbsp;obj,&nbsp;T*&nbsp;expected,&nbsp;T&nbsp;val)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;T&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&nbsp;atomic_compare_exchange_strong_explicit&nbsp;(</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;atomic&lt;T&gt;*&nbsp;obj,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T*&nbsp;expected,&nbsp;T&nbsp;val,&nbsp;memory_order&nbsp;success,&nbsp;memory_order&nbsp;failure)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;T&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&nbsp;atomic_compare_exchange_strong_explicit&nbsp;(atomic&lt;T&gt;*&nbsp;obj,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T*&nbsp;expected,&nbsp;T&nbsp;val,&nbsp;memory_order&nbsp;success,&nbsp;memory_order&nbsp;failure)&nbsp;noexcept;<BR>
+overloads&nbsp;(</span><span style="color:#ff0000;">2</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&nbsp;atomic_compare_exchange_strong&nbsp;(</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;A*&nbsp;obj,&nbsp;T*&nbsp;expected,&nbsp;T&nbsp;val)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&nbsp;atomic_compare_exchange_strong&nbsp;(A*&nbsp;obj,&nbsp;T*&nbsp;expected,&nbsp;T&nbsp;val)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&nbsp;atomic_compare_exchange_strong_explicit&nbsp;(</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;A*&nbsp;obj,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T*&nbsp;expected,&nbsp;T&nbsp;val,&nbsp;memory_order&nbsp;success,&nbsp;memory_order&nbsp;failure)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&nbsp;atomic_compare_exchange_strong_explicit&nbsp;(A*&nbsp;obj,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T*&nbsp;expected,&nbsp;T&nbsp;val,&nbsp;memory_order&nbsp;success,&nbsp;memory_order&nbsp;failure)&nbsp;noexcept;</span></div></td></tr></table></div>
+ ● 将obj中包含的值与预期的值进行比较：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如果是真的，它会用val替换包含的值
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如果是假的，它将用所包含的值替换预期值
+<br> ● 函数总是访问包含的值来读取它，如果这个比较是真的，那么它也会替换它。但是整个操作都是原子性的:在读取值和被替换的时刻之间，它的值不能被其他线程修改
+<br> ● 注意：
+<br>compare_exchange_strong 跟 compare_exchange_week 不同的是：
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;与compare_exchange_weak 不同, strong版本的 compare-and-exchange 操作不允许(spuriously 地)返回 false，即原子对象所封装的值与参数 expected 的物理内容相同，比较操作一定会为 true。不过在某些平台下，如果算法本身需要循环操作来做检查， compare_exchange_weak 的性能会更好
+<br>
+<br><font color=purple size = 4>atomic_fetch_add和atomic_fetch_add_explicit</font>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;(integral)&nbsp;(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;T&gt;&nbsp;T&nbsp;atomic_fetch_add&nbsp;(</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;atomic&lt;T&gt;*&nbsp;obj,&nbsp;T&nbsp;val)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;T&gt;&nbsp;T&nbsp;atomic_fetch_add&nbsp;(atomic&lt;T&gt;*&nbsp;obj,&nbsp;T&nbsp;val)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;T&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T&nbsp;atomic_fetch_add_explicit&nbsp;(</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;atomic&lt;T&gt;*&nbsp;obj,&nbsp;T&nbsp;val,&nbsp;memory_order&nbsp;sync)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;T&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T&nbsp;atomic_fetch_add_explicit&nbsp;(atomic&lt;T&gt;*&nbsp;obj,&nbsp;T&nbsp;val,&nbsp;memory_order&nbsp;sync)&nbsp;noexcept;<BR>
+</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;(pointer)&nbsp;(</span><span style="color:#ff0000;">2</span><span style="color:#000000;">)&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;U&gt;&nbsp;U*&nbsp;atomic_fetch_add&nbsp;(</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;atomic&lt;U*&gt;*&nbsp;obj,&nbsp;ptrdiff_t&nbsp;val)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;U&gt;&nbsp;U*&nbsp;atomic_fetch_add&nbsp;(atomic&lt;U*&gt;*&nbsp;obj,&nbsp;ptrdiff_t&nbsp;val)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;U&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;U*&nbsp;atomic_fetch_add_explicit&nbsp;(</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;atomic&lt;U*&gt;*&nbsp;obj,&nbsp;ptrdiff_t&nbsp;val,&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;memory_order&nbsp;sync)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;U&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;U*&nbsp;atomic_fetch_add_explicit&nbsp;(atomic&lt;U*&gt;*&nbsp;obj,&nbsp;ptrdiff_t&nbsp;val,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;memory_order&nbsp;sync)&nbsp;noexcept;<BR>
+overloads&nbsp;(</span><span style="color:#ff0000;">3</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;T&nbsp;atomic_fetch_add&nbsp;(</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;A*&nbsp;obj,&nbsp;M&nbsp;val)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;T&nbsp;atomic_fetch_add&nbsp;(A*&nbsp;obj,&nbsp;M&nbsp;val)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;T&nbsp;atomic_fetch_add_explicit&nbsp;(</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;A*&nbsp;obj,&nbsp;M&nbsp;val,&nbsp;memory_order&nbsp;sync)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;T&nbsp;atomic_fetch_add_explicit&nbsp;(A*&nbsp;obj,&nbsp;M&nbsp;val,&nbsp;memory_order&nbsp;sync)&nbsp;noexcept;</span></div></td></tr></table></div>
+ ● 将val添加到obj中所包含的值
+<br> ● 整个操作都是原子性的:在读取(返回)值和被该函数修改的时刻之间，值不能被修改
+<br> ● 要制定内存数序使用显示调用函数atomic_fetch_add_explicit
+<br>
+<br><font color=purple size = 4>atomic_fetch_sub和atomic_fetch_sub_explicit</font>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;(integral)&nbsp;(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;T&gt;&nbsp;T&nbsp;atomic_fetch_sub&nbsp;(</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;atomic&lt;T&gt;*&nbsp;obj,&nbsp;T&nbsp;val)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;T&gt;&nbsp;T&nbsp;atomic_fetch_sub&nbsp;(atomic&lt;T&gt;*&nbsp;obj,&nbsp;T&nbsp;val)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;T&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T&nbsp;atomic_fetch_sub_explicit&nbsp;(</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;atomic&lt;T&gt;*&nbsp;obj,&nbsp;T&nbsp;val,&nbsp;memory_order&nbsp;sync)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;T&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T&nbsp;atomic_fetch_sub_explicit&nbsp;(atomic&lt;T&gt;*&nbsp;obj,&nbsp;T&nbsp;val,&nbsp;memory_order&nbsp;sync)&nbsp;noexcept;<BR>
+</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;(pointer)&nbsp;(</span><span style="color:#ff0000;">2</span><span style="color:#000000;">)&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;U&gt;&nbsp;U*&nbsp;atomic_fetch_sub&nbsp;(</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;atomic&lt;U*&gt;*&nbsp;obj,&nbsp;ptrdiff_t&nbsp;val)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;U&gt;&nbsp;U*&nbsp;atomic_fetch_sub&nbsp;(atomic&lt;U*&gt;*&nbsp;obj,&nbsp;ptrdiff_t&nbsp;val)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;U&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;U*&nbsp;atomic_fetch_sub_explicit&nbsp;(</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;atomic&lt;U*&gt;*&nbsp;obj,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ptrdiff_t&nbsp;val,&nbsp;memory_order&nbsp;sync)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;U&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;U*&nbsp;atomic_fetch_sub_explicit&nbsp;(atomic&lt;U*&gt;*&nbsp;obj,&nbsp;ptrdiff_t&nbsp;val,&nbsp;memory_order&nbsp;sync)&nbsp;noexcept;<BR>
+overloads&nbsp;(</span><span style="color:#ff0000;">3</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;T&nbsp;atomic_fetch_sub&nbsp;(</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;A*&nbsp;obj,&nbsp;M&nbsp;val)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;T&nbsp;atomic_fetch_sub&nbsp;(A*&nbsp;obj,&nbsp;M&nbsp;val)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;T&nbsp;atomic_fetch_sub_explicit&nbsp;(</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;A*&nbsp;obj,&nbsp;M&nbsp;val,&nbsp;memory_order&nbsp;sync)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;T&nbsp;atomic_fetch_sub_explicit&nbsp;(A*&nbsp;obj,&nbsp;M&nbsp;val,&nbsp;memory_order&nbsp;sync)&nbsp;noexcept;</span></div></td></tr></table></div>
+ ● 从obj中所包含的值减去val
+<br> ● 整个操作都是原子性的：在读取(返回)值和被该函数修改的时刻之间，值不能被修改
+<br> ● 要制定内存数序使用显示调用函数atomic_fetch_sub_explicit
+<br>
+<br><font color=purple size = 4>atomic_fetch_and和atomic_fetch_and_explicit</font>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;(integral)&nbsp;(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;T&gt;&nbsp;T&nbsp;atomic_fetch_and&nbsp;(</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;atomic&lt;T&gt;*&nbsp;obj,&nbsp;T&nbsp;val)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;T&gt;&nbsp;T&nbsp;atomic_fetch_and&nbsp;(atomic&lt;T&gt;*&nbsp;obj,&nbsp;T&nbsp;val)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;T&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T&nbsp;atomic_fetch_and_explicit&nbsp;(</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;atomic&lt;T&gt;*&nbsp;obj,T&nbsp;val,&nbsp;memory_order&nbsp;sync)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;T&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T&nbsp;atomic_fetch_and_explicit&nbsp;(atomic&lt;T&gt;*&nbsp;obj,T&nbsp;val,&nbsp;memory_order&nbsp;sync)&nbsp;noexcept;<BR>
+overloads&nbsp;(</span><span style="color:#ff0000;">2</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;T&nbsp;atomic_fetch_and&nbsp;(</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;A*&nbsp;obj,&nbsp;T&nbsp;val)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;T&nbsp;atomic_fetch_and&nbsp;(A*&nbsp;obj,&nbsp;T&nbsp;val)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;T&nbsp;atomic_fetch_and_explicit&nbsp;(</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;A*&nbsp;obj,&nbsp;T&nbsp;val,&nbsp;memory_order&nbsp;sync)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;T&nbsp;atomic_fetch_and_explicit&nbsp;(A*&nbsp;obj,&nbsp;T&nbsp;val,&nbsp;memory_order&nbsp;sync)&nbsp;noexcept;</span></div></td></tr></table></div>
+ ● 读取obj中包含的值，并通过在读取值和val之间执行一个位操作“与”操作来替换它
+<br> ● 整个操作是原子性的(一个原子的读-修改-写操作)：在读取(返回)值和被该函数修改的那一刻之间，值不会受到其他线程的影响
+<br> ● 要制定内存数序使用显示调用函数atomic_fetch_and_explicit
+<br>
+<br><font color=purple size = 4>atomic_fetch_or和atomic_fetch_or_explicit</font>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;(integral)&nbsp;(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;T&gt;&nbsp;T&nbsp;atomic_fetch_or&nbsp;(</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;atomic&lt;T&gt;*&nbsp;obj,&nbsp;T&nbsp;val)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;T&gt;&nbsp;T&nbsp;atomic_fetch_or&nbsp;(atomic&lt;T&gt;*&nbsp;obj,&nbsp;T&nbsp;val)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;T&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T&nbsp;atomic_fetch_or_explicit&nbsp;(</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;atomic&lt;T&gt;*&nbsp;obj,&nbsp;T&nbsp;val,&nbsp;memory_order&nbsp;sync)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;T&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T&nbsp;atomic_fetch_or_explicit&nbsp;(atomic&lt;T&gt;*&nbsp;obj,T&nbsp;val,&nbsp;memory_order&nbsp;sync)&nbsp;noexcept;<BR>
+overloads&nbsp;(</span><span style="color:#ff0000;">2</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;T&nbsp;atomic_fetch_or&nbsp;(</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;A*&nbsp;obj,&nbsp;T&nbsp;val)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;T&nbsp;atomic_fetch_or&nbsp;(A*&nbsp;obj,&nbsp;T&nbsp;val)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;T&nbsp;atomic_fetch_or_explicit&nbsp;(</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;A*&nbsp;obj,&nbsp;T&nbsp;val,&nbsp;memory_order&nbsp;sync)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;T&nbsp;atomic_fetch_or_explicit&nbsp;(A*&nbsp;obj,&nbsp;T&nbsp;val,&nbsp;memory_order&nbsp;sync)&nbsp;noexcept;</span></div></td></tr></table></div>
+ ● 读取obj中包含的值，并通过在读取值和val之间执行一个位操作“或”操作来替换它
+<br> ● 整个操作是原子性的(一个原子的读-修改-写操作)：在读取(返回)值和被该函数修改的那一刻之间，值不会受到其他线程的影响
+<br> ● 要制定内存数序使用显示调用函数atomic_fetch_or_explicit
+<br>
+<br><font color=purple size = 4>atomic_fetch_xor和atomic_fetch_xor_explicit</font>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;(integral)&nbsp;(</span><span style="color:#ff0000;">1</span><span style="color:#000000;">)&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;T&gt;&nbsp;T&nbsp;atomic_fetch_xor&nbsp;(</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;atomic&lt;T&gt;*&nbsp;obj,&nbsp;T&nbsp;val)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;T&gt;&nbsp;T&nbsp;atomic_fetch_xor&nbsp;(atomic&lt;T&gt;*&nbsp;obj,&nbsp;T&nbsp;val)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;T&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T&nbsp;atomic_fetch_xor_explicit&nbsp;(</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;atomic&lt;T&gt;*&nbsp;obj,T&nbsp;val,&nbsp;memory_order&nbsp;sync)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">template</span><span style="color:#000000;">&nbsp;&lt;</span><span style="color:#0000ff;">class</span><span style="color:#000000;">&nbsp;T&gt;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T&nbsp;atomic_fetch_xor_explicit&nbsp;(atomic&lt;T&gt;*&nbsp;obj,T&nbsp;val,&nbsp;memory_order&nbsp;sync)&nbsp;noexcept;<BR>
+overloads&nbsp;(</span><span style="color:#ff0000;">2</span><span style="color:#000000;">)&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;T&nbsp;atomic_fetch_xor&nbsp;(</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;A*&nbsp;obj,&nbsp;T&nbsp;val)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;T&nbsp;atomic_fetch_xor&nbsp;(A*&nbsp;obj,&nbsp;T&nbsp;val)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;T&nbsp;atomic_fetch_xor_explicit&nbsp;(</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;A*&nbsp;obj,&nbsp;T&nbsp;val,&nbsp;memory_order&nbsp;sync)&nbsp;noexcept;<BR>
+&nbsp;&nbsp;&nbsp;T&nbsp;atomic_fetch_xor_explicit&nbsp;(A*&nbsp;obj,&nbsp;T&nbsp;val,&nbsp;memory_order&nbsp;sync)&nbsp;noexcept;</span></div></td></tr></table></div>
+ ● 读取obj中包含的值，并通过在读取值和val之间执行一个位操作“异或”操作来替换它
+<br> ● 整个操作是原子性的(一个原子的读-修改-写操作):在读取(返回)值和被该函数修改的那一刻之间，值不会受到其他线程的影响
+<br> ● 要制定内存数序使用显示调用函数atomic_fetch_xor_explicit
+<br>
+<br><font color=purple size = 4>atomic_flag_test_and_set和atomic_flag_test_and_set_explicit</font>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#8000ff;">bool</span><span style="color:#000000;">&nbsp;atomic_flag_test_and_set&nbsp;(</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;atomic_flag&nbsp;*obj)&nbsp;noexcept;<BR>
+</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&nbsp;atomic_flag_test_and_set&nbsp;(atomic_flag&nbsp;*obj)&nbsp;noexcept;<BR>
+</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&nbsp;atomic_flag_test_and_set&nbsp;(</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;atomic_flag&nbsp;*obj,&nbsp;memory_order&nbsp;sync)&nbsp;noexcept;<BR>
+</span><span style="color:#8000ff;">bool</span><span style="color:#000000;">&nbsp;atomic_flag_test_and_set&nbsp;(atomic_flag&nbsp;*obj,&nbsp;memory_order&nbsp;sync)&nbsp;noexcept;</span></div></td></tr></table></div>
+ ● 设置obj指向的原子标志，并返回调用之前的值
+<br> ● 整个操作是原子性的(一个原子的读-修改-写操作):在读取(返回)值和被该函数修改的瞬间之间，obj的值不会受到其他线程的影响
+<br> ● 要制定内存数序使用显示调用函数atomic_flag_test_and_set
+<br>
+<br><font color=purple size = 4>atomic_flag_clear和atomic_flag_clear_explicit</font>
+<br><div style="width:100%;border:1px #e3e3e3 solid;"><div style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;border-bottom:1px solid #e3e3e3;margin-top:5px;color:#000000;">&nbsp;C++ Code&nbsp;</div><table style="width:100%;font-family:'Consolas', 'Courier New';font-size:12px;vertical-align:text-top;line-height:15px;" border="0" cellspacing="0" cellpadding="0"><tr><td style="color:#008284;background-color:#e3e3e3;vertical-align:text-top;"><div style="margin:7px;text-align:right;white-space:nowrap;"><nobr>1<br>2<br>3<br>4<br></nobr></div></td><td style="background-color:#008284;padding:1px;"><div style="border:1px #008284 solid;"></div></td><td style="background-color:#efefef;width:100%;vertical-align:text-top;color:#000000;"><div style="margin:7px;"><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;atomic_flag_clear&nbsp;(</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;atomic_flag&nbsp;*obj)&nbsp;noexcept;<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;atomic_flag_clear&nbsp;(atomic_flag&nbsp;*obj)&nbsp;noexcept;<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;atomic_flag_clear_explicit(</span><span style="color:#0000ff;">volatile</span><span style="color:#000000;">&nbsp;atomic_flag&nbsp;*obj,&nbsp;memory_order&nbsp;sync)&nbsp;noexcept;<BR>
+</span><span style="color:#8000ff;">void</span><span style="color:#000000;">&nbsp;atomic_flag_clear_explicit(atomic_flag&nbsp;*obj,&nbsp;memory_order&nbsp;sync)&nbsp;noexcept;</span></div></td></tr></table></div>
+ ● 清除obj，将它的标志值设置为false
+<br> ● 该操作是原子性的
+<br> ● 要制定内存数序使用显示调用函数atomic_flag_clear_explicit
+<br>
+<br><a name="bc6"><font color=green size = 5>Macro functions</font></a>
+<br>
+<br><font color=purple size = 4>ATOMIC_VAR_INIT</font>
+<br> ● ATOMIC_VAR_INIT(val) //初始化 std::atomic 对象
+<br> ● 这个宏的存在是为了与C实现兼容，在其中，它被用作构造函数(默认构造的)原子对象
+<br> ● 在C++中，这个初始化可以由初始化构造函数直接执行
+<br>
+<br><font color=purple size = 4>ATOMIC_FLAG_INIT</font>
+<br> ● ATOMIC_FLAG_INIT //初始化 std::atomic_flag 对象
+<br> ● 这个宏的定义用来将类型std::atomic_flag的对象初始化到clear的状态</p>
+
+<p><br><br><br>
+<font color = gray size = 3>如有错误，欢迎指正！</font></p></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://oubc.github.io/tags/c/c&#43;&#43;/">C/C&#43;&#43;</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmg4aog3074074gnf.gif?tags=%5B%5D">I </a>
+	<a href="">love</a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4l9lmfm2eg306o06o74u.gif?tags=%5B%5D"> you </a>
+    <a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx4tpcj30fn0bq3zg.jpg?tags=%5B%5D">three </a>
+	<a href="https://wxt.sinaimg.cn/thumb300/007Diza3ly1g4njrx64ctg307s07swfy.gif?tags=%5B%5D">thousand</a>
+    <a href="https://www.kugou.com/song/#hash=96426C78381DE98DC31A5846FC274CBF&album_id=646623"> times.</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span>家庭、梦想、内心的平静</span>
+  </div>
+</footer>
+
+
+
+<script src="https://oubc.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://oubc.github.io/js/zozo.js"></script>
+<script src="https://oubc.github.io/js/highlight.pack.js"></script>
+<link  href="https://oubc.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://oubc.github.io/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>
